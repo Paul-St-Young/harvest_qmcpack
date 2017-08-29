@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+# Script for printing out Jastrows from an optimization folder.
+# `rebuild_wf opt.xml` generates folders jas*, one for each optimization loop
+#  jas1/jas.xml contains the wavefunction from prefix.s001.opt.xml
+#  jas1/J1.uu.dat contains the up-up electron Jastrow for example
+
+if __name__ == '__main__':
+  import os
+  import argparse
+  from qharv.seed import xml
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument('fname',type=str,help='QMCPACK optimization input xml, should contain <loop>')
+  parser.add_argument('--qbin',type=str,default='qmcpack',help='location of QMCPACK executable')
+  parser.add_argument('--setup',action='store_true',help='setup only i.e. skip execution')
+  args = parser.parse_args()
+
+  doc  = xml.read(args.fname)
+  nqmc = int( doc.find('loop').get('max') )
+
+  # make dummy input files using optimized w.f. at each loop
+  for iqmc in range(nqmc):
+    # folder for dummy run used to rebuild wavefunction
+    jas_dir = 'jas%d'%iqmc
+
+    # put optimized wavefunction at step 'iqmc' into input
+    doc = xml.swap_in_opt_wf(args.fname,iqmc)
+
+    # fix href
+    spo_node = doc.find('.//sposet_builder')
+    href = spo_node.get('href')
+    spo_node.set('href',os.path.join('..',href))
+
+    # remove <qmc> section
+    lnode = doc.find('loop')
+    lnode.getparent().remove(lnode)
+
+    # write new input if no folder exists
+    if not os.path.isdir(jas_dir):
+      os.mkdir(jas_dir)
+      floc = os.path.join(jas_dir,'jas.xml')
+      xml.write(floc,doc)
+      if not (args.setup):
+        cmd = 'cd %s;%s jas.xml >& out'%(jas_dir,args.qbin)
+        print('entering %s and executing: %s' % (jas_dir,cmd))
+        os.system(cmd)
+      # end if
+    # end if
+  # end for
+
+# end __main__
