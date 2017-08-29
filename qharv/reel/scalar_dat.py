@@ -3,11 +3,13 @@ import pandas as pd
 
 def parse(dat_fname):
   """ read the scalar.dat file, should be table format readable by numpy.loadtxt.
+
    The header line should start with '#' and contain column labels.
+
   Args:
     dat_fname (str): name of input file
   Returns:
-    df (pd.DataFrame): table of data, effect: self.df=df """
+    pd.DataFrame: df containing the table of data """
 
   # pandas's equivalent of numpy.loadtxt
   df = pd.read_csv(dat_fname,sep='\s+')
@@ -22,10 +24,13 @@ def parse(dat_fname):
 
 def corr(trace):
   """ calculate the autocorrelation of a trace of scalar data
+
+  correlation time is defined as the integral of the auto-correlation function from t=0 to when the function first reaches 0.
+
   Args:
     trace (list): should be a 1D iterable array of floating point numbers
-  Returns: r
-    correlation_time (float): return the autocorrelation time of this trace of scalars
+  Returns:
+    float: correlation_time, the autocorrelation time of this trace of scalars
   """
  
   mu     = np.mean(trace)
@@ -53,13 +58,16 @@ def corr(trace):
 
 def single_column(df,column,nequil):
   """ calculate mean and error of a column
+
+  nequil blocks of data are thrown out; autocorrelation time is taken into account when calculating error
+  The equilibrated data is assumed to have Gaussian distribution. Error is calculated for one standard deviation (1-sigma error).
+
   Args:
     df (pd.DataFrame): table of data (e.g. from scalar_dat.parse)
     column (str): name of column
     nequil (int): number of equilibration blocks
   Returns:
-    ymean (float): mean of column
-    yerr  (float): error of column
+    (float,float): (ymean,yerr), where ymean is the mean of column, while yerr is the 1-sigma error of column
   """
 
   myx = df['index'].values
