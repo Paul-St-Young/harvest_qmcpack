@@ -7,6 +7,6 @@ setup(
   author         = 'Yubo "Paul" Yang',
   author_email   = 'yyang173@illinois.edu',
   url            = 'http://publish.illinois.edu/yubo-paul-yang/',
-  packages       = ['qharv','qharv.reel'],
+  packages       = ['qharv','qharv.seed','qharv.cross','qharv.inspect','qharv.reel'],
   install_requires = []
 )
