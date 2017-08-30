@@ -1,8 +1,8 @@
 # Author: Yubo "Paul" Yang
 # Email: yubo.paul.yang@gmail.com
 # Routines to manipulate an xml input. Almost all functions are built around the lxml module's API.
-
 import os
+import numpy as np
 from lxml import etree
 
 def read(fname):
@@ -15,6 +15,36 @@ def write(fname,doc):
 
 def show(node):
   print( etree.tostring(node,pretty_print=True) )
+
+def arr2text(arr):
+  """ format a numpy array into a text string """
+  text = ''
+  if len(arr.shape) == 1: # vector
+      text = " ".join(arr.astype(str))
+  elif len(arr.shape) == 2: # matrix
+      mat  = [arr2text(line) for line in arr]
+      text = "\n" + "\n".join(mat) + "\n"
+  else:
+      raise RuntimeError('arr2text can only convert vector or matrix.')
+  # end if
+  return text
+# end def arr2text
+
+def text2arr(text,dtype=float,flatten=False):
+  """ convert a text string into a numpy array """
+  tlist = text.strip(' ').strip('\n').split('\n')
+  if len(tlist) == 1:
+    return np.array(tlist,dtype=dtype)
+  else:
+    if flatten:
+      mytext = '\n'.join(['\n'.join(line.split()) for line in tlist])
+      myarr = text2arr(mytext)
+      return myarr.flatten()
+    else:
+      return np.array([line.split() for line in tlist],dtype=dtype)
+    # end if
+  # end if
+# end def text2arr
 
 def opt_wf_fname(opt_inp,iqmc):
   """ Find the file containing the optimized <wavefunction> at optimization loop iqmc 
