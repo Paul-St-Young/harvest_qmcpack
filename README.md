@@ -51,7 +51,7 @@ Example usage of the qharv library are included in the "harvest_qmcpack/bin" fol
 * rebuild_wf: Rerun QMCPACK on optimized wavefunctions, e.g. `rebuild_wf opt.xml`
 
 ### Description
-This module is intended to speed up on-the-fly setup, run, and analysis of QMCPACK calculations. The module should be used as a collections of glorified bash commands, which are usable in Python.
+This module is intended to speed up on-the-fly setup, run, and analysis of QMCPACK calculations. The module should be used as a collection of glorified bash commands, which are usable in Python.
 This module is NOT intended to be a full-fledged workflow tool. Please refer to [nexus][nexus] for complete workflow magnagement.
 
 [nexus]:http://qmcpack.org/nexus/
