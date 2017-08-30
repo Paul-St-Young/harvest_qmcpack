@@ -1,3 +1,7 @@
+# Author: Yubo "Paul" Yang
+# Email: yubo.paul.yang@gmail.com
+# Routines to parse ASCII output. Mostly built around mmap's API.
+
 from mmap import mmap
 
 def read(fname):

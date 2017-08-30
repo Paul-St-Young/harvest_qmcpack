@@ -1,3 +1,7 @@
+# Author: Yubo "Paul" Yang
+# Email: yubo.paul.yang@gmail.com
+# Routines to parse scalar table output. Mostly built around pandas's API.
+
 import numpy as np
 import pandas as pd
 
