@@ -18,17 +18,23 @@ if __name__ == '__main__':
   doc  = xml.read(args.fname)
   nqmc = int( doc.find('loop').get('max') )
 
+  # get location of wavefunction hdf5
+  spo_node = doc.find('.//sposet_builder')
+  href = spo_node.get('href')
+  # todo: verify the hdf5 file exists
+
   # make dummy input files using optimized w.f. at each loop
   for iqmc in range(nqmc):
     # folder for dummy run used to rebuild wavefunction
     jas_dir = 'jas%d'%iqmc
 
+
     # put optimized wavefunction at step 'iqmc' into input
-    doc = xml.swap_in_opt_wf(args.fname,iqmc)
+    wf_fname = xml.opt_wf_fname(args.fname,iqmc)
+    doc = xml.swap_in_opt_wf(args.fname,wf_fname)
 
     # fix href
     spo_node = doc.find('.//sposet_builder')
-    href = spo_node.get('href')
     spo_node.set('href',os.path.join('..',href))
 
     # remove <qmc> section
