@@ -23,6 +23,11 @@ def parse(dat_fname):
   df.drop(columns[-1],axis=1,inplace=True)
   df.columns = columns[1:]
 
+  # calculate local energy variance if possible
+  if ('LocalEnergy' in columns) and ('LocalEnergy_sq' in columns):
+    df['Variance'] = df['LocalEnergy_sq']-df['LocalEnergy']**2.
+  # end if
+
   return df
 # end def parse
 

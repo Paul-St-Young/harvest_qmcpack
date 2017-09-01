@@ -1,1 +1,1 @@
-__all__ = ['scalar_dat','ascii_out']
+__all__ = ['scalar_dat','stat_h5','ascii_out']

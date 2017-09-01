@@ -1,4 +1,5 @@
-from distutils.core import setup
+#from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(
   name           = 'harvest_qmcpack',
@@ -7,6 +8,7 @@ setup(
   author         = 'Yubo "Paul" Yang',
   author_email   = 'yyang173@illinois.edu',
   url            = 'http://publish.illinois.edu/yubo-paul-yang/',
-  packages       = ['qharv','qharv.seed','qharv.cross','qharv.inspect','qharv.reel'],
+  package_dir    = {'qharv':'qharv'},
+  packages       = find_packages(),
   install_requires = []
 )
