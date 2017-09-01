@@ -1,3 +1,6 @@
+# Author: Yubo "Paul" Yang
+# Email: yubo.paul.yang@gmail.com
+# Routines to visualize volumetric data
 
 def isosurf(ax,vol,level_frac=0.25):
     """ draw iso surface of volumetric data on matplotlib axis at given level

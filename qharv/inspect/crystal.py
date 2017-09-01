@@ -1,3 +1,7 @@
+# Author: Yubo "Paul" Yang
+# Email: yubo.paul.yang@gmail.com
+# Routines to extract and visualize crystal structure data
+
 from qharv.seed import xml
 
 def lattice_vectors(fname):
