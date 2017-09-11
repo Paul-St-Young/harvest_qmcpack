@@ -23,3 +23,24 @@ def name_sep_val(mm,name,sep='=',val_dtype=float):
   val = val_dtype( val_text )
   return val
 # end def
+
+def locate_block(mm,header,trailer,skip_header=True,skip_trailer=True):
+    begin_idx = mm.find(header.encode())
+    if skip_header:
+      mm.seek(begin_idx)
+      mm.readline()
+      begin_idx = mm.tell()
+    # end if
+    end_idx   = mm.find(trailer.encode())
+    if not skip_trailer:
+      mm.seek(end_idx)
+      mm.readline()
+      end_idx = mm.tell()
+    # end if
+    return begin_idx,end_idx
+# end def locate_block
+
+def block_text(mm,header,trailer,skip_header=True,skip_trailer=True):
+    bidx,eidx = locate_block(mm,header,trailer)
+    return mm[bidx:eidx]
+# end def block_text
