@@ -13,13 +13,25 @@ if __name__ == '__main__':
   parser.add_argument('fname',type=str,help='QMCPACK optimization input xml, should contain <loop>')
   parser.add_argument('--qbin',type=str,default='qmcpack',help='location of QMCPACK executable')
   parser.add_argument('--setup',action='store_true',help='setup only i.e. skip execution')
+  parser.add_argument('--detset',action='store_true',help='look for href in <determinantset> instead of <sposet_builder> node, for old inputs')
   args = parser.parse_args()
 
   doc  = xml.read(args.fname)
   nqmc = int( doc.find('loop').get('max') )
 
   # get location of wavefunction hdf5
-  spo_node = doc.find('.//sposet_builder')
+  spo_tag = 'sposet_builder'
+  if args.detset:
+    spo_tag = 'determinantset'
+  # end if
+  spo_node = doc.find('.//'+spo_tag)
+  if (spo_node is None):
+    if (spo_tag == 'sposet_builder'):
+      raise RuntimeError('cannot find <sposet_builder>, try set --detset to look for <determinantset>')
+    elif (spo_tag == 'determinantset'):
+      raise RuntimeError('cannot find <determinantset>, is %s a valid QMCPACK input file?'%args.fname)
+    # end if
+  # end if
   href = spo_node.get('href')
   # todo: verify the hdf5 file exists
 
@@ -28,13 +40,12 @@ if __name__ == '__main__':
     # folder for dummy run used to rebuild wavefunction
     jas_dir = 'jas%d'%iqmc
 
-
     # put optimized wavefunction at step 'iqmc' into input
     wf_fname = xml.opt_wf_fname(args.fname,iqmc)
     doc = xml.swap_in_opt_wf(args.fname,wf_fname)
 
     # fix href
-    spo_node = doc.find('.//sposet_builder')
+    spo_node = doc.find('.//'+spo_tag)
     spo_node.set('href',os.path.join('..',href))
 
     # remove <qmc> section
