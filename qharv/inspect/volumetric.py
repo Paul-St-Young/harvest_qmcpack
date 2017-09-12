@@ -1,6 +1,7 @@
 # Author: Yubo "Paul" Yang
 # Email: yubo.paul.yang@gmail.com
 # Routines to visualize volumetric data
+import numpy as np
 
 def isosurf(ax,vol,level_frac=0.25):
     """ draw iso surface of volumetric data on matplotlib axis at given level
@@ -47,3 +48,55 @@ def isosurf(ax,vol,level_frac=0.25):
     ax.set_zlabel('z')
     return mesh
 # end def isosurf
+
+def spline_volumetric(val3d):
+  """ spline 3D volumetric data onto a unit cube
+
+  Args:
+    val3d (np.array): 3D volumetric data of shape (nx,ny,nz)
+  Returns:
+    RegularGridInterpolator: 3D function defined on the unit cube
+  """
+  from scipy.interpolate import RegularGridInterpolator
+  nx,ny,nz = val3d.shape
+  myx = np.linspace(0,1,nx)
+  myy = np.linspace(0,1,ny)
+  myz = np.linspace(0,1,nz)
+  fval3d = RegularGridInterpolator((myx,myy,myz),val3d)
+  return fval3d
+# end def
+
+def axes_func_on_grid3d(axes,func,grid_shape):
+  """ put a function define in axes units on a 3D grid
+  Args:
+    axes (np.array): dtype=float, shape=(3,3); 3D lattice vectors in row major (i.e. a1 = axes[0])
+    func (RegularGridInterpolator): 3D function defined on the unit cube
+    grid_shape (np.array): dtype=int, shape=(3,); shape of real space grid
+  Returns:
+    grid (np.array): dtype=float, shape=grid_shape; volumetric data
+  """
+  from itertools import product # iterate through grid points fast
+
+  # make a cubic grid that contains the simulation cell
+  grid = np.zeros(grid_shape)
+  farthest_vec = axes.sum(axis=0)
+  dxdydz = farthest_vec/grid_shape
+
+  # fill cubic grid
+  inv_axes = np.linalg.inv(axes)
+  nx,ny,nz = grid_shape
+  for i,j,k in product(range(nx),range(ny),range(nz)):
+    rvec = np.array([i,j,k])*dxdydz
+    uvec = np.dot(rvec,inv_axes)
+
+    # skip points without data
+    sel = (uvec>1.) | (uvec<0.)
+    if len(uvec[sel])>0:
+      continue
+    # end if
+
+    grid[i,j,k] = func(uvec)
+  # end for i,j,k
+  return grid
+# end def axes_func_on_grid3d
+

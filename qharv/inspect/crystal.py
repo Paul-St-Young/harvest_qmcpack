@@ -51,5 +51,15 @@ def xsf_datagrid_3d_density(fname):
   # then convert data to density grid
   data = np.array( [text.split() for text in lines[iline:-1]],dtype=float)
   return data.reshape(grid_shape)
-
 # end def xsf_datagrid_3d_density
+
+def draw_cell(ax,axes,pos,atom_color='b'):
+  atoms = ax.plot(pos[:,0],pos[:,1],pos[:,2],'o',c=atom_color,ms=10)
+
+  # show simulation cell
+  cell = []
+  for idim in range(3):
+    line = ax.plot([0,axes[idim,0]],[0,axes[idim,1]],[0,axes[idim,2]],c='k',lw=2)
+    cell.append(line)
+  return atoms,cell
+# end def
