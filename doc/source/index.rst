@@ -11,6 +11,8 @@ Welcome to qharv's documentation!
    :caption: Contents:
 
    qharv.seed.rst
+   qharv.inspect.rst
+   qharv.cross.rst
    qharv.reel.rst
 
 Indices and tables
