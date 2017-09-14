@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# Author: Yubo "Paul" Yang
+# Email: yubo.paul.yang@gmail.com
+#
 # Scalar TABle (stab) analyzer
 # `stab prefix.s000.scalar.dat -e 10 -c Kinetic` prints the mean and error of the 'Kinetic' column
 #  arbitrary scalar file may be analyzed as long as it is in table format

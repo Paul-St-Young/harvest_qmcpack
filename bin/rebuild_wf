@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# Author: Yubo "Paul" Yang
+# Email: yubo.paul.yang@gmail.com
+#
 # Script for printing out Jastrows from an optimization folder.
 # `rebuild_wf opt.xml` generates folders jas*, one for each optimization loop
 #  jas1/jas.xml contains the wavefunction from prefix.s001.opt.xml
