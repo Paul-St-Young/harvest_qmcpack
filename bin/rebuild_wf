@@ -16,6 +16,7 @@ if __name__ == '__main__':
   parser.add_argument('fname',type=str,help='QMCPACK optimization input xml, should contain <loop>')
   parser.add_argument('--qbin',type=str,default='qmcpack',help='location of QMCPACK executable')
   parser.add_argument('--setup',action='store_true',help='setup only i.e. skip execution')
+  parser.add_argument('--force','-f',action='store_true',help='skip checks')
   parser.add_argument('--detset',action='store_true',help='look for href in <determinantset> instead of <sposet_builder> node, for old inputs')
   args = parser.parse_args()
 
@@ -24,18 +25,22 @@ if __name__ == '__main__':
 
   # get location of wavefunction hdf5
   spo_tag = 'sposet_builder'
+  href = ''
   if args.detset:
     spo_tag = 'determinantset'
   # end if
   spo_node = doc.find('.//'+spo_tag)
   if (spo_node is None):
-    if (spo_tag == 'sposet_builder'):
+    if (args.force):
+      pass
+    elif (spo_tag == 'sposet_builder'):
       raise RuntimeError('cannot find <sposet_builder>, try set --detset to look for <determinantset>')
     elif (spo_tag == 'determinantset'):
-      raise RuntimeError('cannot find <determinantset>, is %s a valid QMCPACK input file?'%args.fname)
+      raise RuntimeError('cannot find <determinantset>, is %s a valid QMCPACK input file?\n use -f if you are sure'%args.fname)
     # end if
+  else:
+    href = spo_node.get('href')
   # end if
-  href = spo_node.get('href')
   # todo: verify the hdf5 file exists
 
   # make dummy input files using optimized w.f. at each loop
@@ -48,8 +53,10 @@ if __name__ == '__main__':
     doc = xml.swap_in_opt_wf(args.fname,wf_fname)
 
     # fix href
-    spo_node = doc.find('.//'+spo_tag)
-    spo_node.set('href',os.path.join('..',href))
+    if spo_node is not None:
+      spo_node = doc.find('.//'+spo_tag)
+      spo_node.set('href',os.path.join('..',href))
+    # end if
 
     # remove <qmc> section
     lnode = doc.find('loop')
