@@ -1,1 +1,1 @@
-__all__ = ['pyscf']
+__all__ = ['pqscf']
