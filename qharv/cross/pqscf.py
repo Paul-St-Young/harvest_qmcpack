@@ -47,8 +47,7 @@ def pw_to_r(gvecs,psig,grid_shape=None):
     psig (np.array): dtype=complex & shape = (npw,). Expansion coefficients in PW basis.
     grid_shape (np.array): dtype=int & shape = (ndim,). Shape of real-space grid.
   Returns:
-    np.array: grid_shape, pass back input if given. Otherwise constructed in function to hold all information from the plane-wave representation.
-    np.array: moR, dtype=complex & shape = grid_shape. function in real-space basis. Typically a molecular orbital.
+    (np.array,np.array): (grid_shape,moR), grid_shape is input if given. Otherwise constructed in function to hold all information from the plane-wave representation. moR has dtype=complex & shape = grid_shape. moR is the 3D function in real-space basis. Typically a molecular orbital.
   """
   
   pw_grid_shape = gvecs.max(axis=0) - gvecs.min(axis=0) + 1
@@ -80,8 +79,7 @@ def r_to_pw(moR0,grid_shape,gvecs=None):
     moR0 (np.array): dtype=complex & shape = (ngrid,), ngrid is the number of grid points. 3D function in real-space grid basis.
     grid_shape (np.array): dtype=int & shape = (ndim,). Shape of real-space grid.
   Returns:
-    np.array: gvecs, dtype=int & shape = (npw,ndim).
-    np.array: moR, dtype=complex & shape = grid_shape. function in real-space basis. Typically a molecular orbital.
+    (np.array,np.array): (gvecs,psig), gvecs is input if given. Otherwise internally constructed. psig has dtype=complex & shape = (npw,). psig is the 3D function in plane-wave basis. Typically a molecular orbital.
   """
   assert np.prod(grid_shape) == len(moR0)
   cell_gs = (grid_shape-1)/2

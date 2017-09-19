@@ -16,7 +16,8 @@ locations = {
   'nkpt':'electrons/number_of_kpoints',
   'nspin':'electrons/number_of_spins',
   'nstate':'electrons/kpoint_0/spin_0/number_of_states', # !!!! same number of states per kpt
-  'axes':'supercell/primitive_vectors'
+  'axes':'supercell/primitive_vectors',
+  'pos':'atoms/positions'
 }
 
 dtypes = {
