@@ -1,0 +1,20 @@
+qharv package
+=============
+
+Subpackages
+-----------
+
+.. toctree::
+
+    qharv.cross
+    qharv.inspect
+    qharv.reel
+    qharv.seed
+
+Module contents
+---------------
+
+.. automodule:: qharv
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,38 @@
+qharv\.reel package
+===================
+
+Submodules
+----------
+
+qharv\.reel\.ascii\_out module
+------------------------------
+
+.. automodule:: qharv.reel.ascii_out
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+qharv\.reel\.scalar\_dat module
+-------------------------------
+
+.. automodule:: qharv.reel.scalar_dat
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+qharv\.reel\.stat\_h5 module
+----------------------------
+
+.. automodule:: qharv.reel.stat_h5
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: qharv.reel
+    :members:
+    :undoc-members:
+    :show-inheritance:

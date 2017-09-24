@@ -1,0 +1,38 @@
+qharv\.seed package
+===================
+
+Submodules
+----------
+
+qharv\.seed\.wf\_h5 module
+--------------------------
+
+.. automodule:: qharv.seed.wf_h5
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+qharv\.seed\.xml module
+-----------------------
+
+.. automodule:: qharv.seed.xml
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+qharv\.seed\.xml\_examples module
+---------------------------------
+
+.. automodule:: qharv.seed.xml_examples
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: qharv.seed
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,22 @@
+qharv\.cross package
+====================
+
+Submodules
+----------
+
+qharv\.cross\.pqscf module
+--------------------------
+
+.. automodule:: qharv.cross.pqscf
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: qharv.cross
+    :members:
+    :undoc-members:
+    :show-inheritance:
