@@ -1,0 +1,207 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.seed.xml &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.seed.xml</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Routines to manipulate an xml input. Almost all functions are built around the lxml module&#39;s API.</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lxml</span> <span class="k">import</span> <span class="n">etree</span>
+
+<div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+  <span class="n">parser</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">XMLParser</span><span class="p">(</span><span class="n">remove_blank_text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+  <span class="n">doc</span>    <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="n">parser</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">doc</span></div>
+
+<div class="viewcode-block" id="write"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.write">[docs]</a><span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="n">doc</span><span class="p">):</span>
+  <span class="n">doc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="show"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.show">[docs]</a><span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+  <span class="nb">print</span><span class="p">(</span> <span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="p">)</span></div>
+
+<div class="viewcode-block" id="arr2text"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.arr2text">[docs]</a><span class="k">def</span> <span class="nf">arr2text</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; format a numpy array into a text string &quot;&quot;&quot;</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># vector</span>
+      <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+  <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="c1"># matrix</span>
+      <span class="n">mat</span>  <span class="o">=</span> <span class="p">[</span><span class="n">arr2text</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">]</span>
+      <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+  <span class="k">else</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;arr2text can only convert vector or matrix.&#39;</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+  <span class="k">return</span> <span class="n">text</span></div>
+<span class="c1"># end def arr2text</span>
+
+<div class="viewcode-block" id="text2arr"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.text2arr">[docs]</a><span class="k">def</span> <span class="nf">text2arr</span><span class="p">(</span><span class="n">text</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span><span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; convert a text string into a numpy array &quot;&quot;&quot;</span>
+  <span class="n">tlist</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tlist</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">flatten</span><span class="p">:</span>
+      <span class="n">mytext</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">tlist</span><span class="p">])</span>
+      <span class="n">myarr</span> <span class="o">=</span> <span class="n">text2arr</span><span class="p">(</span><span class="n">mytext</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">myarr</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">tlist</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span></div>
+    <span class="c1"># end if</span>
+  <span class="c1"># end if</span>
+<span class="c1"># end def text2arr</span>
+
+<div class="viewcode-block" id="opt_wf_fname"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.opt_wf_fname">[docs]</a><span class="k">def</span> <span class="nf">opt_wf_fname</span><span class="p">(</span><span class="n">opt_inp</span><span class="p">,</span><span class="n">iqmc</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; Find the file containing the optimized &lt;wavefunction&gt; at optimization loop iqmc </span>
+
+<span class="sd">  example of a folder containing an optimization run:</span>
+<span class="sd">  $ls opt_dir</span>
+<span class="sd">    opt.xml</span>
+<span class="sd">    qmc.s000.scalar.dat</span>
+<span class="sd">    qmc.s000.opt.xml</span>
+<span class="sd">    qmc.s001.scalar.dat</span>
+<span class="sd">    qmc.s001.opt.xml</span>
+<span class="sd">  $</span>
+<span class="sd">  opt_wf_fname(&#39;opt_dir/opt.xml&#39;,1) returns &#39;opt_dir/qmc.s001.opt.xml&#39;</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    opt_inp (str): optimization run input file</span>
+<span class="sd">    iqmc (int): optimization loop to target</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    str: wf_fname, name of the xml file containing the optimized &lt;wavefunction&gt;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="c1"># read the optimization input for nqmc &amp; prefix to find .opt files</span>
+  <span class="n">doc</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">opt_inp</span><span class="p">)</span>
+  <span class="n">nqmc</span>   <span class="o">=</span> <span class="nb">int</span><span class="p">(</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//loop&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max&#39;</span><span class="p">)</span> <span class="p">)</span>
+  <span class="k">assert</span> <span class="n">iqmc</span> <span class="o">&lt;</span> <span class="n">nqmc</span>
+
+  <span class="c1"># read project prefix to determine .opt filename</span>
+  <span class="n">prefix</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//project&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+  <span class="n">stext</span>  <span class="o">=</span> <span class="s1">&#39;s&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">iqmc</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+  <span class="n">fopt</span>   <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">prefix</span><span class="p">,</span><span class="n">stext</span><span class="p">,</span><span class="s1">&#39;opt&#39;</span><span class="p">,</span><span class="s1">&#39;xml&#39;</span><span class="p">])</span>
+
+  <span class="c1"># return location of file</span>
+  <span class="n">opt_dir</span>  <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">opt_inp</span><span class="p">)</span>
+  <span class="n">wf_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">opt_dir</span><span class="p">,</span><span class="n">fopt</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">wf_fname</span></div>
+<span class="c1"># end def opt_wf_fname</span>
+
+<div class="viewcode-block" id="swap_in_opt_wf"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.swap_in_opt_wf">[docs]</a><span class="k">def</span> <span class="nf">swap_in_opt_wf</span><span class="p">(</span><span class="n">inp_fname</span><span class="p">,</span><span class="n">wf_fname</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; Put an optimized wavefunction into an xml input </span>
+
+<span class="sd">  Designed to help continue a wavefunction optimization. One can also use optimized wavefunction in a VMC or DMC calculation, but the &lt;loop&gt; section will have to be removed, and new &lt;qmc&gt; sections added. See xml_examples.py.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    inp_fname (str): xml input file having an old &lt;wavefunction&gt;</span>
+<span class="sd">    wf_fname  (str): xml file containing the optimized &lt;wavefunction&gt;</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    lxml.etree._ElementTree: xml input with optimized wavefunction &quot;&quot;&quot;</span>
+
+  <span class="c1"># find &lt;wavefunction&gt;</span>
+  <span class="n">doc</span>  <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">inp_fname</span><span class="p">)</span>
+  <span class="n">doc1</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">wf_fname</span><span class="p">)</span>
+  <span class="n">wf1</span> <span class="o">=</span> <span class="n">doc1</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//wavefunction&#39;</span><span class="p">)</span>
+  <span class="n">wf0</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//wavefunction&#39;</span><span class="p">)</span>
+
+  <span class="c1"># swap &lt;wavefunction&gt;</span>
+  <span class="n">wup</span> <span class="o">=</span> <span class="n">wf0</span><span class="o">.</span><span class="n">getparent</span><span class="p">()</span>
+  <span class="n">idx</span> <span class="o">=</span> <span class="n">wup</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">wf0</span><span class="p">)</span>
+  <span class="n">wup</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">wf0</span><span class="p">)</span>
+  <span class="n">wup</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span><span class="n">wf1</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">doc</span></div>
+<span class="c1"># end def swap_in_opt_wf</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.seed.html">qharv.seed package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

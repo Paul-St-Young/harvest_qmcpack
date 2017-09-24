@@ -1,0 +1,199 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.inspect.volumetric &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.inspect.volumetric</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Routines to visualize volumetric data</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="isosurf"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.isosurf">[docs]</a><span class="k">def</span> <span class="nf">isosurf</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">vol</span><span class="p">,</span><span class="n">level_frac</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; draw iso surface of volumetric data on matplotlib axis at given level</span>
+
+<span class="sd">    Example usage:</span>
+<span class="sd">      from mpl_toolkits.mplot3d import Axes3D # enable 3D projection</span>
+<span class="sd">      vol = np.random.randn(10,10,10)</span>
+<span class="sd">      fig = plt.figure()</span>
+<span class="sd">      ax  = fig.add_subplot(1,1,1,projection=&#39;3d&#39;)</span>
+<span class="sd">      isosurf(ax,vol)</span>
+<span class="sd">      plt.show()</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">      ax (plt.Axes3D): ax = fig.add_subplot(1,1,1,projection=&quot;3d&quot;)</span>
+<span class="sd">      vol (np.array): 3D volumetric data having shape (nx,ny,nz) </span>
+<span class="sd">      level_frac (float): 0.0-&gt;1.0, isosurface value as a fraction between min and max</span>
+<span class="sd">    Returns:</span>
+<span class="sd">      Poly3DCollection: mesh</span>
+<span class="sd">    Effect:</span>
+<span class="sd">      draw on ax &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">skimage</span> <span class="k">import</span> <span class="n">measure</span>
+    <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d.art3d</span> <span class="k">import</span> <span class="n">Poly3DCollection</span>
+    <span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span> <span class="o">=</span> <span class="n">vol</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">lmin</span><span class="p">,</span><span class="n">lmax</span> <span class="o">=</span> <span class="n">vol</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span><span class="n">vol</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="n">level</span> <span class="o">=</span> <span class="n">lmin</span> <span class="o">+</span> <span class="n">level_frac</span><span class="o">*</span><span class="p">(</span><span class="n">lmax</span><span class="o">-</span><span class="n">lmin</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">level</span><span class="o">&lt;</span><span class="n">lmin</span> <span class="ow">or</span> <span class="n">level</span><span class="o">&gt;</span><span class="n">lmax</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;level must be &gt;</span><span class="si">%f</span><span class="s1"> and &lt; </span><span class="si">%f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">lmin</span><span class="p">,</span><span class="n">lmax</span><span class="p">))</span>
+    <span class="c1"># end if</span>
+
+    <span class="c1"># make marching cubes</span>
+    <span class="n">verts</span><span class="p">,</span> <span class="n">faces</span><span class="p">,</span> <span class="n">normals</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">measure</span><span class="o">.</span><span class="n">marching_cubes_lewiner</span><span class="p">(</span>
+        <span class="n">vol</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+
+    <span class="c1"># plot surface</span>
+    <span class="n">mesh</span> <span class="o">=</span> <span class="n">Poly3DCollection</span><span class="p">(</span><span class="n">verts</span><span class="p">[</span><span class="n">faces</span><span class="p">])</span>
+    <span class="n">mesh</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">add_collection3d</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">nx</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">ny</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">nz</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mesh</span></div>
+<span class="c1"># end def isosurf</span>
+
+<div class="viewcode-block" id="spline_volumetric"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.spline_volumetric">[docs]</a><span class="k">def</span> <span class="nf">spline_volumetric</span><span class="p">(</span><span class="n">val3d</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; spline 3D volumetric data onto a unit cube</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    val3d (np.array): 3D volumetric data of shape (nx,ny,nz)</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    RegularGridInterpolator: 3D function defined on the unit cube</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">RegularGridInterpolator</span>
+  <span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span> <span class="o">=</span> <span class="n">val3d</span><span class="o">.</span><span class="n">shape</span>
+  <span class="n">myx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">nx</span><span class="p">)</span>
+  <span class="n">myy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">ny</span><span class="p">)</span>
+  <span class="n">myz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">nz</span><span class="p">)</span>
+  <span class="n">fval3d</span> <span class="o">=</span> <span class="n">RegularGridInterpolator</span><span class="p">((</span><span class="n">myx</span><span class="p">,</span><span class="n">myy</span><span class="p">,</span><span class="n">myz</span><span class="p">),</span><span class="n">val3d</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">fval3d</span></div>
+<span class="c1"># end def</span>
+
+<div class="viewcode-block" id="axes_func_on_grid3d"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.axes_func_on_grid3d">[docs]</a><span class="k">def</span> <span class="nf">axes_func_on_grid3d</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">func</span><span class="p">,</span><span class="n">grid_shape</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; put a function define in axes units on a 3D grid</span>
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): dtype=float, shape=(3,3); 3D lattice vectors in row major (i.e. a1 = axes[0])</span>
+<span class="sd">    func (RegularGridInterpolator): 3D function defined on the unit cube</span>
+<span class="sd">    grid_shape (np.array): dtype=int, shape=(3,); shape of real space grid</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    grid (np.array): dtype=float, shape=grid_shape; volumetric data</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span> <span class="c1"># iterate through grid points fast</span>
+
+  <span class="c1"># make a cubic grid that contains the simulation cell</span>
+  <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">)</span>
+  <span class="n">farthest_vec</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+  <span class="n">dxdydz</span> <span class="o">=</span> <span class="n">farthest_vec</span><span class="o">/</span><span class="n">grid_shape</span>
+
+  <span class="c1"># fill cubic grid</span>
+  <span class="n">inv_axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+  <span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span> <span class="o">=</span> <span class="n">grid_shape</span>
+  <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nx</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="n">ny</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="n">nz</span><span class="p">)):</span>
+    <span class="n">rvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">])</span><span class="o">*</span><span class="n">dxdydz</span>
+    <span class="n">uvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">rvec</span><span class="p">,</span><span class="n">inv_axes</span><span class="p">)</span>
+
+    <span class="c1"># skip points without data</span>
+    <span class="n">sel</span> <span class="o">=</span> <span class="p">(</span><span class="n">uvec</span><span class="o">&gt;</span><span class="mf">1.</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">uvec</span><span class="o">&lt;</span><span class="mf">0.</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uvec</span><span class="p">[</span><span class="n">sel</span><span class="p">])</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+      <span class="k">continue</span>
+    <span class="c1"># end if</span>
+
+    <span class="n">grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">uvec</span><span class="p">)</span>
+  <span class="c1"># end for i,j,k</span>
+  <span class="k">return</span> <span class="n">grid</span></div>
+<span class="c1"># end def axes_func_on_grid3d</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.seed.html">qharv.seed package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

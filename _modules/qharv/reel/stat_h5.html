@@ -1,0 +1,224 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.reel.stat_h5 &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.reel.stat_h5</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Routines to parse hdf5 spectral and volumetric data output. Mostly built around h5py&#39;s API.</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="ls"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.ls">[docs]</a><span class="k">def</span> <span class="nf">ls</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="n">r</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">indent</span><span class="o">=</span><span class="s2">&quot;  &quot;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; List directory structure</span>
+<span class="sd">   </span>
+<span class="sd">   Similar to the Linux `ls` command, but for an hdf5 file</span>
+
+<span class="sd">   Args:</span>
+<span class="sd">     handle (h5py.Group): or h5py.File or h5py.Dataset</span>
+<span class="sd">     r (bool): recursive list</span>
+<span class="sd">     level (int): level of indentation, only used if r=True</span>
+<span class="sd">     indent (str): indent string, only used if r=True</span>
+<span class="sd">   Returns:</span>
+<span class="sd">     str: mystr, a string representation of the directory structure</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">mystr</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+  <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="n">h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="n">handle</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+      <span class="n">mystr</span> <span class="o">+=</span> <span class="n">indent</span><span class="o">*</span><span class="n">level</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+      <span class="k">if</span> <span class="n">r</span><span class="p">:</span>
+        <span class="n">mystr</span> <span class="o">+=</span> <span class="n">ls</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span>
+    <span class="c1"># end for</span>
+  <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;cannot handle type=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="nb">type</span><span class="p">(</span><span class="n">handle</span><span class="p">))</span>
+  <span class="c1"># end if</span>
+  <span class="k">return</span> <span class="n">mystr</span></div>
+<span class="c1"># end def ls</span>
+
+<div class="viewcode-block" id="mean_and_err"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.mean_and_err">[docs]</a><span class="k">def</span> <span class="nf">mean_and_err</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">,</span><span class="n">obs_path</span><span class="p">,</span><span class="n">nequil</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; calculate mean and variance of an observable from QMCPACK stat.h5 file</span>
+
+<span class="sd">  assume autocorrelation = 1.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    stat_fname (str): .stat.h5 filename</span>
+<span class="sd">    obs_path (str): path to observable, e.g. &#39;gofr_e_1_1&#39;</span>
+<span class="sd">    nequil (int): number of equilibration blocks to throw out</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    (np.array,np.array): (val_mean,val_err), the mean and error of the observable, assuming no autocorrelation. For correlated data, error is underestimated by a factor of sqrt(autocorrelation).</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">fp</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">)</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">obs_path</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;group </span><span class="si">%s</span><span class="s1"> not found&#39;</span> <span class="o">%</span> <span class="n">obs_path</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+
+  <span class="n">val_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">obs_path</span><span class="p">,</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+  <span class="n">valsq_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">obs_path</span><span class="p">,</span><span class="s1">&#39;value_squared&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">val_path</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">valsq_path</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">)):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;group </span><span class="si">%s</span><span class="s1"> must have &quot;value&quot; and &quot;value_squared&quot; to calculate variance&#39;</span> <span class="o">%</span> <span class="n">obs_path</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+
+  <span class="n">val_data</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">val_path</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+  <span class="n">nblock</span>   <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">val_data</span><span class="p">)</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">nequil</span><span class="o">&gt;=</span><span class="n">nblock</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;cannot throw out </span><span class="si">%d</span><span class="s1"> blocks from </span><span class="si">%d</span><span class="s1"> blocks&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">nequil</span><span class="p">,</span><span class="n">nblock</span><span class="p">))</span>
+  <span class="c1"># end if</span>
+  <span class="n">edata</span>    <span class="o">=</span> <span class="n">val_data</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]</span> <span class="c1"># equilibrated data</span>
+
+  <span class="c1"># calculate mean and error</span>
+  <span class="n">val_mean</span> <span class="o">=</span> <span class="n">edata</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+  <span class="n">val_std</span>  <span class="o">=</span> <span class="n">edata</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+  <span class="n">val_err</span>  <span class="o">=</span> <span class="n">val_std</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nblock</span><span class="o">-</span><span class="n">nequil</span><span class="p">)</span>
+
+  <span class="c1"># !!!! variance of random variable and error of mean are different!</span>
+  <span class="c1">#valsq_data = fp[valsq_path].value</span>
+  <span class="c1">#var_mean = (valsq_data-val_data**2.)[nequil:].mean(axis=0)</span>
+  <span class="c1">#err = np.sqrt(var_mean)/(nblock-nequil)</span>
+  
+  <span class="k">return</span> <span class="n">val_mean</span><span class="p">,</span><span class="n">val_err</span></div>
+<span class="c1"># end def mean_and_err</span>
+
+<div class="viewcode-block" id="absolute_magnetization"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.absolute_magnetization">[docs]</a><span class="k">def</span> <span class="nf">absolute_magnetization</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">obs_name</span><span class="o">=</span><span class="s1">&#39;SpinDensity&#39;</span><span class="p">,</span><span class="n">up_name</span><span class="o">=</span><span class="s1">&#39;u&#39;</span><span class="p">,</span><span class="n">dn_name</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; calculate up-down spin density and the integral of its absolute value</span>
+<span class="sd">   first check that /SpinDensity/u and /SpinDensity/d both exist in the .stat.h5 file, then extract both densities, subtract and integrate</span>
+
+
+<span class="sd">  Args:</span>
+<span class="sd">    stat_fname (str): name of the .stat.h5 file</span>
+<span class="sd">    nequil (int): number of equilibration blocks to throw out</span>
+<span class="sd">    obs_name (str): name of spindensity observable, default=SpinDensity</span>
+<span class="sd">    up_name (str): default=u</span>
+<span class="sd">    dn_name (str): default=d</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    (np.array,np.array,float,float): (rho,rhoe,mabs_mean,mabs_error), rho and rhoe have shape (ngrid,), where ngrid is the total number of real-space grid points i.e. for grid=(nx,ny,nz), ngrid=nx*ny*nz. mabs = \int |rho_up-rho_dn|</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="n">fp</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">)</span>
+  <span class="c1">#print( ls(fp,r=True) ) # see what&#39;s in the file</span>
+
+  <span class="c1"># make sure observable is in file</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">obs_name</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;observable </span><span class="si">%s</span><span class="s1"> not found in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">obs_name</span><span class="p">,</span><span class="n">stat_fname</span><span class="p">))</span>
+  <span class="c1"># end if</span>
+
+  <span class="c1"># make sure up and down components are in spin density</span>
+  <span class="n">up_loc</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">obs_name</span><span class="p">,</span><span class="n">up_name</span><span class="p">)</span>
+  <span class="n">dn_loc</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">obs_name</span><span class="p">,</span><span class="n">dn_name</span><span class="p">)</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">up_loc</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dn_loc</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">)):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> must have up and down components (</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">obs_name</span><span class="p">,</span><span class="n">up_name</span><span class="p">,</span><span class="n">dn_name</span><span class="p">))</span>
+  <span class="c1"># end if</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+  <span class="c1"># get up density</span>
+  <span class="n">val</span><span class="p">,</span><span class="n">err</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">,</span><span class="n">up_loc</span><span class="p">,</span><span class="n">nequil</span><span class="p">)</span>
+  <span class="n">rho_up</span>  <span class="o">=</span> <span class="n">val</span>
+  <span class="n">rho_up_err</span> <span class="o">=</span> <span class="n">err</span>
+
+  <span class="c1"># get down density</span>
+  <span class="n">val</span><span class="p">,</span><span class="n">err</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">,</span><span class="n">dn_loc</span><span class="p">,</span><span class="n">nequil</span><span class="p">)</span>
+  <span class="n">rho_dn</span>  <span class="o">=</span> <span class="n">val</span>
+  <span class="n">rho_dn_err</span> <span class="o">=</span> <span class="n">err</span>
+
+  <span class="c1"># get absolute difference</span>
+  <span class="n">rho</span>  <span class="o">=</span> <span class="n">rho_up</span><span class="o">-</span><span class="n">rho_dn</span>
+  <span class="n">rhoe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">rho_dn_err</span><span class="o">**</span><span class="mf">2.</span><span class="o">+</span><span class="n">rho_up_err</span><span class="o">**</span><span class="mf">2.</span> <span class="p">)</span>
+  <span class="n">mabs_mean</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+  <span class="n">mabs_error</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="p">(</span><span class="n">rhoe</span><span class="o">**</span><span class="mf">2.</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="p">)</span>
+  <span class="k">return</span> <span class="n">rho</span><span class="p">,</span><span class="n">rhoe</span><span class="p">,</span><span class="n">mabs_mean</span><span class="p">,</span><span class="n">mabs_error</span></div>
+<span class="c1"># end def absolute_magnetization</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.seed.html">qharv.seed package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

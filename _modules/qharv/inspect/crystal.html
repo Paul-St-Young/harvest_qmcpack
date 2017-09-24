@@ -1,0 +1,162 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.inspect.crystal &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.inspect.crystal</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Routines to extract and visualize crystal structure data</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">qharv.seed</span> <span class="k">import</span> <span class="n">xml</span>
+
+<div class="viewcode-block" id="lattice_vectors"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.lattice_vectors">[docs]</a><span class="k">def</span> <span class="nf">lattice_vectors</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+  <span class="n">doc</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+  <span class="n">sc_node</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//simulationcell&#39;</span><span class="p">)</span>
+  <span class="n">lat_node</span> <span class="o">=</span> <span class="n">sc_node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//parameter[@name=&quot;lattice&quot;]&#39;</span><span class="p">)</span>
+  <span class="n">unit</span> <span class="o">=</span> <span class="n">lat_node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">)</span>
+  <span class="k">assert</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;bohr&#39;</span>
+  <span class="n">axes</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">text2arr</span><span class="p">(</span> <span class="n">lat_node</span><span class="o">.</span><span class="n">text</span> <span class="p">)</span>
+  <span class="k">return</span> <span class="n">axes</span></div>
+
+<div class="viewcode-block" id="atomic_coords"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.atomic_coords">[docs]</a><span class="k">def</span> <span class="nf">atomic_coords</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="n">pset_name</span><span class="o">=</span><span class="s1">&#39;ion0&#39;</span><span class="p">):</span>
+  <span class="c1"># !!!! assuming atomic units (bohr)</span>
+  <span class="c1"># !!!! finds the first group in particleset</span>
+  <span class="n">doc</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+  <span class="n">source_pset_node</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//particleset[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span><span class="o">%</span><span class="n">pset_name</span><span class="p">)</span>
+  <span class="n">pos_node</span> <span class="o">=</span> <span class="n">source_pset_node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//attrib[@name=&quot;position&quot;]&#39;</span><span class="p">)</span>
+  <span class="n">pos</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">text2arr</span><span class="p">(</span><span class="n">pos_node</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">pos</span></div>
+
+<div class="viewcode-block" id="xsf_datagrid_3d_density"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.xsf_datagrid_3d_density">[docs]</a><span class="k">def</span> <span class="nf">xsf_datagrid_3d_density</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+  <span class="kn">from</span> <span class="nn">qharv.reel</span> <span class="k">import</span> <span class="n">ascii_out</span>
+  <span class="n">mm</span>   <span class="o">=</span> <span class="n">ascii_out</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="n">ascii_out</span><span class="o">.</span><span class="n">block_text</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="s1">&#39;BEGIN_DATAGRID_3D_density&#39;</span><span class="p">,</span><span class="s1">&#39;END_DATAGRID_3D_density&#39;</span><span class="p">)</span>
+
+  <span class="n">lines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+  <span class="c1"># first advance iline past particle coordinates</span>
+  <span class="n">iline</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">iline</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="n">grid_shape</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+      <span class="n">iline</span> <span class="o">+=</span> <span class="mi">1</span>
+      <span class="k">continue</span>
+    <span class="c1"># end if</span>
+
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c1"># atom coordinate</span>
+      <span class="k">pass</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span> <span class="c1"># density data</span>
+      <span class="k">break</span>
+    <span class="c1"># end if</span>
+    <span class="n">iline</span> <span class="o">+=</span> <span class="mi">1</span>
+  <span class="c1"># end for line</span>
+
+  <span class="c1"># then convert data to density grid</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">[</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">iline</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">)</span></div>
+<span class="c1"># end def xsf_datagrid_3d_density</span>
+
+<div class="viewcode-block" id="draw_cell"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.draw_cell">[docs]</a><span class="k">def</span> <span class="nf">draw_cell</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">axes</span><span class="p">,</span><span class="n">pos</span><span class="p">,</span><span class="n">atom_color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">):</span>
+  <span class="n">atoms</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pos</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">pos</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">pos</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="n">atom_color</span><span class="p">,</span><span class="n">ms</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+  <span class="c1"># show simulation cell</span>
+  <span class="n">cell</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">idim</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="n">axes</span><span class="p">[</span><span class="n">idim</span><span class="p">,</span><span class="mi">0</span><span class="p">]],[</span><span class="mi">0</span><span class="p">,</span><span class="n">axes</span><span class="p">[</span><span class="n">idim</span><span class="p">,</span><span class="mi">1</span><span class="p">]],[</span><span class="mi">0</span><span class="p">,</span><span class="n">axes</span><span class="p">[</span><span class="n">idim</span><span class="p">,</span><span class="mi">2</span><span class="p">]],</span><span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">cell</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">atoms</span><span class="p">,</span><span class="n">cell</span></div>
+<span class="c1"># end def</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.seed.html">qharv.seed package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

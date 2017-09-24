@@ -1,0 +1,162 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.seed.wf_h5 &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.seed.wf_h5</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Routines to read the QMCPACK wavefunction hdf5 file, usually named pwscf.pwscf.h5</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span></div>
+
+<span class="c1"># =======================================================================</span>
+<span class="c1"># QMCPACK wavefunction hdf5 fixed locations</span>
+<span class="c1"># =======================================================================</span>
+<span class="n">locations</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s1">&#39;gvectors&#39;</span><span class="p">:</span><span class="s1">&#39;electrons/kpoint_0/gvectors&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;nkpt&#39;</span><span class="p">:</span><span class="s1">&#39;electrons/number_of_kpoints&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;nspin&#39;</span><span class="p">:</span><span class="s1">&#39;electrons/number_of_spins&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;nstate&#39;</span><span class="p">:</span><span class="s1">&#39;electrons/kpoint_0/spin_0/number_of_states&#39;</span><span class="p">,</span> <span class="c1"># !!!! same number of states per kpt</span>
+  <span class="s1">&#39;axes&#39;</span><span class="p">:</span><span class="s1">&#39;supercell/primitive_vectors&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;pos&#39;</span><span class="p">:</span><span class="s1">&#39;atoms/positions&#39;</span>
+<span class="p">}</span>
+
+<span class="n">dtypes</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s1">&#39;gvectors&#39;</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span>
+  <span class="s1">&#39;nkpt&#39;</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span>
+  <span class="s1">&#39;nspin&#39;</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span>
+  <span class="s1">&#39;nstate&#39;</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span>
+<span class="p">}</span>
+
+<div class="viewcode-block" id="get"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">fp</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">locations</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;unknown attribute requested: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">fp</span><span class="p">[</span> <span class="n">locations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="p">]</span><span class="o">.</span><span class="n">value</span></div>
+<span class="c1"># =======================================================================</span>
+
+<span class="c1"># =======================================================================</span>
+<span class="c1"># QMCPACK wavefunction hdf5 orbital locations</span>
+<span class="c1"># =======================================================================</span>
+<div class="viewcode-block" id="kpoint_path"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.kpoint_path">[docs]</a><span class="k">def</span> <span class="nf">kpoint_path</span><span class="p">(</span><span class="n">ikpt</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; construct path to kpoint</span>
+
+<span class="sd">  e.g. electrons/kpoint_0/spin_0/state_0</span>
+
+<span class="sd">  Args: </span>
+<span class="sd">   ikpt (int): kpoint index</span>
+<span class="sd">  Returns:</span>
+<span class="sd">   str: path in hdf5 file</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;electrons/kpoint_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ikpt</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">path</span></div>
+<div class="viewcode-block" id="spin_path"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.spin_path">[docs]</a><span class="k">def</span> <span class="nf">spin_path</span><span class="p">(</span><span class="n">ikpt</span><span class="p">,</span><span class="n">ispin</span><span class="p">):</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;electrons/kpoint_</span><span class="si">%d</span><span class="s1">/spin_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ikpt</span><span class="p">,</span><span class="n">ispin</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">path</span></div>
+<div class="viewcode-block" id="state_path"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.state_path">[docs]</a><span class="k">def</span> <span class="nf">state_path</span><span class="p">(</span><span class="n">ikpt</span><span class="p">,</span><span class="n">ispin</span><span class="p">,</span><span class="n">istate</span><span class="p">):</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;electrons/kpoint_</span><span class="si">%d</span><span class="s1">/spin_</span><span class="si">%d</span><span class="s1">/state_</span><span class="si">%d</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ikpt</span><span class="p">,</span><span class="n">ispin</span><span class="p">,</span><span class="n">istate</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">path</span></div>
+
+<div class="viewcode-block" id="get_orb_in_pw"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.get_orb_in_pw">[docs]</a><span class="k">def</span> <span class="nf">get_orb_in_pw</span><span class="p">(</span><span class="n">ikpt</span><span class="p">,</span><span class="n">ispin</span><span class="p">,</span><span class="n">istate</span><span class="p">,</span><span class="n">fp</span><span class="p">):</span>
+  <span class="n">orb_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">state_path</span><span class="p">(</span><span class="n">ikpt</span><span class="p">,</span><span class="n">ispin</span><span class="p">,</span><span class="n">istate</span><span class="p">),</span> <span class="s1">&#39;psi_g&#39;</span> <span class="p">)</span>
+  <span class="n">psig_arr</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">orb_path</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="c1"># stored in real view</span>
+  <span class="c1">#psig = psig_arr[:,0]+1j*psig_arr[:,1] # convert to complex view</span>
+  <span class="n">psig</span> <span class="o">=</span> <span class="n">psig_arr</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="nb">complex</span><span class="p">)</span> <span class="c1"># more elegant conversion</span>
+  <span class="k">return</span> <span class="n">psig</span></div>
+<span class="c1"># =======================================================================</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.seed.html">qharv.seed package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

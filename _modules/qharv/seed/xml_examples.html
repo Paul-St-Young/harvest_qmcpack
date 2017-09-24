@@ -1,0 +1,149 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.seed.xml_examples &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.seed.xml_examples</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Example input sections to QMCPACK. Intended to be easily extendable.</span>
+<span class="c1">#  To edit an example for your need, please refer to lxml documentation. There are extensive documentation regarding how to iterate through the children of a node, get and set attributes, as well as insert the node into a larger xml document. In particular, xpath expression are very useful for grabbing what you need from an xml node.</span>
+
+<span class="kn">from</span> <span class="nn">qharv.seed</span> <span class="k">import</span> <span class="n">xml</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">StringIO</span>
+
+<div class="viewcode-block" id="text2node"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.text2node">[docs]</a><span class="k">def</span> <span class="nf">text2node</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">read</span><span class="p">(</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span> <span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span></div>
+
+<span class="c1"># ============================= &lt;qmc&gt; section =============================</span>
+
+<div class="viewcode-block" id="wbyw_vmc"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.wbyw_vmc">[docs]</a><span class="k">def</span> <span class="nf">wbyw_vmc</span><span class="p">():</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;qmc method=&quot;vmc&quot; move=&quot;not_pbyp_or_whatever&quot; checkpoint=&quot;-1&quot;&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;usedrift&quot;&gt;    yes  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;warmupsteps&quot;&gt; 750  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;blocks&quot;&gt;       40  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;steps&quot;&gt;        30  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;timestep&quot;&gt;    0.1  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;samples&quot;&gt;     512  &lt;/parameter&gt;</span>
+<span class="s1">  &lt;/qmc&gt;&#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="n">text2node</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="wbyw_dmc"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.wbyw_dmc">[docs]</a><span class="k">def</span> <span class="nf">wbyw_dmc</span><span class="p">():</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;qmc method=&quot;dmc&quot; move=&quot;not_pbyp_or_whatever&quot; checkpoint=&quot;0&quot;&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;usedrift&quot;&gt;    yes  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;blocks&quot;&gt;       40  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;steps&quot;&gt;       200  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;timestep&quot;&gt;  0.002  &lt;/parameter&gt;</span>
+<span class="s1">  &lt;/qmc&gt;&#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="n">text2node</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="wbyw_optimize"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.wbyw_optimize">[docs]</a><span class="k">def</span> <span class="nf">wbyw_optimize</span><span class="p">():</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;loop max=&quot;8&quot;&gt;</span>
+<span class="s1">    &lt;qmc method=&quot;linear&quot; move=&quot;not_pbyp_or_whatever&quot; checkpoint=&quot;-1&quot;&gt;</span>
+<span class="s1">      &lt;cost name=&quot;energy&quot;&gt;                0.95  &lt;/cost&gt;</span>
+<span class="s1">      &lt;cost name=&quot;unreweightedvariance&quot;&gt;  0.00  &lt;/cost&gt;</span>
+<span class="s1">      &lt;cost name=&quot;reweightedvariance&quot;&gt;    0.05  &lt;/cost&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;blocks&quot;&gt;         40  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;warmupsteps&quot;&gt;  1024  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;timestep&quot;&gt;      0.1  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;samples&quot;&gt;    512000  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;usedrift&quot;&gt;      yes  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;steps&quot;&gt;           5  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;exp0&quot;&gt;           -8  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;bigchange&quot;&gt;     5.0  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;stepsize&quot;&gt;     0.02  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;alloweddifference&quot;&gt;  0.0001  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;/qmc&gt;</span>
+<span class="s1">  &lt;/loop&gt;&#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="n">text2node</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.seed.html">qharv.seed package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

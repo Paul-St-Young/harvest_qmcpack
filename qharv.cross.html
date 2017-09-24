@@ -2,16 +2,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>qharv.cross package &#8212; qharv  documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <title>qharv.cross package &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '',
+        VERSION:     '0.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -21,19 +21,31 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="qharv.inspect package" href="qharv.inspect.html" />
-    <link rel="prev" title="qharv package" href="qharv.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="next" title="qharv.reel package" href="qharv.reel.html" />
+    <link rel="prev" title="qharv.inspect package" href="qharv.inspect.html" /> 
   </head>
   <body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="qharv.reel.html" title="qharv.reel package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="qharv.inspect.html" title="qharv.inspect package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -45,11 +57,87 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="qharv-cross-pqscf-module">
-<h2>qharv.cross.pqscf module<a class="headerlink" href="#qharv-cross-pqscf-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-qharv.cross.pqscf">
+<span id="qharv-cross-pqscf-module"></span><h2>qharv.cross.pqscf module<a class="headerlink" href="#module-qharv.cross.pqscf" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="qharv.cross.pqscf.atom_text">
+<code class="descclassname">qharv.cross.pqscf.</code><code class="descname">atom_text</code><span class="sig-paren">(</span><em>elem</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/cross/pqscf.html#atom_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.cross.pqscf.atom_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert elem,pos to text representation</p>
+<blockquote>
+<div>for example, elem = [‘C’,’C’], pos = [[0,0,0],[0.5,0.5,0.5]] will be
+converted to ‘C 0 0 0;</div></blockquote>
+<p>C0.5 0.5 0.5’</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Args:</dt>
+<dd>elem (list): a list of atomic symbols such as ‘H’,’C’,’O’
+pos  (list): a list of atomic positions, assume in 3D</dd>
+<dt>Returns:</dt>
+<dd>str: atomic string accepted by pyscf</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.cross.pqscf.mf_from_chkfile">
+<code class="descclassname">qharv.cross.pqscf.</code><code class="descname">mf_from_chkfile</code><span class="sig-paren">(</span><em>chkfile</em>, <em>scf_class=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/cross/pqscf.html#mf_from_chkfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.cross.pqscf.mf_from_chkfile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.cross.pqscf.pw_to_r">
+<code class="descclassname">qharv.cross.pqscf.</code><code class="descname">pw_to_r</code><span class="sig-paren">(</span><em>gvecs</em>, <em>psig</em>, <em>grid_shape=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/cross/pqscf.html#pw_to_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.cross.pqscf.pw_to_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert a 3D function from plane-wave to real-space basis</p>
+<p>plane wave basis is assumed to be in reciprocal lattice units
+real space basis will be in grid units</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>gvecs</strong> (<em>np.array</em>) – dtype=int &amp; shape = (npw,ndim), npw is the number of plane waves, and ndim is the number of spatial dimensions. ndim is expected to be 3. Each entry in gvecs should be a 3D vector of integers.  Each gvec specify a plane wave basis element exp(i*gvec*rvec).</li>
+<li><strong>psig</strong> (<em>np.array</em>) – dtype=complex &amp; shape = (npw,). Expansion coefficients in PW basis.</li>
+<li><strong>grid_shape</strong> (<em>np.array</em>) – dtype=int &amp; shape = (ndim,). Shape of real-space grid.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(grid_shape,moR), grid_shape is input if given. Otherwise constructed in function to hold all information from the plane-wave representation. moR has dtype=complex &amp; shape = grid_shape. moR is the 3D function in real-space basis. Typically a molecular orbital.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array,np.array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.cross.pqscf.r_to_pw">
+<code class="descclassname">qharv.cross.pqscf.</code><code class="descname">r_to_pw</code><span class="sig-paren">(</span><em>moR0</em>, <em>grid_shape</em>, <em>gvecs=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/cross/pqscf.html#r_to_pw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.cross.pqscf.r_to_pw" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert a 3D function from real-space to plane-wave basis</p>
+<p>This function is essentially the inverse of pw_to_r, but assumes that the real space grid is built around (0,0,0)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>moR0</strong> (<em>np.array</em>) – dtype=complex &amp; shape = (ngrid,), ngrid is the number of grid points. 3D function in real-space grid basis.</li>
+<li><strong>grid_shape</strong> (<em>np.array</em>) – dtype=int &amp; shape = (ndim,). Shape of real-space grid.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(gvecs,psig), gvecs is input if given. Otherwise internally constructed. psig has dtype=complex &amp; shape = (npw,). psig is the 3D function in plane-wave basis. Typically a molecular orbital.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array,np.array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-qharv.cross">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-qharv.cross" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -59,47 +147,6 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">qharv</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="qharv.html">qharv package</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="qharv.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">qharv.cross package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#qharv-cross-pqscf-module">qharv.cross.pqscf module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-contents">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="qharv.inspect.html">qharv.inspect package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="qharv.reel.html">qharv.reel package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="qharv.seed.html">qharv.seed package</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="qharv.html#module-contents">Module contents</a></li>
-</ul>
-</li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-  <li><a href="qharv.html">qharv package</a><ul>
-      <li>Previous: <a href="qharv.html" title="previous chapter">qharv package</a></li>
-      <li>Next: <a href="qharv.inspect.html" title="next chapter">qharv.inspect package</a></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -110,24 +157,51 @@
     </form>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="qharv.seed.html">qharv.seed package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">qharv.cross package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-qharv.cross.pqscf">qharv.cross.pqscf module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-qharv.cross">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qharv.reel.html">qharv.reel package</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="qharv.inspect.html"
+                        title="previous chapter">qharv.inspect package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="qharv.reel.html"
+                        title="next chapter">qharv.reel package</a></p>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2017, Author.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-      |
-      <a href="_sources/qharv.cross.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="qharv.reel.html" title="qharv.reel package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="qharv.inspect.html" title="qharv.inspect package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
   </body>
 </html>

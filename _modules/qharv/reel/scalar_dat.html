@@ -1,0 +1,186 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.reel.scalar_dat &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.reel.scalar_dat</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Routines to parse scalar table output. Mostly built around pandas&#39;s API.</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; read the scalar.dat file, should be table format readable by numpy.loadtxt.</span>
+
+<span class="sd">   The header line should start with &#39;#&#39; and contain column labels.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    dat_fname (str): name of input file</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    pd.DataFrame: df containing the table of data &quot;&quot;&quot;</span>
+
+  <span class="c1"># pandas&#39;s equivalent of numpy.loadtxt</span>
+  <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;\s+&#39;</span><span class="p">)</span>
+
+  <span class="c1"># remove first column name &#39;#&#39;</span>
+  <span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+  <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+  <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+  <span class="c1"># calculate local energy variance if possible</span>
+  <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;LocalEnergy&#39;</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;LocalEnergy_sq&#39;</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">):</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Variance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;LocalEnergy_sq&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LocalEnergy&#39;</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span>
+  <span class="c1"># end if</span>
+
+  <span class="k">return</span> <span class="n">df</span></div>
+<span class="c1"># end def parse</span>
+
+<div class="viewcode-block" id="corr"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.corr">[docs]</a><span class="k">def</span> <span class="nf">corr</span><span class="p">(</span><span class="n">trace</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; calculate the autocorrelation of a trace of scalar data</span>
+
+<span class="sd">  correlation time is defined as the integral of the auto-correlation function from t=0 to when the function first reaches 0.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    trace (list): should be a 1D iterable array of floating point numbers</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    float: correlation_time, the autocorrelation time of this trace of scalars</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+ 
+  <span class="n">mu</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+  <span class="n">stddev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+ 
+  <span class="n">correlation_time</span> <span class="o">=</span> <span class="mf">0.</span>
+  <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)):</span>
+      <span class="c1"># calculate auto_correlation</span>
+      <span class="n">auto_correlation</span> <span class="o">=</span> <span class="mf">0.0</span>
+      <span class="n">num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span><span class="o">-</span><span class="n">k</span>
+      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+          <span class="n">auto_correlation</span> <span class="o">+=</span> <span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">k</span><span class="p">]</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span>
+      <span class="c1"># end for i</span>
+      <span class="n">auto_correlation</span> <span class="o">*=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">num</span><span class="o">*</span><span class="n">stddev</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">auto_correlation</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+          <span class="n">correlation_time</span> <span class="o">+=</span> <span class="n">auto_correlation</span>
+      <span class="k">else</span><span class="p">:</span>
+          <span class="k">break</span>
+      <span class="c1"># end if</span>
+  <span class="c1"># end for k</span>
+ 
+  <span class="n">correlation_time</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">correlation_time</span>
+  <span class="k">return</span> <span class="n">correlation_time</span></div>
+<span class="c1"># end def corr</span>
+
+<div class="viewcode-block" id="single_column"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.single_column">[docs]</a><span class="k">def</span> <span class="nf">single_column</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">column</span><span class="p">,</span><span class="n">nequil</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; calculate mean and error of a column</span>
+
+<span class="sd">  nequil blocks of data are thrown out; autocorrelation time is taken into account when calculating error</span>
+<span class="sd">  The equilibrated data is assumed to have Gaussian distribution. Error is calculated for one standard deviation (1-sigma error).</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    df (pd.DataFrame): table of data (e.g. from scalar_dat.parse)</span>
+<span class="sd">    column (str): name of column</span>
+<span class="sd">    nequil (int): number of equilibration blocks</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    (float,float): (ymean,yerr), where ymean is the mean of column, while yerr is the 1-sigma error of column</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="n">myx</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+  <span class="n">myy</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]</span>
+
+  <span class="n">ymean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">myy</span><span class="p">)</span>
+  <span class="n">yerr</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">myy</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">myy</span><span class="p">)</span><span class="o">/</span><span class="n">corr</span><span class="p">(</span><span class="n">myy</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">ymean</span><span class="p">,</span><span class="n">yerr</span></div>
+<span class="c1"># end def</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.seed.html">qharv.seed package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

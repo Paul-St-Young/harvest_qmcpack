@@ -2,16 +2,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>qharv.seed package &#8212; qharv  documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <title>qharv.seed package &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '',
+        VERSION:     '0.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -21,18 +21,31 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="qharv.reel package" href="qharv.reel.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="next" title="qharv.inspect package" href="qharv.inspect.html" />
+    <link rel="prev" title="Welcome to qharv’s documentation!" href="index.html" /> 
   </head>
   <body>
-  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="qharv.inspect.html" title="qharv.inspect package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to qharv’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -44,17 +57,167 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="qharv-seed-wf-h5-module">
-<h2>qharv.seed.wf_h5 module<a class="headerlink" href="#qharv-seed-wf-h5-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-qharv.seed.wf_h5">
+<span id="qharv-seed-wf-h5-module"></span><h2>qharv.seed.wf_h5 module<a class="headerlink" href="#module-qharv.seed.wf_h5" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="qharv.seed.wf_h5.get">
+<code class="descclassname">qharv.seed.wf_h5.</code><code class="descname">get</code><span class="sig-paren">(</span><em>name</em>, <em>fp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/wf_h5.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.wf_h5.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.wf_h5.get_orb_in_pw">
+<code class="descclassname">qharv.seed.wf_h5.</code><code class="descname">get_orb_in_pw</code><span class="sig-paren">(</span><em>ikpt</em>, <em>ispin</em>, <em>istate</em>, <em>fp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/wf_h5.html#get_orb_in_pw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.wf_h5.get_orb_in_pw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.wf_h5.kpoint_path">
+<code class="descclassname">qharv.seed.wf_h5.</code><code class="descname">kpoint_path</code><span class="sig-paren">(</span><em>ikpt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/wf_h5.html#kpoint_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.wf_h5.kpoint_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>construct path to kpoint</p>
+<p>e.g. electrons/kpoint_0/spin_0/state_0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ikpt</strong> (<em>int</em>) – kpoint index</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">path in hdf5 file</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.wf_h5.read">
+<code class="descclassname">qharv.seed.wf_h5.</code><code class="descname">read</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/wf_h5.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.wf_h5.read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.wf_h5.spin_path">
+<code class="descclassname">qharv.seed.wf_h5.</code><code class="descname">spin_path</code><span class="sig-paren">(</span><em>ikpt</em>, <em>ispin</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/wf_h5.html#spin_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.wf_h5.spin_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.wf_h5.state_path">
+<code class="descclassname">qharv.seed.wf_h5.</code><code class="descname">state_path</code><span class="sig-paren">(</span><em>ikpt</em>, <em>ispin</em>, <em>istate</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/wf_h5.html#state_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.wf_h5.state_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="qharv-seed-xml-module">
-<h2>qharv.seed.xml module<a class="headerlink" href="#qharv-seed-xml-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-qharv.seed.xml">
+<span id="qharv-seed-xml-module"></span><h2>qharv.seed.xml module<a class="headerlink" href="#module-qharv.seed.xml" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="qharv.seed.xml.arr2text">
+<code class="descclassname">qharv.seed.xml.</code><code class="descname">arr2text</code><span class="sig-paren">(</span><em>arr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#arr2text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.arr2text" title="Permalink to this definition">¶</a></dt>
+<dd><p>format a numpy array into a text string</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.xml.opt_wf_fname">
+<code class="descclassname">qharv.seed.xml.</code><code class="descname">opt_wf_fname</code><span class="sig-paren">(</span><em>opt_inp</em>, <em>iqmc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#opt_wf_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.opt_wf_fname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the file containing the optimized &lt;wavefunction&gt; at optimization loop iqmc</p>
+<p>example of a folder containing an optimization run:
+$ls opt_dir</p>
+<blockquote>
+<div>opt.xml
+qmc.s000.scalar.dat
+qmc.s000.opt.xml
+qmc.s001.scalar.dat
+qmc.s001.opt.xml</div></blockquote>
+<p>$
+opt_wf_fname(‘opt_dir/opt.xml’,1) returns ‘opt_dir/qmc.s001.opt.xml’</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>opt_inp</strong> (<em>str</em>) – optimization run input file</li>
+<li><strong>iqmc</strong> (<em>int</em>) – optimization loop to target</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">wf_fname, name of the xml file containing the optimized &lt;wavefunction&gt;</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.xml.read">
+<code class="descclassname">qharv.seed.xml.</code><code class="descname">read</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.xml.show">
+<code class="descclassname">qharv.seed.xml.</code><code class="descname">show</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.show" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.xml.swap_in_opt_wf">
+<code class="descclassname">qharv.seed.xml.</code><code class="descname">swap_in_opt_wf</code><span class="sig-paren">(</span><em>inp_fname</em>, <em>wf_fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#swap_in_opt_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.swap_in_opt_wf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put an optimized wavefunction into an xml input</p>
+<p>Designed to help continue a wavefunction optimization. One can also use optimized wavefunction in a VMC or DMC calculation, but the &lt;loop&gt; section will have to be removed, and new &lt;qmc&gt; sections added. See xml_examples.py.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>inp_fname</strong> (<em>str</em>) – xml input file having an old &lt;wavefunction&gt;</li>
+<li><strong>wf_fname</strong> (<em>str</em>) – xml file containing the optimized &lt;wavefunction&gt;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">xml input with optimized wavefunction</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">lxml.etree._ElementTree</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.xml.text2arr">
+<code class="descclassname">qharv.seed.xml.</code><code class="descname">text2arr</code><span class="sig-paren">(</span><em>text</em>, <em>dtype=&lt;type 'float'&gt;</em>, <em>flatten=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#text2arr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.text2arr" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert a text string into a numpy array</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.xml.write">
+<code class="descclassname">qharv.seed.xml.</code><code class="descname">write</code><span class="sig-paren">(</span><em>fname</em>, <em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="qharv-seed-xml-examples-module">
-<h2>qharv.seed.xml_examples module<a class="headerlink" href="#qharv-seed-xml-examples-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-qharv.seed.xml_examples">
+<span id="qharv-seed-xml-examples-module"></span><h2>qharv.seed.xml_examples module<a class="headerlink" href="#module-qharv.seed.xml_examples" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="qharv.seed.xml_examples.text2node">
+<code class="descclassname">qharv.seed.xml_examples.</code><code class="descname">text2node</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml_examples.html#text2node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml_examples.text2node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.xml_examples.wbyw_dmc">
+<code class="descclassname">qharv.seed.xml_examples.</code><code class="descname">wbyw_dmc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml_examples.html#wbyw_dmc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml_examples.wbyw_dmc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.xml_examples.wbyw_optimize">
+<code class="descclassname">qharv.seed.xml_examples.</code><code class="descname">wbyw_optimize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml_examples.html#wbyw_optimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml_examples.wbyw_optimize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.xml_examples.wbyw_vmc">
+<code class="descclassname">qharv.seed.xml_examples.</code><code class="descname">wbyw_vmc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml_examples.html#wbyw_vmc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml_examples.wbyw_vmc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-qharv.seed">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-qharv.seed" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -64,48 +227,6 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">qharv</a></h1>
-
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="qharv.html">qharv package</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="qharv.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="qharv.cross.html">qharv.cross package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="qharv.inspect.html">qharv.inspect package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="qharv.reel.html">qharv.reel package</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">qharv.seed package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#qharv-seed-wf-h5-module">qharv.seed.wf_h5 module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#qharv-seed-xml-module">qharv.seed.xml module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#qharv-seed-xml-examples-module">qharv.seed.xml_examples module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-contents">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="qharv.html#module-contents">Module contents</a></li>
-</ul>
-</li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-  <li><a href="qharv.html">qharv package</a><ul>
-      <li>Previous: <a href="qharv.reel.html" title="previous chapter">qharv.reel package</a></li>
-  </ul></li>
-  </ul></li>
-</ul>
-</div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
@@ -116,24 +237,53 @@
     </form>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">qharv.seed package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-qharv.seed.wf_h5">qharv.seed.wf_h5 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-qharv.seed.xml">qharv.seed.xml module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-qharv.seed.xml_examples">qharv.seed.xml_examples module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-qharv.seed">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qharv.cross.html">qharv.cross package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qharv.reel.html">qharv.reel package</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to qharv’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="qharv.inspect.html"
+                        title="next chapter">qharv.inspect package</a></p>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy;2017, Author.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
-      
-      |
-      <a href="_sources/qharv.seed.rst.txt"
-          rel="nofollow">Page source</a>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="qharv.inspect.html" title="qharv.inspect package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to qharv’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li> 
+      </ul>
     </div>
-
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
   </body>
 </html>
