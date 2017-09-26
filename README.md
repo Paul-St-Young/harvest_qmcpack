@@ -31,7 +31,7 @@ df = scalar_dat.parse('vmc.s000.scalar.dat')
 Requirements can be installed without admin access using `pip install --user [package name]`.
 
 ### Documentation
-Documentation can be generated using sphinx (`pip install --user sphinx`).
+Documentation is available on [github pages][doc html]. A local copy can be generated using sphinx (`pip install --user sphinx`).
 To generate the documentation, first use sphinx-apidoc to convert doc strings to rst documentation:
 ```shell
 cd ~/harvest_qmcpack/doc; sphinx-apidoc -o source ../qharv
@@ -55,3 +55,4 @@ This module is intended to speed up on-the-fly setup, run, and analysis of QMCPA
 This module is NOT intended to be a full-fledged workflow tool. Please refer to [nexus][nexus] for complete workflow magnagement.
 
 [nexus]:http://qmcpack.org/nexus/
+[doc html]: https://paul-st-young.github.io/harvest_qmcpack/

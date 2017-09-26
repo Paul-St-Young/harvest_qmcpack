@@ -64,7 +64,7 @@ def spline_volumetric(val3d):
   myz = np.linspace(0,1,nz)
   fval3d = RegularGridInterpolator((myx,myy,myz),val3d)
   return fval3d
-# end def
+# end def spline_volumetric
 
 def axes_func_on_grid3d(axes,func,grid_shape):
   """ put a function define in axes units on a 3D grid
@@ -100,3 +100,35 @@ def axes_func_on_grid3d(axes,func,grid_shape):
   return grid
 # end def axes_func_on_grid3d
 
+def xsf_datagrid_3d_density(fname,header='BEGIN_DATAGRID_3D_density',trailer='END_DATAGRID_3D_density'):
+  from qharv.reel import ascii_out
+  mm   = ascii_out.read(fname)
+  text = ascii_out.block_text(mm,header,trailer)
+
+  lines = text.split('\n')
+
+  # first advance iline past particle coordinates (!!!! hacky)
+  iline = 0
+  for line in lines:
+    if iline == 0:
+      grid_shape = map(int,lines[0].split())
+      iline += 1
+      continue
+    # end if
+
+    tokens = line.split()
+    if len(tokens) == 3: # atom coordinate
+      pass
+    elif len(tokens) >= 4: # density data
+      break
+    # end if
+    iline += 1
+  # end for line
+
+  # then convert data to density grid, which may be of unequal lengths
+  all_numbers = [text.split() for text in lines[iline:-1]]
+
+  # flatten before converting to np.array
+  data = np.array([x for numbers in all_numbers for x in numbers],dtype=float)
+  return data.reshape(grid_shape)
+# end def xsf_datagrid_3d_density

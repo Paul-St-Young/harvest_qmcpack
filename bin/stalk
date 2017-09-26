@@ -15,6 +15,8 @@ if __name__ == '__main__':
   parser.add_argument('fname',type=str,help='xml input file name')
   parser.add_argument('--pset_name','-pset',type=str,default='ion0'
     ,help='name of static/source/classical particle set')
+  parser.add_argument('--primitive','-prim',action='store_true'
+    ,help='draw primitive cell only')
   parser.add_argument('--text','-t',action='store_true'
     ,help='print axes,pos of the crystal structure instead of plotting')
   args = parser.parse_args()
@@ -34,7 +36,7 @@ if __name__ == '__main__':
     fig = plt.figure()
     ax  = fig.add_subplot(1,1,1,projection='3d')
 
-    crystal.draw_cell(ax,axes,pos)
+    crystal.draw_cell(ax,axes,pos,draw_super=(not args.primitive))
 
     plt.show()
   # end if
