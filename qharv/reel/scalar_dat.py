@@ -79,7 +79,6 @@ def single_column(df,column,nequil):
     (float,float): (ymean,yerr), where ymean is the mean of column, while yerr is the 1-sigma error of column
   """
 
-  myx = df['index'].values
   myy = df[column].values[nequil:]
 
   ymean = np.mean(myy)
