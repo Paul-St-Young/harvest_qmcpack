@@ -133,7 +133,7 @@ def xsf_datagrid_3d_density(fname,header='BEGIN_DATAGRID_3D_density',trailer='EN
   return data.reshape(grid_shape)
 # end def xsf_datagrid_3d_density
 
-def wavefront_obj(verts,normals,faces):
+def wavefront_obj(verts,faces,normals):
   """ save polygons in obj format
 
   obj format is more commonly used than ply
@@ -146,6 +146,9 @@ def wavefront_obj(verts,normals,faces):
     str: content of the obj file
   """
   text = ''
+  if faces.dtype.kind != 'i':
+    print('Warning: faces should be integers. Converting now.')
+    faces = faces.astype(int)
 
   vert_fmt = '{name:s} {x:7.6f} {y:7.6f} {z:7.6f}\n' # weights not supported
   for ivert in range(len(verts)):
