@@ -132,3 +132,76 @@ def xsf_datagrid_3d_density(fname,header='BEGIN_DATAGRID_3D_density',trailer='EN
   data = np.array([x for numbers in all_numbers for x in numbers],dtype=float)
   return data.reshape(grid_shape)
 # end def xsf_datagrid_3d_density
+
+def wavefront_obj(verts,normals,faces):
+  """ save polygons in obj format
+
+  obj format is more commonly used than ply
+
+  Args:
+    verts (np.array): shape=(nvert,3) dtype=float, vertices in cartesian coordinates.
+    faces (np.array): shape=(nface,nside) dtype=int, polygons each specified as a list of vertices (in vertex coordinates defined by verts).
+    normals (np.array): shape=(nvert,3) dtype=float, normal vectors used for smooth lighting. There is one normal vector per vertex. 
+  Returns:
+    str: content of the obj file
+  """
+  text = ''
+
+  vert_fmt = '{name:s} {x:7.6f} {y:7.6f} {z:7.6f}\n' # weights not supported
+  for ivert in range(len(verts)):
+    vert  = verts[ivert]
+    x,y,z = vert
+    text += vert_fmt.format(name='v',x=x,y=y,z=z)
+  # end for
+
+  for inorm in range(len(normals)):
+    norm  = normals[inorm]
+    x,y,z = norm
+    text += vert_fmt.format(name='vn',x=x,y=y,z=z)
+  # end for inorm
+
+  face_fmt = '{name:s} {polyx:d}//{normalx:d} {polyy:d}//{normaly:d} {polyz:d}//{normalz:d}\n' # texture not supported
+  for iface in range(len(faces)):
+    face  = faces[iface]
+    x,y,z = face+1
+    text += face_fmt.format(name='f',polyx=x,polyy=y,polyz=z,
+      normalx=x,normaly=y,normalz=z)
+  # end for iface
+
+  return text
+# end def wavefront_obj
+
+def stanford_ply(verts,faces):
+  """ save polygons in ply format
+
+  ply is simpler than obj, but older and less used
+
+  Args:
+    verts (np.array): shape=(nvert,3) dtype=float, vertices in cartesian coordinates.
+    faces (np.array): shape=(nface,nside) dtype=int, polygons each specified as a list of vertices (in vertex coordinates defined by verts).
+  Returns:
+    str: content of the ply file
+  """
+  from qharv.seed.xml import arr2text
+  header = """ply
+format ascii 1.0
+element vertex {nvert:n}
+property float x
+property float y
+property float z
+element face {nface:d}
+property list uchar int vertex_indices
+end_header"""
+
+  # !!!! assuming triangles in 3D
+  ndim = 3
+  nface= len(faces)
+  new_faces = np.zeros([nface,ndim+1],dtype=int)
+  new_faces[:,0] = 3
+  new_faces[:,1:]= faces
+
+  text = header.format(nvert=len(verts),nface=nface) + \
+    arr2text(verts) + arr2text(new_faces).strip('\n')
+
+  return text
+# end def stanford_ply
