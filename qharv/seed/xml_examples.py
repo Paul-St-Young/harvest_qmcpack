@@ -50,3 +50,23 @@ def wbyw_optimize():
     </qmc>
   </loop>'''
   return text2node(text)
+
+# ============================= <backflow> section =============================
+
+def bcc54_backflow():
+  text = '''<backflow>
+  <transformation name="eHB" type="e-I" function="Bspline" source="ion0">
+     <correlation elementType="H" cusp="0.0" size="8">
+      <coefficients id="eHB" type="Array" optimize="yes"> -0.1607770658 -0.01312455519 -0.01096274521 -0.02064241065 -0.0163772626 -0.01206014211 -0.01003052047 -0.004077335794</coefficients>
+     </correlation>
+  </transformation>
+  <transformation name="eeB" type="e-e" function="Bspline">
+     <correlation speciesA="u" speciesB="u" cusp="0.0" size="8">
+      <coefficients id="uuB" type="Array" optimize="yes"> 0.09613117178 0.0693866824 0.03958692855 0.0257978026 0.01445303622 0.007976855226 0.003592602563 0.001525251225</coefficients>
+     </correlation>
+     <correlation speciesA="d" speciesB="u" cusp="0.0" size="8">
+      <coefficients id="udB" type="Array" optimize="yes"> 0.1754712467 0.1132199636 0.06953867095 0.04139840285 0.02288496026 0.01144408177 0.005019197667 0.002024292924</coefficients>
+     </correlation>
+  </transformation>
+  </backflow>'''
+  return text2node(text)
