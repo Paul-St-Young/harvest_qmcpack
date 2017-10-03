@@ -64,7 +64,7 @@ def bcc54_backflow():
      <correlation speciesA="u" speciesB="u" cusp="0.0" size="8">
       <coefficients id="uuB" type="Array" optimize="yes"> 0.09613117178 0.0693866824 0.03958692855 0.0257978026 0.01445303622 0.007976855226 0.003592602563 0.001525251225</coefficients>
      </correlation>
-     <correlation speciesA="d" speciesB="u" cusp="0.0" size="8">
+     <correlation speciesA="u" speciesB="d" cusp="0.0" size="8">
       <coefficients id="udB" type="Array" optimize="yes"> 0.1754712467 0.1132199636 0.06953867095 0.04139840285 0.02288496026 0.01144408177 0.005019197667 0.002024292924</coefficients>
      </correlation>
   </transformation>
