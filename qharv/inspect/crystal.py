@@ -23,7 +23,7 @@ def atomic_coords(fname,pset_name='ion0'):
   pos = xml.text2arr(pos_node.text)
   return pos
 
-def draw_cell(ax,axes,pos,atom_color='b',draw_super=True):
+def draw_cell(ax,axes,pos,atom_color='b',draw_super=False):
   atoms = []
   dots  = ax.plot(pos[:,0],pos[:,1],pos[:,2],'o',c=atom_color,ms=10)
   atoms.append(dots)
