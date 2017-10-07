@@ -5,8 +5,8 @@ import os
 import h5py
 import numpy as np
 
-def read(fname):
-  return h5py.File(fname)
+def read(fname,mode='r'):
+  return h5py.File(fname,mode)
 
 # =======================================================================
 # QMCPACK wavefunction hdf5 fixed locations
@@ -31,6 +31,30 @@ def get(name,fp):
   if name not in locations.keys():
     raise RuntimeError('unknown attribute requested: %s' % name)
   return fp[ locations[name] ].value
+
+def axes_elem_pos(fp):
+  """ extract lattice vectors, atomic positions, and element names 
+  from wavefunction hdf5 file
+  Args:
+    fp (h5py.File): hdf5 file pointer
+  Returns:
+    (np.array,list[str],np.array): (axes,elem,pos)
+  """
+  axes = fp[ locations['axes'] ].value
+  pos  = fp[ locations['pos'] ].value
+
+  # construct list of atomic labels
+  elem_id  = fp[ 'atoms/species_ids' ].value
+  elem_map = {}
+  nelem = fp['atoms/number_of_species'].value
+  for ielem in range(nelem):
+    elem_name = fp['atoms/species_%d/name'%ielem].value[0]
+    elem_map[ielem] = elem_name
+  # end for ielem
+  elem = [elem_map[eid] for eid in elem_id]
+  assert len(elem) == len(pos)
+  return axes,elem,pos
+
 # =======================================================================
 
 # =======================================================================
