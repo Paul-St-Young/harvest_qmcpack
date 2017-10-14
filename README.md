@@ -1,6 +1,8 @@
 # harvest_qmcpack
 Python module containing useful routines to inspect and modify qmcpack objects.
 
+master: ![master build status](https://api.travis-ci.org/Paul-St-Young/harvest_qmcpack.svg?branch=master)
+
 ## Quick Start
 
 ### Install
@@ -24,11 +26,7 @@ df = scalar_dat.parse('vmc.s000.scalar.dat')
 ```
 
 ### Requirements
-* lxml
-* numpy
-* pandas
-
-Requirements can be installed without admin access using `pip install --user [package name]`.
+Requirements can be installed without admin access using `pip install --user requirements.txt`.
 
 ### Documentation
 Documentation is available on [github pages][doc html]. A local copy can be generated using sphinx (`pip install --user sphinx`).
@@ -49,6 +47,7 @@ cd ~/harvest_qmcpack/doc/build; firefox index.html
 Example usage of the qharv library are included in the "harvest_qmcpack/bin" folder. Each file in the folder is a Python script that performs a very specific task:
 * stab: Scalar TABle (stab) analyzer, analyze one column of a scalar table file, e.g. `stab vmc.s000.scalar.dat`
 * rebuild_wf: Rerun QMCPACK on optimized wavefunctions, e.g. `rebuild_wf opt.xml`
+* stalk: show crystal structure specified in a QMCPACK input e.g. `stalk vmc.in.xml`
 
 ### Description
 This module is intended to speed up on-the-fly setup, run, and analysis of QMCPACK calculations. The module should be used as a collection of glorified bash commands, which are usable in Python.
