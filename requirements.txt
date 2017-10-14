@@ -1,1 +1,4 @@
-nose lxml h5py numpy
+nose
+lxml
+h5py
+numpy
