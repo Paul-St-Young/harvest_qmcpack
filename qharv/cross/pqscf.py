@@ -7,7 +7,7 @@ def atom_text(elem,pos):
   """convert elem,pos to text representation
   
   for example, elem = ['C','C'], pos = [[0,0,0],[0.5,0.5,0.5]] will be 
-  converted to 'C 0 0 0;\nC0.5 0.5 0.5'
+  converted to 'C 0 0 0;C 0.5 0.5 0.5'
   
   Args:
    elem (list): a list of atomic symbols such as 'H','C','O'

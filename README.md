@@ -1,7 +1,7 @@
 # harvest_qmcpack
 Python module containing useful routines to inspect and modify qmcpack objects.
 
-master: ![master build status](https://api.travis-ci.org/Paul-St-Young/harvest_qmcpack.svg?branch=master)
+![master build status](https://api.travis-ci.org/Paul-St-Young/harvest_qmcpack.svg?branch=master)
 
 ## Quick Start
 
@@ -26,7 +26,7 @@ df = scalar_dat.parse('vmc.s000.scalar.dat')
 ```
 
 ### Requirements
-Requirements can be installed without admin access using `pip install --user requirements.txt`.
+Requirements can be installed without admin access using `pip install --user -r requirements.txt`.
 
 ### Documentation
 Documentation is available on [github pages][doc html]. A local copy can be generated using sphinx (`pip install --user sphinx`).
