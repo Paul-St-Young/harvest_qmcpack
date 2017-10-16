@@ -9,15 +9,23 @@ from io import StringIO
 def text2node(text):
   return xml.read( StringIO(text.decode()) ).getroot()
 
+def set_param(node,pname,pval):
+  """ set <parameter> with name 'pname' to 'pval' """
+  assert type(pval) is str
+  pnode = node.find('.//parameter[@name="%s"]'%pname)
+  pnode.text = pval
+# end def
+
 # ============================= <qmc> section =============================
 
 def wbyw_vmc():
   text = '''<qmc method="vmc" move="not_pbyp_or_whatever" checkpoint="-1">
-    <parameter name="usedrift">    yes  </parameter>
-    <parameter name="warmupsteps"> 750  </parameter>
-    <parameter name="blocks">       40  </parameter>
-    <parameter name="steps">        30  </parameter>
-    <parameter name="timestep">    0.1  </parameter>
+    <parameter name="usedrift">    yes      </parameter>
+    <parameter name="warmupsteps">     750  </parameter>
+    <parameter name="warmuptimestep"> 0.01  </parameter>
+    <parameter name="blocks">       64  </parameter>
+    <parameter name="steps">        16  </parameter>
+    <parameter name="timestep">    0.08  </parameter>
     <parameter name="samples">     512  </parameter>
   </qmc>'''
   return text2node(text)
@@ -25,7 +33,7 @@ def wbyw_vmc():
 def wbyw_dmc():
   text = '''<qmc method="dmc" move="not_pbyp_or_whatever" checkpoint="0">
     <parameter name="usedrift">    yes  </parameter>
-    <parameter name="blocks">       40  </parameter>
+    <parameter name="blocks">       64  </parameter>
     <parameter name="steps">       200  </parameter>
     <parameter name="timestep">  0.002  </parameter>
   </qmc>'''
@@ -37,16 +45,14 @@ def wbyw_optimize():
       <cost name="energy">                0.95  </cost>
       <cost name="unreweightedvariance">  0.00  </cost>
       <cost name="reweightedvariance">    0.05  </cost>
-      <parameter name="blocks">         40  </parameter>
-      <parameter name="warmupsteps">  1024  </parameter>
-      <parameter name="timestep">      0.1  </parameter>
-      <parameter name="samples">    512000  </parameter>
       <parameter name="usedrift">      yes  </parameter>
+      <parameter name="warmupsteps">    1024  </parameter>
+      <parameter name="warmuptimestep"> 0.01  </parameter>
+      <parameter name="timestep">       0.08  </parameter>
+      <parameter name="blocks">         64  </parameter>
       <parameter name="steps">           5  </parameter>
-      <parameter name="exp0">           -8  </parameter>
-      <parameter name="bigchange">     5.0  </parameter>
-      <parameter name="stepsize">     0.02  </parameter>
-      <parameter name="alloweddifference">  0.0001  </parameter>
+      <parameter name="samples">     65536  </parameter>
+      <parameter name="MinMethod"> OneShiftOnly </parameter>
     </qmc>
   </loop>'''
   return text2node(text)
