@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     # put optimized wavefunction at step 'iqmc' into input
     wf_fname = xml.opt_wf_fname(args.fname,iqmc)
-    doc = xml.swap_in_opt_wf(args.fname,wf_fname)
+    doc = xml.swap_in_opt_wf(xml.read(args.fname),xml.read(wf_fname))
 
     # fix href
     if spo_node is not None:

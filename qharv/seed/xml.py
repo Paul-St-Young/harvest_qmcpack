@@ -3,21 +3,55 @@
 # Routines to manipulate an xml input. Almost all functions are built around the lxml module's API.
 import os
 import numpy as np
+from copy import deepcopy
 from lxml import etree
+from io import StringIO
 
 def read(fname):
+  """ read an xml file 
+  wrap around lxml.etree.parse
+  Args:
+    fname (str): filename to read from
+  Returns:
+    lxml.etree._ElementTree: doc, parsed xml document
+  """
   parser = etree.XMLParser(remove_blank_text=True)
   doc    = etree.parse(fname,parser)
   return doc
 
 def write(fname,doc):
+  """ write an xml file 
+  wrap around lxml.etree._ElementTree.write
+  Args:
+    fname (str): filename to write to
+    doc (lxml.etree._ElementTree): xml file in memory
+  Effects:
+    write fname using contents of doc
+  """
   doc.write(fname,pretty_print=True)
 
-def str(node):
+def parse(text):
+  """ parse the text representation of an xml node
+  Args:
+    text (str): string representation of an xml node
+  Returns:
+    lxml.etree._Element: root, parsed xml node
+  """
+  root = read( StringIO(text.decode()) ).getroot()
+  return root
+
+
+def str_rep(node):
+  """ return the string representation of an xml node
+  Args:
+    node (lxml.etree._Element): xml node
+  Returns:
+    str: string representation of node
+  """
   return etree.tostring(node,pretty_print=True)
 
 def show(node):
-  print( str(node) )
+  print( str_rep(node) )
 
 def arr2text(arr):
   """ format a numpy array into a text string """
@@ -86,22 +120,25 @@ def opt_wf_fname(opt_inp,iqmc):
   return wf_fname
 # end def opt_wf_fname
 
-def swap_in_opt_wf(inp_fname,wf_fname):
+def swap_in_opt_wf(doc,wf_node):
   """ Put an optimized wavefunction into an xml input 
 
   Designed to help continue a wavefunction optimization. One can also use optimized wavefunction in a VMC or DMC calculation, but the <loop> section will have to be removed, and new <qmc> sections added. See xml_examples.py.
 
   Args:
-    inp_fname (str): xml input file having an old <wavefunction>
-    wf_fname  (str): xml file containing the optimized <wavefunction>
+    doc (lxml.etree._ElementTree): xml input having an old <wavefunction>
+    wf  (lxml.etree._Element): xml node containing the optimized <wavefunction>
   Returns:
     lxml.etree._ElementTree: xml input with optimized wavefunction """
 
-  # find <wavefunction>
-  doc  = read(inp_fname)
-  doc1 = read(wf_fname)
-  wf1 = doc1.find('.//wavefunction')
+  # find new <wavefunction>
+  wf1 = wf_node.find('.//wavefunction')
+  if (wf1 is None) and (wf_node.tag == 'wavefunction'):
+    wf1 = wf_node
+  # end if
+  assert wf1 is not None
   wf0 = doc.find('.//wavefunction')
+  assert wf0 is not None
 
   # swap <wavefunction>
   wup = wf0.getparent()
@@ -111,3 +148,42 @@ def swap_in_opt_wf(inp_fname,wf_fname):
 
   return doc
 # end def swap_in_opt_wf
+
+def add_bcc_backflow(wf_node,bf_node):
+  # make sure inputs are not scrambled
+  assert wf_node.tag == 'wavefunction'
+  assert bf_node.tag == 'backflow'
+
+  # make a copy of wavefunction
+  mywf = deepcopy(wf_node)
+
+  # insert backflow block
+  dset = mywf.find('.//determinantset')
+  dset.insert(0,bf_node)
+
+  # use code path where <backflow> optimization still works
+  bb = None # find basis set builder, should be either <sposet_builder> or <determinantset>
+  spo = mywf.find('.//sposet_builder') # !!!! warning: only the first builder is modified
+  if spo is None:
+    bb = dset
+  else:
+    bb = spo
+  # end if
+  assert bb.tag in ('sposet_builder','determinantset')
+  bb.set('use_old_spline','yes')
+  bb.set('precision','double')
+  bb.set('truncate','no')
+  return mywf
+# end def add_bcc_backflow
+
+def turn_off_jas_opt(wf_node):
+  # turn off jastrow optimization
+  all_jas = wf_node.findall('.//jastrow')
+  assert len(all_jas) > 0
+  for jas in all_jas:
+    assert jas.tag == 'jastrow'
+    for coeff in jas.findall('.//coefficients'):
+      coeff.set('optimize','no')
+    # end for
+  # end for
+# end def

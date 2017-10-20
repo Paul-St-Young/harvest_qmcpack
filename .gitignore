@@ -102,3 +102,6 @@ ENV/
 
 # sphinx
 *.rst
+
+# vim
+*.swp
