@@ -13,8 +13,11 @@ def read(fname):
 def write(fname,doc):
   doc.write(fname,pretty_print=True)
 
+def str(node):
+  return etree.tostring(node,pretty_print=True)
+
 def show(node):
-  print( etree.tostring(node,pretty_print=True) )
+  print( str(node) )
 
 def arr2text(arr):
   """ format a numpy array into a text string """
