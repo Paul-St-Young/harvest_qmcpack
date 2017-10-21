@@ -6,13 +6,6 @@
 from qharv.seed import xml
 from io import StringIO
 
-def set_param(node,pname,pval):
-  """ set <parameter> with name 'pname' to 'pval' """
-  assert type(pval) is str
-  pnode = node.find('.//parameter[@name="%s"]'%pname)
-  pnode.text = pval
-# end def
-
 # ============================= <qmc> section =============================
 
 def wbyw_vmc():

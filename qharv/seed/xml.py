@@ -7,6 +7,7 @@ from copy import deepcopy
 from lxml import etree
 from io import StringIO
 
+# ============================= level 0: basic io =============================
 def read(fname):
   """ read an xml file 
   wrap around lxml.etree.parse
@@ -53,6 +54,9 @@ def str_rep(node):
 def show(node):
   print( str_rep(node) )
 
+# ============================= level 1: node content io =============================
+#  node.get & node.set are sufficient for attribute manipulation
+# level 1 routines are needed for node.text and node.children manipulation
 def arr2text(arr):
   """ format a numpy array into a text string """
   text = ''
@@ -82,6 +86,21 @@ def text2arr(text,dtype=float,flatten=False):
     # end if
   # end if
 # end def text2arr
+
+# ============================= level 2: QMCPACK specialized =============================
+def set_param(node,pname,pval):
+  """ set <parameter> with name 'pname' to 'pval' 
+  Args:
+    node (lxml.etree._Element): xml node with children having tag 'parameter'
+    pname (str): name of parameter
+    pval (str): value of parameter
+  Effect:
+    the text of <parameter> with 'pname' will be set to 'pval'
+  """
+  assert type(pval) is str
+  pnode = node.find('.//parameter[@name="%s"]'%pname)
+  pnode.text = pval
+# end def
 
 def opt_wf_fname(opt_inp,iqmc):
   """ Find the file containing the optimized <wavefunction> at optimization loop iqmc 
