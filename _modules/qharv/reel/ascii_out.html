@@ -51,6 +51,7 @@
 <span class="c1"># Routines to parse ASCII output. Mostly built around mmap&#39;s API.</span>
 
 <span class="kn">from</span> <span class="nn">mmap</span> <span class="k">import</span> <span class="n">mmap</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
   <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -92,6 +93,50 @@
     <span class="n">bidx</span><span class="p">,</span><span class="n">eidx</span> <span class="o">=</span> <span class="n">locate_block</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="n">header</span><span class="p">,</span><span class="n">trailer</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mm</span><span class="p">[</span><span class="n">bidx</span><span class="p">:</span><span class="n">eidx</span><span class="p">]</span></div>
 <span class="c1"># end def block_text</span>
+
+<div class="viewcode-block" id="parse_qmcas_output"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.parse_qmcas_output">[docs]</a><span class="k">def</span> <span class="nf">parse_qmcas_output</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; !!!! hacky function to gather QMCPACK scalar.dat data !!!! not recommended for general use !!!! </span>
+<span class="sd">   problems: </span>
+<span class="sd">    1. input file is not known, cannot assign method to series number &#39;iqmc&#39;</span>
+<span class="sd">    2. equilibration length is not known &quot;&quot;&quot;</span>
+  <span class="c1"># parse outputs from &quot;qmca -q ev --sac */*scalar.dat&quot; such as:</span>
+  <span class="c1">#  ./detsci49_af/c2  series 0  -10.452004 +/- 0.006424    1.6   1.601253 +/- 0.068660    1.1   0.1532</span>
+
+  <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;filepath&#39;</span><span class="p">:[],</span><span class="s1">&#39;iqmc&#39;</span><span class="p">:[],</span><span class="s1">&#39;LocalEnergy_mean&#39;</span><span class="p">:[],</span><span class="s1">&#39;LocalEnergy_error&#39;</span><span class="p">:[],</span><span class="s1">&#39;Variance_mean&#39;</span><span class="p">:[],</span><span class="s1">&#39;Variance_error&#39;</span><span class="p">:[],</span><span class="s1">&#39;correlation&#39;</span><span class="p">:[]}</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+      <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="n">filepath</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># determine method</span>
+        <span class="n">iqmc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="c1"># read energy</span>
+        <span class="n">energy_mean</span>  <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">energy_error</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+
+        <span class="c1"># read correlation</span>
+        <span class="n">correlation</span>  <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+
+        <span class="c1"># read variance</span>
+        <span class="n">variance_mean</span>  <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+        <span class="n">variance_error</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">9</span><span class="p">])</span>
+
+        <span class="c1"># organize data in table</span>
+        <span class="n">label_and_data</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span>
+          <span class="p">[</span><span class="s1">&#39;filepath&#39;</span><span class="p">,</span><span class="s1">&#39;LocalEnergy_mean&#39;</span><span class="p">,</span><span class="s1">&#39;LocalEnergy_error&#39;</span><span class="p">,</span><span class="s1">&#39;iqmc&#39;</span><span class="p">,</span><span class="s1">&#39;Variance_mean&#39;</span><span class="p">,</span><span class="s1">&#39;Variance_error&#39;</span><span class="p">,</span><span class="s1">&#39;correlation&#39;</span><span class="p">],</span>
+          <span class="p">[</span><span class="n">filepath</span><span class="p">,</span><span class="n">energy_mean</span><span class="p">,</span><span class="n">energy_error</span><span class="p">,</span><span class="n">iqmc</span><span class="p">,</span><span class="n">variance_mean</span><span class="p">,</span><span class="n">variance_error</span><span class="p">,</span><span class="n">correlation</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="n">label_and_data</span><span class="p">:</span>
+          <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="c1"># end for</span>
+      <span class="c1"># end if</span>
+    <span class="c1"># end for </span>
+  <span class="c1"># end with</span>
+  <span class="n">mydf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">mydf</span></div>
+<span class="c1"># end def parse_qmcas_output</span>
 </pre></div>
 
           </div>

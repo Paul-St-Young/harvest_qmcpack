@@ -53,8 +53,8 @@
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
-  <span class="k">return</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span></div>
+<div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="n">mode</span><span class="p">)</span></div>
 
 <span class="c1"># =======================================================================</span>
 <span class="c1"># QMCPACK wavefunction hdf5 fixed locations</span>
@@ -79,6 +79,30 @@
   <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">locations</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;unknown attribute requested: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">fp</span><span class="p">[</span> <span class="n">locations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="p">]</span><span class="o">.</span><span class="n">value</span></div>
+
+<div class="viewcode-block" id="axes_elem_pos"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.axes_elem_pos">[docs]</a><span class="k">def</span> <span class="nf">axes_elem_pos</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; extract lattice vectors, atomic positions, and element names </span>
+<span class="sd">  from wavefunction hdf5 file</span>
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): hdf5 file pointer</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    (np.array,list[str],np.array): (axes,elem,pos)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">axes</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span> <span class="n">locations</span><span class="p">[</span><span class="s1">&#39;axes&#39;</span><span class="p">]</span> <span class="p">]</span><span class="o">.</span><span class="n">value</span>
+  <span class="n">pos</span>  <span class="o">=</span> <span class="n">fp</span><span class="p">[</span> <span class="n">locations</span><span class="p">[</span><span class="s1">&#39;pos&#39;</span><span class="p">]</span> <span class="p">]</span><span class="o">.</span><span class="n">value</span>
+
+  <span class="c1"># construct list of atomic labels</span>
+  <span class="n">elem_id</span>  <span class="o">=</span> <span class="n">fp</span><span class="p">[</span> <span class="s1">&#39;atoms/species_ids&#39;</span> <span class="p">]</span><span class="o">.</span><span class="n">value</span>
+  <span class="n">elem_map</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="n">nelem</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="s1">&#39;atoms/number_of_species&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+  <span class="k">for</span> <span class="n">ielem</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nelem</span><span class="p">):</span>
+    <span class="n">elem_name</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="s1">&#39;atoms/species_</span><span class="si">%d</span><span class="s1">/name&#39;</span><span class="o">%</span><span class="n">ielem</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">elem_map</span><span class="p">[</span><span class="n">ielem</span><span class="p">]</span> <span class="o">=</span> <span class="n">elem_name</span>
+  <span class="c1"># end for ielem</span>
+  <span class="n">elem</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem_map</span><span class="p">[</span><span class="n">eid</span><span class="p">]</span> <span class="k">for</span> <span class="n">eid</span> <span class="ow">in</span> <span class="n">elem_id</span><span class="p">]</span>
+  <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">axes</span><span class="p">,</span><span class="n">elem</span><span class="p">,</span><span class="n">pos</span></div>
+
 <span class="c1"># =======================================================================</span>
 
 <span class="c1"># =======================================================================</span>

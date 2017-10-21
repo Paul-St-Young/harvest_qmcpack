@@ -60,6 +60,25 @@
 <div class="section" id="module-qharv.seed.wf_h5">
 <span id="qharv-seed-wf-h5-module"></span><h2>qharv.seed.wf_h5 module<a class="headerlink" href="#module-qharv.seed.wf_h5" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
+<dt id="qharv.seed.wf_h5.axes_elem_pos">
+<code class="descclassname">qharv.seed.wf_h5.</code><code class="descname">axes_elem_pos</code><span class="sig-paren">(</span><em>fp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/wf_h5.html#axes_elem_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.wf_h5.axes_elem_pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>extract lattice vectors, atomic positions, and element names
+from wavefunction hdf5 file
+:param fp: hdf5 file pointer
+:type fp: h5py.File</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(axes,elem,pos)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(np.array,list[str],np.array)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="qharv.seed.wf_h5.get">
 <code class="descclassname">qharv.seed.wf_h5.</code><code class="descname">get</code><span class="sig-paren">(</span><em>name</em>, <em>fp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/wf_h5.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.wf_h5.get" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -90,7 +109,7 @@
 
 <dl class="function">
 <dt id="qharv.seed.wf_h5.read">
-<code class="descclassname">qharv.seed.wf_h5.</code><code class="descname">read</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/wf_h5.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.wf_h5.read" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">qharv.seed.wf_h5.</code><code class="descname">read</code><span class="sig-paren">(</span><em>fname</em>, <em>mode='r'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/wf_h5.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.wf_h5.read" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -106,6 +125,11 @@
 </div>
 <div class="section" id="module-qharv.seed.xml">
 <span id="qharv-seed-xml-module"></span><h2>qharv.seed.xml module<a class="headerlink" href="#module-qharv.seed.xml" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="qharv.seed.xml.add_bcc_backflow">
+<code class="descclassname">qharv.seed.xml.</code><code class="descname">add_bcc_backflow</code><span class="sig-paren">(</span><em>wf_node</em>, <em>bf_node</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#add_bcc_backflow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.add_bcc_backflow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="function">
 <dt id="qharv.seed.xml.arr2text">
 <code class="descclassname">qharv.seed.xml.</code><code class="descname">arr2text</code><span class="sig-paren">(</span><em>arr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#arr2text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.arr2text" title="Permalink to this definition">¶</a></dt>
@@ -147,9 +171,57 @@ opt_wf_fname(‘opt_dir/opt.xml’,1) returns ‘opt_dir/qmc.s001.opt.xml’</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="qharv.seed.xml.parse">
+<code class="descclassname">qharv.seed.xml.</code><code class="descname">parse</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>parse the text representation of an xml node
+:param text: string representation of an xml node
+:type text: str</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">root, parsed xml node</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">lxml.etree._Element</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="qharv.seed.xml.read">
 <code class="descclassname">qharv.seed.xml.</code><code class="descname">read</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.read" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>read an xml file
+wrap around lxml.etree.parse
+:param fname: filename to read from
+:type fname: str</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">doc, parsed xml document</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">lxml.etree._ElementTree</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.xml.set_param">
+<code class="descclassname">qharv.seed.xml.</code><code class="descname">set_param</code><span class="sig-paren">(</span><em>node</em>, <em>pname</em>, <em>pval</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#set_param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.set_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>set &lt;parameter&gt; with name ‘pname’ to ‘pval’
+:param node: xml node with children having tag ‘parameter’
+:type node: lxml.etree._Element
+:param pname: name of parameter
+:type pname: str
+:param pval: value of parameter
+:type pval: str</p>
+<dl class="docutils">
+<dt>Effect:</dt>
+<dd>the text of &lt;parameter&gt; with ‘pname’ will be set to ‘pval’</dd>
+</dl>
+</dd></dl>
 
 <dl class="function">
 <dt id="qharv.seed.xml.show">
@@ -157,8 +229,26 @@ opt_wf_fname(‘opt_dir/opt.xml’,1) returns ‘opt_dir/qmc.s001.opt.xml’</p>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="qharv.seed.xml.str_rep">
+<code class="descclassname">qharv.seed.xml.</code><code class="descname">str_rep</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#str_rep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.str_rep" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the string representation of an xml node
+:param node: xml node
+:type node: lxml.etree._Element</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">string representation of node</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="qharv.seed.xml.swap_in_opt_wf">
-<code class="descclassname">qharv.seed.xml.</code><code class="descname">swap_in_opt_wf</code><span class="sig-paren">(</span><em>inp_fname</em>, <em>wf_fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#swap_in_opt_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.swap_in_opt_wf" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">qharv.seed.xml.</code><code class="descname">swap_in_opt_wf</code><span class="sig-paren">(</span><em>doc</em>, <em>wf_node</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#swap_in_opt_wf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.swap_in_opt_wf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Put an optimized wavefunction into an xml input</p>
 <p>Designed to help continue a wavefunction optimization. One can also use optimized wavefunction in a VMC or DMC calculation, but the &lt;loop&gt; section will have to be removed, and new &lt;qmc&gt; sections added. See xml_examples.py.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -166,8 +256,8 @@ opt_wf_fname(‘opt_dir/opt.xml’,1) returns ‘opt_dir/qmc.s001.opt.xml’</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>inp_fname</strong> (<em>str</em>) – xml input file having an old &lt;wavefunction&gt;</li>
-<li><strong>wf_fname</strong> (<em>str</em>) – xml file containing the optimized &lt;wavefunction&gt;</li>
+<li><strong>doc</strong> (<em>lxml.etree._ElementTree</em>) – xml input having an old &lt;wavefunction&gt;</li>
+<li><strong>wf</strong> (<em>lxml.etree._Element</em>) – xml node containing the optimized &lt;wavefunction&gt;</li>
 </ul>
 </td>
 </tr>
@@ -188,16 +278,36 @@ opt_wf_fname(‘opt_dir/opt.xml’,1) returns ‘opt_dir/qmc.s001.opt.xml’</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="qharv.seed.xml.turn_off_jas_opt">
+<code class="descclassname">qharv.seed.xml.</code><code class="descname">turn_off_jas_opt</code><span class="sig-paren">(</span><em>wf_node</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#turn_off_jas_opt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.turn_off_jas_opt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="qharv.seed.xml.write">
 <code class="descclassname">qharv.seed.xml.</code><code class="descname">write</code><span class="sig-paren">(</span><em>fname</em>, <em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.write" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>write an xml file
+wrap around lxml.etree._ElementTree.write
+:param fname: filename to write to
+:type fname: str
+:param doc: xml file in memory
+:type doc: lxml.etree._ElementTree</p>
+<dl class="docutils">
+<dt>Effects:</dt>
+<dd>write fname using contents of doc</dd>
+</dl>
+</dd></dl>
 
 </div>
 <div class="section" id="module-qharv.seed.xml_examples">
 <span id="qharv-seed-xml-examples-module"></span><h2>qharv.seed.xml_examples module<a class="headerlink" href="#module-qharv.seed.xml_examples" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="qharv.seed.xml_examples.text2node">
-<code class="descclassname">qharv.seed.xml_examples.</code><code class="descname">text2node</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml_examples.html#text2node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml_examples.text2node" title="Permalink to this definition">¶</a></dt>
+<dt id="qharv.seed.xml_examples.bcc54_dynamic_backflow">
+<code class="descclassname">qharv.seed.xml_examples.</code><code class="descname">bcc54_dynamic_backflow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml_examples.html#bcc54_dynamic_backflow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml_examples.bcc54_dynamic_backflow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.xml_examples.bcc54_static_backflow">
+<code class="descclassname">qharv.seed.xml_examples.</code><code class="descname">bcc54_static_backflow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml_examples.html#bcc54_static_backflow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml_examples.bcc54_static_backflow" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">

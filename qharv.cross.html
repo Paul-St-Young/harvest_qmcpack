@@ -63,19 +63,26 @@
 <dt id="qharv.cross.pqscf.atom_text">
 <code class="descclassname">qharv.cross.pqscf.</code><code class="descname">atom_text</code><span class="sig-paren">(</span><em>elem</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/cross/pqscf.html#atom_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.cross.pqscf.atom_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>convert elem,pos to text representation</p>
-<blockquote>
-<div>for example, elem = [‘C’,’C’], pos = [[0,0,0],[0.5,0.5,0.5]] will be
-converted to ‘C 0 0 0;</div></blockquote>
-<p>C0.5 0.5 0.5’</p>
-<blockquote>
-<div><dl class="docutils">
-<dt>Args:</dt>
-<dd>elem (list): a list of atomic symbols such as ‘H’,’C’,’O’
-pos  (list): a list of atomic positions, assume in 3D</dd>
-<dt>Returns:</dt>
-<dd>str: atomic string accepted by pyscf</dd>
-</dl>
-</div></blockquote>
+<p>for example, elem = [‘C’,’C’], pos = [[0,0,0],[0.5,0.5,0.5]] will be
+converted to ‘C 0 0 0;C 0.5 0.5 0.5’</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>elem</strong> (<em>list</em>) – a list of atomic symbols such as ‘H’,’C’,’O’</li>
+<li><strong>pos</strong> (<em>list</em>) – a list of atomic positions, assume in 3D</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">atomic string accepted by pyscf</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">

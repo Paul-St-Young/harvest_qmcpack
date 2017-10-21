@@ -23,9 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="qharv.cross package" href="qharv.cross.html" />
-    <link rel="prev" title="qharv.seed package" href="qharv.seed.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -37,12 +35,6 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="qharv.cross.html" title="qharv.cross package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="qharv.seed.html" title="qharv.seed package"
-             accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
@@ -65,11 +57,6 @@
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="qharv.inspect.crystal.draw_cell">
-<code class="descclassname">qharv.inspect.crystal.</code><code class="descname">draw_cell</code><span class="sig-paren">(</span><em>ax</em>, <em>axes</em>, <em>pos</em>, <em>atom_color='b'</em>, <em>draw_super=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/crystal.html#draw_cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.crystal.draw_cell" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="qharv.inspect.crystal.lattice_vectors">
 <code class="descclassname">qharv.inspect.crystal.</code><code class="descname">lattice_vectors</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/crystal.html#lattice_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.crystal.lattice_vectors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -77,28 +64,6 @@
 </div>
 <div class="section" id="module-qharv.inspect.volumetric">
 <span id="qharv-inspect-volumetric-module"></span><h2>qharv.inspect.volumetric module<a class="headerlink" href="#module-qharv.inspect.volumetric" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="qharv.inspect.volumetric.axes_func_on_grid3d">
-<code class="descclassname">qharv.inspect.volumetric.</code><code class="descname">axes_func_on_grid3d</code><span class="sig-paren">(</span><em>axes</em>, <em>func</em>, <em>grid_shape</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/volumetric.html#axes_func_on_grid3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.volumetric.axes_func_on_grid3d" title="Permalink to this definition">¶</a></dt>
-<dd><p>put a function define in axes units on a 3D grid
-:param axes: dtype=float, shape=(3,3); 3D lattice vectors in row major (i.e. a1 = axes[0])
-:type axes: np.array
-:param func: 3D function defined on the unit cube
-:type func: RegularGridInterpolator
-:param grid_shape: dtype=int, shape=(3,); shape of real space grid
-:type grid_shape: np.array</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dtype=float, shape=grid_shape; volumetric data</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">grid (np.array)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="function">
 <dt id="qharv.inspect.volumetric.isosurf">
 <code class="descclassname">qharv.inspect.volumetric.</code><code class="descname">isosurf</code><span class="sig-paren">(</span><em>ax</em>, <em>vol</em>, <em>level_frac=0.25</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/volumetric.html#isosurf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.volumetric.isosurf" title="Permalink to this definition">¶</a></dt>
@@ -137,29 +102,6 @@ plt.show()</dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="qharv.inspect.volumetric.spline_volumetric">
-<code class="descclassname">qharv.inspect.volumetric.</code><code class="descname">spline_volumetric</code><span class="sig-paren">(</span><em>val3d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/volumetric.html#spline_volumetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.volumetric.spline_volumetric" title="Permalink to this definition">¶</a></dt>
-<dd><p>spline 3D volumetric data onto a unit cube</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val3d</strong> (<em>np.array</em>) – 3D volumetric data of shape (nx,ny,nz)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">3D function defined on the unit cube</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">RegularGridInterpolator</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="qharv.inspect.volumetric.xsf_datagrid_3d_density">
-<code class="descclassname">qharv.inspect.volumetric.</code><code class="descname">xsf_datagrid_3d_density</code><span class="sig-paren">(</span><em>fname</em>, <em>header='BEGIN_DATAGRID_3D_density'</em>, <em>trailer='END_DATAGRID_3D_density'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/volumetric.html#xsf_datagrid_3d_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.volumetric.xsf_datagrid_3d_density" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </div>
 <div class="section" id="module-qharv.inspect">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-qharv.inspect" title="Permalink to this headline">¶</a></h2>
@@ -184,25 +126,11 @@ plt.show()</dd>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 <h3><a href="index.html">Table Of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="qharv.seed.html">qharv.seed package</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">qharv.inspect package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-qharv.inspect.crystal">qharv.inspect.crystal module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-qharv.inspect.volumetric">qharv.inspect.volumetric module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-qharv.inspect">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="qharv.cross.html">qharv.cross package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="qharv.reel.html">qharv.reel package</a></li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="qharv.seed.html"
-                        title="previous chapter">qharv.seed package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="qharv.cross.html"
-                        title="next chapter">qharv.cross package</a></p>
         </div>
       </div>
       <div class="clearer"></div>
@@ -216,12 +144,6 @@ plt.show()</dd>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="right" >
-          <a href="qharv.cross.html" title="qharv.cross package"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="qharv.seed.html" title="qharv.seed package"
-             >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li> 
       </ul>
     </div>

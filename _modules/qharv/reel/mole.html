@@ -1,0 +1,156 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.reel.mole &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.reel.mole</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># dig around for goodies</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">from</span> <span class="nn">lxml</span> <span class="k">import</span> <span class="n">etree</span>
+
+<div class="viewcode-block" id="files_with_regex"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.files_with_regex">[docs]</a><span class="k">def</span> <span class="nf">files_with_regex</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span><span class="n">rundir</span><span class="p">,</span><span class="n">case</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; find files with the given suffix in folder rundir</span>
+<span class="sd">   rely on bash `find` command</span>
+<span class="sd">  Args:</span>
+<span class="sd">    regex (str):  regular expression for file names</span>
+<span class="sd">    rundir (str): directory containing the files to be found</span>
+<span class="sd">    case (bool, optional): case sensity, default is True</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    list: flist, a list of filenames matching the given regular expression</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">popt</span> <span class="o">=</span> <span class="s1">&#39;-path&#39;</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">case</span><span class="p">:</span>
+    <span class="n">popt</span> <span class="o">=</span> <span class="s1">&#39;-ipath&#39;</span> <span class="c1"># not case sensitive</span>
+  <span class="n">out</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;find&#39;</span><span class="p">,</span><span class="n">rundir</span><span class="p">,</span><span class="n">popt</span><span class="p">,</span><span class="n">regex</span><span class="p">])</span>
+  <span class="n">flist</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+  <span class="k">return</span> <span class="n">flist</span></div>
+<span class="c1"># end def files_with_regex</span>
+<div class="viewcode-block" id="files_scalar_dat"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.files_scalar_dat">[docs]</a><span class="k">def</span> <span class="nf">files_scalar_dat</span><span class="p">(</span><span class="n">calcdir</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">files_with_regex</span><span class="p">(</span><span class="s1">&#39;*scalar.dat&#39;</span><span class="p">,</span><span class="n">calcdir</span><span class="p">)</span></div>
+<div class="viewcode-block" id="files_stat_h5"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.files_stat_h5">[docs]</a><span class="k">def</span> <span class="nf">files_stat_h5</span><span class="p">(</span><span class="n">calcdir</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">files_with_regex</span><span class="p">(</span><span class="s1">&#39;*stat.h5&#39;</span><span class="p">,</span><span class="n">calcdir</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="group_map"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.group_map">[docs]</a><span class="k">def</span> <span class="nf">group_map</span><span class="p">(</span><span class="n">flist</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; group QMCPACK output files by series id</span>
+<span class="sd">   if a file does not have a group index, then append it to an indepenednt list</span>
+<span class="sd">  Args:</span>
+<span class="sd">    flist (list): a list of filenames, should be QMCPACK outputs</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    dict: groups, map series id (int) to a list of filenames</span>
+<span class="sd">    list: indep, a list of independent filenames</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">indep</span>  <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">groups</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">for</span> <span class="n">floc</span> <span class="ow">in</span> <span class="n">flist</span><span class="p">:</span>
+    <span class="n">fname</span>  <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">floc</span><span class="p">)</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">):</span>
+      <span class="c1"># e.g. dmc.g006.s000.scalar.dat</span>
+      <span class="n">st</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+      <span class="n">iss</span><span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+      <span class="k">if</span> <span class="n">iss</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">groups</span><span class="p">[</span><span class="n">iss</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">groups</span><span class="p">[</span><span class="n">iss</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fname</span><span class="p">]</span>
+      <span class="c1"># end if</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="c1"># e.g. dmc.s000.scalar.dat</span>
+      <span class="n">indep</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+    <span class="c1"># end if</span>
+  <span class="c1"># end for</span>
+  <span class="k">return</span> <span class="n">groups</span><span class="p">,</span><span class="n">indep</span></div>
+<span class="c1"># def group_map</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.seed.html">qharv.seed package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

@@ -54,30 +54,28 @@
 <span class="kn">from</span> <span class="nn">qharv.seed</span> <span class="k">import</span> <span class="n">xml</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">StringIO</span>
 
-<div class="viewcode-block" id="text2node"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.text2node">[docs]</a><span class="k">def</span> <span class="nf">text2node</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">read</span><span class="p">(</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span> <span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span></div>
-
 <span class="c1"># ============================= &lt;qmc&gt; section =============================</span>
 
 <div class="viewcode-block" id="wbyw_vmc"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.wbyw_vmc">[docs]</a><span class="k">def</span> <span class="nf">wbyw_vmc</span><span class="p">():</span>
   <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;qmc method=&quot;vmc&quot; move=&quot;not_pbyp_or_whatever&quot; checkpoint=&quot;-1&quot;&gt;</span>
-<span class="s1">    &lt;parameter name=&quot;usedrift&quot;&gt;    yes  &lt;/parameter&gt;</span>
-<span class="s1">    &lt;parameter name=&quot;warmupsteps&quot;&gt; 750  &lt;/parameter&gt;</span>
-<span class="s1">    &lt;parameter name=&quot;blocks&quot;&gt;       40  &lt;/parameter&gt;</span>
-<span class="s1">    &lt;parameter name=&quot;steps&quot;&gt;        30  &lt;/parameter&gt;</span>
-<span class="s1">    &lt;parameter name=&quot;timestep&quot;&gt;    0.1  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;usedrift&quot;&gt;    yes      &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;warmupsteps&quot;&gt;     750  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;warmuptimestep&quot;&gt; 0.01  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;blocks&quot;&gt;       64  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;steps&quot;&gt;        16  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;timestep&quot;&gt;    0.08  &lt;/parameter&gt;</span>
 <span class="s1">    &lt;parameter name=&quot;samples&quot;&gt;     512  &lt;/parameter&gt;</span>
 <span class="s1">  &lt;/qmc&gt;&#39;&#39;&#39;</span>
-  <span class="k">return</span> <span class="n">text2node</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="wbyw_dmc"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.wbyw_dmc">[docs]</a><span class="k">def</span> <span class="nf">wbyw_dmc</span><span class="p">():</span>
   <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;qmc method=&quot;dmc&quot; move=&quot;not_pbyp_or_whatever&quot; checkpoint=&quot;0&quot;&gt;</span>
 <span class="s1">    &lt;parameter name=&quot;usedrift&quot;&gt;    yes  &lt;/parameter&gt;</span>
-<span class="s1">    &lt;parameter name=&quot;blocks&quot;&gt;       40  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;blocks&quot;&gt;       64  &lt;/parameter&gt;</span>
 <span class="s1">    &lt;parameter name=&quot;steps&quot;&gt;       200  &lt;/parameter&gt;</span>
 <span class="s1">    &lt;parameter name=&quot;timestep&quot;&gt;  0.002  &lt;/parameter&gt;</span>
 <span class="s1">  &lt;/qmc&gt;&#39;&#39;&#39;</span>
-  <span class="k">return</span> <span class="n">text2node</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="wbyw_optimize"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.wbyw_optimize">[docs]</a><span class="k">def</span> <span class="nf">wbyw_optimize</span><span class="p">():</span>
   <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;loop max=&quot;8&quot;&gt;</span>
@@ -85,19 +83,69 @@
 <span class="s1">      &lt;cost name=&quot;energy&quot;&gt;                0.95  &lt;/cost&gt;</span>
 <span class="s1">      &lt;cost name=&quot;unreweightedvariance&quot;&gt;  0.00  &lt;/cost&gt;</span>
 <span class="s1">      &lt;cost name=&quot;reweightedvariance&quot;&gt;    0.05  &lt;/cost&gt;</span>
-<span class="s1">      &lt;parameter name=&quot;blocks&quot;&gt;         40  &lt;/parameter&gt;</span>
-<span class="s1">      &lt;parameter name=&quot;warmupsteps&quot;&gt;  1024  &lt;/parameter&gt;</span>
-<span class="s1">      &lt;parameter name=&quot;timestep&quot;&gt;      0.1  &lt;/parameter&gt;</span>
-<span class="s1">      &lt;parameter name=&quot;samples&quot;&gt;    512000  &lt;/parameter&gt;</span>
 <span class="s1">      &lt;parameter name=&quot;usedrift&quot;&gt;      yes  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;warmupsteps&quot;&gt;    1024  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;warmuptimestep&quot;&gt; 0.01  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;timestep&quot;&gt;       0.08  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;blocks&quot;&gt;         64  &lt;/parameter&gt;</span>
 <span class="s1">      &lt;parameter name=&quot;steps&quot;&gt;           5  &lt;/parameter&gt;</span>
-<span class="s1">      &lt;parameter name=&quot;exp0&quot;&gt;           -8  &lt;/parameter&gt;</span>
-<span class="s1">      &lt;parameter name=&quot;bigchange&quot;&gt;     5.0  &lt;/parameter&gt;</span>
-<span class="s1">      &lt;parameter name=&quot;stepsize&quot;&gt;     0.02  &lt;/parameter&gt;</span>
-<span class="s1">      &lt;parameter name=&quot;alloweddifference&quot;&gt;  0.0001  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;samples&quot;&gt;     65536  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;MinMethod&quot;&gt; OneShiftOnly &lt;/parameter&gt;</span>
 <span class="s1">    &lt;/qmc&gt;</span>
 <span class="s1">  &lt;/loop&gt;&#39;&#39;&#39;</span>
-  <span class="k">return</span> <span class="n">text2node</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+<span class="c1"># ============================= &lt;backflow&gt; section =============================</span>
+
+<div class="viewcode-block" id="bcc54_static_backflow"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.bcc54_static_backflow">[docs]</a><span class="k">def</span> <span class="nf">bcc54_static_backflow</span><span class="p">():</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;backflow&gt;</span>
+<span class="s1">          &lt;transformation name=&quot;eHB&quot; type=&quot;e-I&quot; function=&quot;Bspline&quot; source=&quot;ion0&quot;&gt;</span>
+<span class="s1">            &lt;correlation elementType=&quot;H&quot; cusp=&quot;0.0&quot; size=&quot;8&quot;&gt;</span>
+<span class="s1">              &lt;coefficients id=&quot;eHB&quot; type=&quot;Array&quot; optimize=&quot;yes&quot;&gt;</span>
+<span class="s1">                -0.318225205 -0.3118825218 -0.2590876403 -0.178897934 -0.09533888539 -0.0359722158 -0.01122793946 -0.003273977434</span>
+<span class="s1">              &lt;/coefficients&gt;</span>
+<span class="s1">            &lt;/correlation&gt;</span>
+<span class="s1">          &lt;/transformation&gt;</span>
+<span class="s1">          &lt;transformation name=&quot;eeB&quot; type=&quot;e-e&quot; function=&quot;Bspline&quot;&gt;</span>
+<span class="s1">            &lt;correlation speciesA=&quot;u&quot; speciesB=&quot;u&quot; cusp=&quot;0.0&quot; size=&quot;8&quot;&gt;</span>
+<span class="s1">              &lt;coefficients id=&quot;uuB&quot; type=&quot;Array&quot; optimize=&quot;yes&quot;&gt;</span>
+<span class="s1">                0.01700338137 0.006141973191 0.008060045646 0.006826236155 0.005407519967 0.003248534432 0.001432034258 0.0004420389469</span>
+<span class="s1">              &lt;/coefficients&gt;</span>
+<span class="s1">            &lt;/correlation&gt;</span>
+<span class="s1">            &lt;correlation speciesA=&quot;u&quot; speciesB=&quot;d&quot; cusp=&quot;0.0&quot; size=&quot;8&quot;&gt;</span>
+<span class="s1">              &lt;coefficients id=&quot;udB&quot; type=&quot;Array&quot; optimize=&quot;yes&quot;&gt;</span>
+<span class="s1">                0.1398741119 0.07423895812 0.04099268295 0.02056532273 0.008676400493 0.003448772417 0.001237987267 0.00058476928</span>
+<span class="s1">              &lt;/coefficients&gt;</span>
+<span class="s1">            &lt;/correlation&gt;</span>
+<span class="s1">          &lt;/transformation&gt;</span>
+<span class="s1">        &lt;/backflow&gt;&#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="bcc54_dynamic_backflow"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.bcc54_dynamic_backflow">[docs]</a><span class="k">def</span> <span class="nf">bcc54_dynamic_backflow</span><span class="p">():</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;backflow&gt;</span>
+<span class="s1">          &lt;transformation name=&quot;eeB&quot; type=&quot;e-e&quot; function=&quot;Bspline&quot;&gt;</span>
+<span class="s1">            &lt;correlation speciesA=&quot;u&quot; speciesB=&quot;u&quot; cusp=&quot;0.0&quot; size=&quot;8&quot;&gt;</span>
+<span class="s1">              &lt;coefficients id=&quot;uuB&quot; type=&quot;Array&quot; optimize=&quot;yes&quot;&gt;</span>
+<span class="s1">                0.008192250982 0.007186126165 0.007069997288 0.006619743038 0.005364967914 0.003620424119 0.001785836249 0.0006686008907</span>
+<span class="s1">              &lt;/coefficients&gt;</span>
+<span class="s1">            &lt;/correlation&gt;</span>
+<span class="s1">            &lt;correlation speciesA=&quot;u&quot; speciesB=&quot;d&quot; cusp=&quot;0.0&quot; size=&quot;8&quot;&gt;</span>
+<span class="s1">              &lt;coefficients id=&quot;udB&quot; type=&quot;Array&quot; optimize=&quot;yes&quot;&gt;</span>
+<span class="s1">                0.1309903648 0.07432011251 0.03921962633 0.01894998984 0.007714708214 0.00293134854 0.00105448654 0.0003790266034</span>
+<span class="s1">              &lt;/coefficients&gt;</span>
+<span class="s1">            &lt;/correlation&gt;</span>
+<span class="s1">            &lt;correlation speciesA=&quot;u&quot; speciesB=&quot;p&quot; cusp=&quot;0.0&quot; size=&quot;8&quot;&gt;</span>
+<span class="s1">              &lt;coefficients id=&quot;eHB&quot; type=&quot;Array&quot; optimize=&quot;yes&quot;&gt;</span>
+<span class="s1">                -0.3403607503 -0.1877305961 -0.1185710192 -0.06331053465 -0.02732069912 -0.004471724758 0.005910809959 0.004033706511</span>
+<span class="s1">              &lt;/coefficients&gt;</span>
+<span class="s1">            &lt;/correlation&gt;</span>
+<span class="s1">            &lt;correlation link=&quot;up&quot; speciesA=&quot;d&quot; speciesB=&quot;p&quot;/&gt;</span>
+<span class="s1">            &lt;correlation link=&quot;uu&quot; speciesA=&quot;d&quot; speciesB=&quot;d&quot;/&gt;</span>
+<span class="s1">            &lt;correlation link=&quot;up&quot; speciesA=&quot;p&quot; speciesB=&quot;p&quot;/&gt;</span>
+<span class="s1">            &lt;!-- pp backflow does nothing if hartree_product wf is used for protons --&gt;</span>
+<span class="s1">          &lt;/transformation&gt;</span>
+<span class="s1">        &lt;/backflow&gt;&#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

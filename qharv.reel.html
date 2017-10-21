@@ -71,9 +71,85 @@
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="qharv.reel.ascii_out.parse_qmcas_output">
+<code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">parse_qmcas_output</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#parse_qmcas_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.parse_qmcas_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>!!!! hacky function to gather QMCPACK scalar.dat data !!!! not recommended for general use !!!!
+problems:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>input file is not known, cannot assign method to series number ‘iqmc’</li>
+<li>equilibration length is not known</li>
+</ol>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
 <dt id="qharv.reel.ascii_out.read">
 <code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">read</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.read" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+</div>
+<div class="section" id="module-qharv.reel.mole">
+<span id="qharv-reel-mole-module"></span><h2>qharv.reel.mole module<a class="headerlink" href="#module-qharv.reel.mole" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="qharv.reel.mole.files_scalar_dat">
+<code class="descclassname">qharv.reel.mole.</code><code class="descname">files_scalar_dat</code><span class="sig-paren">(</span><em>calcdir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#files_scalar_dat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.files_scalar_dat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.mole.files_stat_h5">
+<code class="descclassname">qharv.reel.mole.</code><code class="descname">files_stat_h5</code><span class="sig-paren">(</span><em>calcdir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#files_stat_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.files_stat_h5" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.mole.files_with_regex">
+<code class="descclassname">qharv.reel.mole.</code><code class="descname">files_with_regex</code><span class="sig-paren">(</span><em>regex</em>, <em>rundir</em>, <em>case=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#files_with_regex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.files_with_regex" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>find files with the given suffix in folder rundir</dt>
+<dd>rely on bash <cite>find</cite> command</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>regex</strong> (<em>str</em>) – regular expression for file names</li>
+<li><strong>rundir</strong> (<em>str</em>) – directory containing the files to be found</li>
+<li><strong>case</strong> (<em>bool</em><em>, </em><em>optional</em>) – case sensity, default is True</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">flist, a list of filenames matching the given regular expression</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.mole.group_map">
+<code class="descclassname">qharv.reel.mole.</code><code class="descname">group_map</code><span class="sig-paren">(</span><em>flist</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#group_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.group_map" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>group QMCPACK output files by series id</dt>
+<dd>if a file does not have a group index, then append it to an indepenednt list</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>flist</strong> (<em>list</em>) – a list of filenames, should be QMCPACK outputs</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">groups, map series id (int) to a list of filenames
+list: indep, a list of independent filenames</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="module-qharv.reel.scalar_dat">
@@ -230,6 +306,11 @@ The equilibrated data is assumed to have Gaussian distribution. Error is calcula
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="qharv.reel.stat_h5.read">
+<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">read</code><span class="sig-paren">(</span><em>stat_fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-qharv.reel">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-qharv.reel" title="Permalink to this headline">¶</a></h2>
@@ -261,6 +342,7 @@ The equilibrated data is assumed to have Gaussian distribution. Error is calcula
 <li class="toctree-l1 current"><a class="current reference internal" href="#">qharv.reel package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-qharv.reel.ascii_out">qharv.reel.ascii_out module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-qharv.reel.mole">qharv.reel.mole module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-qharv.reel.scalar_dat">qharv.reel.scalar_dat module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-qharv.reel.stat_h5">qharv.reel.stat_h5 module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-qharv.reel">Module contents</a></li>

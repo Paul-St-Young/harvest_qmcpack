@@ -127,7 +127,6 @@
 <span class="sd">    (float,float): (ymean,yerr), where ymean is the mean of column, while yerr is the 1-sigma error of column</span>
 <span class="sd">  &quot;&quot;&quot;</span>
 
-  <span class="n">myx</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
   <span class="n">myy</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]</span>
 
   <span class="n">ymean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">myy</span><span class="p">)</span>

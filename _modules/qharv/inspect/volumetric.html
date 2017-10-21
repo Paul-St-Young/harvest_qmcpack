@@ -180,6 +180,82 @@
   <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">numbers</span> <span class="ow">in</span> <span class="n">all_numbers</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">numbers</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">)</span></div>
 <span class="c1"># end def xsf_datagrid_3d_density</span>
+
+<div class="viewcode-block" id="wavefront_obj"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.wavefront_obj">[docs]</a><span class="k">def</span> <span class="nf">wavefront_obj</span><span class="p">(</span><span class="n">verts</span><span class="p">,</span><span class="n">faces</span><span class="p">,</span><span class="n">normals</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; save polygons in obj format</span>
+
+<span class="sd">  obj format is more commonly used than ply</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    verts (np.array): shape=(nvert,3) dtype=float, vertices in cartesian coordinates.</span>
+<span class="sd">    faces (np.array): shape=(nface,nside) dtype=int, polygons each specified as a list of vertices (in vertex coordinates defined by verts).</span>
+<span class="sd">    normals (np.array): shape=(nvert,3) dtype=float, normal vectors used for smooth lighting. There is one normal vector per vertex. </span>
+<span class="sd">  Returns:</span>
+<span class="sd">    str: content of the obj file</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="k">if</span> <span class="n">faces</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s1">&#39;i&#39;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: faces should be integers. Converting now.&#39;</span><span class="p">)</span>
+    <span class="n">faces</span> <span class="o">=</span> <span class="n">faces</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+  <span class="n">vert_fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{name:s}</span><span class="s1"> </span><span class="si">{x:7.6f}</span><span class="s1"> </span><span class="si">{y:7.6f}</span><span class="s1"> </span><span class="si">{z:7.6f}</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="c1"># weights not supported</span>
+  <span class="k">for</span> <span class="n">ivert</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">verts</span><span class="p">)):</span>
+    <span class="n">vert</span>  <span class="o">=</span> <span class="n">verts</span><span class="p">[</span><span class="n">ivert</span><span class="p">]</span>
+    <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="o">=</span> <span class="n">vert</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="n">vert_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;v&#39;</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+  <span class="c1"># end for</span>
+
+  <span class="k">for</span> <span class="n">inorm</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">normals</span><span class="p">)):</span>
+    <span class="n">norm</span>  <span class="o">=</span> <span class="n">normals</span><span class="p">[</span><span class="n">inorm</span><span class="p">]</span>
+    <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="o">=</span> <span class="n">norm</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="n">vert_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;vn&#39;</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+  <span class="c1"># end for inorm</span>
+
+  <span class="n">face_fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{name:s}</span><span class="s1"> </span><span class="si">{polyx:d}</span><span class="s1">//</span><span class="si">{normalx:d}</span><span class="s1"> </span><span class="si">{polyy:d}</span><span class="s1">//</span><span class="si">{normaly:d}</span><span class="s1"> </span><span class="si">{polyz:d}</span><span class="s1">//</span><span class="si">{normalz:d}</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="c1"># texture not supported</span>
+  <span class="k">for</span> <span class="n">iface</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">faces</span><span class="p">)):</span>
+    <span class="n">face</span>  <span class="o">=</span> <span class="n">faces</span><span class="p">[</span><span class="n">iface</span><span class="p">]</span>
+    <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="o">=</span> <span class="n">face</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="n">face_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="n">polyx</span><span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="n">polyy</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="n">polyz</span><span class="o">=</span><span class="n">z</span><span class="p">,</span>
+      <span class="n">normalx</span><span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="n">normaly</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="n">normalz</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+  <span class="c1"># end for iface</span>
+
+  <span class="k">return</span> <span class="n">text</span></div>
+<span class="c1"># end def wavefront_obj</span>
+
+<div class="viewcode-block" id="stanford_ply"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.stanford_ply">[docs]</a><span class="k">def</span> <span class="nf">stanford_ply</span><span class="p">(</span><span class="n">verts</span><span class="p">,</span><span class="n">faces</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; save polygons in ply format</span>
+
+<span class="sd">  ply is simpler than obj, but older and less used</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    verts (np.array): shape=(nvert,3) dtype=float, vertices in cartesian coordinates.</span>
+<span class="sd">    faces (np.array): shape=(nface,nside) dtype=int, polygons each specified as a list of vertices (in vertex coordinates defined by verts).</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    str: content of the ply file</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">qharv.seed.xml</span> <span class="k">import</span> <span class="n">arr2text</span>
+  <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;ply</span>
+<span class="s2">format ascii 1.0</span>
+<span class="s2">element vertex </span><span class="si">{nvert:n}</span><span class="s2"></span>
+<span class="s2">property float x</span>
+<span class="s2">property float y</span>
+<span class="s2">property float z</span>
+<span class="s2">element face </span><span class="si">{nface:d}</span><span class="s2"></span>
+<span class="s2">property list uchar int vertex_indices</span>
+<span class="s2">end_header&quot;&quot;&quot;</span>
+
+  <span class="c1"># !!!! assuming triangles in 3D</span>
+  <span class="n">ndim</span> <span class="o">=</span> <span class="mi">3</span>
+  <span class="n">nface</span><span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">faces</span><span class="p">)</span>
+  <span class="n">new_faces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">nface</span><span class="p">,</span><span class="n">ndim</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+  <span class="n">new_faces</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+  <span class="n">new_faces</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span><span class="o">=</span> <span class="n">faces</span>
+
+  <span class="n">text</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nvert</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">verts</span><span class="p">),</span><span class="n">nface</span><span class="o">=</span><span class="n">nface</span><span class="p">)</span> <span class="o">+</span> \
+    <span class="n">arr2text</span><span class="p">(</span><span class="n">verts</span><span class="p">)</span> <span class="o">+</span> <span class="n">arr2text</span><span class="p">(</span><span class="n">new_faces</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">text</span></div>
+<span class="c1"># end def stanford_ply</span>
 </pre></div>
 
           </div>
