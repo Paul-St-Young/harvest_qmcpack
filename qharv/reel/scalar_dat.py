@@ -64,6 +64,11 @@ def corr(trace):
   correlation_time = 1.0 + 2.0*correlation_time
   return correlation_time
 # end def corr
+def error(trace):
+  neffective = np.sqrt(len(trace)/corr(trace))
+  stddev = np.std(trace,ddof=1)
+  return stddev/neffective
+# end def error
 
 def single_column(df,column,nequil):
   """ calculate mean and error of a column
@@ -82,7 +87,7 @@ def single_column(df,column,nequil):
   myy = df[column].values[nequil:]
 
   ymean = np.mean(myy)
-  yerr  = np.std(myy)/np.sqrt(len(myy)/corr(myy))
+  yerr  = error(myy)
   return ymean,yerr
 # end def
 

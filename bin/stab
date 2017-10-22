@@ -6,37 +6,6 @@
 # `stab prefix.s000.scalar.dat -e 10 -c Kinetic` prints the mean and error of the 'Kinetic' column
 #  arbitrary scalar file may be analyzed as long as it is in table format
 
-def corr(trace):
-  """ calculate the autocorrelation of a trace of scalar data
-  Args:
-    trace (list): should be a 1D iterable array of floating point numbers
-  Returns: r
-    correlation_time (float): return the autocorrelation time of this trace of scalars
-  """
- 
-  mu     = np.mean(trace)
-  stddev = np.std(trace,ddof=1)
- 
-  correlation_time = 0.
-  for k in range(1,len(trace)):
-      # calculate auto_correlation
-      auto_correlation = 0.0
-      num = len(trace)-k
-      for i in range(num):
-          auto_correlation += (trace[i]-mu)*(trace[i+k]-mu)
-      # end for i
-      auto_correlation *= 1.0/(num*stddev**2)
-      if auto_correlation > 0:
-          correlation_time += auto_correlation
-      else:
-          break
-      # end if
-  # end for k
- 
-  correlation_time = 1.0 + 2.0*correlation_time
-  return correlation_time
-# end def corr
-
 if __name__ == '__main__':
   import argparse
   import numpy as np
@@ -54,7 +23,10 @@ if __name__ == '__main__':
   df  = scalar_dat.parse(args.fname)
   if args.list:
     print(df.columns)
-  # end if
+  if 'LocalEnergy' not in df.columns:
+    args.column = df.columns[0]
+  if args.column not in df.columns:
+    raise RuntimeError('requested column "%s" not found\n available:%s'%(args.column,str(df.columns)))
 
   # calculate the mean and error of a single column of scalars
   ymean,yerr = scalar_dat.single_column(df,args.column,args.nequil)
