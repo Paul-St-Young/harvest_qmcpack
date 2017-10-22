@@ -88,18 +88,31 @@ def text2arr(text,dtype=float,flatten=False):
 # end def text2arr
 
 # ============================= level 2: QMCPACK specialized =============================
-def set_param(node,pname,pval):
+def set_param(node,pname,pval,new=False):
   """ set <parameter> with name 'pname' to 'pval' 
+  if new=True, then <parameter name="pname"> does not exist. create it
   Args:
     node (lxml.etree._Element): xml node with children having tag 'parameter'
     pname (str): name of parameter
     pval (str): value of parameter
+    new (bool): create new <paremter> node, default is false
   Effect:
     the text of <parameter> with 'pname' will be set to 'pval'
   """
   assert type(pval) is str
   pnode = node.find('.//parameter[@name="%s"]'%pname)
-  pnode.text = pval
+  # 4 paths dependent on (pnode is None) and new
+  if (pnode is None) and (not new): # unintended input
+    raise RuntimeError('<parameter name="%s"> not found in %s\n please set new=True' % (pname,node.tag))
+  elif (pnode is not None) and new: # unintended input
+    raise RuntimeError('<parameter name="%s"> found in %s\n please set new=False' % (pname,node.tag))
+  elif (pnode is None) and new:
+    pnode = etree.Element('parameter',{'name':pname})
+    pnode.text = pval
+    node.append(pnode)
+  else:
+    pnode.text = pval
+  # end if
 # end def
 
 def opt_wf_fname(opt_inp,iqmc):
