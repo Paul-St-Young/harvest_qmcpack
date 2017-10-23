@@ -22,7 +22,20 @@ if __name__ == '__main__':
   args = parser.parse_args()
 
   axes = crystal.lattice_vectors(args.fname)
-  pos  = crystal.atomic_coords(args.fname,pset_name=args.pset_name)
+  try: # positions not found
+    pos  = crystal.atomic_coords(args.fname,pset_name=args.pset_name)
+  except RuntimeError as rerr:
+    estr = '%s not found' % args.pset_name
+    if estr in str(rerr): # known error: typo in pset_name
+      # provide more detailed error message
+      from lxml import etree
+      doc = etree.parse(args.fname)
+      psets = doc.findall('.//particleset')
+      pavail= [pset.get('name') for pset in psets]
+      new_estr = estr+' in '+str(pavail)+'; please use -pset'
+      raise RuntimeError(new_estr)
+    # end if
+  # end try
 
   if args.text:
     print('lattice vectors:')
