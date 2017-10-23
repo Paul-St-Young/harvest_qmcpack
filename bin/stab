@@ -18,15 +18,21 @@ if __name__ == '__main__':
     ,help='name of column to analyze, to list all columns use the -l flag')
   parser.add_argument('--list','-l',action='store_true'
     ,help='list all columns available in the scalar file')
+  parser.add_argument('--trace','-t',action='store_true'
+    ,help='plot the trace of column')
   args = parser.parse_args()
 
   df  = scalar_dat.parse(args.fname)
+
+  # interpret inputs
   if args.list:
     print(df.columns)
   if 'LocalEnergy' not in df.columns:
     args.column = df.columns[0]
   if args.column not in df.columns:
-    raise RuntimeError('requested column "%s" not found\n available:%s'%(args.column,str(df.columns)))
+    raise RuntimeError('requested column "%s" not found\n available:%s'%(
+        args.column,str(df.columns.values)
+    ))
 
   # calculate the mean and error of a single column of scalars
   ymean,yerr = scalar_dat.single_column(df,args.column,args.nequil)
@@ -37,5 +43,39 @@ if __name__ == '__main__':
     mean = ymean,
     error= yerr) 
   print(output)
+
+  if (args.trace):
+    myy0= df[args.column].values
+    myy = myy0[args.nequil:]
+    
+    import matplotlib.pyplot as plt
+    fig, ax_arr = plt.subplots(1,2,sharey=True
+      ,gridspec_kw = {'width_ratios':[3, 1]})
+
+    # plot entire trace
+    ax = ax_arr[0]
+    ax.set_xlabel('index',fontsize=14)
+    ax.set_ylabel(args.column,fontsize=14)
+    ax.plot(myy0,c='k',label='')
+    ax.axvline(args.nequil,c='k',ls='--',lw=2)
+
+    # plot histogram of selected data
+    ax = ax_arr[1]
+    ax.set_xlabel('count',fontsize=14)
+    ax.hist(myy,normed=False,fc='gray',alpha=0.5,orientation='horizontal')
+    ax.get_yaxis().tick_right() 
+
+    # overlay statistics
+    mystd = np.std(myy,ddof=1)
+    for myax in ax_arr:
+      myax.axhline( ymean, c='b', lw=2, label="mean = %1.6f" % ymean )
+      myax.axhline( ymean+mystd, ls=":", c="gray", lw=2, label="std     = %1.6f" % mystd )
+      myax.axhline( ymean-mystd, ls=":", c="gray", lw=2 )
+    # end for myax
+    ax_arr[0].legend(loc='best')
+
+    fig.tight_layout()
+    plt.show()
+  # end if
 
 # end __main__
