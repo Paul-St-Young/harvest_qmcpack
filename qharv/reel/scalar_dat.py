@@ -64,8 +64,10 @@ def corr(trace):
   correlation_time = 1.0 + 2.0*correlation_time
   return correlation_time
 # end def corr
-def error(trace):
-  neffective = np.sqrt(len(trace)/corr(trace))
+def error(trace,kappa=None):
+  if kappa is None:
+    kappa = corr(trace)
+  neffective = np.sqrt(len(trace)/kappa)
   stddev = np.std(trace,ddof=1)
   return stddev/neffective
 # end def error
@@ -81,13 +83,15 @@ def single_column(df,column,nequil):
     column (str): name of column
     nequil (int): number of equilibration blocks
   Returns:
-    (float,float): (ymean,yerr), where ymean is the mean of column, while yerr is the 1-sigma error of column
+    (float,float,float): (ymean,yerr,ycorr), where ymean is the mean of column, yerr is the 1-sigma error of column, and ycorr is the autocorrelation
   """
 
   myy = df[column].values[nequil:]
 
   ymean = np.mean(myy)
-  yerr  = error(myy)
-  return ymean,yerr
+  ycorr = corr(myy)
+  yerr  = error(myy,ycorr)
+
+  return ymean,yerr,ycorr
 # end def
 

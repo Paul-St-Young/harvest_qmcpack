@@ -35,13 +35,15 @@ if __name__ == '__main__':
     ))
 
   # calculate the mean and error of a single column of scalars
-  ymean,yerr = scalar_dat.single_column(df,args.column,args.nequil)
+  ymean,yerr,ycorr = scalar_dat.single_column(df,args.column,args.nequil)
 
-  prt_format = "{name:14s} {mean:10.6f} +/- {error:8.8f}"
+  prt_format = "{name:14s} {mean:10.6f} +/- {error:8.8f} {corr:4.2f}"
   output = prt_format.format(
     name = args.column,
     mean = ymean,
-    error= yerr) 
+    error= yerr,
+    corr = ycorr
+    ) 
   print(output)
 
   if (args.trace):
