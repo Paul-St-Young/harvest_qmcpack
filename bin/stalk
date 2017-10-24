@@ -49,7 +49,7 @@ if __name__ == '__main__':
     fig = plt.figure()
     ax  = fig.add_subplot(1,1,1,projection='3d')
 
-    crystal.draw_cell(ax,axes,pos,draw_super=(args.super))
+    crystal.draw_crystal(ax,axes,pos,draw_super=(args.super))
 
     plt.show()
   # end if
