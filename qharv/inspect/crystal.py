@@ -49,10 +49,43 @@ def draw_cell(ax,axes,**kwargs):
    list: a list of plt.Line3D, one for each lattice vector
   """
   cell = []
-  for idim in range(3):
-    line = ax.plot([0,axes[idim,0]],[0,axes[idim,1]],[0,axes[idim,2]],c='k',lw=2)
+
+  # set defaults
+  if not ( ('c' in kwargs) or ('color' in kwargs) ):
+    kwargs['c'] = 'gray'
+  if not ('alpha' in kwargs):
+    kwargs['alpha'] = 0.6
+  if not ( ('lw' in kwargs) or ('linewidth' in kwargs) ):
+    kwargs['lw'] = 2
+
+  # a,b,c lattice vectors
+  for iax in range(3):
+    start = np.array([0,0,0])
+    end   = start + axes[iax]
+    line = ax.plot(*zip(start,end),**kwargs)
     cell.append(line)
-  # end for idim
+  # end for iax
+
+  # counter a,b,c vectors
+  for iax in range(3):
+    start = axes.sum(axis=0)
+    end   = start - axes[iax]
+    line = ax.plot(*zip(start,end),**kwargs)
+    cell.append(line)
+  # end for iax
+  
+  # remaining vectors needed to enclose cell
+  for iax in range(3):
+    start = axes[iax]
+    for jax in range(3):
+      if jax == iax:
+        continue
+      end = start + axes[jax]
+      line = ax.plot(*zip(start,end),**kwargs)
+      cell.append(line)
+    # end for jax
+  # end for iax
+
   return cell
 
 def draw_crystal(ax,axes,pos,draw_super=False):
