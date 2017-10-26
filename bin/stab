@@ -3,8 +3,19 @@
 # Email: yubo.paul.yang@gmail.com
 #
 # Scalar TABle (stab) analyzer
-# `stab prefix.s000.scalar.dat -e 10 -c Kinetic` prints the mean and error of the 'Kinetic' column
+# `stab prefix.s000.scalar.dat -e 10 -c Kinetic` prints the mean, error and 
+#  auto-correlation of the 'Kinetic' column.
 #  arbitrary scalar file may be analyzed as long as it is in table format
+
+def reblock(trace,block_size,min_nblock=4):
+  nblock= len(trace)//block_size
+  nkeep = nblock*block_size
+  if (nblock<min_nblock):
+    raise RuntimeError('only %d blocks left after reblock'%nblock)
+  # end if
+  blocked_trace = trace[:nkeep].reshape(nblock,block_size,*trace.shape[1:])
+  return np.mean(blocked_trace,axis=1)
+# end def
 
 if __name__ == '__main__':
   import argparse
@@ -16,6 +27,8 @@ if __name__ == '__main__':
     ,help='number of equilibration blocks to throw out')
   parser.add_argument('--column','-c',type=str,default='LocalEnergy'
     ,help='name of column to analyze, to list all columns use the -l flag')
+  parser.add_argument('--reblock','-rb',type=int,default=1
+    ,help='reblock data to remove auto-correlation, default is 1 i.e. no reblock')
   parser.add_argument('--list','-l',action='store_true'
     ,help='list all columns available in the scalar file')
   parser.add_argument('--trace','-t',action='store_true'
@@ -35,8 +48,13 @@ if __name__ == '__main__':
     ))
 
   # calculate the mean and error of a single column of scalars
+  if args.reblock > 1:
+    from qharv.sieve.scalar_df import reblock_scalar_df
+    df = reblock_scalar_df(df,args.reblock)
+  # end if
+   
   ymean,yerr,ycorr = scalar_dat.single_column(df,args.column,args.nequil)
-
+  
   prt_format = "{name:14s} {mean:10.6f} +/- {error:8.8f} {corr:4.2f}"
   output = prt_format.format(
     name = args.column,

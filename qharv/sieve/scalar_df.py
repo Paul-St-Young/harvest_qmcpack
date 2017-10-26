@@ -70,3 +70,34 @@ def mean_error_scalar_df(df,nequil,labels=['path','fout']):
   jdf = df1.join(df2,lsuffix='_mean',rsuffix='_error')
   return jdf
 # end def
+
+def reblock(trace,block_size,min_nblock=4):
+  """ block scalar trace to remove autocorrelation
+  see usage example in reblock_scalar_df
+  Args:
+    trace (np.array): a trace of scalars, may have multiple columns,
+     !!!! assuming leading dimension is the number of current blocks.
+    block_size (int): size of block in units of current block.
+    min_nblock (int,optional): minimum number of blocks needed for 
+     meaningful statistics, default is 4.
+  Returns:
+    np.array: re-blocked trace.
+  """
+  nblock= len(trace)//block_size
+  nkeep = nblock*block_size
+  if (nblock<min_nblock):
+    raise RuntimeError('only %d blocks left after reblock'%nblock)
+  # end if
+  blocked_trace = trace[:nkeep].reshape(nblock,block_size,*trace.shape[1:])
+  return np.mean(blocked_trace,axis=1)
+# end def
+
+def reblock_scalar_df(df,block_size,min_nblock=4):
+  """ create a re-blocked scalar dataframe from a current scalar dataframe
+   see reblock for details
+  """
+  return pd.DataFrame(
+    reblock(df.values,block_size,min_nblock=min_nblock)
+    ,columns=df.columns
+  )
+# end def
