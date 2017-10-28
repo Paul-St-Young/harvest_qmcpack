@@ -5,20 +5,21 @@ import os
 import subprocess as sp
 from lxml import etree
 
-def files_with_regex(regex,rundir,case=True):
+def files_with_regex(regex,rundir,case=True,ftype='f'):
   """ find files with the given suffix in folder rundir
    rely on bash `find` command
   Args:
     regex (str):  regular expression for file names
     rundir (str): directory containing the files to be found
     case (bool, optional): case sensity, default is True
+    ftype (str, optional): files type, default is regular file 'f', may be directory 'd'
   Returns:
     list: flist, a list of filenames matching the given regular expression
   """
   popt = '-path'
   if not case:
     popt = '-ipath' # not case sensitive
-  out = sp.check_output(['find',rundir,popt,regex])
+  out = sp.check_output(['find',rundir,popt,regex,'-type',ftype])
   flist = out.split('\n')[:-1]
   return flist
 # end def files_with_regex
