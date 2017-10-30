@@ -1,7 +1,6 @@
+![master build status](https://api.travis-ci.org/Paul-St-Young/harvest_qmcpack.svg?branch=master)
 # harvest_qmcpack
 Python module containing useful routines to inspect and modify qmcpack objects.
-
-![master build status](https://api.travis-ci.org/Paul-St-Young/harvest_qmcpack.svg?branch=master)
 
 ## Quick Start
 
@@ -15,14 +14,26 @@ export PATH=~/harvest_qmcpack/bin:$PATH
 
 You can also use pip if you do not intend to change the code
 ```shell
-git clone https://github.com/Paul-St-Young/harvest_qmcpack.git ~
+git clone https://github.com/Paul-St-Young/harvest_qmcpack.git ~/harvest_qmcpack
+pip install --user ~/harvest_qmcpack
+```
+to update to the newest version:
+```shell
+cd ~/harvest_qmcpack
+git pull
 pip install --user ~/harvest_qmcpack
 ```
 
 ### Use
+The library functions can be used in a python script
 ```python
 from qharv.reel import scalar_dat
 df = scalar_dat.parse('vmc.s000.scalar.dat')
+```
+
+The examples in the "bin" folder can be ran in the shell
+```shell
+stalk vmc.in.xml
 ```
 
 ### Requirements
