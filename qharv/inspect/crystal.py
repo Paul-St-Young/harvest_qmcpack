@@ -36,6 +36,15 @@ def draw_atoms(ax,pos,**kwargs):
   Returns:
    list: a list of plt.Line3D
   """
+  # set defaults
+  if not ( ('c' in kwargs) or ('color' in kwargs) ):
+    kwargs['c'] = 'b'
+  if not ( ('ls' in kwargs) or ('linestyle' in kwargs) ):
+    kwargs['ls'] = ''
+  if not ('marker' in kwargs):
+    kwargs['marker'] = 'o'
+  if not (('ms' in kwargs) or ('markersize' in kwargs)):
+    kwargs['ms'] = 10
   dots  = ax.plot(pos[:,0],pos[:,1],pos[:,2],**kwargs)
   return dots
 
@@ -90,6 +99,16 @@ def draw_cell(ax,axes,**kwargs):
 
 def draw_crystal(ax,axes,pos,draw_super=False):
   """ draw crystal structure on ax
+
+  Example:
+    axes = np.eye(3)
+    pos  = np.array([ [0.5,0.5,0.5] ])
+
+    fig = plt.figure()
+    ax  = fig.add_subplot(1,1,1,projection='3d')
+    draw_crystal(ax,axes,pos)
+    plt.show()
+
   Args:
    ax (plt.Axes): matplotlib Axes object, must have projection='3d'
    axes (np.array): lattice vectors in row-major 3x3 array
@@ -101,7 +120,7 @@ def draw_crystal(ax,axes,pos,draw_super=False):
   """
   # draw primitive cell
   cell = draw_cell(ax,axes)
-  dots = draw_atoms(ax,pos,ls='',marker='o',c='b',ms=10)
+  dots = draw_atoms(ax,pos)
   atoms = [dots]
 
   nx = ny = nz = 2 # !!!! hard-code 2x2x2 supercell
