@@ -57,6 +57,45 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="module-qharv.seed.pset">
+<span id="qharv-seed-pset-module"></span><h2>qharv.seed.pset module<a class="headerlink" href="#module-qharv.seed.pset" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="qharv.seed.pset.feed">
+<code class="descclassname">qharv.seed.pset.</code><code class="descname">feed</code><span class="sig-paren">(</span><em>pos</em>, <em>group</em>, <em>pset</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/pset.html#feed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.pset.feed" title="Permalink to this definition">¶</a></dt>
+<dd><p>feed positions to a group in particle set
+:param pos: new positions
+:type pos: np.array
+:param group: name of particle group
+:type group: str
+:param pset: &lt;particleset&gt;
+:type pset: lxml.etree._Element</p>
+<dl class="docutils">
+<dt>Effect:</dt>
+<dd>pset is edited</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.seed.pset.sprinkle">
+<code class="descclassname">qharv.seed.pset.</code><code class="descname">sprinkle</code><span class="sig-paren">(</span><em>centers</em>, <em>alpha</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/pset.html#sprinkle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.pset.sprinkle" title="Permalink to this definition">¶</a></dt>
+<dd><p>spinkle a group of particles around ‘centers’ using Gaussians having exponent ‘alpha’
+:param centers: centers to sprink the particles around
+:type centers: np.array
+:param alpha: exponent of Gaussian used to sprinkle particles, width = sqrt(1/(4*alpha))
+:type alpha: float</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">new positions</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-qharv.seed.wf_h5">
 <span id="qharv-seed-wf-h5-module"></span><h2>qharv.seed.wf_h5 module<a class="headerlink" href="#module-qharv.seed.wf_h5" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -209,14 +248,17 @@ wrap around lxml.etree.parse
 
 <dl class="function">
 <dt id="qharv.seed.xml.set_param">
-<code class="descclassname">qharv.seed.xml.</code><code class="descname">set_param</code><span class="sig-paren">(</span><em>node</em>, <em>pname</em>, <em>pval</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#set_param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.set_param" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">qharv.seed.xml.</code><code class="descname">set_param</code><span class="sig-paren">(</span><em>node</em>, <em>pname</em>, <em>pval</em>, <em>new=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/seed/xml.html#set_param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.seed.xml.set_param" title="Permalink to this definition">¶</a></dt>
 <dd><p>set &lt;parameter&gt; with name ‘pname’ to ‘pval’
+if new=True, then &lt;parameter name=”pname”&gt; does not exist. create it
 :param node: xml node with children having tag ‘parameter’
 :type node: lxml.etree._Element
 :param pname: name of parameter
 :type pname: str
 :param pval: value of parameter
-:type pval: str</p>
+:type pval: str
+:param new: create new &lt;paremter&gt; node, default is false
+:type new: bool</p>
 <dl class="docutils">
 <dt>Effect:</dt>
 <dd>the text of &lt;parameter&gt; with ‘pname’ will be set to ‘pval’</dd>
@@ -352,6 +394,7 @@ wrap around lxml.etree._ElementTree.write
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">qharv.seed package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-qharv.seed.pset">qharv.seed.pset module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-qharv.seed.wf_h5">qharv.seed.wf_h5 module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-qharv.seed.xml">qharv.seed.xml module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-qharv.seed.xml_examples">qharv.seed.xml_examples module</a></li>

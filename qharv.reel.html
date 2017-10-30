@@ -103,7 +103,7 @@ problems:</p>
 
 <dl class="function">
 <dt id="qharv.reel.mole.files_with_regex">
-<code class="descclassname">qharv.reel.mole.</code><code class="descname">files_with_regex</code><span class="sig-paren">(</span><em>regex</em>, <em>rundir</em>, <em>case=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#files_with_regex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.files_with_regex" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">qharv.reel.mole.</code><code class="descname">files_with_regex</code><span class="sig-paren">(</span><em>regex</em>, <em>rundir</em>, <em>case=True</em>, <em>ftype='f'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#files_with_regex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.files_with_regex" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>find files with the given suffix in folder rundir</dt>
 <dd>rely on bash <cite>find</cite> command</dd>
@@ -116,6 +116,7 @@ problems:</p>
 <li><strong>regex</strong> (<em>str</em>) – regular expression for file names</li>
 <li><strong>rundir</strong> (<em>str</em>) – directory containing the files to be found</li>
 <li><strong>case</strong> (<em>bool</em><em>, </em><em>optional</em>) – case sensity, default is True</li>
+<li><strong>ftype</strong> (<em>str</em><em>, </em><em>optional</em>) – files type, default is regular file ‘f’, may be directory ‘d’</li>
 </ul>
 </td>
 </tr>
@@ -174,6 +175,30 @@ list: indep, a list of independent filenames</td>
 </dd></dl>
 
 <dl class="function">
+<dt id="qharv.reel.scalar_dat.error">
+<code class="descclassname">qharv.reel.scalar_dat.</code><code class="descname">error</code><span class="sig-paren">(</span><em>trace</em>, <em>kappa=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/scalar_dat.html#error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.scalar_dat.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate the error of a trace of scalar data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>trace</strong> (<em>list</em>) – should be a 1D iterable array of floating point numbers</li>
+<li><strong>kappa</strong> (<em>float</em><em>,</em><em>optional</em>) – auto-correlation time, default is to re-calculate</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">stderr, the error of the mean of this trace of scalars</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="qharv.reel.scalar_dat.parse">
 <code class="descclassname">qharv.reel.scalar_dat.</code><code class="descname">parse</code><span class="sig-paren">(</span><em>dat_fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/scalar_dat.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.scalar_dat.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>read the scalar.dat file, should be table format readable by numpy.loadtxt.</p>
@@ -210,10 +235,10 @@ The equilibrated data is assumed to have Gaussian distribution. Error is calcula
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(ymean,yerr), where ymean is the mean of column, while yerr is the 1-sigma error of column</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(ymean,yerr,ycorr), where ymean is the mean of column, yerr is the 1-sigma error of column, and ycorr is the autocorrelation</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(float,float)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(float,float,float)</p>
 </td>
 </tr>
 </tbody>
@@ -225,7 +250,7 @@ The equilibrated data is assumed to have Gaussian distribution. Error is calcula
 <span id="qharv-reel-stat-h5-module"></span><h2>qharv.reel.stat_h5 module<a class="headerlink" href="#module-qharv.reel.stat_h5" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="qharv.reel.stat_h5.absolute_magnetization">
-<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">absolute_magnetization</code><span class="sig-paren">(</span><em>stat_fname</em>, <em>nequil</em>, <em>obs_name='SpinDensity'</em>, <em>up_name='u'</em>, <em>dn_name='d'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#absolute_magnetization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.absolute_magnetization" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">absolute_magnetization</code><span class="sig-paren">(</span><em>handle</em>, <em>nequil</em>, <em>obs_name='SpinDensity'</em>, <em>up_name='u'</em>, <em>dn_name='d'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#absolute_magnetization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.absolute_magnetization" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>calculate up-down spin density and the integral of its absolute value</dt>
 <dd>first check that /SpinDensity/u and /SpinDensity/d both exist in the .stat.h5 file, then extract both densities, subtract and integrate</dd>
@@ -235,7 +260,7 @@ The equilibrated data is assumed to have Gaussian distribution. Error is calcula
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>stat_fname</strong> (<em>str</em>) – name of the .stat.h5 file</li>
+<li><strong>handle</strong> (<em>h5py.Group</em>) – or h5py.File or h5py.Dataset</li>
 <li><strong>nequil</strong> (<em>int</em>) – number of equilibration blocks to throw out</li>
 <li><strong>obs_name</strong> (<em>str</em>) – name of spindensity observable, default=SpinDensity</li>
 <li><strong>up_name</strong> (<em>str</em>) – default=u</li>
@@ -282,7 +307,7 @@ The equilibrated data is assumed to have Gaussian distribution. Error is calcula
 
 <dl class="function">
 <dt id="qharv.reel.stat_h5.mean_and_err">
-<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">mean_and_err</code><span class="sig-paren">(</span><em>stat_fname</em>, <em>obs_path</em>, <em>nequil</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#mean_and_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.mean_and_err" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">mean_and_err</code><span class="sig-paren">(</span><em>handle</em>, <em>obs_path</em>, <em>nequil</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#mean_and_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.mean_and_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculate mean and variance of an observable from QMCPACK stat.h5 file</p>
 <p>assume autocorrelation = 1.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -290,7 +315,7 @@ The equilibrated data is assumed to have Gaussian distribution. Error is calcula
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>stat_fname</strong> (<em>str</em>) – .stat.h5 filename</li>
+<li><strong>handle</strong> (<em>h5py.Group</em>) – or h5py.File or h5py.Dataset</li>
 <li><strong>obs_path</strong> (<em>str</em>) – path to observable, e.g. ‘gofr_e_1_1’</li>
 <li><strong>nequil</strong> (<em>int</em>) – number of equilibration blocks to throw out</li>
 </ul>
@@ -305,6 +330,11 @@ The equilibrated data is assumed to have Gaussian distribution. Error is calcula
 </tbody>
 </table>
 </dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.stat_h5.path_loc">
+<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">path_loc</code><span class="sig-paren">(</span><em>path</em>, <em>handle</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#path_loc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.path_loc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="qharv.reel.stat_h5.read">
