@@ -44,7 +44,10 @@ def corr(trace):
  
   mu     = np.mean(trace)
   stddev = np.std(trace,ddof=1)
- 
+  if np.isclose(stddev,0): # easy case
+    return np.inf # infinite correlation for constant trace
+  # end if
+
   correlation_time = 0.
   for k in range(1,len(trace)):
       # calculate auto_correlation
@@ -65,10 +68,23 @@ def corr(trace):
   return correlation_time
 # end def corr
 def error(trace,kappa=None):
-  if kappa is None:
-    kappa = corr(trace)
-  neffective = np.sqrt(len(trace)/kappa)
+  """ calculate the error of a trace of scalar data
+
+  Args:
+    trace (list): should be a 1D iterable array of floating point numbers
+    kappa (float,optional): auto-correlation time, default is to re-calculate 
+  Returns:
+    float: stderr, the error of the mean of this trace of scalars
+  """
   stddev = np.std(trace,ddof=1)
+  if np.isclose(stddev,0): # easy case
+    return 0.0 # no error for constant trace
+  # end if
+
+  if kappa is None: # no call to corr 
+    kappa = corr(trace)
+  # end if
+  neffective = np.sqrt(len(trace)/kappa)
   return stddev/neffective
 # end def error
 
