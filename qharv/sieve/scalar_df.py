@@ -35,6 +35,11 @@ def mean_error_scalar_df(df,nequil,labels=['path','fout']):
   """ get mean and average from a dataframe of raw scalar data (per-block) 
    take dataframe having columns ['LocalEnergy','Variance',...] to a 
    dataframe having columns ['LocalEnergy_mean','LocalEnergy_error',...]
+
+   !!!! The 'labels' input is a bad design. One must construct 
+    df to have the columns listed in labels. This is not intuitive.
+    It is better to ask the user for a groupby outside of this function.
+
    Args:
     df (pd.DataFrame): raw scalar dataframe, presumable generated using
      qharv.scalar_dat.parse with extra labels columns added to identify
@@ -52,6 +57,9 @@ def mean_error_scalar_df(df,nequil,labels=['path','fout']):
 
   # create dataframe of mean
   mdf = df.groupby(labels).apply(lambda x:np.mean(x[nequil:]))
+  if type(mdf) is not pd.DataFrame:
+    raise RuntimeError('mean dataframe (mdf) type %s unknown'%type(mdf))
+  # end if
 
   # create dataframe of error
   # each entry is a list because error cannot be applied to matrix yet
