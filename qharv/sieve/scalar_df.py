@@ -18,18 +18,16 @@ def mean_error_scalar_df(df,nequil,kappa=None):
    Returns:
     pd.DataFrame: mean_error dataframe 
   """
-
   sel = df['index'] > nequil
 
   # create pd.Series of mean
   msr = df.loc[sel].apply(np.mean).drop('index')
 
   # create pd.Series of error
-  
   efunc = lambda x:error(x,kappa=kappa) # if kappa is not None, then 
   # auto-correlation is not re-calculated
-  esr = df.apply( # error cannot be directly applied to matrix yet
-     lambda x:np.apply_along_axis(efunc,0,x)
+  esr = df.loc[sel].apply( # error cannot be directly applied to matrix yet
+    lambda x:float( np.apply_along_axis(efunc,0,x) )
   ).drop('index')
 
   df1 = msr.to_frame().T

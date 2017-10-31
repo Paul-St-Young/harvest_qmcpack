@@ -85,7 +85,8 @@ def error(trace,kappa=None):
     kappa = corr(trace)
   # end if
   neffective = np.sqrt(len(trace)/kappa)
-  return stddev/neffective
+  err = stddev/neffective
+  return err
 # end def error
 
 def single_column(df,column,nequil):
