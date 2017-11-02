@@ -21,14 +21,25 @@ to update to the newest version:
 ```shell
 cd ~/harvest_qmcpack
 git pull
-pip install --user ~/harvest_qmcpack
+pip install --user --upgrade ~/harvest_qmcpack
 ```
 
 ### Use
 The library functions can be used in a python script
 ```python
-from qharv.reel import scalar_dat
-df = scalar_dat.parse('vmc.s000.scalar.dat')
+# extract all scalar data from a run directory
+import os
+from qharv.reel  import mole, scalar_dat
+from qharv.sieve import scalar_df
+flist = mole.files_scalar_dat('./runs')
+data  = []
+for floc in flist:
+  mydf = scalar_dat.parse(floc)
+  # add metadata to identify runs
+  mydf['path'] = os.path.dirname(floc)
+  mydf['fout'] = os.path.basename(floc)
+  data.append(mydf)
+df = pd.concat(data)
 ```
 
 The examples in the "bin" folder can be ran in the shell

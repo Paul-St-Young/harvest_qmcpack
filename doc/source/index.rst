@@ -14,6 +14,7 @@ Welcome to qharv's documentation!
    qharv.inspect.rst
    qharv.cross.rst
    qharv.reel.rst
+   qharv.sieve.rst
 
 Indices and tables
 ==================

@@ -11,11 +11,12 @@ from io import StringIO
 def wbyw_vmc():
   text = '''<qmc method="vmc" move="not_pbyp_or_whatever" checkpoint="-1">
     <parameter name="usedrift">    yes      </parameter>
-    <parameter name="warmupsteps">     750  </parameter>
+    <parameter name="warmupsteps">     512  </parameter>
     <parameter name="warmuptimestep"> 0.01  </parameter>
     <parameter name="blocks">       64  </parameter>
-    <parameter name="steps">        16  </parameter>
-    <parameter name="timestep">    0.08  </parameter>
+    <parameter name="steps">         4  </parameter>
+    <parameter name="substeps">      4  </parameter>
+    <parameter name="timestep">    0.05 </parameter>
     <parameter name="samples">     512  </parameter>
   </qmc>'''
   return xml.parse(text)
@@ -35,13 +36,13 @@ def wbyw_optimize():
       <cost name="energy">                0.95  </cost>
       <cost name="unreweightedvariance">  0.00  </cost>
       <cost name="reweightedvariance">    0.05  </cost>
-      <parameter name="usedrift">      yes  </parameter>
-      <parameter name="warmupsteps">    1024  </parameter>
-      <parameter name="warmuptimestep"> 0.01  </parameter>
-      <parameter name="timestep">       0.08  </parameter>
-      <parameter name="blocks">         64  </parameter>
-      <parameter name="steps">           5  </parameter>
-      <parameter name="samples">     65536  </parameter>
+      <parameter name="blocks">          64  </parameter>
+      <parameter name="warmupsteps">    512  </parameter>
+      <parameter name="warmuptimestep">0.01  </parameter>
+      <parameter name="timestep">      0.05  </parameter>
+      <parameter name="substeps">         5  </parameter>
+      <parameter name="samples">      65536  </parameter>
+      <parameter name="usedrift">       yes  </parameter>
       <parameter name="MinMethod"> OneShiftOnly </parameter>
     </qmc>
   </loop>'''
@@ -97,4 +98,30 @@ def bcc54_dynamic_backflow():
             <!-- pp backflow does nothing if hartree_product wf is used for protons -->
           </transformation>
         </backflow>'''
+  return xml.parse(text)
+
+# ============================= <hamiltonian> section =============================
+
+def static_ae_ham():
+  text = '''<hamiltonian name="h0" type="generic" target="e">
+         <pairpot type="coulomb" name="ElecElec" source="e" target="e"/>
+         <pairpot type="coulomb" name="IonIon" source="ion0" target="ion0"/>
+         <pairpot type="coulomb" name="ElecIon" source="ion0" target="e"/>
+         <estimator type="structurefactor" name="sksp"/>
+         <estimator name="sk" type="sk" hdf5="yes"/>
+         <estimator type="gofr" name="gofr" num_bin="50"/>
+         <estimator type="Pressure"/>
+      </hamiltonian>'''
+  return xml.parse(text)
+
+def dynamic_ae_ham():
+  text = '''<hamiltonian name="h0" type="generic" target="e">
+         <pairpot type="coulomb" name="ElecElec" source="e" target="e"/>
+         <estimator type="structurefactor" name="sksp"/>
+         <estimator name="sk" type="sk" hdf5="yes"/>
+         <estimator type="gofr" name="gofr" num_bin="50"/>
+         <estimator type="Pressure"/>
+         <estimator name="skinetic" type="specieskinetic"/>
+         <estimator hdf5="yes" name="latdev" per_xyz="yes" sgroup="H" source="wf_centers" target="e" tgroup="p" type="latticedeviation"/>
+      </hamiltonian>'''
   return xml.parse(text)
