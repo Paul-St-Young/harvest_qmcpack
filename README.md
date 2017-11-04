@@ -29,16 +29,31 @@ The library functions can be used in a python script
 ```python
 # extract all scalar data from a run directory
 import os
-from qharv.reel  import mole, scalar_dat
+from qharv.reel  import scalar_dat, mole
 from qharv.sieve import scalar_df
+
+# define equilibration length and autocorrelation length
+nequil = 5
+kappa  = 1.0 # None to re-calculate
+#  runs should be designed to have short equilibration and
+# no autocorrelation. kappa can be calculated on-the-fly
+# ,however kappa calculation is slow. I have yet to find
+# a fast and reliable algorithm for nequil.
+
+# generate the list of scalar.dat files to analyze
 flist = mole.files_scalar_dat('./runs')
+#  hint: use `moles.files_with_regex` for more general situations
+
+# analyze the list of scalar.dat files
 data  = []
 for floc in flist:
   mydf = scalar_dat.parse(floc)
+  mdf  = scalar_df.mean_error_scalar_df(mydf,nequil,kappa=kappa)
+  assert len(mdf) == 1 # each scalar.dat should contribute to one entry
   # add metadata to identify runs
-  mydf['path'] = os.path.dirname(floc)
-  mydf['fout'] = os.path.basename(floc)
-  data.append(mydf)
+  mdf['path'] = os.path.dirname(floc)
+  mdf['fdat'] = os.path.basename(floc)
+  data.append(mdf)
 df = pd.concat(data)
 ```
 
