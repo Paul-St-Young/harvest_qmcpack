@@ -27,22 +27,39 @@ pip install --user --upgrade ~/harvest_qmcpack
 ### Use
 The library functions can be used in a python script
 ```python
-# extract all scalar data from a run directory
+# extract all scalar data from a run directory 
+#  (not necessarily from an actual run)
 import os
 from qharv.reel  import scalar_dat, mole
 from qharv.sieve import scalar_df
+"""
+*** Strategy adopted in this script:
+ 1. use "mole" to dig up the locations of all 
+  scalar.dat to be analyzed.
+ 2. use "reel" to reel in all scalar data 
+  without prejudice.
+ 3. use "sieve" to remove equilibration data 
+  and perform averages to shrink the database.
+only two human inputs are required: folder, nequil
+"""
+
+# folder containing QMCPACK scalar.dat files
+folder = './runs'
 
 # define equilibration length and autocorrelation length
 nequil = 5
 kappa  = 1.0 # None to re-calculate
 #  runs should be designed to have short equilibration and
 # no autocorrelation. kappa can be calculated on-the-fly
-# ,however kappa calculation is slow. I have yet to find
-# a fast and reliable algorithm for nequil.
+# ,be warned though: kappa calculation is slow. For nequil:
+# unfortunately I have yet to find a fast and RELIABLE
+# algorithm to determine nequil. For custom nequil, use
+# a dictionary in the `for floc in flist` loop.
 
 # generate the list of scalar.dat files to analyze
-flist = mole.files_scalar_dat('./runs')
+flist = mole.files_scalar_dat(folder)
 #  hint: use `moles.files_with_regex` for more general situations
+#   flist can also be written by hand to select files to analyze
 
 # analyze the list of scalar.dat files
 data  = []
@@ -54,12 +71,13 @@ for floc in flist:
   mdf['path'] = os.path.dirname(floc)
   mdf['fdat'] = os.path.basename(floc)
   data.append(mdf)
-df = pd.concat(data)
+df = pd.concat(data).reset_index() # index must be unique for the database to be saved
 ```
 
 The examples in the "bin" folder can be ran in the shell
 ```shell
 stalk vmc.in.xml
+stab vmc.s000.scalar.dat
 ```
 
 ### Requirements
