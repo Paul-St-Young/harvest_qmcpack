@@ -1,6 +1,11 @@
 # Author: Yubo "Paul" Yang
 # Email: yubo.paul.yang@gmail.com
 # Routines to roughly process scalar Dataframes. Mostly built around pandas's API.
+#
+#  note: A scalar dataframe (scalar_df) is expected to contain the raw data, i.e.
+# block-resolved expectation values, of a SINGLE calculation. If multiple runs are
+# collected in the same dataframe, label by ['path','fdat'] and use groupby before
+# applying the functions in this script.
 import numpy as np
 import pandas as pd
 from qharv.reel.scalar_dat import error
