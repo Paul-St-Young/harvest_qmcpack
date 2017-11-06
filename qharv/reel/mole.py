@@ -58,3 +58,49 @@ def group_map(flist):
   # end for
   return groups,indep
 # def group_map
+
+def interpret_qmcpack_fname(fname):
+  """ extract metadata regarding the contents of a file based on its filename.
+   QMCPACK generates files having a pre-determined suffix structure.
+   This function will interpret the last 4 period-separated segments of the suffix. 
+  Args:
+    fname (str): filename, must end in one of ['dat','h5','qmc','xml'].
+  Returns:
+    dict: a dictionary of metadata. 
+  """
+  known_extensions = set( ['dat','h5','qmc','xml'] )
+
+  tokens = fname.split('.')
+  ext = tokens[-1] # dat,h5,qmc
+  if ext not in known_extensions:
+    raise RuntimeError('unable to interpret %s' % fname)
+  # end if
+
+  # interpret various pieces of the filename
+
+  # category
+  cate   = tokens[-2] # scalar,stat,config,random,qmc
+
+  # series index
+  isst   = tokens[-3] # s000
+  iss    = int(isst.replace('s','')) # series index ('is' is a Python keyword)
+
+  # group index
+  igt    = tokens[-4] # g000 or $prefix
+  ig = 0 # group index
+  suf_list = [isst,cate,ext]
+  if igt.startswith('g') and len(igt)==4:
+    ig = int(igt.replace('g',''))
+    suf_list = [igt] + suf_list
+  else:  # there is no group index
+    pass # keep defaul ig=0
+  # end if
+
+  # get project id by removing the suffix
+  suffix = '.' + '.'.join(suf_list)
+  prefix = fname.replace(suffix,'')
+
+  # metadata entry
+  entry = {'id':prefix,'group':ig,'series':iss,'category':cate,'ext':ext}
+  return entry
+# end def interpret_qmcpack_fname
