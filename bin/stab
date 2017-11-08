@@ -40,8 +40,8 @@ if __name__ == '__main__':
   # interpret inputs
   if args.list:
     print(df.columns)
-  if 'LocalEnergy' not in df.columns:
-    args.column = df.columns[0]
+  if (args.column=='LocalEnergy') and ('LocalEnergy' not in df.columns):
+    args.column = df.columns[0] # change default
   if args.column not in df.columns:
     raise RuntimeError('requested column "%s" not found\n available:%s'%(
         args.column,str(df.columns.values)
