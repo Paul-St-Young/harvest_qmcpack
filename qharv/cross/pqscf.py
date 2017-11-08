@@ -94,7 +94,7 @@ def r_to_pw(moR0,grid_shape,gvecs=None):
     gvecs = np.array([gvec for gvec in product(
       range(-nx,nx+1),range(-ny,ny+1),range(-nz,nz+1))],dtype=int)
   else: # make sure information is not missing from real-space representation
-    assert (gvecs.dtype is int)
+    assert np.issubdtype(gvecs.dtype,np.integer)
     valid = (gvecs.max(axis=0) <= cell_gs).all() and (-gvecs.min(axis=0) <= cell_gs).all()
     if not valid:
       raise RuntimeError('Please remove gvectors outside of cell_gs: %s' % ' '.join(cell_gs.astype(str)) )
