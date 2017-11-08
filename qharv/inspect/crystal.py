@@ -29,6 +29,8 @@ def atomic_coords(fname,pset_name='ion0'):
 
 def draw_atoms(ax,pos,**kwargs):
   """ draw atoms on ax
+  see example in draw_crystal
+
   Args:
    ax (plt.Axes): matplotlib Axes object, must have projection='3d'
    pos (np.array): array of atomic positions
@@ -50,6 +52,8 @@ def draw_atoms(ax,pos,**kwargs):
 
 def draw_cell(ax,axes,**kwargs):
   """ draw cell on ax
+  see example in draw_crystal
+
   Args:
    ax (plt.Axes): matplotlib Axes object, must have projection='3d'
    axes (np.array): lattice vectors in row-major 3x3 array
@@ -101,6 +105,10 @@ def draw_crystal(ax,axes,pos,draw_super=False):
   """ draw crystal structure on ax
 
   Example:
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
+
     axes = np.eye(3)
     pos  = np.array([ [0.5,0.5,0.5] ])
 
