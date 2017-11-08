@@ -38,15 +38,17 @@ def ls(handle,r=False,level=0,indent="  "):
   return mystr
 # end def ls
 
-def mean_and_err(handle,obs_path,nequil):
+def mean_and_err(handle,obs_path,nequil,kappa=1.0):
   """ calculate mean and variance of an observable from QMCPACK stat.h5 file
 
-  assume autocorrelation = 1.
+  assume autocorrelation = 1 by default
 
   Args:
     handle (h5py.Group): or h5py.File or h5py.Dataset
     obs_path (str): path to observable, e.g. 'gofr_e_1_1'
     nequil (int): number of equilibration blocks to throw out
+    kappa (float,optional): auto-correlation of the data, default=1.0 i.e. no
+     auto-correlation
   Returns:
     (np.array,np.array): (val_mean,val_err), the mean and error of the observable, assuming no autocorrelation. For correlated data, error is underestimated by a factor of sqrt(autocorrelation).
   """
