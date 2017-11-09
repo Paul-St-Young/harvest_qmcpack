@@ -141,9 +141,9 @@ def get_axes(doc):
 # end def 
 
 def get_pos(doc,pset='ion0'):
-  source_pset_node = doc.find('.//particleset[@name="%s"]'%pset_name)
+  source_pset_node = doc.find('.//particleset[@name="%s"]'%pset)
   if source_pset_node is None:
-    raise RuntimeError('%s not found in %s'%(pset_name,fname))
+    raise RuntimeError('%s not found in %s'%(pset,fname))
   pos_node = source_pset_node.find('.//attrib[@name="position"]')
   pos = text2arr(pos_node.text)
   return pos
