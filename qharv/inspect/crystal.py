@@ -7,25 +7,11 @@ from qharv.seed import xml
 
 def lattice_vectors(fname):
   doc = xml.read(fname)
-  sc_node = doc.find('.//simulationcell')
-  if sc_node is None:
-    raise RuntimeError('<simulationcell> not found in %s'%fname)
-  lat_node = sc_node.find('.//parameter[@name="lattice"]')
-  unit = lat_node.get('units')
-  assert unit == 'bohr'
-  axes = xml.text2arr( lat_node.text )
-  return axes
+  return xml.get_axes(doc)
 
-def atomic_coords(fname,pset_name='ion0'):
-  # !!!! assuming atomic units (bohr)
-  # !!!! finds the first group in particleset
+def atomic_coords(fname,pset='ion0'):
   doc = xml.read(fname)
-  source_pset_node = doc.find('.//particleset[@name="%s"]'%pset_name)
-  if source_pset_node is None:
-    raise RuntimeError('%s not found in %s'%(pset_name,fname))
-  pos_node = source_pset_node.find('.//attrib[@name="position"]')
-  pos = xml.text2arr(pos_node.text)
-  return pos
+  return xml.get_pos(doc,pset=pset)
 
 def draw_atoms(ax,pos,**kwargs):
   """ draw atoms on ax

@@ -88,6 +88,20 @@ def text2arr(text,dtype=float,flatten=False):
 # end def text2arr
 
 # ============================= level 2: QMCPACK specialized =============================
+
+def get_param(node,pname):
+  """ retrieve the str representation of a parameter from:
+   <parameter name="pname"> str_rep </parameter>
+  Args:
+    node (lxml.etree._Element): xml node with <parameter>.
+    pname (str): name of parameter
+  Return:
+    str: string representation of the parameter value
+  """
+  pnode = node.find('.//parameter[@name="%s"]'%pname)
+  return pnode.text
+# end def
+
 def set_param(node,pname,pval,new=False):
   """ set <parameter> with name 'pname' to 'pval' 
   if new=True, then <parameter name="pname"> does not exist. create it
@@ -113,6 +127,26 @@ def set_param(node,pname,pval,new=False):
   else:
     pnode.text = pval
   # end if
+# end def
+
+def get_axes(doc):
+  sc_node = doc.find('.//simulationcell')
+  if sc_node is None:
+    raise RuntimeError('<simulationcell> not found in %s'%fname)
+  lat_node = sc_node.find('.//parameter[@name="lattice"]')
+  unit = lat_node.get('units')
+  assert unit == 'bohr'
+  axes = text2arr( lat_node.text )
+  return axes
+# end def 
+
+def get_pos(doc,pset='ion0'):
+  source_pset_node = doc.find('.//particleset[@name="%s"]'%pset_name)
+  if source_pset_node is None:
+    raise RuntimeError('%s not found in %s'%(pset_name,fname))
+  pos_node = source_pset_node.find('.//attrib[@name="position"]')
+  pos = text2arr(pos_node.text)
+  return pos
 # end def
 
 def opt_wf_fname(opt_inp,iqmc):
