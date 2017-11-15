@@ -57,7 +57,7 @@ if __name__ == '__main__':
   
   prt_format = "{name:14s} {mean:10.6f} +/- {error:8.8f} {corr:4.2f}"
   output = prt_format.format(
-    name = args.column,
+    name = str(args.column),
     mean = ymean,
     error= yerr,
     corr = ycorr

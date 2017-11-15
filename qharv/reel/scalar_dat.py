@@ -13,20 +13,33 @@ def parse(dat_fname):
   Args:
     dat_fname (str): name of input file
   Returns:
-    pd.DataFrame: df containing the table of data """
+    pd.DataFrame: df containing the table of data
+  """
 
-  # pandas's equivalent of numpy.loadtxt
-  df = pd.read_csv(dat_fname,sep='\s+')
+  # check if a header line exists, if it does not, then set header=None
+  with open(dat_fname,'r') as fp:
+    header = fp.readline()
+  # end with
+  
+  if not header.startswith('#'): # there is no header
+    # pandas's equivalent of numpy.loadtxt
+    df = pd.read_csv(dat_fname,sep='\s+',header=None)
+  else: # do some extra parsing of the header
+    df = pd.read_csv(dat_fname,sep='\s+')
 
-  # remove first column name '#'
-  columns = df.columns
-  df.drop(columns[-1],axis=1,inplace=True)
-  df.columns = columns[1:]
+    # remove first column name '#'
+    columns = df.columns
+    df.drop(columns[-1],axis=1,inplace=True)
+    df.columns = columns[1:]
 
-  # calculate local energy variance if possible
-  if ('LocalEnergy' in columns) and ('LocalEnergy_sq' in columns):
-    df['Variance'] = df['LocalEnergy_sq']-df['LocalEnergy']**2.
+    # calculate local energy variance if possible
+    if ('LocalEnergy' in columns) and ('LocalEnergy_sq' in columns):
+      df['Variance'] = df['LocalEnergy_sq']-df['LocalEnergy']**2.
+    # end if
   # end if
+
+  # column labels should be strings
+  df.columns = map(str,df.columns)
 
   return df
 # end def parse
@@ -50,18 +63,18 @@ def corr(trace):
 
   correlation_time = 0.
   for k in range(1,len(trace)):
-      # calculate auto_correlation
-      auto_correlation = 0.0
-      num = len(trace)-k
-      for i in range(num):
-          auto_correlation += (trace[i]-mu)*(trace[i+k]-mu)
-      # end for i
-      auto_correlation *= 1.0/(num*stddev**2)
-      if auto_correlation > 0:
-          correlation_time += auto_correlation
-      else:
-          break
-      # end if
+    # calculate auto_correlation
+    auto_correlation = 0.0
+    num = len(trace)-k
+    for i in range(num):
+      auto_correlation += (trace[i]-mu)*(trace[i+k]-mu)
+    # end for i
+    auto_correlation *= 1.0/(num*stddev**2)
+    if auto_correlation > 0:
+      correlation_time += auto_correlation
+    else:
+      break
+    # end if
   # end for k
  
   correlation_time = 1.0 + 2.0*correlation_time
