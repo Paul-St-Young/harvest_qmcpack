@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
   axes = crystal.lattice_vectors(args.fname)
   try: # positions not found
-    pos  = crystal.atomic_coords(args.fname,pset_name=args.pset_name)
+    pos  = crystal.atomic_coords(args.fname,pset=args.pset_name)
   except RuntimeError as rerr:
     estr = '%s not found' % args.pset_name
     if estr in str(rerr): # known error: typo in pset_name
