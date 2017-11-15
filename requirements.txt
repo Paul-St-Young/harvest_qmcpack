@@ -2,3 +2,5 @@ nose
 lxml
 h5py
 numpy
+pandas
+progressbar2
