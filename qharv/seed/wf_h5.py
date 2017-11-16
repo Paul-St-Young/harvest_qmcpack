@@ -27,7 +27,7 @@ dtypes = {
   'nstate':int,
 }
 
-def get(name,fp):
+def get(fp,name):
   if name not in locations.keys():
     raise RuntimeError('unknown attribute requested: %s' % name)
   return fp[ locations[name] ].value
@@ -79,7 +79,7 @@ def state_path(ikpt,ispin,istate):
   path = 'electrons/kpoint_%d/spin_%d/state_%d/' % (ikpt,ispin,istate)
   return path
 
-def get_orb_in_pw(ikpt,ispin,istate,fp):
+def get_orb_in_pw(fp,ikpt,ispin,istate):
   orb_path = os.path.join( state_path(ikpt,ispin,istate), 'psi_g' )
   psig_arr = fp[orb_path].value # stored in real view
   #psig = psig_arr[:,0]+1j*psig_arr[:,1] # convert to complex view
