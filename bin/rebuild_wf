@@ -7,22 +7,7 @@
 #  jas1/jas.xml contains the wavefunction from prefix.s001.opt.xml
 #  jas1/J1.uu.dat contains the up-up electron Jastrow for example
 
-if __name__ == '__main__':
-  import os
-  import argparse
-  from qharv.seed import xml
-
-  parser = argparse.ArgumentParser()
-  parser.add_argument('fname',type=str,help='QMCPACK optimization input xml, should contain <loop>')
-  parser.add_argument('--qbin',type=str,default='qmcpack',help='location of QMCPACK executable')
-  parser.add_argument('--setup',action='store_true',help='setup only i.e. skip execution')
-  parser.add_argument('--force','-f',action='store_true',help='skip checks')
-  parser.add_argument('--detset',action='store_true',help='look for href in <determinantset> instead of <sposet_builder> node, for old inputs')
-  args = parser.parse_args()
-
-  doc  = xml.read(args.fname)
-  nqmc = int( doc.find('loop').get('max') )
-
+def get_bb_node(doc,args): # get basis builder xml node for 'href' extraction
   # get location of wavefunction hdf5
   spo_tag = 'sposet_builder'
   href = ''
@@ -34,14 +19,32 @@ if __name__ == '__main__':
     if (args.force):
       pass
     elif (spo_tag == 'sposet_builder'):
-      raise RuntimeError('cannot find <sposet_builder>, try set --detset to look for <determinantset>')
+      raise RuntimeError('cannot find <sposet_builder>, try set --detset to look for <determinantset>; use -jas if you only care about the jastrows')
     elif (spo_tag == 'determinantset'):
-      raise RuntimeError('cannot find <determinantset>, is %s a valid QMCPACK input file?\n use -f if you are sure'%args.fname)
+      raise RuntimeError('cannot find <determinantset>, is %s a valid QMCPACK input file?\n use -f if you are sure; use -jas if you only care about the jastrows'%args.fname)
     # end if
-  else:
-    href = spo_node.get('href')
-  # end if
-  # todo: verify the hdf5 file exists
+  return spo_node
+# end def get_href
+
+if __name__ == '__main__':
+  import os
+  import argparse
+  from qharv.seed import xml
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument('fname',type=str,help='QMCPACK optimization input xml, should contain <loop>')
+  parser.add_argument('--qbin',type=str,default='qmcpack',help='location of QMCPACK executable')
+  parser.add_argument('--setup',action='store_true',help='setup only i.e. skip execution')
+  parser.add_argument('--force','-f',action='store_true',help='skip checks')
+  parser.add_argument('--detset',action='store_true',help='look for href in <determinantset> instead of <sposet_builder> node, for old inputs')
+  parser.add_argument('--jastrow_only','-jas',action='store_true',help='empty <wavefunction> except for the <jastrow> nodes; this will circumvent the problem of having to find the correct orbital file for a determinant if one does not care about <determinantset>. ')
+  args = parser.parse_args()
+
+  doc  = xml.read(args.fname)
+  nqmc = int( doc.find('loop').get('max') )
+  spo_node0 = get_bb_node(doc,args)
+  if args.jastrow_only:
+    spo_node0 = None
 
   # make dummy input files using optimized w.f. at each loop
   for iqmc in range(nqmc):
@@ -51,11 +54,20 @@ if __name__ == '__main__':
     # put optimized wavefunction at step 'iqmc' into input
     wf_fname = xml.opt_wf_fname(args.fname,iqmc)
     doc = xml.swap_in_opt_wf(xml.read(args.fname),xml.read(wf_fname))
-
+    if args.jastrow_only:
+      wf_node = doc.find('.//wavefunction')
+      for node in wf_node:
+        if node.tag != 'jastrow':
+          wf_node.remove(node)
+        # end if
+      # end for
+    # end if
+      
     # fix href
-    if spo_node is not None:
-      spo_node = doc.find('.//'+spo_tag)
-      spo_node.set('href',os.path.join('..',href))
+    if spo_node0 is not None:
+      # todo: verify the hdf5 file exists
+      spo_node = doc.find('.//'+spo_node0.tag)
+      spo_node.set('href',os.path.join('..',spo_node0.get('href')))
     # end if
 
     # remove <qmc> section
