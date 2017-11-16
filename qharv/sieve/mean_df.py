@@ -22,7 +22,8 @@ def twist_average_mean_df(df0,drop_null=False):
   # decide what to do with nans
   bad_sel = df0.isnull().any(axis=1)
   bad_entries = df0.loc[bad_sel]
-  if (len(bad_entries)>0) and (not drop_null):
+  nbad = len(bad_entries)
+  if (nbad>0) and (not drop_null):
     raise RuntimeError('%d bad runs found in scalar_df, set drop_null to drop bad data.'%nbad)
   # end if
   if (drop_null):
