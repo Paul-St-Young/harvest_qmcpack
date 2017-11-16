@@ -10,7 +10,6 @@
 def get_bb_node(doc,args): # get basis builder xml node for 'href' extraction
   # get location of wavefunction hdf5
   spo_tag = 'sposet_builder'
-  href = ''
   if args.detset:
     spo_tag = 'determinantset'
   # end if
@@ -23,8 +22,13 @@ def get_bb_node(doc,args): # get basis builder xml node for 'href' extraction
     elif (spo_tag == 'determinantset'):
       raise RuntimeError('cannot find <determinantset>, is %s a valid QMCPACK input file?\n use -f if you are sure; use -jas if you only care about the jastrows'%args.fname)
     # end if
+  # end if
+  # check that href exists
+  href = spo_node.get('href')
+  if (not os.path.isfile(href)) and (not args.jastrow_only) and (not args.force):
+    raise RuntimeError('cannot find wavefunction file, use -jas to circumvent this issue (href="%s")'%href)
   return spo_node
-# end def get_href
+# end def get_bb_node
 
 if __name__ == '__main__':
   import os
@@ -33,21 +37,33 @@ if __name__ == '__main__':
 
   parser = argparse.ArgumentParser()
   parser.add_argument('fname',type=str,help='QMCPACK optimization input xml, should contain <loop>')
-  parser.add_argument('--qbin',type=str,default='qmcpack',help='location of QMCPACK executable')
-  parser.add_argument('--setup',action='store_true',help='setup only i.e. skip execution')
-  parser.add_argument('--force','-f',action='store_true',help='skip checks')
-  parser.add_argument('--detset',action='store_true',help='look for href in <determinantset> instead of <sposet_builder> node, for old inputs')
   parser.add_argument('--jastrow_only','-jas',action='store_true',help='empty <wavefunction> except for the <jastrow> nodes; this will circumvent the problem of having to find the correct orbital file for a determinant if one does not care about <determinantset>. ')
+  parser.add_argument('--iqmc',type=int,default=-1,help='select wavefunction from a specific optimization loop to rebuild')
+  parser.add_argument('--qbin',type=str,default='qmcpack',help='location of QMCPACK executable, default is to use the one available in $PATH')
+  parser.add_argument('--setup',action='store_true',help='setup only i.e. skip execution')
+  parser.add_argument('--detset',action='store_true',help='look for href in <determinantset> instead of <sposet_builder> node, for old inputs')
+  parser.add_argument('--force','-f',action='store_true',help='skip checks')
   args = parser.parse_args()
 
   doc  = xml.read(args.fname)
+  # decide on which optimization steps to look at
+  sid0 = int(doc.find('.//project').get('series'))
   nqmc = int( doc.find('loop').get('max') )
+  nmax = sid0 + nqmc - 1 # max series id available
+  qlist= range(nqmc) # look at all steps by default
+  if args.iqmc != -1:  # user selected step
+    if (args.iqmc > nmax):
+      raise RuntimeError('requested optimization step %d is outside of [%d,%d]'%(args.iqmc,sid0,nmax))
+    # end if
+    qlist = [args.iqmc]
+  # end if
+
   spo_node0 = get_bb_node(doc,args)
   if args.jastrow_only:
     spo_node0 = None
 
   # make dummy input files using optimized w.f. at each loop
-  for iqmc in range(nqmc):
+  for iqmc in qlist:
     # folder for dummy run used to rebuild wavefunction
     jas_dir = 'jas%d'%iqmc
 

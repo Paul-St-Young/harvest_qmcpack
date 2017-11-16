@@ -89,7 +89,7 @@ To generate the documentation, first use sphinx-apidoc to convert doc strings to
 ```shell
 cd ~/harvest_qmcpack/doc; sphinx-apidoc -o source ../qharv
 ```
-Next, use the Makefile to create html documentation:
+Next, use the generated Makefile to create html documentation:
 ```shell
 cd ~/harvest_qmcpack/doc; make html
 ```
