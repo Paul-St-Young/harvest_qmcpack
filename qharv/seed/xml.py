@@ -41,6 +41,21 @@ def parse(text):
   root = read( StringIO(text.decode()) ).getroot()
   return root
 
+def find_first(node,xpath):
+  """ find the first xml node matching the given
+   xpath expression
+  Args:
+    xpath (str): xpath expression
+  Returns:
+    lxml.etree._Element: first xml node matching xpath
+  """
+  xlist = node.xpath(xpath)
+  if len(xlist) == 0:
+    return None
+  else:
+    return xlist[0]
+  # end if
+# end def find_first
 
 def str_rep(node):
   """ return the string representation of an xml node
