@@ -20,13 +20,6 @@ locations = {
   'pos':'atoms/positions'
 }
 
-dtypes = {
-  'gvectors':int,
-  'nkpt':int,
-  'nspin':int,
-  'nstate':int,
-}
-
 def get(fp,name):
   if name not in locations.keys():
     raise RuntimeError('unknown attribute requested: %s' % name)
@@ -44,7 +37,7 @@ def axes_elem_pos(fp):
   pos  = fp[ locations['pos'] ].value
 
   # construct list of atomic labels
-  elem_id  = fp[ 'atoms/species_ids' ].value
+  elem_id  = fp['atoms/species_ids'].value
   elem_map = {}
   nelem = fp['atoms/number_of_species'].value
   for ielem in range(nelem):

@@ -48,9 +48,31 @@ def wbyw_optimize():
   </loop>'''
   return xml.parse(text)
 
+# ============================= <jastrow> section =============================
+def i4_dynamic_jastrow():
+  # optimized at rs=1.21 ca=2.50
+  text = '''<jastrow type="Two-Body" name="J2" function="bspline" print="yes">
+        <correlation speciesA="u" speciesB="u" size="8">
+          <coefficients id="uu" type="Array"> 0.3982354817 0.2833633661 0.1990323682 0.133722635 0.08434542192 0.04923531445 0.02441131493 0.01008771115</coefficients>
+        </correlation>
+        <correlation speciesA="u" speciesB="d" size="8">
+          <coefficients id="ud" type="Array"> 0.5900223267 0.3860433288 0.24311222 0.148586686 0.08958602691 0.05199246535 0.02648123887 0.01131666741</coefficients>
+        </correlation>
+        <correlation speciesA="u" speciesB="p" size="8" cusp="1.0">
+          <coefficients id="up" type="Array"> -1.111746343 -0.6935590088 -0.4066043669 -0.2267990655 -0.1192950931 -0.05545092606 -0.01749765916 -0.005502643809</coefficients>
+        </correlation>
+        <correlation link="up" speciesA="d" speciesB="p"/>
+        <correlation link="uu" speciesA="d" speciesB="d"/>
+        <correlation speciesA="p" speciesB="p" size="8" cusp="0.0">
+          <coefficients id="ppJ" type="Array"> 0.0003275129953 0.4180095185 1.160116171 0.1486270126 -0.4008289559 -0.400098892 -0.2304413008 -0.037986222</coefficients>
+        </correlation>
+      </jastrow>'''
+  return xml.parse(text)
+
 # ============================= <backflow> section =============================
 
 def bcc54_static_backflow():
+  # optimized at rs=1.31
   text = '''<backflow>
           <transformation name="eHB" type="e-I" function="Bspline" source="ion0">
             <correlation elementType="H" cusp="0.0" size="8">
@@ -75,6 +97,7 @@ def bcc54_static_backflow():
   return xml.parse(text)
 
 def bcc54_dynamic_backflow():
+  # optimized at rs=1.31
   text = '''<backflow>
           <transformation name="eeB" type="e-e" function="Bspline">
             <correlation speciesA="u" speciesB="u" cusp="0.0" size="8">

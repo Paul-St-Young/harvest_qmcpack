@@ -2,8 +2,8 @@
 # Email: yubo.paul.yang@gmail.com
 # Routines to further process mean dataframes. Mostly built around pandas's API.
 #
-# note: mean dataframes (mdf) are dataframes having the index of columns tructure as 
-#  those returned by scalar_df.mean_error_scalar_df.
+# note: mean dataframes (mdf) are dataframes having the index of columns structured
+#  as those returned by scalar_df.mean_error_scalar_df.
 import numpy as np
 import pandas as pd
 
