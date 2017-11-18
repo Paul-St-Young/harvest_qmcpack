@@ -4,6 +4,17 @@
 import numpy as np
 import pandas as pd
 
+def abc(axes):
+  """ a,b,c lattice parameters
+  Args:
+    axes (np.array): lattice vectors in row-major
+  Returns:
+    list: [a,b,c]
+  """
+  abc = [np.linalg.norm(vec) for vec in axes]
+  return abc
+# end def
+
 def volume(axes):
   """ volume of a simulation cell
   Args:
@@ -13,6 +24,19 @@ def volume(axes):
   """
   return np.dot(axes[0],np.cross(axes[1],axes[2]))
 # end def volume
+
+def rs(axes,natom):
+  """ rs density parameter (!!!! axes MUST be in units of bohr)
+  Args:
+    axes (np.array): lattice vectors in row-major, MUST be in units of bohr
+  Returns:
+    float: volume of cell
+  """
+  vol = volume(axes)
+  vol_pp = vol/natom # volume per particle
+  rs  = ((3*vol_pp)/(4*np.pi))**(1./3) # radius for spherical vol_pp
+  return rs
+# end def rs
 
 def rins(axes):
   """ radius of the inscribed sphere inside the given cell
