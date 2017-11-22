@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+import os
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+if __name__ == '__main__':
+
+  import argparse
+
+  parser = argparse.ArgumentParser(description='backup selected nexus-generated folders')
+  parser.add_argument('ref_dir',type=str,help='reference folder to backup')
+  parser.add_argument('tar_dir',type=str,help='target folder used to store backup')
+  parser.add_argument('--execute','-e',action='store_true',help='perform the backup')
+  parser.add_argument('--subdirs','-s',action='append',help='subdirectories to backup, mutiple copies of this option will create a list of subdirs to backup. e.g. -s opt -s dmc')
+  parser.add_argument('--overwrite_target','-overwrite',action='store_true',help='if a folder already exist, then (potentially) overwrite that folder using `rsync`.')
+  parser.add_argument('--skip_exist','-skip',action='store_true',help='if a folder already exist, then do not `rsync` to that folder.')
+  parser.add_argument('--strip_slash','-strip',action='store_true',help='strip "/" in input folder names')
+  parser.add_argument('--quiet','-q',action='store_true',help='do out output to stdout or temp file')
+  parser.add_argument('--force','-f',action='store_true',help='skip checks, use with caution!')
+  args = parser.parse_args()
+
+  if not args.force:
+    # check inputs
+    if (args.ref_dir.endswith('/') or args.tar_dir.endswith('/')) and (not args.strip_slash):
+      msg = 'trailing slashes in %s or %s may confuse `rsync`\n recomment using -strip to strip the slashes; alternatively override using -f or --force' % (args.ref_dir,args.tar_dir)
+      raise RuntimeError(msg)
+    # end if
+  # end if
+
+  ref_dir = args.ref_dir
+  tar_dir = args.tar_dir
+  if (args.strip_slash): # strip trailing '/' in directory name
+    ref_dir = ref_dir.strip('/')
+    tar_dir = tar_dir.strip('/')
+  # end if
+
+  # create source-target map and perform backup if args.execute
+  from qharv.trans.nexus_qmc import backup_calculations
+  st_map = backup_calculations(ref_dir,tar_dir,args.subdirs            # positional arguments
+    ,execute=args.execute,verbose=(not args.quiet)                     # optional arguments
+    ,skip_exist=args.skip_exist,overwrite_target=args.overwrite_target # keyword arguments
+  )
+
+  # check the source-target map
+  if (not args.quiet):
+    import yaml
+    with open('st_map.yml','w') as f:
+      yaml.dump(st_map,f)
+    # end with
+  # end if
+
+# end __main__

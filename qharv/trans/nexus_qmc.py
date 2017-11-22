@@ -29,7 +29,7 @@ def find_run_folders(results_dir):
   return rr_map
 # end def
 
-def backup(ref_loc,tar_loc,execute=False,skip_exist=False,overwrite_target=False):
+def backup(ref_loc,tar_loc,execute=False,skip_exist=False,overwrite_target=False,verbose=True):
   """ essentially `rsync` from bash, but with a bunch of checks """
   path = os.path.dirname(tar_loc)
   if execute: # create folder if not already exist
@@ -37,7 +37,7 @@ def backup(ref_loc,tar_loc,execute=False,skip_exist=False,overwrite_target=False
       sp.check_call(['mkdir','-p',path])
     # end if
   else:
-    print('would have created %s'%path)
+    if verbose: print('would have created %s'%path)
   # end if
   if execute:
     write = True
@@ -54,15 +54,16 @@ def backup(ref_loc,tar_loc,execute=False,skip_exist=False,overwrite_target=False
     # end if
     if write:
       out = sp.check_output(['rsync','-avz',ref_loc.strip('/')+'/',tar_loc.strip('/')])
-      with open('qharv_transplant.log','a') as f:
-        f.write(out)
+      if verbose:
+        with open('qharv_transplant.log','a') as f:
+          f.write(out)
   else:
-    print('would have copied %s to %s'%(ref_loc,tar_loc))
+    if verbose: print('would have copied %s to %s'%(ref_loc,tar_loc))
   # end if
   return True # no error from above
 # end def
 
-def backup_calculations(ref_dir,tar_dir,subdirs,execute=False,**bk_kws):
+def backup_calculations(ref_dir,tar_dir,subdirs,execute=False,verbose=True,**bk_kws):
   """ copy all nexus calculations listed in subdirs from ref_dir to tar_dir
   motivation: backup nexus-generated calculations and rerun with a tweak
   problem: nexus keeps a run folder and a result folder in parallel. A full backup
@@ -116,8 +117,8 @@ def backup_calculations(ref_dir,tar_dir,subdirs,execute=False,**bk_kws):
       ifile += 1
     # end for
   else:
-    print('generated source-target map, please check return value. set execute=True to backup')
+    if verbose: print('generated source-target map, please check return value. set execute=True to backup')
   # end if
-  print(' do not forget to backup your nexus script!')
+  if verbose: print(' do not forget to backup your nexus script!')
   return st_map
 # end def backup_calculations
