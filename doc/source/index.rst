@@ -1,20 +1,16 @@
-.. qharv documentation master file, created by
-   sphinx-quickstart on Tue Aug 29 15:36:55 2017.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to qharv's documentation!
 =================================
+
+Real documentation will be filled in when v1.0.0 is ready for release.
+
+For now, please see automatically generated API documentation below:
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   qharv.seed.rst
-   qharv.inspect.rst
-   qharv.cross.rst
-   qharv.reel.rst
-   qharv.sieve.rst
+   qharv.rst
+   modules.rst
 
 Indices and tables
 ==================

@@ -17,10 +17,8 @@ def rcut(corr):
 def validate_bspline_rcut(node,ignore_empty=False):
   """ check that 1D bspline functions have valid cutoff radius
   Args:
-    node (lxml.etree._Element): xml node containing <simulationcell> 
-     and <correlation>.
-    ignore_empty (bool,optional): ignore inputs without <correlation>,
-     default=False
+    node (lxml.etree._Element): xml node containing <simulationcell> and <correlation>.
+    ignore_empty (bool,optional): ignore inputs without <correlation>, default=False
   Returns:
     bool: valid input
   """

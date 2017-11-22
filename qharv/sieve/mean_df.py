@@ -8,17 +8,13 @@ import numpy as np
 import pandas as pd
 
 def twist_average_mean_df(df0,drop_null=False):
-  """ average scalar quantities over a set of calculations.
-  The intented application is to average over a uniform grid of twist calculations.
+  ''' average scalar quantities over a set of calculations. The intented application is to average over a uniform grid of twist calculations.
   Args:
-   df0 (pd.DataFrame): a mean dataframe containing ['path','fdat','*_mean','*_error'] columns.
-    fdat is the scalar.dat filename. It will be used to extract 'series' and 'group' indices.
-   drop_null (bool, optional): drop rows that contain any nan. These rows should be processed
-    at a higher level (e.g. catach the RuntimeError).
+   df0 (pd.DataFrame): a mean dataframe containing ['path','fdat','\*_mean','\*_error'] columns. fdat is the scalar.dat filename. It will be used to extract 'series' and 'group' indices.
+   drop_null (bool, optional): drop rows that contain any nan. These rows should be processed at a higher level (e.g. catach the RuntimeError).
   Returns:
-    pd.DataFrame: df1, a mean dataframe containing one entry for each series.
-     df1 is structually identical to a mean dataframe of a single twist.
-  """
+    pd.DataFrame: df1, a mean dataframe containing one entry for each series. df1 is structually identical to a mean dataframe of a single twist.
+  '''
   # decide what to do with nans
   bad_sel = df0.isnull().any(axis=1)
   bad_entries = df0.loc[bad_sel]

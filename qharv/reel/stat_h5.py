@@ -83,9 +83,7 @@ def mean_and_err(handle,obs_path,nequil,kappa=1.0):
 # end def mean_and_err
 
 def absolute_magnetization(handle,nequil,obs_name='SpinDensity',up_name='u',dn_name='d'):
-  """ calculate up-down spin density and the integral of its absolute value
-   first check that /SpinDensity/u and /SpinDensity/d both exist in the .stat.h5 file, then extract both densities, subtract and integrate
-
+  """ calculate up-down spin density and the integral of its absolute value; first check that /SpinDensity/u and /SpinDensity/d both exist in the .stat.h5 file, then extract both densities, subtract and integrate
 
   Args:
     handle (h5py.Group): or h5py.File or h5py.Dataset

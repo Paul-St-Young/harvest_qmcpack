@@ -42,8 +42,7 @@ def parse(text):
   return root
 
 def find_first(node,xpath):
-  """ find the first xml node matching the given
-   xpath expression
+  """ find the first xml node matching the given xpath expression
   Args:
     xpath (str): xpath expression
   Returns:
@@ -105,8 +104,7 @@ def text2arr(text,dtype=float,flatten=False):
 # ============================= level 2: QMCPACK specialized =============================
 
 def get_param(node,pname):
-  """ retrieve the str representation of a parameter from:
-   <parameter name="pname"> str_rep </parameter>
+  """ retrieve the str representation of a parameter from: <parameter name="pname"> str_rep </parameter>
   Args:
     node (lxml.etree._Element): xml node with <parameter>.
     pname (str): name of parameter
@@ -166,7 +164,6 @@ def get_pos(doc,pset='ion0'):
 
 def opt_wf_fname(opt_inp,iqmc):
   """ Find the file containing the optimized <wavefunction> at optimization loop iqmc 
-
   example of a folder containing an optimization run:
   $ls opt_dir
     opt.xml

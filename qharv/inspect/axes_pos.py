@@ -56,9 +56,7 @@ def rins(axes):
 # end def rins
 
 def properties_from_axes_pos(axes,pos):
-  """ calculate properties from axes,pos alone
-   essentially the simplified/customized version of:
-    pymatgen.Structure(axes,elem,pos,coords_are_cartesian=True)
+  """ calculate properties from axes,pos alone; essentially the simplified/customized version of: pymatgen.Structure(axes,elem,pos,coords_are_cartesian=True)
   Args:
     axes (np.array): crystal lattice vectors in row-major storage
     pos (np.array):  atomic positions in row-major storage

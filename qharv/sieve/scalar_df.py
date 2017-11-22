@@ -42,14 +42,11 @@ def mean_error_scalar_df(df,nequil,kappa=None):
 # end def
 
 def reblock(trace,block_size,min_nblock=4):
-  """ block scalar trace to remove autocorrelation
-  see usage example in reblock_scalar_df
+  """ block scalar trace to remove autocorrelation; see usage example in reblock_scalar_df
   Args:
-    trace (np.array): a trace of scalars, may have multiple columns,
-     !!!! assuming leading dimension is the number of current blocks.
+    trace (np.array): a trace of scalars, may have multiple columns !!!! assuming leading dimension is the number of current blocks.
     block_size (int): size of block in units of current block.
-    min_nblock (int,optional): minimum number of blocks needed for 
-     meaningful statistics, default is 4.
+    min_nblock (int,optional): minimum number of blocks needed for meaningful statistics, default is 4.
   Returns:
     np.array: re-blocked trace.
   """

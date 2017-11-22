@@ -6,8 +6,7 @@ import subprocess as sp
 from lxml import etree
 
 def files_with_regex(regex,rundir,case=True,ftype='f'):
-  """ find files with the given suffix in folder rundir
-   rely on bash `find` command
+  """ find files with the given suffix in folder rundir; rely on bash `find` command
   Args:
     regex (str):  regular expression for file names
     rundir (str): directory containing the files to be found
@@ -29,8 +28,7 @@ def files_stat_h5(calcdir):
   return files_with_regex('*stat.h5',calcdir)
 
 def group_map(flist):
-  """ group QMCPACK output files by series id
-   if a file does not have a group index, then append it to an indepenednt list
+  """ group QMCPACK output files by series id; if a file does not have a group index, then append it to an indepenednt list
   Args:
     flist (list): a list of filenames, should be QMCPACK outputs
   Returns:
@@ -60,9 +58,7 @@ def group_map(flist):
 # def group_map
 
 def interpret_qmcpack_fname(fname):
-  """ extract metadata regarding the contents of a file based on its filename.
-   QMCPACK generates files having a pre-determined suffix structure.
-   This function will interpret the last 4 period-separated segments of the suffix. 
+  """ extract metadata regarding the contents of a file based on its filename. QMCPACK generates files having a pre-determined suffix structure. This function will interpret the last 4 period-separated segments of the suffix. 
   Args:
     fname (str): filename, must end in one of ['dat','h5','qmc','xml'].
   Returns:
