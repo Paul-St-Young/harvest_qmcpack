@@ -110,10 +110,10 @@ This module is intended to speed up on-the-fly setup, run, and analysis of QMCPA
 This module is NOT intended to be a full-fledged workflow tool. Please refer to [nexus][nexus] for complete workflow magnagement.
 
 ## Development Guidelines
-> sown the seed, inspect the crop, 
->  crossbreed to improve, transplant to adapt,
->   reel them in, sieve for good, and refine for the best.
-> -- qharv maxim
+>sown the seed, inspect the crop, 
+>crossbreed to improve, transplant to adapt,
+>reel them in, sieve for good, and refine for the best.
+>-- qharv maxim
 
 ### Rules (fully plagiarized from Asimov)
 1. A function may not produce wrong results or, through inaction, allow a user to produce wrong results.
