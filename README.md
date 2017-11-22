@@ -109,5 +109,16 @@ Example usage of the qharv library are included in the "harvest_qmcpack/bin" fol
 This module is intended to speed up on-the-fly setup, run, and analysis of QMCPACK calculations. The module should be used as a collection of glorified bash commands, which are usable in Python.
 This module is NOT intended to be a full-fledged workflow tool. Please refer to [nexus][nexus] for complete workflow magnagement.
 
+## Development Guidelines
+> sown the seed, inspect the crop, 
+>  crossbreed to improve, transplant to adapt,
+>   reel them in, sieve for good, and refine for the best.
+> -- qharv maxim
+
+### Rules (fully plagiarized from Asimov)
+1. A function may not produce wrong results or, through inaction, allow a user to produce wrong results.
+2. A function must accept manual overrides given to it by a user, except where such overrides will conflict with the first rule.
+3. A function must be as simple and readable as possible, as long as doing so does not conflict with the first or the second rule.
+
 [nexus]:http://qmcpack.org/nexus/
 [doc html]: https://paul-st-young.github.io/harvest_qmcpack/
