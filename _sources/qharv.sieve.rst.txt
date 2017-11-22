@@ -1,0 +1,30 @@
+qharv\.sieve package
+====================
+
+Submodules
+----------
+
+qharv\.sieve\.mean\_df module
+-----------------------------
+
+.. automodule:: qharv.sieve.mean_df
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+qharv\.sieve\.scalar\_df module
+-------------------------------
+
+.. automodule:: qharv.sieve.scalar_df
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: qharv.sieve
+    :members:
+    :undoc-members:
+    :show-inheritance:

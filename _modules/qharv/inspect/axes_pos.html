@@ -1,0 +1,205 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.inspect.axes_pos &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.inspect.axes_pos</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Routines to process crystal structure specified by axes,pos</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<div class="viewcode-block" id="abc"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.abc">[docs]</a><span class="k">def</span> <span class="nf">abc</span><span class="p">(</span><span class="n">axes</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; a,b,c lattice parameters</span>
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): lattice vectors in row-major</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    list: [a,b,c]</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">abc</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span> <span class="k">for</span> <span class="n">vec</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">]</span>
+  <span class="k">return</span> <span class="n">abc</span></div>
+<span class="c1"># end def</span>
+
+<div class="viewcode-block" id="volume"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.volume">[docs]</a><span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="n">axes</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; volume of a simulation cell</span>
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): lattice vectors in row-major</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    float: volume of cell</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span></div>
+<span class="c1"># end def volume</span>
+
+<div class="viewcode-block" id="rs"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.rs">[docs]</a><span class="k">def</span> <span class="nf">rs</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">natom</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; rs density parameter (!!!! axes MUST be in units of bohr)</span>
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): lattice vectors in row-major, MUST be in units of bohr</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    float: volume of cell</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">vol</span> <span class="o">=</span> <span class="n">volume</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+  <span class="n">vol_pp</span> <span class="o">=</span> <span class="n">vol</span><span class="o">/</span><span class="n">natom</span> <span class="c1"># volume per particle</span>
+  <span class="n">rs</span>  <span class="o">=</span> <span class="p">((</span><span class="mi">3</span><span class="o">*</span><span class="n">vol_pp</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># radius for spherical vol_pp</span>
+  <span class="k">return</span> <span class="n">rs</span></div>
+<span class="c1"># end def rs</span>
+
+<div class="viewcode-block" id="rins"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.rins">[docs]</a><span class="k">def</span> <span class="nf">rins</span><span class="p">(</span><span class="n">axes</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; radius of the inscribed sphere inside the given cell</span>
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): lattice vectors in row-major</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    float: radius of the inscribed sphere</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">a01</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+  <span class="n">a12</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+  <span class="n">a20</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+  <span class="n">face_areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">a01</span><span class="p">,</span><span class="n">a12</span><span class="p">,</span><span class="n">a20</span><span class="p">]]</span>
+
+  <span class="c1"># 2*rins is the height from face</span>
+  <span class="n">rins</span> <span class="o">=</span> <span class="n">volume</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="o">/</span><span class="nb">max</span><span class="p">(</span><span class="n">face_areas</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">rins</span></div>
+<span class="c1"># end def rins</span>
+
+<div class="viewcode-block" id="properties_from_axes_pos"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.properties_from_axes_pos">[docs]</a><span class="k">def</span> <span class="nf">properties_from_axes_pos</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">pos</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; calculate properties from axes,pos alone; essentially the simplified/customized version of: pymatgen.Structure(axes,elem,pos,coords_are_cartesian=True)</span>
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): crystal lattice vectors in row-major storage</span>
+<span class="sd">    pos (np.array):  atomic positions in row-major storage</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    pd.Series: a list of properties</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="c1"># canonical properties</span>
+  <span class="n">natom</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+  <span class="n">vol</span>    <span class="o">=</span> <span class="n">volume</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+  <span class="n">vol_pp</span> <span class="o">=</span> <span class="n">vol</span><span class="o">/</span><span class="n">natom</span> <span class="c1"># volume per particle</span>
+  <span class="n">rs</span>     <span class="o">=</span> <span class="p">(</span><span class="mf">3.</span><span class="o">*</span><span class="n">vol_pp</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span>
+  <span class="n">inv_axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+  <span class="n">upos</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span><span class="n">inv_axes</span><span class="p">)</span> <span class="c1"># fractional coordinates</span>
+
+  <span class="n">entry</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="n">name_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;natom&#39;</span><span class="p">,</span><span class="s1">&#39;volume&#39;</span><span class="p">,</span><span class="s1">&#39;vol_pp&#39;</span><span class="p">,</span><span class="s1">&#39;rs&#39;</span><span class="p">,</span><span class="s1">&#39;rins&#39;</span><span class="p">,</span><span class="s1">&#39;inv_axes&#39;</span><span class="p">,</span><span class="s1">&#39;upos&#39;</span><span class="p">]</span>
+  <span class="n">val_list</span>  <span class="o">=</span> <span class="p">[</span><span class="n">natom</span><span class="p">,</span><span class="n">vol</span><span class="p">,</span><span class="n">vol_pp</span><span class="p">,</span><span class="n">rs</span><span class="p">,</span><span class="n">rins</span><span class="p">(</span><span class="n">axes</span><span class="p">),</span><span class="n">inv_axes</span><span class="p">,</span><span class="n">upos</span><span class="p">]</span>
+  <span class="k">for</span> <span class="n">name</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">name_list</span><span class="p">,</span><span class="n">val_list</span><span class="p">):</span>
+    <span class="n">entry</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+  <span class="c1"># end for</span>
+
+  <span class="c1"># return pd.Series(entry)</span>
+
+  <span class="c1"># ad-hoc properties (scale crystal by alat)</span>
+  <span class="n">alat</span>  <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">uaxes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">/</span><span class="n">alat</span>
+  <span class="n">pos1</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">upos</span><span class="p">,</span><span class="n">uaxes</span><span class="p">)</span>
+
+  <span class="n">name_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;uaxes&#39;</span><span class="p">,</span><span class="s1">&#39;pos1&#39;</span><span class="p">]</span>
+  <span class="n">val_list</span>  <span class="o">=</span> <span class="p">[</span><span class="n">uaxes</span><span class="p">,</span><span class="n">pos1</span><span class="p">]</span>
+  <span class="k">for</span> <span class="n">name</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">name_list</span><span class="p">,</span><span class="n">val_list</span><span class="p">):</span>
+    <span class="n">entry</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+  <span class="c1"># end for</span>
+
+  <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span></div>
+<span class="c1"># end def properties_from_axes_pos</span>
+
+<div class="viewcode-block" id="mg_lattice_from_axes_pos"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.mg_lattice_from_axes_pos">[docs]</a><span class="k">def</span> <span class="nf">mg_lattice_from_axes_pos</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">pos</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; transfer lattice propertires from pymatgen.Structure &quot;&quot;&quot;</span>
+  <span class="kn">import</span> <span class="nn">pymatgen</span> <span class="k">as</span> <span class="nn">mg</span>
+  <span class="n">elem</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+  <span class="n">struct</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">Structure</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">elem</span><span class="p">,</span><span class="n">pos</span><span class="p">,</span><span class="n">coords_are_cartesian</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+  <span class="n">entry</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()[</span><span class="s1">&#39;lattice&#39;</span><span class="p">]</span>
+  <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span></div>
+<span class="c1"># end def</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.seed.html">qharv.seed package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.sieve.html">qharv.sieve package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">qharv</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

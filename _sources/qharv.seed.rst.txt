@@ -4,6 +4,14 @@ qharv\.seed package
 Submodules
 ----------
 
+qharv\.seed\.pset module
+------------------------
+
+.. automodule:: qharv.seed.pset
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 qharv\.seed\.wf\_h5 module
 --------------------------
 

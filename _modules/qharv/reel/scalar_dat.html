@@ -61,20 +61,33 @@
 <span class="sd">  Args:</span>
 <span class="sd">    dat_fname (str): name of input file</span>
 <span class="sd">  Returns:</span>
-<span class="sd">    pd.DataFrame: df containing the table of data &quot;&quot;&quot;</span>
+<span class="sd">    pd.DataFrame: df containing the table of data</span>
+<span class="sd">  &quot;&quot;&quot;</span>
 
-  <span class="c1"># pandas&#39;s equivalent of numpy.loadtxt</span>
-  <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;\s+&#39;</span><span class="p">)</span>
+  <span class="c1"># check if a header line exists, if it does not, then set header=None</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+  <span class="c1"># end with</span>
+  
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span> <span class="c1"># there is no header</span>
+    <span class="c1"># pandas&#39;s equivalent of numpy.loadtxt</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;\s+&#39;</span><span class="p">,</span><span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span> <span class="c1"># do some extra parsing of the header</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;\s+&#39;</span><span class="p">)</span>
 
-  <span class="c1"># remove first column name &#39;#&#39;</span>
-  <span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
-  <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-  <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="c1"># remove first column name &#39;#&#39;</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 
-  <span class="c1"># calculate local energy variance if possible</span>
-  <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;LocalEnergy&#39;</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;LocalEnergy_sq&#39;</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">):</span>
-    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Variance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;LocalEnergy_sq&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LocalEnergy&#39;</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span>
+    <span class="c1"># calculate local energy variance if possible</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;LocalEnergy&#39;</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;LocalEnergy_sq&#39;</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">):</span>
+      <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Variance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;LocalEnergy_sq&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LocalEnergy&#39;</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span>
+    <span class="c1"># end if</span>
   <span class="c1"># end if</span>
+
+  <span class="c1"># column labels should be strings</span>
+  <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
   <span class="k">return</span> <span class="n">df</span></div>
 <span class="c1"># end def parse</span>
@@ -92,26 +105,50 @@
  
   <span class="n">mu</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
   <span class="n">stddev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
- 
+  <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">stddev</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span> <span class="c1"># easy case</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="c1"># infinite correlation for constant trace</span>
+  <span class="c1"># end if</span>
+
   <span class="n">correlation_time</span> <span class="o">=</span> <span class="mf">0.</span>
   <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)):</span>
-      <span class="c1"># calculate auto_correlation</span>
-      <span class="n">auto_correlation</span> <span class="o">=</span> <span class="mf">0.0</span>
-      <span class="n">num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span><span class="o">-</span><span class="n">k</span>
-      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
-          <span class="n">auto_correlation</span> <span class="o">+=</span> <span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">k</span><span class="p">]</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span>
-      <span class="c1"># end for i</span>
-      <span class="n">auto_correlation</span> <span class="o">*=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">num</span><span class="o">*</span><span class="n">stddev</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-      <span class="k">if</span> <span class="n">auto_correlation</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-          <span class="n">correlation_time</span> <span class="o">+=</span> <span class="n">auto_correlation</span>
-      <span class="k">else</span><span class="p">:</span>
-          <span class="k">break</span>
-      <span class="c1"># end if</span>
+    <span class="c1"># calculate auto_correlation</span>
+    <span class="n">auto_correlation</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span><span class="o">-</span><span class="n">k</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+      <span class="n">auto_correlation</span> <span class="o">+=</span> <span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">k</span><span class="p">]</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span>
+    <span class="c1"># end for i</span>
+    <span class="n">auto_correlation</span> <span class="o">*=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">num</span><span class="o">*</span><span class="n">stddev</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">auto_correlation</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="n">correlation_time</span> <span class="o">+=</span> <span class="n">auto_correlation</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">break</span>
+    <span class="c1"># end if</span>
   <span class="c1"># end for k</span>
  
   <span class="n">correlation_time</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">correlation_time</span>
   <span class="k">return</span> <span class="n">correlation_time</span></div>
 <span class="c1"># end def corr</span>
+<div class="viewcode-block" id="error"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.error">[docs]</a><span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span><span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; calculate the error of a trace of scalar data</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    trace (list): should be a 1D iterable array of floating point numbers</span>
+<span class="sd">    kappa (float,optional): auto-correlation time, default is to re-calculate </span>
+<span class="sd">  Returns:</span>
+<span class="sd">    float: stderr, the error of the mean of this trace of scalars</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">stddev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">stddev</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span> <span class="c1"># easy case</span>
+    <span class="k">return</span> <span class="mf">0.0</span> <span class="c1"># no error for constant trace</span>
+  <span class="c1"># end if</span>
+
+  <span class="k">if</span> <span class="n">kappa</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># no call to corr </span>
+    <span class="n">kappa</span> <span class="o">=</span> <span class="n">corr</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+  <span class="n">neffective</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span><span class="o">/</span><span class="n">kappa</span><span class="p">)</span>
+  <span class="n">err</span> <span class="o">=</span> <span class="n">stddev</span><span class="o">/</span><span class="n">neffective</span>
+  <span class="k">return</span> <span class="n">err</span></div>
+<span class="c1"># end def error</span>
 
 <div class="viewcode-block" id="single_column"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.single_column">[docs]</a><span class="k">def</span> <span class="nf">single_column</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">column</span><span class="p">,</span><span class="n">nequil</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; calculate mean and error of a column</span>
@@ -124,14 +161,16 @@
 <span class="sd">    column (str): name of column</span>
 <span class="sd">    nequil (int): number of equilibration blocks</span>
 <span class="sd">  Returns:</span>
-<span class="sd">    (float,float): (ymean,yerr), where ymean is the mean of column, while yerr is the 1-sigma error of column</span>
+<span class="sd">    (float,float,float): (ymean,yerr,ycorr), where ymean is the mean of column, yerr is the 1-sigma error of column, and ycorr is the autocorrelation</span>
 <span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="n">myy</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]</span>
 
   <span class="n">ymean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">myy</span><span class="p">)</span>
-  <span class="n">yerr</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">myy</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">myy</span><span class="p">)</span><span class="o">/</span><span class="n">corr</span><span class="p">(</span><span class="n">myy</span><span class="p">))</span>
-  <span class="k">return</span> <span class="n">ymean</span><span class="p">,</span><span class="n">yerr</span></div>
+  <span class="n">ycorr</span> <span class="o">=</span> <span class="n">corr</span><span class="p">(</span><span class="n">myy</span><span class="p">)</span>
+  <span class="n">yerr</span>  <span class="o">=</span> <span class="n">error</span><span class="p">(</span><span class="n">myy</span><span class="p">,</span><span class="n">ycorr</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">ymean</span><span class="p">,</span><span class="n">yerr</span><span class="p">,</span><span class="n">ycorr</span></div>
 <span class="c1"># end def</span>
 
 </pre></div>
@@ -158,6 +197,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.sieve.html">qharv.sieve package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">qharv</a></li>
 </ul>
 
         </div>

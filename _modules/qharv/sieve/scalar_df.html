@@ -1,0 +1,170 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.sieve.scalar_df &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.sieve.scalar_df</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Routines to roughly process scalar Dataframes. Mostly built around pandas&#39;s API.</span>
+<span class="c1">#</span>
+<span class="c1">#  note: A scalar dataframe (scalar_df) is expected to contain the raw data, i.e.</span>
+<span class="c1"># block-resolved expectation values, of a SINGLE calculation. If multiple runs are</span>
+<span class="c1"># collected in the same dataframe, label by [&#39;path&#39;,&#39;fdat&#39;] and use groupby before</span>
+<span class="c1"># applying the functions in this script.</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">qharv.reel.scalar_dat</span> <span class="k">import</span> <span class="n">error</span>
+
+<div class="viewcode-block" id="mean_error_scalar_df"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.mean_error_scalar_df">[docs]</a><span class="k">def</span> <span class="nf">mean_error_scalar_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; get mean and average from a dataframe of raw scalar data (per-block) </span>
+<span class="sd">   take dataframe having columns [&#39;LocalEnergy&#39;,&#39;Variance&#39;,...] to a </span>
+<span class="sd">   dataframe having columns [&#39;LocalEnergy_mean&#39;,&#39;LocalEnergy_error&#39;,...]</span>
+
+<span class="sd">   Args:</span>
+<span class="sd">    df (pd.DataFrame): raw scalar dataframe, presumable generated using</span>
+<span class="sd">     qharv.scalar_dat.parse with extra labels columns added to identify</span>
+<span class="sd">     the different runs.</span>
+<span class="sd">    nequil (int): number of equilibration blocks to throw out for each run.</span>
+<span class="sd">   Returns:</span>
+<span class="sd">    pd.DataFrame: mean_error dataframe </span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">sel</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">nequil</span>
+
+  <span class="c1"># create pd.Series of mean</span>
+  <span class="n">msr</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+
+  <span class="c1"># create pd.Series of error</span>
+  <span class="n">efunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">error</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">kappa</span><span class="o">=</span><span class="n">kappa</span><span class="p">)</span> <span class="c1"># if kappa is not None, then </span>
+  <span class="c1"># auto-correlation is not re-calculated</span>
+  <span class="n">esr</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span> <span class="c1"># error cannot be directly applied to matrix yet</span>
+    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="nb">float</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">efunc</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">x</span><span class="p">)</span> <span class="p">)</span>
+  <span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+
+  <span class="n">df1</span> <span class="o">=</span> <span class="n">msr</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">T</span>
+  <span class="n">df2</span> <span class="o">=</span> <span class="n">esr</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">T</span>
+  <span class="n">jdf</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span><span class="n">lsuffix</span><span class="o">=</span><span class="s1">&#39;_mean&#39;</span><span class="p">,</span><span class="n">rsuffix</span><span class="o">=</span><span class="s1">&#39;_error&#39;</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">jdf</span></div>
+<span class="c1"># end def</span>
+
+<div class="viewcode-block" id="reblock"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.reblock">[docs]</a><span class="k">def</span> <span class="nf">reblock</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span><span class="n">block_size</span><span class="p">,</span><span class="n">min_nblock</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; block scalar trace to remove autocorrelation; see usage example in reblock_scalar_df</span>
+<span class="sd">  Args:</span>
+<span class="sd">    trace (np.array): a trace of scalars, may have multiple columns !!!! assuming leading dimension is the number of current blocks.</span>
+<span class="sd">    block_size (int): size of block in units of current block.</span>
+<span class="sd">    min_nblock (int,optional): minimum number of blocks needed for meaningful statistics, default is 4.</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    np.array: re-blocked trace.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">nblock</span><span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span><span class="o">//</span><span class="n">block_size</span>
+  <span class="n">nkeep</span> <span class="o">=</span> <span class="n">nblock</span><span class="o">*</span><span class="n">block_size</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">nblock</span><span class="o">&lt;</span><span class="n">min_nblock</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;only </span><span class="si">%d</span><span class="s1"> blocks left after reblock&#39;</span><span class="o">%</span><span class="n">nblock</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+  <span class="n">blocked_trace</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[:</span><span class="n">nkeep</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">nblock</span><span class="p">,</span><span class="n">block_size</span><span class="p">,</span><span class="o">*</span><span class="n">trace</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">blocked_trace</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+<span class="c1"># end def</span>
+
+<div class="viewcode-block" id="reblock_scalar_df"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.reblock_scalar_df">[docs]</a><span class="k">def</span> <span class="nf">reblock_scalar_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">block_size</span><span class="p">,</span><span class="n">min_nblock</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; create a re-blocked scalar dataframe from a current scalar dataframe</span>
+<span class="sd">   see reblock for details</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">reblock</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">block_size</span><span class="p">,</span><span class="n">min_nblock</span><span class="o">=</span><span class="n">min_nblock</span><span class="p">)</span>
+    <span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+  <span class="p">)</span></div>
+<span class="c1"># end def</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.seed.html">qharv.seed package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.sieve.html">qharv.sieve package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">qharv</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

@@ -23,7 +23,9 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="qharv package" href="qharv.html" />
+    <link rel="prev" title="qharv.reel package" href="qharv.reel.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -35,6 +37,12 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="qharv.html" title="qharv package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="qharv.reel.html" title="qharv.reel package"
+             accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
@@ -49,40 +57,23 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-qharv.sieve.axes_pos">
-<span id="qharv-sieve-axes-pos-module"></span><h2>qharv.sieve.axes_pos module<a class="headerlink" href="#module-qharv.sieve.axes_pos" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-qharv.sieve.mean_df">
+<span id="qharv-sieve-mean-df-module"></span><h2>qharv.sieve.mean_df module<a class="headerlink" href="#module-qharv.sieve.mean_df" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="qharv.sieve.axes_pos.mg_lattice_from_axes_pos">
-<code class="descclassname">qharv.sieve.axes_pos.</code><code class="descname">mg_lattice_from_axes_pos</code><span class="sig-paren">(</span><em>axes</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/axes_pos.html#mg_lattice_from_axes_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.axes_pos.mg_lattice_from_axes_pos" title="Permalink to this definition">¶</a></dt>
-<dd><p>transfer lattice propertires from pymatgen.Structure</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="qharv.sieve.axes_pos.properties_from_axes_pos">
-<code class="descclassname">qharv.sieve.axes_pos.</code><code class="descname">properties_from_axes_pos</code><span class="sig-paren">(</span><em>axes</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/axes_pos.html#properties_from_axes_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.axes_pos.properties_from_axes_pos" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>calculate properties from axes,pos alone</dt>
-<dd><dl class="first last docutils">
-<dt>essentially the simplified/customized version of:</dt>
-<dd>pymatgen.Structure(axes,elem,pos,coords_are_cartesian=True)</dd>
-</dl>
-</dd>
-</dl>
+<dt id="qharv.sieve.mean_df.twist_average_mean_df">
+<code class="descclassname">qharv.sieve.mean_df.</code><code class="descname">twist_average_mean_df</code><span class="sig-paren">(</span><em>df0</em>, <em>drop_null=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#twist_average_mean_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.twist_average_mean_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>average scalar quantities over a set of calculations. The intented application is to average over a uniform grid of twist calculations.
+:param df0: a mean dataframe containing [‘path’,’fdat’,’*_mean’,’*_error’] columns. fdat is the scalar.dat filename. It will be used to extract ‘series’ and ‘group’ indices.
+:type df0: pd.DataFrame
+:param drop_null: drop rows that contain any nan. These rows should be processed at a higher level (e.g. catach the RuntimeError).
+:type drop_null: bool, optional</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>axes</strong> (<em>np.array</em>) – crystal lattice vectors in row-major storage</li>
-<li><strong>pos</strong> (<em>np.array</em>) – atomic positions in row-major storage</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">df1, a mean dataframe containing one entry for each series. df1 is structually identical to a mean dataframe of a single twist.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a list of properties</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pd.Series</p>
-</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pd.DataFrame</td>
 </tr>
 </tbody>
 </table>
@@ -122,27 +113,20 @@ the different runs.</li>
 <dl class="function">
 <dt id="qharv.sieve.scalar_df.reblock">
 <code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">reblock</code><span class="sig-paren">(</span><em>trace</em>, <em>block_size</em>, <em>min_nblock=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#reblock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.reblock" title="Permalink to this definition">¶</a></dt>
-<dd><p>block scalar trace to remove autocorrelation
-see usage example in reblock_scalar_df
-:param trace: a trace of scalars, may have multiple columns,</p>
-<blockquote>
-<div>!!!! assuming leading dimension is the number of current blocks.</div></blockquote>
+<dd><p>block scalar trace to remove autocorrelation; see usage example in reblock_scalar_df
+:param trace: a trace of scalars, may have multiple columns !!!! assuming leading dimension is the number of current blocks.
+:type trace: np.array
+:param block_size: size of block in units of current block.
+:type block_size: int
+:param min_nblock: minimum number of blocks needed for meaningful statistics, default is 4.
+:type min_nblock: int,optional</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>block_size</strong> (<em>int</em>) – size of block in units of current block.</li>
-<li><strong>min_nblock</strong> (<em>int</em><em>,</em><em>optional</em>) – minimum number of blocks needed for
-meaningful statistics, default is 4.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">re-blocked trace.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">re-blocked trace.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
-</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
 </tr>
 </tbody>
 </table>
@@ -179,13 +163,31 @@ see reblock for details</p>
 <script type="text/javascript">$('#searchbox').show(0);</script>
 <h3><a href="index.html">Table Of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="qharv.seed.html">qharv.seed package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="qharv.inspect.html">qharv.inspect package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="qharv.cross.html">qharv.cross package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="qharv.reel.html">qharv.reel package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">qharv.sieve package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-qharv.sieve.mean_df">qharv.sieve.mean_df module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-qharv.sieve.scalar_df">qharv.sieve.scalar_df module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-qharv.sieve">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="qharv.html">qharv package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="qharv.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qharv.html#module-contents">Module contents</a></li>
+</ul>
+</li>
 </ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="qharv.reel.html"
+                        title="previous chapter">qharv.reel package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="qharv.html"
+                        title="next chapter">qharv package</a></p>
         </div>
       </div>
       <div class="clearer"></div>
@@ -199,6 +201,12 @@ see reblock for details</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="qharv.html" title="qharv package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="qharv.reel.html" title="qharv.reel package"
+             >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li> 
       </ul>
     </div>

@@ -73,26 +73,67 @@
   <span class="k">return</span> <span class="n">val</span></div>
 <span class="c1"># end def</span>
 
+<div class="viewcode-block" id="all_lines_with_tag"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.all_lines_with_tag">[docs]</a><span class="k">def</span> <span class="nf">all_lines_with_tag</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="n">tag</span><span class="p">,</span><span class="n">nline_max</span><span class="o">=</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; return a list of memory indices pointing to the start of tag</span>
+<span class="sd">   the search is conducted starting from the current location of mm. &quot;&quot;&quot;</span>
+  <span class="n">all_idx</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">iline</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nline_max</span><span class="p">):</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+      <span class="k">break</span>
+    <span class="c1"># end if</span>
+    <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+    <span class="n">all_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+    <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+  <span class="c1"># end for iline</span>
+
+  <span class="c1"># guard</span>
+  <span class="k">if</span> <span class="n">iline</span> <span class="o">&gt;=</span> <span class="n">nline_max</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;may need to increase nline_max&#39;</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+  <span class="k">return</span> <span class="n">all_idx</span></div>
+<span class="c1"># end def all_lines_with_tag</span>
+
+<div class="viewcode-block" id="all_lines_at_idx"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.all_lines_at_idx">[docs]</a><span class="k">def</span> <span class="nf">all_lines_at_idx</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="n">idx_list</span><span class="p">):</span>
+  <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">idx_list</span><span class="p">:</span>
+    <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span> <span class="p">)</span>
+  <span class="c1"># end for</span>
+  <span class="k">return</span> <span class="n">lines</span></div>
+<span class="c1"># end def</span>
+
 <div class="viewcode-block" id="locate_block"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.locate_block">[docs]</a><span class="k">def</span> <span class="nf">locate_block</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="n">header</span><span class="p">,</span><span class="n">trailer</span><span class="p">,</span><span class="n">skip_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">skip_trailer</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="n">begin_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
-    <span class="k">if</span> <span class="n">skip_header</span><span class="p">:</span>
-      <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">begin_idx</span><span class="p">)</span>
-      <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-      <span class="n">begin_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-    <span class="c1"># end if</span>
-    <span class="n">end_idx</span>   <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">trailer</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_trailer</span><span class="p">:</span>
-      <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">end_idx</span><span class="p">)</span>
-      <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-      <span class="n">end_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-    <span class="c1"># end if</span>
-    <span class="k">return</span> <span class="n">begin_idx</span><span class="p">,</span><span class="n">end_idx</span></div>
+  <span class="n">begin_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+  <span class="k">if</span> <span class="n">skip_header</span><span class="p">:</span>
+    <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">begin_idx</span><span class="p">)</span>
+    <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="n">begin_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+  <span class="c1"># end if</span>
+  <span class="n">end_idx</span>   <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">trailer</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_trailer</span><span class="p">:</span>
+    <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">end_idx</span><span class="p">)</span>
+    <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="n">end_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+  <span class="c1"># end if</span>
+  <span class="k">return</span> <span class="n">begin_idx</span><span class="p">,</span><span class="n">end_idx</span></div>
 <span class="c1"># end def locate_block</span>
 
 <div class="viewcode-block" id="block_text"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.block_text">[docs]</a><span class="k">def</span> <span class="nf">block_text</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="n">header</span><span class="p">,</span><span class="n">trailer</span><span class="p">,</span><span class="n">skip_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">skip_trailer</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="n">bidx</span><span class="p">,</span><span class="n">eidx</span> <span class="o">=</span> <span class="n">locate_block</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="n">header</span><span class="p">,</span><span class="n">trailer</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">mm</span><span class="p">[</span><span class="n">bidx</span><span class="p">:</span><span class="n">eidx</span><span class="p">]</span></div>
+  <span class="n">bidx</span><span class="p">,</span><span class="n">eidx</span> <span class="o">=</span> <span class="n">locate_block</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="n">header</span><span class="p">,</span><span class="n">trailer</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">mm</span><span class="p">[</span><span class="n">bidx</span><span class="p">:</span><span class="n">eidx</span><span class="p">]</span></div>
 <span class="c1"># end def block_text</span>
+
+<div class="viewcode-block" id="lr_mark"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.lr_mark">[docs]</a><span class="k">def</span> <span class="nf">lr_mark</span><span class="p">(</span><span class="n">line</span><span class="p">,</span><span class="n">lmark</span><span class="p">,</span><span class="n">rmark</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; read a string segment from line, which is enclosed between l&amp;rmark</span>
+<span class="sd">   e.g. extract the contents in parenteses</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">lidx</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">lmark</span><span class="p">)</span>
+  <span class="k">assert</span> <span class="n">lidx</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+  <span class="n">ridx</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">rmark</span><span class="p">)</span>
+  <span class="k">assert</span> <span class="n">ridx</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+  <span class="k">return</span> <span class="n">line</span><span class="p">[</span><span class="n">lidx</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">ridx</span><span class="p">]</span></div>
+<span class="c1"># end def</span>
 
 <div class="viewcode-block" id="parse_qmcas_output"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.parse_qmcas_output">[docs]</a><span class="k">def</span> <span class="nf">parse_qmcas_output</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; !!!! hacky function to gather QMCPACK scalar.dat data !!!! not recommended for general use !!!! </span>
@@ -161,6 +202,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.sieve.html">qharv.sieve package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">qharv</a></li>
 </ul>
 
         </div>

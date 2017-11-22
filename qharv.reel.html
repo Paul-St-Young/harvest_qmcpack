@@ -24,6 +24,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="qharv.sieve package" href="qharv.sieve.html" />
     <link rel="prev" title="qharv.cross package" href="qharv.cross.html" /> 
   </head>
   <body>
@@ -36,6 +37,9 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="qharv.sieve.html" title="qharv.sieve package"
+             accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="qharv.cross.html" title="qharv.cross package"
              accesskey="P">previous</a> |</li>
@@ -56,6 +60,18 @@
 <div class="section" id="module-qharv.reel.ascii_out">
 <span id="qharv-reel-ascii-out-module"></span><h2>qharv.reel.ascii_out module<a class="headerlink" href="#module-qharv.reel.ascii_out" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
+<dt id="qharv.reel.ascii_out.all_lines_at_idx">
+<code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">all_lines_at_idx</code><span class="sig-paren">(</span><em>mm</em>, <em>idx_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#all_lines_at_idx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.all_lines_at_idx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.ascii_out.all_lines_with_tag">
+<code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">all_lines_with_tag</code><span class="sig-paren">(</span><em>mm</em>, <em>tag</em>, <em>nline_max=1048576</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#all_lines_with_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.all_lines_with_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a list of memory indices pointing to the start of tag
+the search is conducted starting from the current location of mm.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="qharv.reel.ascii_out.block_text">
 <code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">block_text</code><span class="sig-paren">(</span><em>mm</em>, <em>header</em>, <em>trailer</em>, <em>skip_header=True</em>, <em>skip_trailer=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#block_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.block_text" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -64,6 +80,13 @@
 <dt id="qharv.reel.ascii_out.locate_block">
 <code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">locate_block</code><span class="sig-paren">(</span><em>mm</em>, <em>header</em>, <em>trailer</em>, <em>skip_header=True</em>, <em>skip_trailer=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#locate_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.locate_block" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.ascii_out.lr_mark">
+<code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">lr_mark</code><span class="sig-paren">(</span><em>line</em>, <em>lmark</em>, <em>rmark</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#lr_mark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.lr_mark" title="Permalink to this definition">¶</a></dt>
+<dd><p>read a string segment from line, which is enclosed between l&amp;rmark
+e.g. extract the contents in parenteses</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="qharv.reel.ascii_out.name_sep_val">
@@ -104,27 +127,22 @@ problems:</p>
 <dl class="function">
 <dt id="qharv.reel.mole.files_with_regex">
 <code class="descclassname">qharv.reel.mole.</code><code class="descname">files_with_regex</code><span class="sig-paren">(</span><em>regex</em>, <em>rundir</em>, <em>case=True</em>, <em>ftype='f'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#files_with_regex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.files_with_regex" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>find files with the given suffix in folder rundir</dt>
-<dd>rely on bash <cite>find</cite> command</dd>
-</dl>
+<dd><p>find files with the given suffix in folder rundir; rely on bash <cite>find</cite> command
+:param regex: regular expression for file names
+:type regex: str
+:param rundir: directory containing the files to be found
+:type rundir: str
+:param case: case sensity, default is True
+:type case: bool, optional
+:param ftype: files type, default is regular file ‘f’, may be directory ‘d’
+:type ftype: str, optional</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>regex</strong> (<em>str</em>) – regular expression for file names</li>
-<li><strong>rundir</strong> (<em>str</em>) – directory containing the files to be found</li>
-<li><strong>case</strong> (<em>bool</em><em>, </em><em>optional</em>) – case sensity, default is True</li>
-<li><strong>ftype</strong> (<em>str</em><em>, </em><em>optional</em>) – files type, default is regular file ‘f’, may be directory ‘d’</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">flist, a list of filenames matching the given regular expression</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">flist, a list of filenames matching the given regular expression</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
-</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
 </tr>
 </tbody>
 </table>
@@ -133,20 +151,35 @@ problems:</p>
 <dl class="function">
 <dt id="qharv.reel.mole.group_map">
 <code class="descclassname">qharv.reel.mole.</code><code class="descname">group_map</code><span class="sig-paren">(</span><em>flist</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#group_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.group_map" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>group QMCPACK output files by series id</dt>
-<dd>if a file does not have a group index, then append it to an indepenednt list</dd>
-</dl>
+<dd><p>group QMCPACK output files by series id; if a file does not have a group index, then append it to an indepenednt list
+:param flist: a list of filenames, should be QMCPACK outputs
+:type flist: list</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>flist</strong> (<em>list</em>) – a list of filenames, should be QMCPACK outputs</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">groups, map series id (int) to a list of filenames
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">groups, map series id (int) to a list of filenames
 list: indep, a list of independent filenames</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.mole.interpret_qmcpack_fname">
+<code class="descclassname">qharv.reel.mole.</code><code class="descname">interpret_qmcpack_fname</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#interpret_qmcpack_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.interpret_qmcpack_fname" title="Permalink to this definition">¶</a></dt>
+<dd><p>extract metadata regarding the contents of a file based on its filename. QMCPACK generates files having a pre-determined suffix structure. This function will interpret the last 4 period-separated segments of the suffix.
+:param fname: filename, must end in one of [‘dat’,’h5’,’qmc’,’xml’].
+:type fname: str</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a dictionary of metadata.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
 </tr>
 </tbody>
 </table>
@@ -251,10 +284,7 @@ The equilibrated data is assumed to have Gaussian distribution. Error is calcula
 <dl class="function">
 <dt id="qharv.reel.stat_h5.absolute_magnetization">
 <code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">absolute_magnetization</code><span class="sig-paren">(</span><em>handle</em>, <em>nequil</em>, <em>obs_name='SpinDensity'</em>, <em>up_name='u'</em>, <em>dn_name='d'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#absolute_magnetization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.absolute_magnetization" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>calculate up-down spin density and the integral of its absolute value</dt>
-<dd>first check that /SpinDensity/u and /SpinDensity/d both exist in the .stat.h5 file, then extract both densities, subtract and integrate</dd>
-</dl>
+<dd><p>calculate up-down spin density and the integral of its absolute value; first check that /SpinDensity/u and /SpinDensity/d both exist in the .stat.h5 file, then extract both densities, subtract and integrate</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -307,9 +337,9 @@ The equilibrated data is assumed to have Gaussian distribution. Error is calcula
 
 <dl class="function">
 <dt id="qharv.reel.stat_h5.mean_and_err">
-<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">mean_and_err</code><span class="sig-paren">(</span><em>handle</em>, <em>obs_path</em>, <em>nequil</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#mean_and_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.mean_and_err" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">mean_and_err</code><span class="sig-paren">(</span><em>handle</em>, <em>obs_path</em>, <em>nequil</em>, <em>kappa=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#mean_and_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.mean_and_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculate mean and variance of an observable from QMCPACK stat.h5 file</p>
-<p>assume autocorrelation = 1.</p>
+<p>assume autocorrelation = 1 by default</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -318,6 +348,8 @@ The equilibrated data is assumed to have Gaussian distribution. Error is calcula
 <li><strong>handle</strong> (<em>h5py.Group</em>) – or h5py.File or h5py.Dataset</li>
 <li><strong>obs_path</strong> (<em>str</em>) – path to observable, e.g. ‘gofr_e_1_1’</li>
 <li><strong>nequil</strong> (<em>int</em>) – number of equilibration blocks to throw out</li>
+<li><strong>kappa</strong> (<em>float</em><em>,</em><em>optional</em>) – auto-correlation of the data, default=1.0 i.e. no
+auto-correlation</li>
 </ul>
 </td>
 </tr>
@@ -378,11 +410,20 @@ The equilibrated data is assumed to have Gaussian distribution. Error is calcula
 <li class="toctree-l2"><a class="reference internal" href="#module-qharv.reel">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="qharv.sieve.html">qharv.sieve package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="qharv.html">qharv package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="qharv.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qharv.html#module-contents">Module contents</a></li>
+</ul>
+</li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="qharv.cross.html"
                         title="previous chapter">qharv.cross package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="qharv.sieve.html"
+                        title="next chapter">qharv.sieve package</a></p>
         </div>
       </div>
       <div class="clearer"></div>
@@ -396,6 +437,9 @@ The equilibrated data is assumed to have Gaussian distribution. Error is calcula
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
+        <li class="right" >
+          <a href="qharv.sieve.html" title="qharv.sieve package"
+             >next</a> |</li>
         <li class="right" >
           <a href="qharv.cross.html" title="qharv.cross package"
              >previous</a> |</li>

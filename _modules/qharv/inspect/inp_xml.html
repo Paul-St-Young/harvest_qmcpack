@@ -1,0 +1,164 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.inspect.inp_xml &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.inspect.inp_xml</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Routines to inspect and validate a QMCPACK input</span>
+
+<span class="kn">from</span> <span class="nn">qharv.seed</span> <span class="k">import</span> <span class="n">xml</span>
+<span class="kn">from</span> <span class="nn">qharv.inspect</span> <span class="k">import</span> <span class="n">axes_pos</span>
+
+<div class="viewcode-block" id="rcut"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.inp_xml.rcut">[docs]</a><span class="k">def</span> <span class="nf">rcut</span><span class="p">(</span><span class="n">corr</span><span class="p">):</span>
+  <span class="n">rca</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rcut&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">rca</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;no rcut found in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">xml</span><span class="o">.</span><span class="n">str_rep</span><span class="p">(</span><span class="n">corr</span><span class="p">))</span>
+  <span class="c1"># end if</span>
+  <span class="n">rc</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rca</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">rc</span></div>
+<span class="c1"># end def rcut</span>
+
+<div class="viewcode-block" id="validate_bspline_rcut"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.inp_xml.validate_bspline_rcut">[docs]</a><span class="k">def</span> <span class="nf">validate_bspline_rcut</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">ignore_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; check that 1D bspline functions have valid cutoff radius</span>
+<span class="sd">  Args:</span>
+<span class="sd">    node (lxml.etree._Element): xml node containing &lt;simulationcell&gt; and &lt;correlation&gt;.</span>
+<span class="sd">    ignore_empty (bool,optional): ignore inputs without &lt;correlation&gt;, default=False</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    bool: valid input</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="c1"># see if boundary condition is understandable</span>
+  <span class="n">bconds</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//parameter[@name=&quot;bconds&quot;]&#39;</span><span class="p">)</span>
+  <span class="n">bc_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">bconds</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">bc_str</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;nnn&#39;</span><span class="p">,</span><span class="s1">&#39;ppp&#39;</span><span class="p">]):</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;deal with &quot;</span><span class="si">%s</span><span class="s1">&quot; slabs some other day&#39;</span><span class="o">%</span><span class="n">bc_str</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+
+  <span class="c1"># make a list of nodes to check</span>
+  <span class="n">corrs</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//correlation&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">corrs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">ignore_empty</span><span class="p">:</span> <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;no &lt;correlation&gt; node to check, set ignore_empty=True to continue&#39;</span><span class="p">)</span> 
+  <span class="c1"># end if</span>
+
+  <span class="n">valid</span> <span class="o">=</span> <span class="kc">True</span>
+  <span class="k">if</span> <span class="n">bc_str</span> <span class="o">==</span> <span class="s1">&#39;nnn&#39;</span><span class="p">:</span> <span class="c1"># !!!! un-tested</span>
+    <span class="k">for</span> <span class="n">corr</span> <span class="ow">in</span> <span class="n">corrs</span><span class="p">:</span> <span class="c1"># rcut must exist and be positive</span>
+      <span class="n">rc</span> <span class="o">=</span> <span class="n">rcut</span><span class="p">(</span><span class="n">corr</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">rc</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
+      <span class="c1"># end if</span>
+    <span class="c1"># end for corr</span>
+  <span class="k">elif</span> <span class="n">bc_str</span> <span class="o">==</span> <span class="s1">&#39;ppp&#39;</span><span class="p">:</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">get_axes</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+    <span class="n">rins</span> <span class="o">=</span> <span class="n">axes_pos</span><span class="o">.</span><span class="n">rins</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+    <span class="nb">print</span> <span class="n">rins</span>
+    <span class="k">for</span> <span class="n">corr</span> <span class="ow">in</span> <span class="n">corrs</span><span class="p">:</span>
+      <span class="n">rc</span> <span class="o">=</span> <span class="n">rcut</span><span class="p">(</span><span class="n">corr</span><span class="p">)</span>
+      <span class="nb">print</span> <span class="n">rc</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">rc</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">rc</span><span class="o">&gt;</span><span class="n">rins</span><span class="p">):</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
+      <span class="c1"># end if</span>
+    <span class="c1"># end for corr</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;deal with bconds=&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="o">%</span><span class="n">bc_str</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+
+  <span class="k">return</span> <span class="n">valid</span></div>
+<span class="c1"># end def validate_bspline_rcut</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.seed.html">qharv.seed package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.sieve.html">qharv.sieve package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">qharv</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

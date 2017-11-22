@@ -89,6 +89,20 @@
   <span class="n">root</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span> <span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
   <span class="k">return</span> <span class="n">root</span></div>
 
+<div class="viewcode-block" id="find_first"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.find_first">[docs]</a><span class="k">def</span> <span class="nf">find_first</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">xpath</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; find the first xml node matching the given xpath expression</span>
+<span class="sd">  Args:</span>
+<span class="sd">    xpath (str): xpath expression</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    lxml.etree._Element: first xml node matching xpath</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">xlist</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="n">xpath</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">return</span> <span class="kc">None</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">xlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+  <span class="c1"># end if</span>
+<span class="c1"># end def find_first</span>
 
 <div class="viewcode-block" id="str_rep"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.str_rep">[docs]</a><span class="k">def</span> <span class="nf">str_rep</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; return the string representation of an xml node</span>
@@ -136,23 +150,68 @@
 <span class="c1"># end def text2arr</span>
 
 <span class="c1"># ============================= level 2: QMCPACK specialized =============================</span>
-<div class="viewcode-block" id="set_param"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.set_param">[docs]</a><span class="k">def</span> <span class="nf">set_param</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">pval</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_param"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.get_param">[docs]</a><span class="k">def</span> <span class="nf">get_param</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">pname</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; retrieve the str representation of a parameter from: &lt;parameter name=&quot;pname&quot;&gt; str_rep &lt;/parameter&gt;</span>
+<span class="sd">  Args:</span>
+<span class="sd">    node (lxml.etree._Element): xml node with &lt;parameter&gt;.</span>
+<span class="sd">    pname (str): name of parameter</span>
+<span class="sd">  Return:</span>
+<span class="sd">    str: string representation of the parameter value</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">pnode</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//parameter[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span><span class="o">%</span><span class="n">pname</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">pnode</span><span class="o">.</span><span class="n">text</span></div>
+<span class="c1"># end def</span>
+
+<div class="viewcode-block" id="set_param"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.set_param">[docs]</a><span class="k">def</span> <span class="nf">set_param</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">pval</span><span class="p">,</span><span class="n">new</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; set &lt;parameter&gt; with name &#39;pname&#39; to &#39;pval&#39; </span>
+<span class="sd">  if new=True, then &lt;parameter name=&quot;pname&quot;&gt; does not exist. create it</span>
 <span class="sd">  Args:</span>
 <span class="sd">    node (lxml.etree._Element): xml node with children having tag &#39;parameter&#39;</span>
 <span class="sd">    pname (str): name of parameter</span>
 <span class="sd">    pval (str): value of parameter</span>
+<span class="sd">    new (bool): create new &lt;paremter&gt; node, default is false</span>
 <span class="sd">  Effect:</span>
 <span class="sd">    the text of &lt;parameter&gt; with &#39;pname&#39; will be set to &#39;pval&#39;</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">pval</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span>
   <span class="n">pnode</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//parameter[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span><span class="o">%</span><span class="n">pname</span><span class="p">)</span>
-  <span class="n">pnode</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">pval</span></div>
+  <span class="c1"># 4 paths dependent on (pnode is None) and new</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">pnode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">new</span><span class="p">):</span> <span class="c1"># unintended input</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;&lt;parameter name=&quot;</span><span class="si">%s</span><span class="s1">&quot;&gt; not found in </span><span class="si">%s</span><span class="se">\n</span><span class="s1"> please set new=True&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pname</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
+  <span class="k">elif</span> <span class="p">(</span><span class="n">pnode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">new</span><span class="p">:</span> <span class="c1"># unintended input</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;&lt;parameter name=&quot;</span><span class="si">%s</span><span class="s1">&quot;&gt; found in </span><span class="si">%s</span><span class="se">\n</span><span class="s1"> please set new=False&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pname</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
+  <span class="k">elif</span> <span class="p">(</span><span class="n">pnode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">new</span><span class="p">:</span>
+    <span class="n">pnode</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;parameter&#39;</span><span class="p">,{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="n">pname</span><span class="p">})</span>
+    <span class="n">pnode</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">pval</span>
+    <span class="n">node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pnode</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">pnode</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">pval</span></div>
+  <span class="c1"># end if</span>
+<span class="c1"># end def</span>
+
+<div class="viewcode-block" id="get_axes"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.get_axes">[docs]</a><span class="k">def</span> <span class="nf">get_axes</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+  <span class="n">sc_node</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//simulationcell&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">sc_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;&lt;simulationcell&gt; not found in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">fname</span><span class="p">)</span>
+  <span class="n">lat_node</span> <span class="o">=</span> <span class="n">sc_node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//parameter[@name=&quot;lattice&quot;]&#39;</span><span class="p">)</span>
+  <span class="n">unit</span> <span class="o">=</span> <span class="n">lat_node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">)</span>
+  <span class="k">assert</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;bohr&#39;</span>
+  <span class="n">axes</span> <span class="o">=</span> <span class="n">text2arr</span><span class="p">(</span> <span class="n">lat_node</span><span class="o">.</span><span class="n">text</span> <span class="p">)</span>
+  <span class="k">return</span> <span class="n">axes</span></div>
+<span class="c1"># end def </span>
+
+<div class="viewcode-block" id="get_pos"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.get_pos">[docs]</a><span class="k">def</span> <span class="nf">get_pos</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span><span class="n">pset</span><span class="o">=</span><span class="s1">&#39;ion0&#39;</span><span class="p">):</span>
+  <span class="n">source_pset_node</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//particleset[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span><span class="o">%</span><span class="n">pset</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">source_pset_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> not found in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">pset</span><span class="p">,</span><span class="n">fname</span><span class="p">))</span>
+  <span class="n">pos_node</span> <span class="o">=</span> <span class="n">source_pset_node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//attrib[@name=&quot;position&quot;]&#39;</span><span class="p">)</span>
+  <span class="n">pos</span> <span class="o">=</span> <span class="n">text2arr</span><span class="p">(</span><span class="n">pos_node</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">pos</span></div>
 <span class="c1"># end def</span>
 
 <div class="viewcode-block" id="opt_wf_fname"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.opt_wf_fname">[docs]</a><span class="k">def</span> <span class="nf">opt_wf_fname</span><span class="p">(</span><span class="n">opt_inp</span><span class="p">,</span><span class="n">iqmc</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; Find the file containing the optimized &lt;wavefunction&gt; at optimization loop iqmc </span>
-
 <span class="sd">  example of a folder containing an optimization run:</span>
 <span class="sd">  $ls opt_dir</span>
 <span class="sd">    opt.xml</span>
@@ -278,6 +337,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.sieve.html">qharv.sieve package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">qharv</a></li>
 </ul>
 
         </div>

@@ -49,13 +49,14 @@
 <span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
 <span class="c1"># Email: yubo.paul.yang@gmail.com</span>
 <span class="c1"># Routines to parse hdf5 spectral and volumetric data output. Mostly built around h5py&#39;s API.</span>
-
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">):</span>
   <span class="k">return</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">)</span></div>
+<div class="viewcode-block" id="path_loc"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.path_loc">[docs]</a><span class="k">def</span> <span class="nf">path_loc</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">handle</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">handle</span><span class="p">[</span><span class="n">path</span><span class="p">]</span><span class="o">.</span><span class="n">value</span></div>
 
 <div class="viewcode-block" id="ls"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.ls">[docs]</a><span class="k">def</span> <span class="nf">ls</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="n">r</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">indent</span><span class="o">=</span><span class="s2">&quot;  &quot;</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; List directory structure</span>
@@ -85,30 +86,31 @@
   <span class="k">return</span> <span class="n">mystr</span></div>
 <span class="c1"># end def ls</span>
 
-<div class="viewcode-block" id="mean_and_err"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.mean_and_err">[docs]</a><span class="k">def</span> <span class="nf">mean_and_err</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">,</span><span class="n">obs_path</span><span class="p">,</span><span class="n">nequil</span><span class="p">):</span>
+<div class="viewcode-block" id="mean_and_err"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.mean_and_err">[docs]</a><span class="k">def</span> <span class="nf">mean_and_err</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="n">obs_path</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">kappa</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; calculate mean and variance of an observable from QMCPACK stat.h5 file</span>
 
-<span class="sd">  assume autocorrelation = 1.</span>
+<span class="sd">  assume autocorrelation = 1 by default</span>
 
 <span class="sd">  Args:</span>
-<span class="sd">    stat_fname (str): .stat.h5 filename</span>
+<span class="sd">    handle (h5py.Group): or h5py.File or h5py.Dataset</span>
 <span class="sd">    obs_path (str): path to observable, e.g. &#39;gofr_e_1_1&#39;</span>
 <span class="sd">    nequil (int): number of equilibration blocks to throw out</span>
+<span class="sd">    kappa (float,optional): auto-correlation of the data, default=1.0 i.e. no</span>
+<span class="sd">     auto-correlation</span>
 <span class="sd">  Returns:</span>
 <span class="sd">    (np.array,np.array): (val_mean,val_err), the mean and error of the observable, assuming no autocorrelation. For correlated data, error is underestimated by a factor of sqrt(autocorrelation).</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">fp</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">)</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">obs_path</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">obs_path</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">:</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;group </span><span class="si">%s</span><span class="s1"> not found&#39;</span> <span class="o">%</span> <span class="n">obs_path</span><span class="p">)</span>
   <span class="c1"># end if</span>
 
   <span class="n">val_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">obs_path</span><span class="p">,</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
   <span class="n">valsq_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">obs_path</span><span class="p">,</span><span class="s1">&#39;value_squared&#39;</span><span class="p">)</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">val_path</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">valsq_path</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">)):</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">val_path</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">valsq_path</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">)):</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;group </span><span class="si">%s</span><span class="s1"> must have &quot;value&quot; and &quot;value_squared&quot; to calculate variance&#39;</span> <span class="o">%</span> <span class="n">obs_path</span><span class="p">)</span>
   <span class="c1"># end if</span>
 
-  <span class="n">val_data</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">val_path</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+  <span class="n">val_data</span> <span class="o">=</span> <span class="n">handle</span><span class="p">[</span><span class="n">val_path</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
   <span class="n">nblock</span>   <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">val_data</span><span class="p">)</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">nequil</span><span class="o">&gt;=</span><span class="n">nblock</span><span class="p">):</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;cannot throw out </span><span class="si">%d</span><span class="s1"> blocks from </span><span class="si">%d</span><span class="s1"> blocks&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">nequil</span><span class="p">,</span><span class="n">nblock</span><span class="p">))</span>
@@ -121,20 +123,18 @@
   <span class="n">val_err</span>  <span class="o">=</span> <span class="n">val_std</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nblock</span><span class="o">-</span><span class="n">nequil</span><span class="p">)</span>
 
   <span class="c1"># !!!! variance of random variable and error of mean are different!</span>
-  <span class="c1">#valsq_data = fp[valsq_path].value</span>
+  <span class="c1">#valsq_data = handle[valsq_path].value</span>
   <span class="c1">#var_mean = (valsq_data-val_data**2.)[nequil:].mean(axis=0)</span>
   <span class="c1">#err = np.sqrt(var_mean)/(nblock-nequil)</span>
   
   <span class="k">return</span> <span class="n">val_mean</span><span class="p">,</span><span class="n">val_err</span></div>
 <span class="c1"># end def mean_and_err</span>
 
-<div class="viewcode-block" id="absolute_magnetization"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.absolute_magnetization">[docs]</a><span class="k">def</span> <span class="nf">absolute_magnetization</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">obs_name</span><span class="o">=</span><span class="s1">&#39;SpinDensity&#39;</span><span class="p">,</span><span class="n">up_name</span><span class="o">=</span><span class="s1">&#39;u&#39;</span><span class="p">,</span><span class="n">dn_name</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; calculate up-down spin density and the integral of its absolute value</span>
-<span class="sd">   first check that /SpinDensity/u and /SpinDensity/d both exist in the .stat.h5 file, then extract both densities, subtract and integrate</span>
-
+<div class="viewcode-block" id="absolute_magnetization"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.absolute_magnetization">[docs]</a><span class="k">def</span> <span class="nf">absolute_magnetization</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">obs_name</span><span class="o">=</span><span class="s1">&#39;SpinDensity&#39;</span><span class="p">,</span><span class="n">up_name</span><span class="o">=</span><span class="s1">&#39;u&#39;</span><span class="p">,</span><span class="n">dn_name</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; calculate up-down spin density and the integral of its absolute value; first check that /SpinDensity/u and /SpinDensity/d both exist in the .stat.h5 file, then extract both densities, subtract and integrate</span>
 
 <span class="sd">  Args:</span>
-<span class="sd">    stat_fname (str): name of the .stat.h5 file</span>
+<span class="sd">    handle (h5py.Group): or h5py.File or h5py.Dataset</span>
 <span class="sd">    nequil (int): number of equilibration blocks to throw out</span>
 <span class="sd">    obs_name (str): name of spindensity observable, default=SpinDensity</span>
 <span class="sd">    up_name (str): default=u</span>
@@ -143,21 +143,19 @@
 <span class="sd">    (np.array,np.array,float,float): (rho,rhoe,mabs_mean,mabs_error), rho and rhoe have shape (ngrid,), where ngrid is the total number of real-space grid points i.e. for grid=(nx,ny,nz), ngrid=nx*ny*nz. mabs = \int |rho_up-rho_dn|</span>
 <span class="sd">  &quot;&quot;&quot;</span>
 
-  <span class="n">fp</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">)</span>
-  <span class="c1">#print( ls(fp,r=True) ) # see what&#39;s in the file</span>
+  <span class="c1">#print( ls(handle,r=True) ) # see what&#39;s in the file</span>
 
   <span class="c1"># make sure observable is in file</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">obs_name</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">obs_name</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">:</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;observable </span><span class="si">%s</span><span class="s1"> not found in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">obs_name</span><span class="p">,</span><span class="n">stat_fname</span><span class="p">))</span>
   <span class="c1"># end if</span>
 
   <span class="c1"># make sure up and down components are in spin density</span>
   <span class="n">up_loc</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">obs_name</span><span class="p">,</span><span class="n">up_name</span><span class="p">)</span>
   <span class="n">dn_loc</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">obs_name</span><span class="p">,</span><span class="n">dn_name</span><span class="p">)</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">up_loc</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dn_loc</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">)):</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">up_loc</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dn_loc</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">)):</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> must have up and down components (</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">obs_name</span><span class="p">,</span><span class="n">up_name</span><span class="p">,</span><span class="n">dn_name</span><span class="p">))</span>
   <span class="c1"># end if</span>
-  <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
   <span class="c1"># get up density</span>
   <span class="n">val</span><span class="p">,</span><span class="n">err</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">,</span><span class="n">up_loc</span><span class="p">,</span><span class="n">nequil</span><span class="p">)</span>
@@ -200,6 +198,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.sieve.html">qharv.sieve package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">qharv</a></li>
 </ul>
 
         </div>

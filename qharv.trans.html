@@ -1,0 +1,171 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.trans package &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="qharv package" href="qharv.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="qharv.html" title="qharv package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="qharv.html" accesskey="U">qharv package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="qharv-trans-package">
+<h1>qharv.trans package<a class="headerlink" href="#qharv-trans-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-qharv.trans.nexus_qmc">
+<span id="qharv-trans-nexus-qmc-module"></span><h2>qharv.trans.nexus_qmc module<a class="headerlink" href="#module-qharv.trans.nexus_qmc" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="qharv.trans.nexus_qmc.backup">
+<code class="descclassname">qharv.trans.nexus_qmc.</code><code class="descname">backup</code><span class="sig-paren">(</span><em>ref_loc</em>, <em>tar_loc</em>, <em>execute=False</em>, <em>skip_exist=False</em>, <em>overwrite_target=False</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/nexus_qmc.html#backup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.nexus_qmc.backup" title="Permalink to this definition">¶</a></dt>
+<dd><p>essentially <cite>rsync</cite> from bash, but with a bunch of checks</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.trans.nexus_qmc.backup_calculations">
+<code class="descclassname">qharv.trans.nexus_qmc.</code><code class="descname">backup_calculations</code><span class="sig-paren">(</span><em>ref_dir</em>, <em>tar_dir</em>, <em>subdirs</em>, <em>execute=False</em>, <em>verbose=True</em>, <em>**bk_kws</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/nexus_qmc.html#backup_calculations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.nexus_qmc.backup_calculations" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy all nexus calculations listed in subdirs from ref_dir to tar_dir
+motivation: backup nexus-generated calculations and rerun with a tweak
+problem: nexus keeps a run folder and a result folder in parallel. A full backup</p>
+<blockquote>
+<div>must take both folders into account and keep them consistent.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ref_dir</strong> (<em>str</em>) – reference directory containing calculations to backup tar_dir (str): target directory to backup (e.g. attic/)</li>
+<li><strong>subdirs</strong> (<em>list</em>) – a list of folders names generated by nexus, e.g.
+[‘opt’,’dmc’]</li>
+<li><strong>bk_kws</strong> (<em>dict</em>) – keyword arguments to pass to backup(ref_loc,tar_loc)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>a list of source-target maps backed up, this list can be used</dt>
+<dd><p class="first last">to clean the backed up directory</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.trans.nexus_qmc.find_run_folders">
+<code class="descclassname">qharv.trans.nexus_qmc.</code><code class="descname">find_run_folders</code><span class="sig-paren">(</span><em>results_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/nexus_qmc.html#find_run_folders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.nexus_qmc.find_run_folders" title="Permalink to this definition">¶</a></dt>
+<dd><p>find all nexus-generated run folders given the results folder</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-qharv.trans">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-qharv.trans" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="qharv.seed.html">qharv.seed package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qharv.cross.html">qharv.cross package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qharv.reel.html">qharv.reel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qharv.sieve.html">qharv.sieve package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="qharv.html">qharv package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="qharv.html#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qharv.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="qharv.html"
+                        title="previous chapter">qharv package</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="qharv.html" title="qharv package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="qharv.html" >qharv package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

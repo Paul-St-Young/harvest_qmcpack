@@ -1,0 +1,224 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.trans.nexus_qmc &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.trans.nexus_qmc</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Routines transplant QMC calculations setup by qmcpack/nexus.</span>
+<span class="c1">#  reliant on qharv.reel.mole, which uses bash&#39;s `find` command</span>
+<span class="c1">#  the `find` dependence not ideal, because this script will not</span>
+<span class="c1">#  work on windows or mac... oh well</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">from</span> <span class="nn">qharv.reel</span> <span class="k">import</span> <span class="n">mole</span>
+
+<div class="viewcode-block" id="find_run_folders"><a class="viewcode-back" href="../../../qharv.trans.html#qharv.trans.nexus_qmc.find_run_folders">[docs]</a><span class="k">def</span> <span class="nf">find_run_folders</span><span class="p">(</span><span class="n">results_dir</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; find all nexus-generated run folders given the results folder &quot;&quot;&quot;</span>
+  <span class="n">rr_map</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># construct a list of result-run directory map</span>
+  <span class="n">ref_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">results_dir</span><span class="p">)</span>
+  <span class="n">res_dirl</span><span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;ls&#39;</span><span class="p">,</span><span class="n">results_dir</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+  <span class="k">for</span> <span class="n">res_dir</span> <span class="ow">in</span> <span class="n">res_dirl</span><span class="p">:</span>
+    <span class="n">rlist</span> <span class="o">=</span> <span class="n">mole</span><span class="o">.</span><span class="n">files_with_regex</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="o">+</span><span class="n">res_dir</span><span class="p">,</span><span class="n">ref_dir</span><span class="p">,</span><span class="n">ftype</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
+    <span class="n">run_dirl</span><span class="o">=</span> <span class="p">[]</span> 
+    <span class="k">for</span> <span class="n">run_dir</span> <span class="ow">in</span> <span class="n">rlist</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">run_dir</span><span class="p">)</span> <span class="o">!=</span> <span class="n">results_dir</span><span class="p">:</span>
+        <span class="n">run_dirl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_dir</span><span class="p">)</span>
+      <span class="c1"># end if</span>
+    <span class="c1"># end for</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">run_dirl</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Expected exactly 1 run for each result. Found runs:</span><span class="se">\n</span><span class="si">%s</span><span class="s1"> for result </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">run_dirl</span><span class="p">),</span><span class="n">res_dir</span><span class="p">)</span> <span class="p">)</span>
+    <span class="c1"># end if</span>
+    <span class="n">rr_map</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">results_dir</span><span class="p">,</span><span class="n">res_dir</span><span class="p">)]</span> <span class="o">=</span> <span class="n">run_dirl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="c1"># end for</span>
+  <span class="k">return</span> <span class="n">rr_map</span></div>
+<span class="c1"># end def</span>
+
+<div class="viewcode-block" id="backup"><a class="viewcode-back" href="../../../qharv.trans.html#qharv.trans.nexus_qmc.backup">[docs]</a><span class="k">def</span> <span class="nf">backup</span><span class="p">(</span><span class="n">ref_loc</span><span class="p">,</span><span class="n">tar_loc</span><span class="p">,</span><span class="n">execute</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">skip_exist</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">overwrite_target</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; essentially `rsync` from bash, but with a bunch of checks &quot;&quot;&quot;</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">tar_loc</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">execute</span><span class="p">:</span> <span class="c1"># create folder if not already exist</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="p">:</span>
+      <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s1">&#39;mkdir&#39;</span><span class="p">,</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span><span class="n">path</span><span class="p">])</span>
+    <span class="c1"># end if</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;would have created </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">path</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+  <span class="k">if</span> <span class="n">execute</span><span class="p">:</span>
+    <span class="n">write</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">tar_loc</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">tar_loc</span><span class="p">)):</span>
+      <span class="c1"># target location will be overwritten, make sure this is </span>
+      <span class="c1">#  what the user wants</span>
+      <span class="k">if</span> <span class="n">overwrite_target</span><span class="p">:</span>
+        <span class="n">write</span> <span class="o">=</span> <span class="kc">True</span>
+      <span class="k">elif</span> <span class="n">skip_exist</span><span class="p">:</span>
+        <span class="n">write</span> <span class="o">=</span> <span class="kc">False</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;target &quot;</span><span class="si">%s</span><span class="s1">&quot; exists, please either skip_exist or overwrite_target&#39;</span><span class="o">%</span><span class="n">tar_loc</span><span class="p">)</span>
+      <span class="c1"># end if</span>
+    <span class="c1"># end if</span>
+    <span class="k">if</span> <span class="n">write</span><span class="p">:</span>
+      <span class="n">out</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;rsync&#39;</span><span class="p">,</span><span class="s1">&#39;-avz&#39;</span><span class="p">,</span><span class="n">ref_loc</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="p">,</span><span class="n">tar_loc</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)])</span>
+      <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;qharv_transplant.log&#39;</span><span class="p">,</span><span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+          <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;would have copied </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">ref_loc</span><span class="p">,</span><span class="n">tar_loc</span><span class="p">))</span>
+  <span class="c1"># end if</span>
+  <span class="k">return</span> <span class="kc">True</span> <span class="c1"># no error from above</span></div>
+<span class="c1"># end def</span>
+
+<div class="viewcode-block" id="backup_calculations"><a class="viewcode-back" href="../../../qharv.trans.html#qharv.trans.nexus_qmc.backup_calculations">[docs]</a><span class="k">def</span> <span class="nf">backup_calculations</span><span class="p">(</span><span class="n">ref_dir</span><span class="p">,</span><span class="n">tar_dir</span><span class="p">,</span><span class="n">subdirs</span><span class="p">,</span><span class="n">execute</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">**</span><span class="n">bk_kws</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; copy all nexus calculations listed in subdirs from ref_dir to tar_dir</span>
+<span class="sd">  motivation: backup nexus-generated calculations and rerun with a tweak</span>
+<span class="sd">  problem: nexus keeps a run folder and a result folder in parallel. A full backup</span>
+<span class="sd">   must take both folders into account and keep them consistent.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    ref_dir (str): reference directory containing calculations to backup tar_dir (str): target directory to backup (e.g. attic/)</span>
+<span class="sd">    subdirs (list): a list of folders names generated by nexus, e.g.</span>
+<span class="sd">     [&#39;opt&#39;,&#39;dmc&#39;]</span>
+<span class="sd">    bk_kws (dict): keyword arguments to pass to backup(ref_loc,tar_loc)</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    list: a list of source-target maps backed up, this list can be used </span>
+<span class="sd">     to clean the backed up directory</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="c1"># find the &quot;results&quot; folder</span>
+  <span class="n">rdirl</span> <span class="o">=</span> <span class="n">mole</span><span class="o">.</span><span class="n">files_with_regex</span><span class="p">(</span><span class="s1">&#39;*results&#39;</span><span class="p">,</span><span class="n">ref_dir</span><span class="p">,</span><span class="n">ftype</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
+  <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rdirl</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="c1"># expect 1 results folder</span>
+  <span class="n">rdir</span>  <span class="o">=</span> <span class="n">rdirl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+  <span class="c1"># find one run folder for each result folder</span>
+  <span class="n">rr_map</span> <span class="o">=</span> <span class="n">find_run_folders</span><span class="p">(</span><span class="n">rdir</span><span class="p">)</span>
+  <span class="c1"># the result-&gt;run (rr) directory map can be printed for inspection, or replace manually</span>
+
+  <span class="c1"># create a plan for the backup</span>
+  <span class="k">for</span> <span class="n">res_dir</span><span class="p">,</span><span class="n">run_dir</span> <span class="ow">in</span> <span class="n">rr_map</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+    <span class="c1"># create a list of souce-target maps to copy</span>
+    <span class="n">st_map</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">subdir</span> <span class="ow">in</span> <span class="n">subdirs</span><span class="p">:</span>
+      <span class="n">sub_run_dirs</span> <span class="o">=</span> <span class="n">mole</span><span class="o">.</span><span class="n">files_with_regex</span><span class="p">(</span><span class="s1">&#39;*/&#39;</span><span class="o">+</span><span class="n">subdir</span><span class="p">,</span><span class="n">run_dir</span><span class="p">,</span><span class="n">ftype</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
+      <span class="n">sub_res_dirs</span> <span class="o">=</span> <span class="n">mole</span><span class="o">.</span><span class="n">files_with_regex</span><span class="p">(</span><span class="s1">&#39;*/&#39;</span><span class="o">+</span><span class="n">subdir</span><span class="p">,</span><span class="n">res_dir</span><span class="p">,</span><span class="n">ftype</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">mydir</span> <span class="ow">in</span> <span class="n">sub_run_dirs</span><span class="o">+</span><span class="n">sub_res_dirs</span><span class="p">:</span>
+        <span class="n">rel_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">mydir</span><span class="p">,</span><span class="n">ref_dir</span><span class="p">)</span>
+        <span class="n">mytar</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tar_dir</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ref_dir</span><span class="p">),</span><span class="n">rel_path</span><span class="p">)</span>
+        <span class="n">st_map</span><span class="p">[</span><span class="n">mydir</span><span class="p">]</span> <span class="o">=</span> <span class="n">mytar</span>
+      <span class="c1"># end for mydir</span>
+    <span class="c1"># end for subdir</span>
+  <span class="c1"># end for</span>
+  <span class="c1">#st_map[rdir] = os.path.join(tar_dir,rdir) # do NOT backup all of results</span>
+
+  <span class="c1"># the source-target map (st_map) can be checked or overrode here</span>
+
+  <span class="c1"># perform backup according to the source-target map</span>
+  <span class="k">if</span> <span class="n">execute</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">progressbar</span>
+    <span class="n">pbar</span> <span class="o">=</span> <span class="n">progressbar</span><span class="o">.</span><span class="n">ProgressBar</span><span class="p">(</span><span class="n">max_value</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">st_map</span><span class="p">))</span>
+    <span class="n">ifile</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">source</span><span class="p">,</span><span class="n">target</span> <span class="ow">in</span> <span class="n">st_map</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+      <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ifile</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+      <span class="n">backup</span><span class="p">(</span><span class="n">source</span><span class="p">,</span><span class="n">target</span><span class="p">,</span><span class="n">execute</span><span class="o">=</span><span class="n">execute</span><span class="p">,</span><span class="o">**</span><span class="n">bk_kws</span><span class="p">)</span>
+      <span class="n">ifile</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c1"># end for</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;generated source-target map, please check return value. set execute=True to backup&#39;</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+  <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; do not forget to backup your nexus script!&#39;</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">st_map</span></div>
+<span class="c1"># end def backup_calculations</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.seed.html">qharv.seed package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.inspect.html">qharv.inspect package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.cross.html">qharv.cross package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.reel.html">qharv.reel package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.sieve.html">qharv.sieve package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">qharv</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>
