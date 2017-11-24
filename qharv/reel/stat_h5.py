@@ -38,7 +38,7 @@ def ls(handle,r=False,level=0,indent="  "):
   return mystr
 # end def ls
 
-def mean_and_err(handle,obs_path,nequil,kappa=1.0):
+def mean_and_err(handle,obs_path,nequil,kappa=None):
   """ calculate mean and variance of an observable from QMCPACK stat.h5 file
 
   assume autocorrelation = 1 by default
@@ -55,11 +55,14 @@ def mean_and_err(handle,obs_path,nequil,kappa=1.0):
   if not obs_path in handle:
     raise RuntimeError('group %s not found' % obs_path)
   # end if
+  if kappa is None:
+    raise NotImplementedError('need an automatic way to calculate auto-correlation')
+  # end if
 
   val_path = os.path.join(obs_path,'value')
-  valsq_path = os.path.join(obs_path,'value_squared')
-  if not ((val_path in handle) and (valsq_path in handle)):
-    raise RuntimeError('group %s must have "value" and "value_squared" to calculate variance' % obs_path)
+  if not (val_path in handle):
+    val_path = obs_path # !!!! assuming obs_path includes value already
+    # `handle[val_path]` will fail if this assumption is not correct
   # end if
 
   val_data = handle[val_path].value
@@ -67,17 +70,13 @@ def mean_and_err(handle,obs_path,nequil,kappa=1.0):
   if (nequil>=nblock):
     raise RuntimeError('cannot throw out %d blocks from %d blocks'%(nequil,nblock))
   # end if
-  edata    = val_data[nequil:] # equilibrated data
+  edata      = val_data[nequil:] # equilibrated data
+  neffective = (nblock-nequil)/kappa
 
   # calculate mean and error
   val_mean = edata.mean(axis=0)
   val_std  = edata.std(ddof=1,axis=0)
-  val_err  = val_std/np.sqrt(nblock-nequil)
-
-  # !!!! variance of random variable and error of mean are different!
-  #valsq_data = handle[valsq_path].value
-  #var_mean = (valsq_data-val_data**2.)[nequil:].mean(axis=0)
-  #err = np.sqrt(var_mean)/(nblock-nequil)
+  val_err  = val_std/np.sqrt(neffective)
   
   return val_mean,val_err
 # end def mean_and_err
