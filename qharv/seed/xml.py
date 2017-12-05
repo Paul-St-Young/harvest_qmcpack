@@ -153,12 +153,41 @@ def get_axes(doc):
   return axes
 # end def 
 
-def get_pos(doc,pset='ion0'):
-  source_pset_node = doc.find('.//particleset[@name="%s"]'%pset)
-  if source_pset_node is None:
+def get_pos(doc,pset='ion0',all_pos=True,group=None):
+  # find <particleset>
+  pset_node = doc.find('.//particleset[@name="%s"]'%pset)
+  if pset_node is None:
     raise RuntimeError('%s not found in %s'%(pset,fname))
-  pos_node = source_pset_node.find('.//attrib[@name="position"]')
-  pos = text2arr(pos_node.text)
+  
+  # find <group> if necessary
+  groups = pset_node.findall('.//group')
+  names = [grp.get('name') for grp in groups]
+  if (group is None): # no group give, better be requesting all particle positions
+    if (not all_pos):
+      warn_msg = '%d groups found, please specify particle group from %s'%(len(groups),str(names))
+      raise RuntimeError(warn_msg)
+    # end if
+  else: # group given, see if it is available
+    if (all_pos): raise RuntimeError('specified group will be over-written with all_pos! Please set all_pos=False.')
+    if (group not in names):
+      raise RuntimeError('no group with name "%s" in %s'%(group,str(names)))
+    # end if
+  # end if
+
+  pos_text = ''
+  if not all_pos: # get requested group positions
+    grp = pset_node.find('.//group[@name="%s"]'%group)
+    pos_node = grp.find('.//attrib[@name="position"]')
+    pos_text = pos_node.text
+  else:
+    for grp in groups:
+      pos_node  = grp.find('.//attrib[@name="position"]')
+      pos_text += pos_node.text.strip('\n')+'\n'
+    # end for
+  # end if
+
+  # get requestsed particle positions
+  pos = text2arr(pos_text.strip('\n'))
   return pos
 # end def
 
