@@ -116,10 +116,12 @@ This module is NOT intended to be a full-fledged workflow tool. Please refer to 
 >reel them in, sieve for good, and refine for the best.
 >-- qharv maxim
 
-### Rules (fully plagiarized from Asimov)
-1. A function may not produce wrong results or, through inaction, allow a user to produce wrong results.
-2. A function must accept manual overrides given to it by a user, except where such overrides will conflict with the first rule.
-3. A function must be as simple and readable as possible, as long as doing so does not conflict with the first or the second rule.
+### Laws of Programming (fully plagiarized from Asimov)
+1. A program may not produce wrong results or, through inaction, allow a user to produce wrong results.
+2. A program must accept manual overrides given to it by a user, except where such overrides will conflict with the First Law.
+3. A program must be as simple and as readable as possible, as long as doing so does not conflict with the First or the Second Law.
+
+note: the simplest way to satisfy both the First and the Second Law is to abort at an unknown request.
 
 [nexus]:http://qmcpack.org/nexus/
 [doc html]: https://paul-st-young.github.io/harvest_qmcpack/
