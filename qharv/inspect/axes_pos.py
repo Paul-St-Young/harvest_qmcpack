@@ -15,6 +15,22 @@ def abc(axes):
   return abc
 # end def
 
+def raxes(axes):
+  """ find reciprocal lattice vectors 
+  Args:
+    axes (np.array): lattice vectors in row-major
+  Returns:
+    np.array: raxes, reciprocal lattice vectors in row-major
+  """
+  a1,a2,a3 = axes
+  vol = volume(axes)
+
+  b1 = 2*np.pi*np.cross(a2, a3)/vol
+  b2 = 2*np.pi*np.cross(a3, a1)/vol
+  b3 = 2*np.pi*np.cross(a1, a2)/vol
+  return np.array([b1,b2,b3])
+# end def
+
 def volume(axes):
   """ volume of a simulation cell
   Args:
@@ -54,6 +70,38 @@ def rins(axes):
   rins = volume(axes)/2./max(face_areas)
   return rins
 # end def rins
+
+def auto_distance_table(axes,pos,dn=1):
+  """ calculate distance table of a set of particles among themselves
+   keep this function simple! use this to test distance_table(axes,pos1,pos2)
+  Args:
+    axes (np.array): lattice vectors in row-major
+    pos  (np.array): particle positions in row-major
+    dn (int,optional): number of neighboring cells to search in each direction
+  Returns:
+    np.array: dtable shape=(natom,natom), where natom=len(pos)
+  """
+  natom,ndim = pos.shape
+  dtable = np.zeros([natom,natom],float)
+  from itertools import combinations,product
+  # loop through all unique pairs of atoms
+  for (i,j) in combinations(range(natom),2): # 2 for pairs
+    dists = []
+    images = product(range(-dn,dn+1),repeat=ndim) # check all neighboring images
+    # loop through all neighboring periodic images of atom j
+    #  should be 27 images for a 3D box (dn=1)
+    for ushift in images:
+      if sum(ushift)==0: continue
+      shift = np.dot(ushift,axes)
+      disp  = pos[i] - (pos[j]+shift)
+      dist  = np.linalg.norm(disp)
+      dists.append(dist)
+    # end for ushift
+    dtable[i,j] = min(dists)
+    dtable[j,i] = min(dists)
+  # end for (i,j)
+  return dtable
+# end def auto_distance_table
 
 def properties_from_axes_pos(axes,pos):
   """ calculate properties from axes,pos alone; essentially the simplified/customized version of: pymatgen.Structure(axes,elem,pos,coords_are_cartesian=True)
