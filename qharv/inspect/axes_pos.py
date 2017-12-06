@@ -71,6 +71,28 @@ def rins(axes):
   return rins
 # end def rins
 
+def rwsc(axes,dn=1):
+  """ radius of the inscribed sphere inside the real-space Wigner-Seitz cell of the given cell
+  Args:
+    axes (np.array): lattice vectors in row-major
+    dn (int,optional): number of image cells to search in each dimension, default dn=1 searches 26 images in 3D.
+  Returns:
+    float: Wigner-Seitz cell radius
+  """
+  ndim = len(axes)
+  from itertools import product
+  r2imgl  = [] # keep a list of distance^2 to all neighboring images
+  images = product(range(-dn,dn+1),repeat=ndim)
+  for ushift in images:
+    if sum(ushift)==0: continue # ignore self
+    shift = np.dot(ushift,axes)
+    r2imgl.append( np.dot(shift,shift) )
+  # end for
+  # find minimum image distance
+  rimg = np.sqrt( min(r2imgl) )
+  return rimg/2.
+# def rwsc
+
 def auto_distance_table(axes,pos,dn=1):
   """ calculate distance table of a set of particles among themselves
    keep this function simple! use this to test distance_table(axes,pos1,pos2)

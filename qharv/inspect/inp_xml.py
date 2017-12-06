@@ -47,16 +47,27 @@ def validate_bspline_rcut(node,ignore_empty=False):
     # end for corr
   elif bc_str == 'ppp':
     axes = xml.get_axes(node)
-    rins = axes_pos.rins(axes)
-    print rins
+    #rsc = axes_pos.rins(axes) # radius of inscribed sphere in simulation cell
+    rwsc = axes_pos.rwsc(axes) # radius of inscribed sphere in Wigner-Seitz cell
+    # Wigner-Seitz cell radius is the more optimal minimum for correlation functions
     for corr in corrs:
-      rc = rcut(corr)
-      print rc
-      if (rc<=0) or (rc>rins):
+      try: # rcut may not be provided in periodic simulation
+        rc = rcut(corr)
+      except RuntimeError as err:
+        not_found = 'no rcut found' in str(err)
+        if not_found:
+          pass # let QMCPACK decide
+        else:
+          raise err # pass on unknown error
+        # end if
+      # end try
+      if (rc<=0) or (rc>rwsc):
+        print('rcut for %s = %3.4f is invaid. note: rwsc = %3.4f.' % (corr.get('id'),rc,rwsc) )
         valid = False
       # end if
     # end for corr
   else:
+    valid = False
     raise NotImplementedError('deal with bconds="%s"'%bc_str)
   # end if
 
