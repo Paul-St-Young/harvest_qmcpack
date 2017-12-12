@@ -130,9 +130,8 @@ def static_ae_ham():
          <pairpot type="coulomb" name="ElecElec" source="e" target="e"/>
          <pairpot type="coulomb" name="IonIon" source="ion0" target="ion0"/>
          <pairpot type="coulomb" name="ElecIon" source="ion0" target="e"/>
-         <estimator type="structurefactor" name="sksp"/>
-         <estimator name="sk" type="sk" hdf5="yes"/>
-         <estimator type="gofr" name="gofr" num_bin="50"/>
+         <estimator name="csk" type="csk" hdf5="yes"/>
+         <estimator type="gofr" name="gofr" num_bin="128"/>
          <estimator type="Pressure"/>
       </hamiltonian>'''
   return xml.parse(text)
@@ -140,9 +139,8 @@ def static_ae_ham():
 def dynamic_ae_ham():
   text = '''<hamiltonian name="h0" type="generic" target="e">
          <pairpot type="coulomb" name="ElecElec" source="e" target="e"/>
-         <estimator type="structurefactor" name="sksp"/>
-         <estimator name="sk" type="sk" hdf5="yes"/>
-         <estimator type="gofr" name="gofr" num_bin="50"/>
+         <estimator name="csk" type="csk" hdf5="yes"/>
+         <estimator type="gofr" name="gofr" num_bin="128"/>
          <estimator type="Pressure"/>
          <estimator name="skinetic" type="specieskinetic"/>
          <estimator hdf5="yes" name="latdev" per_xyz="yes" sgroup="H" source="wf_centers" target="e" tgroup="p" type="latticedeviation"/>
