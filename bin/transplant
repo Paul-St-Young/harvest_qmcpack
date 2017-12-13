@@ -20,6 +20,10 @@ if __name__ == '__main__':
   parser.add_argument('--force','-f',action='store_true',help='skip checks, use with caution!')
   args = parser.parse_args()
 
+  if args.subdirs is None:
+    raise RuntimeError('At least one subdir must be given. e.g. -s dmc')
+  # end if
+
   if not args.force:
     # check inputs
     if (args.ref_dir.endswith('/') or args.tar_dir.endswith('/')) and (not args.strip_slash):
