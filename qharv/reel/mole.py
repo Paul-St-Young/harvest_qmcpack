@@ -59,6 +59,13 @@ def group_map(flist):
 
 def interpret_qmcpack_fname(fname):
   """ extract metadata regarding the contents of a file based on its filename. QMCPACK generates files having a pre-determined suffix structure. This function will interpret the last 4 period-separated segments of the suffix. 
+
+  fname examples:
+    qmc.s000.scalar.dat
+    qmc.g000.s000.stat.h5
+    qmc.g161.s000.config.h5
+    qmc.g005.s001.cont.xml
+
   Args:
     fname (str): filename, must end in one of ['dat','h5','qmc','xml'].
   Returns:
@@ -82,14 +89,16 @@ def interpret_qmcpack_fname(fname):
   iss    = int(isst.replace('s','')) # series index ('is' is a Python keyword)
 
   # group index
+  grouped= False # single input is not grouped
   igt    = tokens[-4] # g000 or $prefix
   ig = 0 # group index
   suf_list = [isst,cate,ext]
   if igt.startswith('g') and len(igt)==4:
     ig = int(igt.replace('g',''))
     suf_list = [igt] + suf_list
+    grouped = True
   else:  # there is no group index
-    pass # keep defaul ig=0
+    pass # keep defaul ig=0, grouped=False
   # end if
 
   # get project id by removing the suffix
@@ -97,6 +106,34 @@ def interpret_qmcpack_fname(fname):
   prefix = fname.replace(suffix,'')
 
   # metadata entry
-  entry = {'id':prefix,'group':ig,'series':iss,'category':cate,'ext':ext}
+  entry = {'id':prefix,'group':ig,'series':iss,'category':cate,'ext':ext,'grouped':grouped}
   return entry
 # end def interpret_qmcpack_fname
+
+def build_qmcpack_fname(entry):
+  """ inverse of interpret_qmcpack_fname
+  Args:
+    entry (dict): a dictionary of meta data, must include ['id','grouped','group','series','category','ext'] in key
+  Returns:
+    fname (str): filename
+  """
+  order = ['id','series','category','ext']
+  if entry['grouped']:
+    order.insert(1,'group')
+  # end if
+  tokens = []
+  for key in order:
+    val = entry[key]
+    # get string representation
+    if key == 'group':
+      val = 'g'+str(val).zfill(3)
+    elif key == 'series':
+      val = 's'+str(val).zfill(3)
+    else:
+      val = str(val)
+    # end if
+    tokens.append(val)
+  # end for
+  fname = '.'.join(tokens)
+  return fname
+# end def build_qmcpack_fname
