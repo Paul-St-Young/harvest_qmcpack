@@ -1,7 +1,10 @@
 # Author: Yubo "Paul" Yang
 # Email: yubo.paul.yang@gmail.com
 # Routines to inspect and validate a QMCPACK input
+#  first argument is generally an lxml.Element
 
+import os
+import numpy as np
 from qharv.seed import xml
 from qharv.inspect import axes_pos
 
@@ -73,3 +76,48 @@ def validate_bspline_rcut(node,ignore_empty=False):
 
   return valid
 # end def validate_bspline_rcut
+
+def check_wf_hdf5(snode,calc_dir,folded):
+  """ check that spline single-particle orbitals are defined in the correct simulation cell
+   snode must hold the simulation cell and basis builder with a reference to the wf hdf5
+  Args:
+    snode (lxml.Element): e.g. parsed <qmcsystem>
+    calc_dir (str): directory to contain the QMCPACK input
+    folded (bool): True, if DFT was performed in unit cell and orbitals are tiled to super cell
+  Returns:
+    bool: consistent
+  """
+
+  # step 1: get wf hdf5 location
+  bb_list = snode.findall('.//sposet_builder[@href]')
+  if not (len(bb_list) == 1):
+    raise RuntimeError('wrong number of sposet_builder %d'%len(bb_list))
+  # end if
+  bb = bb_list[0]
+  href = bb.get('href')
+  wf_h5_floc = os.path.abspath( os.path.join(calc_dir,href) )
+  if not os.path.isfile(wf_h5_floc):
+    raise RuntimeError('failed to find wf hdf5 %s'%wf_h5_floc)
+  # end if
+
+  # step 2: get axes from wf hdf5
+  from qharv.seed import wf_h5
+  fp = wf_h5.read(wf_h5_floc)
+  h5_axes = wf_h5.get(fp,'axes')
+  fp.close()
+
+  # step 3: get axes from xml input
+  sc_node = snode.find('.//simulationcell')
+  inp_axes = xml.text2arr( sc_node.find('.//parameter[@name="lattice"]').text )
+
+  # step 4: compare
+  consistent = False
+  # assume folded = False
+  if folded:
+    raise NotImplementedError('lattice check is not implemented for folded structure')
+  else:
+    consistent = np.allclose(h5_axes,inp_axes)
+  # end if
+  return consistent
+# end def
+
