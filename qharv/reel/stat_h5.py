@@ -125,3 +125,35 @@ def absolute_magnetization(handle,nequil,obs_name='SpinDensity',up_name='u',dn_n
   mabs_error= np.sqrt( (rhoe**2.).sum() )
   return rho,rhoe,mabs_mean,mabs_error
 # end def absolute_magnetization
+
+def dsk_from_csk(fp,csk_name,nequil,kappa,nsig=3):
+  """ extract fluctuating structure factor dS(k) from charged structure factor S_c(k)
+  Args:
+    fp (h5py.File): stat.h5 handle
+    csk_name (str): name the charged S(k) estimator, likely 'csk'
+    nequil (int): equilibration length
+    kappa (float): autocorrelation length
+    nsig (int,optional): noise suppression level in units of standard error, default nsig=3, all entries below nsig are considered zero.
+  Returns:
+  """
+  
+  # extract raw S(k) data
+  kvecs = path_loc('%s/kpoints/value'%csk_name,fp)
+  cskm0,cske0   = mean_and_err(fp,'%s/csk'%csk_name,nequil,kappa)
+  crhom0,crhoe0 = mean_and_err(fp,'%s/crhok'%csk_name,nequil,kappa)
+
+  # get <rho(k)>^2 and set noise to zero
+  sel = abs(crhom0) < nsig*abs(crhoe0)
+  crhom0[sel] = 0; crhoe0[sel] = 0
+  crhom = np.sum(crhom0**2.,axis=0)
+
+  # get <S(k)>
+  cskm = cskm0.sum(axis=0)
+  cske = np.sqrt( (cske0**2.).sum(axis=0) )
+
+  # return <dS(k)>
+  dskm = cskm - crhom
+  dske = cske # !!!! assume errors in csk & crho are perfectly correlated
+  return kvecs,dskm,dske
+# end def dsk_from_csk
+
