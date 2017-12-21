@@ -154,6 +154,20 @@ def displacement(axes,spos1,spos2,dn=1):
   return min_disp
 # end def displacement
 
+def pos_in_axes(axes,pos):
+  """ particle position(s) in cell
+  Args:
+    axes (np.array): crystal lattice vector
+    pos (np.array): particle position(s)
+  Returns:
+    pos0(np.array): particle position(s) inside the cell
+  """
+  upos = np.dot(pos,np.linalg.inv(axes))
+  upos -= np.floor(upos)
+  pos0 = np.dot(upos,axes)
+  return pos0
+# end def pos_in_axes
+
 def properties_from_axes_pos(axes,pos):
   """ calculate properties from axes,pos alone; essentially the simplified/customized version of: pymatgen.Structure(axes,elem,pos,coords_are_cartesian=True)
   Args:
