@@ -109,20 +109,50 @@ def auto_distance_table(axes,pos,dn=1):
   # loop through all unique pairs of atoms
   for (i,j) in combinations(range(natom),2): # 2 for pairs
     dists = []
-    images = product(range(-dn,dn+1),repeat=ndim) # check all neighboring images
     # loop through all neighboring periodic images of atom j
     #  should be 27 images for a 3D box (dn=1)
-    for ushift in images:
+    for ushift in product(range(-dn,dn+1),repeat=ndim):
       shift = np.dot(ushift,axes)
       disp  = pos[i] - (pos[j]+shift)
       dist  = np.linalg.norm(disp)
       dists.append(dist)
     # end for ushift
-    dtable[i,j] = min(dists)
-    dtable[j,i] = min(dists)
+    dtable[i,j] = dtable[j,i] = min(dists)
   # end for (i,j)
+
   return dtable
 # end def auto_distance_table
+
+def displacement(axes,spos1,spos2,dn=1):
+  """ single particle displacement spos1-spos2 under minimum image convention in axes
+  Args:
+    axes (np.array): lattice vectors
+    spos1 (np.array): single particle position 1
+    spos2 (np.array): single particle position 2
+    dn (int,optional): number of neighboring cells to search in each direction
+  Returns:
+    np.array: disp_table shape=(natom,natom,ndim)
+  """
+  if len(spos1) != len(spos2):
+    raise RuntimeError('dimension mismatch')
+  ndim = len(spos1)
+  npair = (2*dn+1)**ndim # number of images
+
+  # find minimum image displacement
+  min_disp = None
+  min_dist = np.inf
+  from itertools import product
+  for ushift in product(range(-dn,dn+1),repeat=ndim):
+    shift = np.dot(ushift,axes)
+    disp  = spos1 - (spos2+shift)
+    dist  = np.linalg.norm(disp)
+    if dist < min_dist:
+      min_dist = dist
+      min_disp = disp.copy()
+    # end if
+  # end for
+  return min_disp
+# end def displacement
 
 def properties_from_axes_pos(axes,pos):
   """ calculate properties from axes,pos alone; essentially the simplified/customized version of: pymatgen.Structure(axes,elem,pos,coords_are_cartesian=True)
