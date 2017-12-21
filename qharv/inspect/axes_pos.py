@@ -113,7 +113,6 @@ def auto_distance_table(axes,pos,dn=1):
     # loop through all neighboring periodic images of atom j
     #  should be 27 images for a 3D box (dn=1)
     for ushift in images:
-      if sum(ushift)==0: continue
       shift = np.dot(ushift,axes)
       disp  = pos[i] - (pos[j]+shift)
       dist  = np.linalg.norm(disp)
