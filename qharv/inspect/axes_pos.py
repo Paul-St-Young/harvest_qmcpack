@@ -168,7 +168,7 @@ def pos_in_axes(axes,pos):
   return pos0
 # end def pos_in_axes
 
-def dimer_pairs_and_dist(axes,pos,rmax,rmin=0):
+def dimer_pairs_and_dists(axes,pos,rmax,rmin=0):
   """ find all dimers within a separtion of (rmin,rmax)
   Args:
     axes (np.array): crystal lattice vectors
@@ -184,7 +184,7 @@ def dimer_pairs_and_dist(axes,pos,rmax,rmin=0):
   dtable = auto_distance_table(axes,pos)
 
   # locate pairs
-  sel = (dtable < sep_max) & (dtable > sep_min)
+  sel = (dtable < rmax) & (dtable > rmin)
   pairs = np.argwhere(sel)
 
   # remove permutation
@@ -192,4 +192,4 @@ def dimer_pairs_and_dist(axes,pos,rmax,rmin=0):
   upair = pairs[usel]
   udist = dtable[sel][usel]
   return upair,udist
-# def dimer_pairs_and_dist
+# def dimer_pairs_and_dists
