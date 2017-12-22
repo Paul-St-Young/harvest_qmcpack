@@ -157,7 +157,7 @@ def displacement(axes,spos1,spos2,dn=1):
 def pos_in_axes(axes,pos):
   """ particle position(s) in cell
   Args:
-    axes (np.array): crystal lattice vector
+    axes (np.array): crystal lattice vectors
     pos (np.array): particle position(s)
   Returns:
     pos0(np.array): particle position(s) inside the cell
@@ -168,51 +168,28 @@ def pos_in_axes(axes,pos):
   return pos0
 # end def pos_in_axes
 
-def properties_from_axes_pos(axes,pos):
-  """ calculate properties from axes,pos alone; essentially the simplified/customized version of: pymatgen.Structure(axes,elem,pos,coords_are_cartesian=True)
+def dimer_pairs_and_dist(axes,pos,rmax,rmin=0):
+  """ find all dimers within a separtion of (rmin,rmax)
   Args:
-    axes (np.array): crystal lattice vectors in row-major storage
-    pos (np.array):  atomic positions in row-major storage
-  Returns:
-    pd.Series: a list of properties
+    axes (np.array): crystal lattice vectors
+    pos  (np.array): particle positions
+    rmax (float): maximum dimer separation
+    rmin (float,optional): minimum dimer separation
+  Return:
+    np.array: unique pairs, a list of (int,int) particle id pairs
+    np.array: unique distances, a list of floats
   """
 
-  # canonical properties
-  natom  = len(pos)
-  vol    = volume(axes)
-  vol_pp = vol/natom # volume per particle
-  rs     = (3.*vol_pp/(4*np.pi))**(1./3)
-  inv_axes = np.linalg.inv(axes)
-  upos   = np.dot(pos,inv_axes) # fractional coordinates
+  # get distance table
+  dtable = auto_distance_table(axes,pos)
 
-  entry = {}
-  name_list = ['natom','volume','vol_pp','rs','rins','inv_axes','upos']
-  val_list  = [natom,vol,vol_pp,rs,rins(axes),inv_axes,upos]
-  for name,val in zip(name_list,val_list):
-    entry[name] = val
-  # end for
+  # locate pairs
+  sel = (dtable < sep_max) & (dtable > sep_min)
+  pairs = np.argwhere(sel)
 
-  # return pd.Series(entry)
-
-  # ad-hoc properties (scale crystal by alat)
-  alat  = axes[0][0]
-  uaxes = axes/alat
-  pos1  = np.dot(upos,uaxes)
-
-  name_list = ['uaxes','pos1']
-  val_list  = [uaxes,pos1]
-  for name,val in zip(name_list,val_list):
-    entry[name] = val
-  # end for
-
-  return pd.Series(entry)
-# end def properties_from_axes_pos
-
-def mg_lattice_from_axes_pos(axes,pos):
-  """ transfer lattice propertires from pymatgen.Structure """
-  import pymatgen as mg
-  elem = ['H']*len(pos)
-  struct = mg.Structure(axes,elem,pos,coords_are_cartesian=True)
-  entry = struct.as_dict()['lattice']
-  return pd.Series(entry)
-# end def
+  # remove permutation
+  usel  = pairs[:,0] < pairs[:,1]
+  upair = pairs[usel]
+  udist = dtable[sel][usel]
+  return upair,udist
+# def dimer_pairs_and_dist
