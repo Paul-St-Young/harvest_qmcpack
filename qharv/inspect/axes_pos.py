@@ -193,3 +193,16 @@ def dimer_pairs_and_dists(axes,pos,rmax,rmin=0):
   udist = dtable[sel][usel]
   return upair,udist
 # def dimer_pairs_and_dists
+
+def c_over_a(axes):
+  """ calculate c/a ratio given a=b """
+  myabc= abc(axes)
+  cidx = np.argmax(myabc)
+  aidx = (cidx+1)%3
+  bidx = (cidx+2)%3
+  if not np.isclose(myabc[aidx],myabc[bidx]):
+    raise RuntimeError('lattice a,b not equal')
+  # end if 
+  return myabc[cidx]/myabc[aidx]
+# end def c_over_a
+
