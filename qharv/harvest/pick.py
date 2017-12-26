@@ -34,6 +34,9 @@ def collect_mean_df(folder,nequil,kappa,tmp_dat):
 
   fp = open(tmp_dat,'w')
   flist = mole.files_scalar_dat(folder)
+  if len(flist) == 0:
+    raise RuntimeError('no scalar.dat found in %s'%folder)
+  # end if
   data  = []
   ifloc = 0
   for floc in flist:
