@@ -194,12 +194,25 @@ def dimer_pairs_and_dists(axes,pos,rmax,rmin=0):
   return upair,udist
 # def dimer_pairs_and_dists
 
-def c_over_a(axes):
-  """ calculate c/a ratio given a=b """
+def c_over_a(axes,cmax=True,warn=True):
+  """ calculate c/a ratio given a=b
+  Args:
+    axes (np.array): lattice vectors
+    cmax (bool,optional): c vector is longest
+  Returns:
+    float: c/a
+  """
   myabc= abc(axes)
-  cidx = np.argmax(myabc)
+  if cmax:
+    cidx = np.argmax(myabc)
+  else:
+    cidx = np.argmin(myabc)
+  # end if
   aidx = (cidx+1)%3
   bidx = (cidx+2)%3
+  if np.isclose(myabc[cidx],myabc[aidx]) or np.isclose(myabc[cidx],myabc[bidx]):
+    if warn: print('c is close to a/b; try set cmax')
+  # end if
   if not np.isclose(myabc[aidx],myabc[bidx]):
     raise RuntimeError('lattice a,b not equal')
   # end if 
