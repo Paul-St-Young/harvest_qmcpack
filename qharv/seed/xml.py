@@ -145,7 +145,7 @@ def set_param(node,pname,pval,new=False):
 def get_axes(doc):
   sc_node = doc.find('.//simulationcell')
   if sc_node is None:
-    raise RuntimeError('<simulationcell> not found in %s'%fname)
+    raise RuntimeError('<simulationcell> not found')
   lat_node = sc_node.find('.//parameter[@name="lattice"]')
   unit = lat_node.get('units')
   assert unit == 'bohr'
@@ -157,7 +157,7 @@ def get_pos(doc,pset='ion0',all_pos=True,group=None):
   # find <particleset>
   pset_node = doc.find('.//particleset[@name="%s"]'%pset)
   if pset_node is None:
-    raise RuntimeError('%s not found in %s'%(pset,fname))
+    raise RuntimeError('%s not found'%pset)
   
   # find <group> if necessary
   groups = pset_node.findall('.//group')

@@ -6,12 +6,14 @@ import numpy as np
 from qharv.seed import xml
 
 def lattice_vectors(fname):
-  doc = xml.read(fname)
-  return xml.get_axes(doc)
+  doc  = xml.read(fname)
+  axes = xml.get_axes(doc)
+  return axes
 
 def atomic_coords(fname,pset='ion0'):
   doc = xml.read(fname)
-  return xml.get_pos(doc,pset=pset)
+  pos = xml.get_pos(doc,pset=pset)
+  return pos
 
 def draw_atoms(ax,pos,**kwargs):
   """ draw atoms on ax
