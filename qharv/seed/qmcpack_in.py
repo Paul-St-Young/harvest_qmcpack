@@ -36,7 +36,7 @@ def disperse(ginp_loc,calc_dir,execute=False,overwrite=False):
       if not os.path.isfile(floc0):
         raise RuntimeError('%s not found'%floc0)
       floc   = os.path.join(path,infile)
-      if os.path.isfile(floc) and (not overwrite):
+      if os.path.isfile(floc) and (not overwrite) and execute:
         raise RuntimeError('%s exists; delete or overwrite '%floc)
       flist.append(floc)
 
