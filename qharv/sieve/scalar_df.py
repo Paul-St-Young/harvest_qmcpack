@@ -68,3 +68,37 @@ def reblock_scalar_df(df,block_size,min_nblock=4):
     ,columns=df.columns
   )
 # end def
+
+def ts_extrap(calc_df,issl,new_series,tname='timestep',ename='LocalEnergy',series_name='series',order=1):
+  """ extrapolate dmc energy to zero time-step limit
+  Args:
+    calc_df (pd.DataFrame): must contain columns [tname,ename,series_name]
+    issl (list): list of DMC series index to use in fit
+  Returns:
+    pd.Series: an entry copied from the smallest time-step DMC entry, then edited with extrapolated energy and corresponding info; series is set to -1
+  """
+  import scipy.optimize as op
+  sel  = calc_df[series_name].apply(lambda x:x in issl)
+  # !!!! need to check that the selected runs are actually DMC !
+  myx  = calc_df.loc[sel,tname]
+  myym = calc_df.loc[sel,ename+'_mean']
+  myye = calc_df.loc[sel,ename+'_error']
+
+  if order != 1:
+    raise NotImplementedError('only linear extrapolation; order=%d not supported'%order)
+  # end if
+  model = lambda x,a,b:a*x+b
+  popt,pcov = op.curve_fit(model,myx,myym,sigma=myye,absolute_sigma=True)
+  perr = np.sqrt(np.diag(pcov))
+  # return popt,perr to check fit
+
+  y0m = popt[1]
+  y0e = perr[1]
+
+  entry = calc_df.loc[calc_df[tname]==min(myx)].copy()
+  entry[tname] = 0
+  entry[ename+'_mean']  = y0m
+  entry[ename+'_error'] = y0e
+  entry[series_name] = new_series
+  return entry
+# end def
