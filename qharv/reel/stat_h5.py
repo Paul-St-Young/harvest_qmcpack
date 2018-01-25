@@ -7,7 +7,7 @@ import numpy as np
 
 def read(stat_fname):
   return h5py.File(stat_fname)
-def path_loc(path,handle):
+def path_loc(handle,path):
   return handle[path].value
 
 def ls(handle,r=False,level=0,indent="  "):
@@ -138,7 +138,7 @@ def dsk_from_csk(fp,csk_name,nequil,kappa,nsig=3):
   """
   
   # extract raw S(k) data
-  kvecs = path_loc('%s/kpoints/value'%csk_name,fp)
+  kvecs = path_loc(fp,'%s/kpoints/value'%csk_name)
   cskm0,cske0   = mean_and_err(fp,'%s/csk'%csk_name,nequil,kappa)
   crhom0,crhoe0 = mean_and_err(fp,'%s/crhok'%csk_name,nequil,kappa)
 
@@ -157,3 +157,29 @@ def dsk_from_csk(fp,csk_name,nequil,kappa,nsig=3):
   return kvecs,dskm,dske
 # end def dsk_from_csk
 
+def gofr(fp,obs_name,nequil,kappa,force=False):
+  """ extract pair correlation function g(r) from stat.h5 file
+  Args:
+    fp (h5py.File): h5py handle of stat.h5 file
+    obs_name (str): observable name, should start with 'gofr', e.g. gofr_e_0_1
+    nequil (int): number of equilibration blocks to remove
+    kappa (float): correlation length
+    force (bool,optional): force execution, i.e. skip all checks
+  Returns:
+    tuple: (myr,grm,gre): bin locations, g(r) mean, g(r) error
+  """
+  if (not obs_name.startswith('gofr')) and (not force):
+    raise RuntimeError('%s does not start with "gofr"; set force=True to bypass'%obs_name)
+  # end if
+
+  grm,gre = mean_and_err(fp,'%s/value'%obs_name,nequil,kappa)
+  rmax = path_loc(fp,'%s/cutoff'%obs_name)[0]
+  dr   = path_loc(fp,'%s/delta'%obs_name)[0]
+
+  # guess bin locations
+  myr  = np.arange(0,rmax,dr)
+  if (len(myr)!=len(grm)) and (not force):
+    raise RuntimeError('num_bin mismatch; try read from input?')
+  # end if
+  return myr,grm,gre
+# end def gofr
