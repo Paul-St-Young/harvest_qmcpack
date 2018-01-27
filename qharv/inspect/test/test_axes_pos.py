@@ -16,6 +16,18 @@ pos0 = np.array([
 
 dists0 = [4.37311998,2.26578821,2.43520807]
 
+bcc0 = 0.5*np.array([
+  [-1.0, 1.0, 1.0],
+  [ 1.0,-1.0, 1.0],
+  [ 1.0, 1.0,-1.0],
+])
+
+fcc0 = 0.5*np.array([
+  [ 0.0, 1.0, 1.0],
+  [ 1.0, 0.0, 1.0],
+  [ 1.0, 1.0, 0.0],
+])
+
 def test_displacement():
   from itertools import combinations
   nptcl = len(pos0)
@@ -31,4 +43,22 @@ def test_auto_distance_table():
   i_triu = np.triu_indices(nptcl,m=nptcl,k=1)
   dists  = dtable[i_triu]
   assert np.allclose(dists,dists0)
+# end def
+
+def test_volume():
+  # primitive cell of b.c.c. with lattice constant 1.0
+  assert np.allclose(bcc0, 0.5*(np.ones(3)-2.*np.eye(3)))
+  # primitive cell of f.c.c. with lattice constant 1.0
+  assert np.allclose(fcc0, 0.5*(np.ones(3)-1.*np.eye(3)))
+  # 2 atoms in b.c.c. conventional cell
+  assert np.isclose( axes_pos.volume(bcc0), 0.5)
+  # 4 atoms in f.c.c. conventional cell
+  assert np.isclose( axes_pos.volume(fcc0), 0.25)
+# end def
+
+def test_raxes():
+  b2f = axes_pos.raxes(bcc0)/(2.*np.pi)/2.
+  assert np.allclose(b2f,fcc0)
+  f2b = axes_pos.raxes(fcc0)/(2.*np.pi)/2.
+  assert np.allclose(f2b,bcc0)
 # end def
