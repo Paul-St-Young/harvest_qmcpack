@@ -9,4 +9,4 @@ def check_dir_before(mkdir):
       mkdir(dirname)
   return wrapper
 
-mkdir = lambda x:check_dir_before( os.mkdir )
+mkdir = lambda x:check_dir_before( os.mkdir )(x)
