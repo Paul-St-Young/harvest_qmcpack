@@ -1,4 +1,4 @@
-nose
+pytest
 lxml
 h5py
 numpy
