@@ -79,6 +79,10 @@ def ts_extrap(calc_df,issl,new_series,tname='timestep',ename='LocalEnergy',serie
   """
   import scipy.optimize as op
   sel  = calc_df[series_name].apply(lambda x:x in issl)
+  nfound = len(calc_df.loc[sel])
+  if nfound != len(issl):
+    raise RuntimeError('found %d series, when %d are requested' % (nfound,len(issl)) )
+  # end if
   # !!!! need to check that the selected runs are actually DMC !
   myx  = calc_df.loc[sel,tname]
   myym = calc_df.loc[sel,ename+'_mean']
@@ -101,4 +105,69 @@ def ts_extrap(calc_df,issl,new_series,tname='timestep',ename='LocalEnergy',serie
   entry[ename+'_error'] = y0e
   entry[series_name] = new_series
   return entry
+# end def
+
+def mix_est_correction(mydf,names,vseries,dseries,series_name='series',group_name='group',kind='linear',drop_missing_twists=False):
+  """ extrapolate dmc energy to zero time-step limit
+  Args:
+    mydf (pd.DataFrame): dataframe of VMC and DMC mixed estimators
+    names (list): list of DMC mixed estimators names to extrapolate
+    vseries (int): VMC series id
+    dseries (int): DMC series id
+    series_name (str,optional): column name identifying the series
+    kind (str,optinoal): extrapolation kind, must be either 'linear' or 'log'
+  Returns:
+    pd.Series: an entry copied from the smallest time-step DMC entry, then edited with extrapolated pure estimators. !!!! Series index is not changed!
+  """
+  vsel = mydf[series_name]==vseries # vmc
+  msel = mydf[series_name]==dseries # mixed estimator
+
+  # make sure the groups (twists) are aligned!!!!
+  vgroup = set(mydf.loc[vsel,group_name].values)
+  dgroup = set(mydf.loc[msel,group_name].values)
+
+  missing_twists = (dgroup-vgroup).union(vgroup-dgroup)
+  nmiss = len(missing_twists)
+  if (nmiss>0):
+    if (not drop_missing_twists):
+      raise RuntimeError('twists %s incomplete, set drop_missing_twists to ignore'%' '.join([str(t) for t in missing_twists]))
+    else: # drop missing twists
+      good_twist = mydf.group.apply(lambda x:x not in missing_twists)
+      vsel = vsel & good_twist
+      msel = msel & good_twist
+    # end if
+  # end if
+
+  # get values and errors
+  mnames = [name+'_mean' for name in names]
+  enames = [name+'_error' for name in names]
+  vym = mydf.loc[vsel,mnames].values
+  vye = mydf.loc[vsel,enames].values
+  mym = mydf.loc[msel,mnames].values
+  mye = mydf.loc[msel,enames].values
+
+  # perform extrapolation
+  if kind == 'linear':
+    dym = 2.*mym - vym
+    dye = np.sqrt(4.*mye**2.+vye**2.)
+  elif kind == 'log':
+    # extrapolate mean
+    lnmym = np.log(mym)
+    lnvym = np.log(vym)
+    lndym = 2*lnmym-lnvym
+    dym = np.exp(lndym)
+
+    # propagate error
+    lnmye = np.log(mye)
+    lnvye = np.log(vye)
+    lndye = np.sqrt(4.*lnmye**2.+lnvye**2.)
+    dye = dym*lndye
+  else:
+    raise RuntimeError('unknown mixed estimator extrapolation kind = %s'%kind)
+  # end if
+
+  # store in new data frame
+  puredf = mydf.loc[msel].copy()
+  puredf[mnames] = dym
+  return puredf
 # end def
