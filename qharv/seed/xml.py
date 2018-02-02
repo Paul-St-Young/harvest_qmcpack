@@ -68,6 +68,35 @@ def str_rep(node):
 def show(node):
   print( str_rep(node) )
 
+def ls(node,r=False,level=0,indent="  "):
+  """ List directory structure
+   
+   Similar to the Linux `ls` command, but for an xml node
+
+   Args:
+     node (lxml.etree._Element): xml node
+     r (bool): recursive list
+     level (int): level of indentation, only used if r=True
+     indent (str): indent string, only used if r=True
+   Returns:
+     str: mystr, a string representation of the directory structure
+  """
+  mystr=''
+  children = node.getchildren()
+  if len(children)>0:
+    for child in children:
+      if type(child) is not etree._Element: continue
+      mystr += indent*level + child.tag + '\n'
+      if r:
+        mystr += ls(child,r=r,level=level+1,indent=indent)
+      # end if r
+    # end for child
+  else:
+    return ''
+  # end if
+  return mystr
+# end def ls
+
 # ============================= level 1: node content io =============================
 #  node.get & node.set are sufficient for attribute manipulation
 # level 1 routines are needed for node.text and node.children manipulation
