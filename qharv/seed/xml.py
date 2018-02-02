@@ -75,9 +75,9 @@ def ls(node,r=False,level=0,indent="  "):
 
    Args:
      node (lxml.etree._Element): xml node
-     r (bool): recursive list
-     level (int): level of indentation, only used if r=True
-     indent (str): indent string, only used if r=True
+     r (bool): recursive
+     level (int): level of indentation, used only if r=True
+     indent (str): indent string, used only if r=True
    Returns:
      str: mystr, a string representation of the directory structure
   """
@@ -130,7 +130,7 @@ def text2arr(text,dtype=float,flatten=False):
   # end if
 # end def text2arr
 
-# ============================= level 2: QMCPACK specialized =============================
+# ============================= level 2: QMCPACK specialized elementary =============================
 
 def get_param(node,pname):
   """ retrieve the str representation of a parameter from: <parameter name="pname"> str_rep </parameter>
@@ -218,6 +218,20 @@ def get_pos(doc,pset='ion0',all_pos=True,group=None):
   # get requestsed particle positions
   pos = text2arr(pos_text.strip('\n'))
   return pos
+# end def
+
+# ============================= level 3: QMCPACK specialized advanced =============================
+
+def turn_off_jas_opt(wf_node):
+  # turn off jastrow optimization
+  all_jas = wf_node.findall('.//jastrow')
+  assert len(all_jas) > 0
+  for jas in all_jas:
+    assert jas.tag == 'jastrow'
+    for coeff in jas.findall('.//coefficients'):
+      coeff.set('optimize','no')
+    # end for
+  # end for
 # end def
 
 def opt_wf_fname(opt_inp,iqmc):
@@ -312,14 +326,54 @@ def add_bcc_backflow(wf_node,bf_node):
   return mywf
 # end def add_bcc_backflow
 
-def turn_off_jas_opt(wf_node):
-  # turn off jastrow optimization
-  all_jas = wf_node.findall('.//jastrow')
-  assert len(all_jas) > 0
-  for jas in all_jas:
-    assert jas.tag == 'jastrow'
-    for coeff in jas.findall('.//coefficients'):
-      coeff.set('optimize','no')
-    # end for
-  # end for
-# end def
+def dset2spo(wf_node,det_map):
+  """ change <wavefunction> from old style, <basis> in <determinantset>, to new style, <basis> in <sposet_builder>
+  Args:
+    wf_node (etree.Element): <wavefunction> node
+    det_map (dict): determinant name -> particle group name e.g. {'updet':'u','downdet':'d'}
+  Returns:
+    None
+  """
+  # convert between sposet name and determinant id
+  d2sname = lambda x:'spo_'+det_map[x]
+  # construct <sposet_builder> using nodes from <determinantset>
+  dset = wf_node.find('.//determinantset')
+  bb = etree.Element('sposet_builder',dset.attrib)
+
+  # add <basisset> to bb
+  bb.append(dset.find('.//basisset'))
+
+  # add <sposet> to bb
+  dets = dset.findall('.//determinant')
+  s2dname = {} # save spo_name -> det_id
+  for det in dets:
+    det.tag = 'sposet'
+    det_id = det.get('id')
+    if det_id not in det_map.keys():
+      raise RuntimeError('%s not in det_map'%det_id)
+    # end if
+    spo_name = d2sname(det_id)
+    s2dname[spo_name] = det_id
+    det.set('name',spo_name)
+    det.attrib.pop('id')
+    bb.append(det)
+  # end for det
+
+  # replace <determinantset> with <sposet_builder>
+  idx = wf_node.index(dset)
+  wf_node.insert(idx,bb)
+  wf_node.remove(dset)
+
+  # rewrite <determinantset>
+  dset = etree.Element('determinantset')
+  slater = etree.Element('slaterdeterminant')
+  for spo_name in s2dname.keys():
+    det_id = s2dname[spo_name]
+    group  = det_map[det_id]
+    det = etree.Element('determinant',{'id':det_id,'group':group,'sposet':spo_name})
+    slater.append(det)
+  # end for spo_name
+  dset.append(slater)
+
+  wf_node.insert(idx+1,dset)
+# end def dset2spo
