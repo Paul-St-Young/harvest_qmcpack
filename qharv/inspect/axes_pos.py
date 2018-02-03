@@ -38,7 +38,7 @@ def volume(axes):
   Returns:
     float: volume of cell
   """
-  return np.dot(axes[0],np.cross(axes[1],axes[2]))
+  return abs(np.dot(axes[0],np.cross(axes[1],axes[2])))
 # end def volume
 
 def rs(axes,natom):

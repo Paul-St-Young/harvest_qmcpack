@@ -54,6 +54,13 @@ def test_volume():
   assert np.isclose( axes_pos.volume(bcc0), 0.5)
   # 4 atoms in f.c.c. conventional cell
   assert np.isclose( axes_pos.volume(fcc0), 0.25)
+  # no negative volume
+  axes_neg = np.array([
+    [  2.55252043e+00,   9.10248160e+00,  -4.45451981e+00],
+    [  5.15835511e+00,   1.16509760e-03,  -8.90903961e+00],
+    [  5.15835511e+00,   1.16509760e-03,   8.90903961e+00]
+  ])
+  assert np.isclose( axes_pos.volume(axes_neg), 836.574116485)
 # end def
 
 def test_raxes():
