@@ -23,7 +23,7 @@ def mean_error_scalar_df(df,nequil,kappa=None):
    Returns:
     pd.DataFrame: mean_error dataframe 
   """
-  sel = df['index'] > nequil
+  sel = df['index'] >= nequil # zero indexing
 
   # create pd.Series of mean
   msr = df.loc[sel].apply(np.mean).drop('index')
