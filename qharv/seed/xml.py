@@ -1,13 +1,14 @@
 # Author: Yubo "Paul" Yang
 # Email: yubo.paul.yang@gmail.com
-# Routines to manipulate an xml input. Almost all functions are built around the lxml module's API.
+# Routines to manipulate an xml input. 
+#  Almost all functions are built around the lxml module's API.
 import os
 import numpy as np
 from copy import deepcopy
 from lxml import etree
 from io import StringIO
 
-# ============================= level 0: basic io =============================
+# ======================== level 0: basic io =========================
 def read(fname):
   """ read an xml file 
   wrap around lxml.etree.parse
@@ -54,7 +55,6 @@ def find_first(node,xpath):
   else:
     return xlist[0]
   # end if
-# end def find_first
 
 def str_rep(node):
   """ return the string representation of an xml node
@@ -95,9 +95,8 @@ def ls(node,r=False,level=0,indent="  "):
     return ''
   # end if
   return mystr
-# end def ls
 
-# ============================= level 1: node content io =============================
+# ========================= level 1: node content io =========================
 #  node.get & node.set are sufficient for attribute manipulation
 # level 1 routines are needed for node.text and node.children manipulation
 def arr2text(arr):
@@ -130,10 +129,11 @@ def text2arr(text,dtype=float,flatten=False):
   # end if
 # end def text2arr
 
-# ============================= level 2: QMCPACK specialized elementary =============================
+# ================= level 2: QMCPACK specialized elementary =================
 
 def get_param(node,pname):
-  """ retrieve the str representation of a parameter from: <parameter name="pname"> str_rep </parameter>
+  """ retrieve the str representation of a parameter from: 
+    <parameter name="pname"> str_rep </parameter>
   Args:
     node (lxml.etree._Element): xml node with <parameter>.
     pname (str): name of parameter
@@ -159,9 +159,11 @@ def set_param(node,pname,pval,new=False):
   pnode = node.find('.//parameter[@name="%s"]'%pname)
   # 4 paths dependent on (pnode is None) and new
   if (pnode is None) and (not new): # unintended input
-    raise RuntimeError('<parameter name="%s"> not found in %s\n please set new=True' % (pname,node.tag))
+    raise RuntimeError('<parameter name="%s"> not found in %s\n\
+      please set new=True' % (pname,node.tag))
   elif (pnode is not None) and new: # unintended input
-    raise RuntimeError('<parameter name="%s"> found in %s\n please set new=False' % (pname,node.tag))
+    raise RuntimeError('<parameter name="%s"> found in %s\n\
+      please set new=False' % (pname,node.tag))
   elif (pnode is None) and new:
     pnode = etree.Element('parameter',{'name':pname})
     pnode.text = pval
@@ -220,7 +222,7 @@ def get_pos(doc,pset='ion0',all_pos=True,group=None):
   return pos
 # end def
 
-# ============================= level 3: QMCPACK specialized advanced =============================
+# ================= level 3: QMCPACK specialized advanced =================
 
 def turn_off_jas_opt(wf_node):
   # turn off jastrow optimization
