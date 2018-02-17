@@ -17,7 +17,7 @@ def wbyw_vmc():
     <parameter name="steps">         4  </parameter>
     <parameter name="substeps">      4  </parameter>
     <parameter name="timestep">    0.05 </parameter>
-    <parameter name="samples">     512  </parameter>
+    <parameter name="samples">     576  </parameter>
   </qmc>'''
   return xml.parse(text)
 
@@ -41,7 +41,7 @@ def wbyw_optimize():
       <parameter name="warmuptimestep">0.01  </parameter>
       <parameter name="timestep">      0.05  </parameter>
       <parameter name="substeps">         5  </parameter>
-      <parameter name="samples">      65536  </parameter>
+      <parameter name="samples">      49152  </parameter>
       <parameter name="usedrift">       yes  </parameter>
       <parameter name="MinMethod"> OneShiftOnly </parameter>
     </qmc>
