@@ -183,3 +183,19 @@ def gofr(fp,obs_name,nequil,kappa,force=False):
   # end if
   return myr,grm,gre
 # end def gofr
+
+def nofk(fp,obs_name,nequil,kappa):
+  """ extract momentum estimator output n(k) from stat.h5 file
+  Args:
+    fp (h5py.File): h5py handle of stat.h5 file
+    obs_name (str): observable name, probably 'nofk'
+    nequil (int): number of equilibration blocks to remove
+    kappa (float): correlation length
+    force (bool,optional): force execution, i.e. skip all checks
+  Returns:
+    tuple: (kvecs,nkm,nke): k-vectors, n(k) mean, n(k) error
+  """
+  kvecs = fp[obs_name]['kpoints'].value
+  nofkm,nofke = mean_and_err(fp,'%s/value'%obs_name,nequil,kappa)
+  return kvecs,nofkm,nofke
+# end def nofk
