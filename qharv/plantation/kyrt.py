@@ -60,6 +60,21 @@ def set_label_font(ax,xsize=14,ysize=14
     ,fontweight=yweight,**kwargs)
 # end def
 
+def scalar_color_map(vmin,vmax,cmap_name='viridis'):
+  """ return a function that maps a number to a color
+  Args:
+    vmin (float): minimum scalar value
+    vmax (float): maximum scalar value
+    cmap_name (str, optional): color map name, default is 'viridis' 
+  """
+  from matplotlib.cm import get_cmap                                            
+  import matplotlib as mpl                                                      
+  cmap = get_cmap(cmap_name)
+  norm = mpl.colors.Normalize(min(val),max(val))   
+  v2c  = lambda v:cmap(norm(v))  # function mapping value to color
+  return v2c
+# end def scalar_color_map
+
 # ======================== composition =========================
 def pretty_up(ax):
   set_tick_font(ax)
