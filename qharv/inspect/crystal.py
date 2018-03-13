@@ -38,14 +38,17 @@ def draw_atoms(ax,pos,**kwargs):
   dots  = ax.plot(pos[:,0],pos[:,1],pos[:,2],**kwargs)
   return dots
 
-def draw_cell(ax,axes,corner=None,**kwargs):
+def draw_cell(ax,axes,corner=None,enclose=True,**kwargs):
   """ draw cell on ax
   see example in draw_crystal
 
   Args:
    ax (plt.Axes): matplotlib Axes object, must have projection='3d'
    axes (np.array): lattice vectors in row-major 3x3 array
-   corner (np.array): lower left corner of the lattice, use (0,0,0) by default
+   corner (np.array,optional): lower left corner of the lattice
+     ,use (0,0,0) by default
+   enclose (bool): enclose the cell with lattice vectors
+     ,default is True. If False, then draw lattice vectors only
    kwargs (dict,optional): keyword arguments passed to plt.plot
   Returns:
    list: a list of plt.Line3D, one for each lattice vector
@@ -71,25 +74,27 @@ def draw_cell(ax,axes,corner=None,**kwargs):
     cell.append(line)
   # end for iax
 
-  # counter a,b,c vectors
-  for iax in range(3):
-    start = corner+axes.sum(axis=0)
-    end   = start - axes[iax]
-    line = ax.plot(*zip(start,end),**kwargs)
-    cell.append(line)
-  # end for iax
-  
-  # remaining vectors needed to enclose cell
-  for iax in range(3):
-    start = corner+axes[iax]
-    for jax in range(3):
-      if jax == iax:
-        continue
-      end = start + axes[jax]
+  if enclose:
+    # counter a,b,c vectors
+    for iax in range(3):
+      start = corner+axes.sum(axis=0)
+      end   = start - axes[iax]
       line = ax.plot(*zip(start,end),**kwargs)
       cell.append(line)
-    # end for jax
-  # end for iax
+    # end for iax
+    
+    # remaining vectors needed to enclose cell
+    for iax in range(3):
+      start = corner+axes[iax]
+      for jax in range(3):
+        if jax == iax:
+          continue
+        end = start + axes[jax]
+        line = ax.plot(*zip(start,end),**kwargs)
+        cell.append(line)
+      # end for jax
+    # end for iax
+  # end if
 
   return cell
 
