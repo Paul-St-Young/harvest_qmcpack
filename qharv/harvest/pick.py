@@ -3,6 +3,7 @@
 # Routines to collect QMCPACK data
 #  building around qharv.reel, qharv.sieve
 import os
+import subprocess as sp
 import numpy as np
 import pandas as pd
 
