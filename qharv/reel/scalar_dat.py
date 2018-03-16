@@ -105,15 +105,18 @@ def error(trace,kappa=None):
 def single_column(df,column,nequil):
   """ calculate mean and error of a column
 
-  nequil blocks of data are thrown out; autocorrelation time is taken into account when calculating error
-  The equilibrated data is assumed to have Gaussian distribution. Error is calculated for one standard deviation (1-sigma error).
+    nequil blocks of data are thrown out; autocorrelation time is taken into 
+  account when calculating error. The equilibrated data is assumed to have 
+  Gaussian distribution. Error is calculated for one standard deviation
+  (1-sigma error).
 
   Args:
     df (pd.DataFrame): table of data (e.g. from scalar_dat.parse)
     column (str): name of column
     nequil (int): number of equilibration blocks
   Returns:
-    (float,float,float): (ymean,yerr,ycorr), where ymean is the mean of column, yerr is the 1-sigma error of column, and ycorr is the autocorrelation
+    (float,float,float): (ymean,yerr,ycorr), where ymean is the mean of column
+     , yerr is the 1-sigma error of column, and ycorr is the autocorrelation
   """
 
   myy = df[column].values[nequil:]
@@ -124,4 +127,3 @@ def single_column(df,column,nequil):
 
   return ymean,yerr,ycorr
 # end def
-
