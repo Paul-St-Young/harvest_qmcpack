@@ -70,10 +70,19 @@ def scalar_color_map(vmin,vmax,cmap_name='viridis'):
   from matplotlib.cm import get_cmap                                            
   import matplotlib as mpl                                                      
   cmap = get_cmap(cmap_name)
-  norm = mpl.colors.Normalize(min(val),max(val))   
+  norm = mpl.colors.Normalize(vmin,vmax)
   v2c  = lambda v:cmap(norm(v))  # function mapping value to color
   return v2c
 # end def scalar_color_map
+
+# ======================== level 0: basic legend edits =========================
+def set_legend_marker_size(leg,ms=10):
+  handl = leg.legendHandles
+  msl   = [ms]*len(handl)  # override marker sizes here
+  for hand,ms in zip(handl,msl):
+    hand._legmarker.set_markersize(ms)
+  # end for
+# end def set_label_font
 
 # ======================== composition =========================
 def pretty_up(ax):
