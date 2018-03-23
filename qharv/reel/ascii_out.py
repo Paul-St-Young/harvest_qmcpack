@@ -71,8 +71,8 @@ def locate_block(mm,header,trailer,skip_header=True,skip_trailer=True):
   return begin_idx,end_idx
 # end def locate_block
 
-def block_text(mm,header,trailer,skip_header=True,skip_trailer=True):
-  bidx,eidx = locate_block(mm,header,trailer)
+def block_text(mm,header,trailer,**kwargs):
+  bidx,eidx = locate_block(mm,header,trailer,**kwargs)
   return mm[bidx:eidx]
 # end def block_text
 
