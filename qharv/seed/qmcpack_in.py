@@ -3,6 +3,54 @@
 import os
 import subprocess as sp
 
+from qharv.seed import xml
+
+
+def expand_twists(example_in_xml, twist_list, calc_dir, force=False):
+  """ expand example input xml to all twists in twist_list
+  examples:
+    expand_twists('./vmc.in.xml',range(64),'.')
+    expand_twists('./ref/vmc.in.xml',[0,15,17],'./new')
+
+  Naming convention of new inputs:
+    [prefix].g001.twistnum_[itwist].in.xml
+
+  Args:
+    example_in_xml (str): example QMCPACK input xml file
+    twist_list (list): a list of twist indices
+    calc_dir (str): folder to output new inputs
+  Return:
+    None
+  """
+  doc    = xml.read(example_in_xml)
+  prefix = doc.find('.//project').get('id')
+
+  fname_fmt = '{prefix:s}.{gt:s}.twistnum_{itwist:d}.in.xml'
+  for itwist in twist_list:
+    # change twist number
+    bb = doc.find('.//sposet_builder')
+    bb.set('twistnum', str(itwist))
+
+    # construct file name
+    gt = 'g' + str(itwist).zfill(3)
+    fname = fname_fmt.format(
+      prefix = prefix,
+      gt     = gt,
+      itwist = itwist
+    )
+    floc = os.path.join(calc_dir,fname)
+
+    if not force:  # check if file exists
+      if os.path.isfile(floc):
+        raise RuntimeError('force to overwrite %s' % floc)
+    # end if
+    
+    xml.write(floc,doc)
+  # end for itwist
+
+# end def expand_twists
+
+
 def disperse(ginp_loc,calc_dir,execute=False,overwrite=False):
   """ disperse inputs bundled up in a grouped input
   Args:
@@ -13,13 +61,12 @@ def disperse(ginp_loc,calc_dir,execute=False,overwrite=False):
   Returns:
     list: a list of new inputs
   """
-  from qharv.seed import xml
 
   # path0 is the folder containing the current grouped input
   path0 = os.path.dirname(ginp_loc)
   calc_dir0 = os.path.basename(path0)
   # path  is the folder to contain the dispersed inputs
-  path  = os.path.join( os.path.dirname(path0),calc_dir)
+  path  = os.path.join(os.path.dirname(path0),calc_dir)
   if execute: # make folder if not there
     if not os.path.isdir(path): sp.check_call(['mkdir',path])
   # end if execute
@@ -34,10 +81,10 @@ def disperse(ginp_loc,calc_dir,execute=False,overwrite=False):
       infile = line.strip('\n')
       floc0  = os.path.join(path0,infile)
       if not os.path.isfile(floc0):
-        raise RuntimeError('%s not found'%floc0)
+        raise RuntimeError('%s not found' % floc0)
       floc   = os.path.join(path,infile)
       if os.path.isfile(floc) and (not overwrite) and execute:
-        raise RuntimeError('%s exists; delete or overwrite '%floc)
+        raise RuntimeError('%s exists; delete or overwrite ' % floc)
       flist.append(floc)
 
       # modify prefix
