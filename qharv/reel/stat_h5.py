@@ -5,38 +5,9 @@ import os
 import h5py
 import numpy as np
 
-def read(stat_fname):
-  return h5py.File(stat_fname)
+from qharv.seed.wf_h5 import read, ls
 def path_loc(handle,path):
   return handle[path].value
-
-def ls(handle,r=False,level=0,indent="  "):
-  """ List directory structure
-   
-   Similar to the Linux `ls` command, but for an hdf5 file
-
-   Args:
-     handle (h5py.Group): or h5py.File or h5py.Dataset
-     r (bool): recursive list
-     level (int): level of indentation, only used if r=True
-     indent (str): indent string, only used if r=True
-   Returns:
-     str: mystr, a string representation of the directory structure
-  """
-  mystr=''
-  if isinstance(handle,h5py.File) or isinstance(handle,h5py.Group):
-    for key,val in handle.items():
-      mystr += indent*level+'/'+key + "\n"
-      if r:
-        mystr += ls(val,r=r,level=level+1,indent=indent)
-    # end for
-  elif isinstance(handle,h5py.Dataset):
-    return ''
-  else:
-    raise RuntimeError('cannot handle type=%s'%type(handle))
-  # end if
-  return mystr
-# end def ls
 
 def mean_and_err(handle,obs_path,nequil,kappa=None):
   """ calculate mean and variance of an observable from QMCPACK stat.h5 file

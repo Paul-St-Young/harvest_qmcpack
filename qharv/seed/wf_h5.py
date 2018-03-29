@@ -1,40 +1,95 @@
 # Author: Yubo "Paul" Yang
 # Email: yubo.paul.yang@gmail.com
-# Routines to read the QMCPACK wavefunction hdf5 file, usually named pwscf.pwscf.h5
+# Routines to read the QMCPACK wavefunction hdf5 file
+#  Mostly built around h5py module's API.
+#  The central object is h5py.File, which is usually named "fp".
 import os
 import h5py
 import numpy as np
 
-def read(fname,mode='r'):
-  return h5py.File(fname,mode)
+# ====================== level 0: basic io =======================
 
-# =======================================================================
-# QMCPACK wavefunction hdf5 fixed locations
-# =======================================================================
+
+def read(fname,**kwargs):
+  """ read h5 file and return a h5py File object
+
+  Args:
+    fname (str): hdf5 file
+    kwargs (dict): keyword arguments to pass on to h5py.File,
+      default is {'mode':'r'}
+  Return:
+    h5py.File: h5py File object
+  """
+  if not ('mode' in kwargs):
+    kwargs['mode'] = 'r'
+  return h5py.File(fname,**kwargs)
+
+
+def ls(handle,r=False,level=0,indent="  "):
+  """ List directory structure
+  
+   Similar to the Linux `ls` command, but for an hdf5 file
+
+   Args:
+     handle (h5py.Group): or h5py.File or h5py.Dataset
+     r (bool): recursive list
+     level (int): level of indentation, only used if r=True
+     indent (str): indent string, only used if r=True
+   Returns:
+     str: mystr, a string representation of the directory structure
+  """
+  mystr = ''
+  if isinstance(handle,h5py.File) or isinstance(handle,h5py.Group):
+    for key,val in handle.items():
+      mystr += indent*level+'/'+key + "\n"
+      if r:
+        mystr += ls(val,r=r,level=level+1,indent=indent)
+    # end for
+  elif isinstance(handle,h5py.Dataset):
+    return ''
+  else:
+    raise RuntimeError('cannot handle type=%s'%type(handle))
+  # end if
+  return mystr
+
+# ====== level 1: QMCPACK wavefunction hdf5 fixed locations ======
 locations = {
   'gvectors':'electrons/kpoint_0/gvectors',
   'nkpt':'electrons/number_of_kpoints',
   'nspin':'electrons/number_of_spins',
-  'nstate':'electrons/kpoint_0/spin_0/number_of_states', # !!!! same number of states per kpt
+  'nstate':'electrons/kpoint_0/spin_0/number_of_states',  # !!!! same number of states per kpt
   'axes':'supercell/primitive_vectors',
   'pos':'atoms/positions'
 }
 
+
 def get(fp,name):
+  """ retrieve data from a known location in pwscf.h5
+
+  Args:
+    fp (h5py.File): hdf5 file object
+    name (str): a known name in locations
+  Return:
+    array_like: whatever fp[loc].value returns
+  """
   if name not in locations.keys():
     raise RuntimeError('unknown attribute requested: %s' % name)
   return fp[ locations[name] ].value
 
+
 def axes_elem_pos(fp):
-  """ extract lattice vectors, atomic positions, and element names 
-  from wavefunction hdf5 file
+  """ extract lattice vectors, atomic positions, and element names
+  The main difficulty is constructing the element names of each
+  atomic species. If elem is not needed, use get(fp,'axes') and
+  get(fp,'pos') to get the simulation cell and ion positions directly.
+
   Args:
-    fp (h5py.File): hdf5 file pointer
+    fp (h5py.File): hdf5 file object
   Returns:
     (np.array,list[str],np.array): (axes,elem,pos)
   """
-  axes = fp[ locations['axes'] ].value
-  pos  = fp[ locations['pos'] ].value
+  axes = get(fp, 'axes')
+  pos  = get(fp, 'pos')
 
   # construct list of atomic labels
   elem_id  = fp['atoms/species_ids'].value
@@ -48,11 +103,9 @@ def axes_elem_pos(fp):
   assert len(elem) == len(pos)
   return axes,elem,pos
 
-# =======================================================================
+# ====== level 2: QMCPACK wavefunction hdf5 orbital locations ======
 
-# =======================================================================
-# QMCPACK wavefunction hdf5 orbital locations
-# =======================================================================
+
 def kpoint_path(ikpt):
   """ construct path to kpoint
 
@@ -65,12 +118,17 @@ def kpoint_path(ikpt):
   """
   path = 'electrons/kpoint_%d' % (ikpt)
   return path
+
+
 def spin_path(ikpt,ispin):
   path = 'electrons/kpoint_%d/spin_%d' % (ikpt,ispin)
   return path
+
+
 def state_path(ikpt,ispin,istate):
   path = 'electrons/kpoint_%d/spin_%d/state_%d/' % (ikpt,ispin,istate)
   return path
+
 
 def get_orb_in_pw(fp,ikpt,ispin,istate):
   orb_path = os.path.join( state_path(ikpt,ispin,istate), 'psi_g' )
@@ -79,4 +137,3 @@ def get_orb_in_pw(fp,ikpt,ispin,istate):
   psig = psig_arr.flatten().view(complex) # more elegant conversion
   return psig
 # =======================================================================
-
