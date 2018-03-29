@@ -2,6 +2,7 @@
 # Email: yubo.paul.yang@gmail.com
 # Routines to manipulate an xml input. 
 #  Almost all functions are built around the lxml module's API.
+#  The central object is lxml.etree.ElementTree, which is usually named "doc".
 import os
 import numpy as np
 from copy import deepcopy
