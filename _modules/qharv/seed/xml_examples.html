@@ -65,7 +65,7 @@
 <span class="s1">    &lt;parameter name=&quot;steps&quot;&gt;         4  &lt;/parameter&gt;</span>
 <span class="s1">    &lt;parameter name=&quot;substeps&quot;&gt;      4  &lt;/parameter&gt;</span>
 <span class="s1">    &lt;parameter name=&quot;timestep&quot;&gt;    0.05 &lt;/parameter&gt;</span>
-<span class="s1">    &lt;parameter name=&quot;samples&quot;&gt;     512  &lt;/parameter&gt;</span>
+<span class="s1">    &lt;parameter name=&quot;samples&quot;&gt;     576  &lt;/parameter&gt;</span>
 <span class="s1">  &lt;/qmc&gt;&#39;&#39;&#39;</span>
   <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
@@ -89,7 +89,7 @@
 <span class="s1">      &lt;parameter name=&quot;warmuptimestep&quot;&gt;0.01  &lt;/parameter&gt;</span>
 <span class="s1">      &lt;parameter name=&quot;timestep&quot;&gt;      0.05  &lt;/parameter&gt;</span>
 <span class="s1">      &lt;parameter name=&quot;substeps&quot;&gt;         5  &lt;/parameter&gt;</span>
-<span class="s1">      &lt;parameter name=&quot;samples&quot;&gt;      65536  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;samples&quot;&gt;      49152  &lt;/parameter&gt;</span>
 <span class="s1">      &lt;parameter name=&quot;usedrift&quot;&gt;       yes  &lt;/parameter&gt;</span>
 <span class="s1">      &lt;parameter name=&quot;MinMethod&quot;&gt; OneShiftOnly &lt;/parameter&gt;</span>
 <span class="s1">    &lt;/qmc&gt;</span>
@@ -178,9 +178,8 @@
 <span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;ElecElec&quot; source=&quot;e&quot; target=&quot;e&quot;/&gt;</span>
 <span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;IonIon&quot; source=&quot;ion0&quot; target=&quot;ion0&quot;/&gt;</span>
 <span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;ElecIon&quot; source=&quot;ion0&quot; target=&quot;e&quot;/&gt;</span>
-<span class="s1">         &lt;estimator type=&quot;structurefactor&quot; name=&quot;sksp&quot;/&gt;</span>
-<span class="s1">         &lt;estimator name=&quot;sk&quot; type=&quot;sk&quot; hdf5=&quot;yes&quot;/&gt;</span>
-<span class="s1">         &lt;estimator type=&quot;gofr&quot; name=&quot;gofr&quot; num_bin=&quot;50&quot;/&gt;</span>
+<span class="s1">         &lt;estimator name=&quot;csk&quot; type=&quot;csk&quot; hdf5=&quot;yes&quot;/&gt;</span>
+<span class="s1">         &lt;estimator type=&quot;gofr&quot; name=&quot;gofr&quot; num_bin=&quot;128&quot;/&gt;</span>
 <span class="s1">         &lt;estimator type=&quot;Pressure&quot;/&gt;</span>
 <span class="s1">      &lt;/hamiltonian&gt;&#39;&#39;&#39;</span>
   <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
@@ -188,9 +187,8 @@
 <div class="viewcode-block" id="dynamic_ae_ham"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.dynamic_ae_ham">[docs]</a><span class="k">def</span> <span class="nf">dynamic_ae_ham</span><span class="p">():</span>
   <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;hamiltonian name=&quot;h0&quot; type=&quot;generic&quot; target=&quot;e&quot;&gt;</span>
 <span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;ElecElec&quot; source=&quot;e&quot; target=&quot;e&quot;/&gt;</span>
-<span class="s1">         &lt;estimator type=&quot;structurefactor&quot; name=&quot;sksp&quot;/&gt;</span>
-<span class="s1">         &lt;estimator name=&quot;sk&quot; type=&quot;sk&quot; hdf5=&quot;yes&quot;/&gt;</span>
-<span class="s1">         &lt;estimator type=&quot;gofr&quot; name=&quot;gofr&quot; num_bin=&quot;50&quot;/&gt;</span>
+<span class="s1">         &lt;estimator name=&quot;csk&quot; type=&quot;csk&quot; hdf5=&quot;yes&quot;/&gt;</span>
+<span class="s1">         &lt;estimator type=&quot;gofr&quot; name=&quot;gofr&quot; num_bin=&quot;128&quot;/&gt;</span>
 <span class="s1">         &lt;estimator type=&quot;Pressure&quot;/&gt;</span>
 <span class="s1">         &lt;estimator name=&quot;skinetic&quot; type=&quot;specieskinetic&quot;/&gt;</span>
 <span class="s1">         &lt;estimator hdf5=&quot;yes&quot; name=&quot;latdev&quot; per_xyz=&quot;yes&quot; sgroup=&quot;H&quot; source=&quot;wf_centers&quot; target=&quot;e&quot; tgroup=&quot;p&quot; type=&quot;latticedeviation&quot;/&gt;</span>

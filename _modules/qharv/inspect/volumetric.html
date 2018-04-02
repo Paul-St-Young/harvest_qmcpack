@@ -97,6 +97,31 @@
     <span class="k">return</span> <span class="n">mesh</span></div>
 <span class="c1"># end def isosurf</span>
 
+<div class="viewcode-block" id="color_scatter"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.color_scatter">[docs]</a><span class="k">def</span> <span class="nf">color_scatter</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">cmap_name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; view sampled 3D scalar function using value as color</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    ax (plt.Axes3D): ax = fig.add_subplot(1,1,1,projection=&quot;3d&quot;)</span>
+<span class="sd">    data (np.array): aligned scatter data, the columns are [x,y,z,f(x,y,z)]</span>
+<span class="sd">    cmap_name (str, optional): color map name, default is &#39;viridis&#39;</span>
+<span class="sd">    kwargs (dict, optional): keyword arguments to be passed to ax.scatter</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    mpl_toolkits.mplot3d.art3d.Path3DCollection: scatter plot</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">val</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># aligned scatter data</span>
+
+  <span class="c1"># design color scheme, if none given</span>
+  <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="s1">&#39;c&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="s1">&#39;color&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+    <span class="kn">from</span> <span class="nn">qharv.plantation</span> <span class="k">import</span> <span class="n">kyrt</span>
+    <span class="n">v2c</span> <span class="o">=</span> <span class="n">kyrt</span><span class="o">.</span><span class="n">scalar_color_map</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">val</span><span class="p">),</span><span class="nb">max</span><span class="p">(</span><span class="n">val</span><span class="p">),</span><span class="n">cmap_name</span><span class="p">)</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">v2c</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+
+  <span class="c1"># scatter</span>
+  <span class="n">s</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">val</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">s</span></div>
+<span class="c1"># end def color_scatter</span>
+
 <div class="viewcode-block" id="spline_volumetric"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.spline_volumetric">[docs]</a><span class="k">def</span> <span class="nf">spline_volumetric</span><span class="p">(</span><span class="n">val3d</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; spline 3D volumetric data onto a unit cube</span>
 

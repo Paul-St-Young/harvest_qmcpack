@@ -1,0 +1,30 @@
+qharv\.plantation package
+=========================
+
+Submodules
+----------
+
+qharv\.plantation\.kyrt module
+------------------------------
+
+.. automodule:: qharv.plantation.kyrt
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+qharv\.plantation\.sugar module
+-------------------------------
+
+.. automodule:: qharv.plantation.sugar
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: qharv.plantation
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -153,15 +153,18 @@
 <div class="viewcode-block" id="single_column"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.single_column">[docs]</a><span class="k">def</span> <span class="nf">single_column</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">column</span><span class="p">,</span><span class="n">nequil</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; calculate mean and error of a column</span>
 
-<span class="sd">  nequil blocks of data are thrown out; autocorrelation time is taken into account when calculating error</span>
-<span class="sd">  The equilibrated data is assumed to have Gaussian distribution. Error is calculated for one standard deviation (1-sigma error).</span>
+<span class="sd">    nequil blocks of data are thrown out; autocorrelation time is taken into </span>
+<span class="sd">  account when calculating error. The equilibrated data is assumed to have </span>
+<span class="sd">  Gaussian distribution. Error is calculated for one standard deviation</span>
+<span class="sd">  (1-sigma error).</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    df (pd.DataFrame): table of data (e.g. from scalar_dat.parse)</span>
 <span class="sd">    column (str): name of column</span>
 <span class="sd">    nequil (int): number of equilibration blocks</span>
 <span class="sd">  Returns:</span>
-<span class="sd">    (float,float,float): (ymean,yerr,ycorr), where ymean is the mean of column, yerr is the 1-sigma error of column, and ycorr is the autocorrelation</span>
+<span class="sd">    (float,float,float): (ymean,yerr,ycorr), where ymean is the mean of column</span>
+<span class="sd">     , yerr is the 1-sigma error of column, and ycorr is the autocorrelation</span>
 <span class="sd">  &quot;&quot;&quot;</span>
 
   <span class="n">myy</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]</span>
@@ -172,7 +175,6 @@
 
   <span class="k">return</span> <span class="n">ymean</span><span class="p">,</span><span class="n">yerr</span><span class="p">,</span><span class="n">ycorr</span></div>
 <span class="c1"># end def</span>
-
 </pre></div>
 
           </div>

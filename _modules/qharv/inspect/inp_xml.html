@@ -49,7 +49,10 @@
 <span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
 <span class="c1"># Email: yubo.paul.yang@gmail.com</span>
 <span class="c1"># Routines to inspect and validate a QMCPACK input</span>
+<span class="c1">#  first argument is generally an lxml.Element</span>
 
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qharv.seed</span> <span class="k">import</span> <span class="n">xml</span>
 <span class="kn">from</span> <span class="nn">qharv.inspect</span> <span class="k">import</span> <span class="n">axes_pos</span>
 
@@ -64,6 +67,7 @@
 
 <div class="viewcode-block" id="validate_bspline_rcut"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.inp_xml.validate_bspline_rcut">[docs]</a><span class="k">def</span> <span class="nf">validate_bspline_rcut</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">ignore_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; check that 1D bspline functions have valid cutoff radius</span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    node (lxml.etree._Element): xml node containing &lt;simulationcell&gt; and &lt;correlation&gt;.</span>
 <span class="sd">    ignore_empty (bool,optional): ignore inputs without &lt;correlation&gt;, default=False</span>
@@ -95,21 +99,79 @@
     <span class="c1"># end for corr</span>
   <span class="k">elif</span> <span class="n">bc_str</span> <span class="o">==</span> <span class="s1">&#39;ppp&#39;</span><span class="p">:</span>
     <span class="n">axes</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">get_axes</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
-    <span class="n">rins</span> <span class="o">=</span> <span class="n">axes_pos</span><span class="o">.</span><span class="n">rins</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
-    <span class="nb">print</span> <span class="n">rins</span>
+    <span class="c1">#rsc = axes_pos.rins(axes) # radius of inscribed sphere in simulation cell</span>
+    <span class="n">rwsc</span> <span class="o">=</span> <span class="n">axes_pos</span><span class="o">.</span><span class="n">rwsc</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span> <span class="c1"># radius of inscribed sphere in Wigner-Seitz cell</span>
+    <span class="c1"># Wigner-Seitz cell radius is the more optimal minimum for correlation functions</span>
     <span class="k">for</span> <span class="n">corr</span> <span class="ow">in</span> <span class="n">corrs</span><span class="p">:</span>
-      <span class="n">rc</span> <span class="o">=</span> <span class="n">rcut</span><span class="p">(</span><span class="n">corr</span><span class="p">)</span>
-      <span class="nb">print</span> <span class="n">rc</span>
-      <span class="k">if</span> <span class="p">(</span><span class="n">rc</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">rc</span><span class="o">&gt;</span><span class="n">rins</span><span class="p">):</span>
+      <span class="k">try</span><span class="p">:</span> <span class="c1"># rcut may not be provided in periodic simulation</span>
+        <span class="n">rc</span> <span class="o">=</span> <span class="n">rcut</span><span class="p">(</span><span class="n">corr</span><span class="p">)</span>
+      <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">not_found</span> <span class="o">=</span> <span class="s1">&#39;no rcut found&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">not_found</span><span class="p">:</span>
+          <span class="k">pass</span> <span class="c1"># let QMCPACK decide</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="k">raise</span> <span class="n">err</span> <span class="c1"># pass on unknown error</span>
+        <span class="c1"># end if</span>
+      <span class="c1"># end try</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">rc</span><span class="o">&lt;=</span><span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">rc</span><span class="o">&gt;</span><span class="n">rwsc</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;rcut for </span><span class="si">%s</span><span class="s1"> = </span><span class="si">%3.4f</span><span class="s1"> is invaid. note: rwsc = </span><span class="si">%3.4f</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">corr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">),</span><span class="n">rc</span><span class="p">,</span><span class="n">rwsc</span><span class="p">)</span> <span class="p">)</span>
         <span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
       <span class="c1"># end if</span>
     <span class="c1"># end for corr</span>
   <span class="k">else</span><span class="p">:</span>
+    <span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;deal with bconds=&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="o">%</span><span class="n">bc_str</span><span class="p">)</span>
   <span class="c1"># end if</span>
 
   <span class="k">return</span> <span class="n">valid</span></div>
 <span class="c1"># end def validate_bspline_rcut</span>
+
+<div class="viewcode-block" id="check_wf_hdf5"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.inp_xml.check_wf_hdf5">[docs]</a><span class="k">def</span> <span class="nf">check_wf_hdf5</span><span class="p">(</span><span class="n">snode</span><span class="p">,</span><span class="n">calc_dir</span><span class="p">,</span><span class="n">folded</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; check that spline single-particle orbitals are defined in the correct </span>
+<span class="sd">  simulation cell. snode must hold the simulation cell and basis builder with </span>
+<span class="sd">  a reference to the wf hdf5.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    snode (lxml.Element): e.g. parsed &lt;qmcsystem&gt;</span>
+<span class="sd">    calc_dir (str): directory to contain the QMCPACK input</span>
+<span class="sd">    folded (bool): True, if DFT was performed in unit cell and orbitals are tiled to super cell</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    bool: consistent</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="c1"># step 1: get wf hdf5 location</span>
+  <span class="n">bb_list</span> <span class="o">=</span> <span class="n">snode</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//sposet_builder[@href]&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bb_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;wrong number of sposet_builder </span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="nb">len</span><span class="p">(</span><span class="n">bb_list</span><span class="p">))</span>
+  <span class="c1"># end if</span>
+  <span class="n">bb</span> <span class="o">=</span> <span class="n">bb_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">href</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">)</span>
+  <span class="n">wf_h5_floc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">calc_dir</span><span class="p">,</span><span class="n">href</span><span class="p">)</span> <span class="p">)</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">wf_h5_floc</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;failed to find wf hdf5 </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">wf_h5_floc</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+
+  <span class="c1"># step 2: get axes from wf hdf5</span>
+  <span class="kn">from</span> <span class="nn">qharv.seed</span> <span class="k">import</span> <span class="n">wf_h5</span>
+  <span class="n">fp</span> <span class="o">=</span> <span class="n">wf_h5</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">wf_h5_floc</span><span class="p">)</span>
+  <span class="n">h5_axes</span> <span class="o">=</span> <span class="n">wf_h5</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="s1">&#39;axes&#39;</span><span class="p">)</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+  <span class="c1"># step 3: get axes from xml input</span>
+  <span class="n">sc_node</span> <span class="o">=</span> <span class="n">snode</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//simulationcell&#39;</span><span class="p">)</span>
+  <span class="n">inp_axes</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">text2arr</span><span class="p">(</span> <span class="n">sc_node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//parameter[@name=&quot;lattice&quot;]&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="p">)</span>
+
+  <span class="c1"># step 4: compare</span>
+  <span class="n">consistent</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="c1"># assume folded = False</span>
+  <span class="k">if</span> <span class="n">folded</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;lattice check is not implemented for folded structure&#39;</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">consistent</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">h5_axes</span><span class="p">,</span><span class="n">inp_axes</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+  <span class="k">return</span> <span class="n">consistent</span></div>
+<span class="c1"># end def</span>
+
 </pre></div>
 
           </div>

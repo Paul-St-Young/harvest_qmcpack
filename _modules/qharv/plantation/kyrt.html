@@ -1,0 +1,201 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.plantation.kyrt &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.plantation.kyrt</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Kyrt is a versatile fabric exclusive to the planet Florina of Sark.</span>
+<span class="c1"># The fluorescent and mutable kyrt is ideal for artsy decorations.</span>
+<span class="c1"># OK, this is a library of reasonable defaults for matplotlib figures.</span>
+<span class="c1"># May this library restore elegance to your plots.</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="k">import</span> <span class="n">FormatStrFormatter</span>
+
+<span class="c1"># expose some default colors for convenience</span>
+<span class="kn">from</span> <span class="nn">matplotlib.cm</span> <span class="k">import</span> <span class="n">get_cmap</span>
+<span class="n">cmap</span>   <span class="o">=</span> <span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="n">cmap</span><span class="o">.</span><span class="n">colors</span>  <span class="c1"># 256 default colors</span>
+
+<span class="c1"># ======================== level 0: basic ax edits =========================</span>
+
+
+<div class="viewcode-block" id="set_xy_format"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.set_xy_format">[docs]</a><span class="k">def</span> <span class="nf">set_xy_format</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xfmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%3.2f</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">yfmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%3.2f</span><span class="s1">&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; change x,y tick formats e.g. number of digits</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    ax (plt.Axes): matplotlib axes</span>
+<span class="sd">    xfmt (int,optional): xtick format, default is &#39;%3.2f&#39;</span>
+<span class="sd">    yfmt (int,optional): ytick format, default is &#39;%3.2f&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">ax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span> <span class="n">FormatStrFormatter</span><span class="p">(</span><span class="n">xfmt</span><span class="p">)</span> <span class="p">)</span>
+  <span class="n">ax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span> <span class="n">FormatStrFormatter</span><span class="p">(</span><span class="n">yfmt</span><span class="p">)</span> <span class="p">)</span></div>
+<span class="c1"># end def</span>
+
+
+<div class="viewcode-block" id="set_tick_font"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.set_tick_font">[docs]</a><span class="k">def</span> <span class="nf">set_tick_font</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">ysize</span><span class="o">=</span><span class="mi">14</span>
+  <span class="p">,</span><span class="n">xweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">yweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; change x,y tick fonts</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    ax (plt.Axes): matplotlib axes</span>
+<span class="sd">    xsize (int,optional): xtick fontsize, default is 14</span>
+<span class="sd">    ysize (int,optional): ytick fontsize, default is 14</span>
+<span class="sd">    xweight (str,optional): xtick fontweight, default is &#39;bold&#39;</span>
+<span class="sd">    yweight (str,optional): ytick fontweight, default is &#39;bold&#39;</span>
+<span class="sd">    kwargs (dict): other tick-related properties</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">(),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">xsize</span>
+    <span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="n">xweight</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">(),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">ysize</span>
+    <span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="n">yweight</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+<span class="c1"># end def</span>
+
+
+<div class="viewcode-block" id="set_label_font"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.set_label_font">[docs]</a><span class="k">def</span> <span class="nf">set_label_font</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">ysize</span><span class="o">=</span><span class="mi">14</span>
+  <span class="p">,</span> <span class="n">xweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">yweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; change x,y label fonts</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    ax (plt.Axes): matplotlib axes</span>
+<span class="sd">    xsize (int,optional): xlabel fontsize, default is 14</span>
+<span class="sd">    ysize (int,optional): ylabel fontsize, default is 14</span>
+<span class="sd">    xweight (str,optional): xlabel fontweight, default is &#39;bold&#39;</span>
+<span class="sd">    yweight (str,optional): ylabel fontweight, default is &#39;bold&#39;</span>
+<span class="sd">    kwargs (dict): other label-related properties</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">xsize</span>
+    <span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="n">xweight</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">ysize</span>
+    <span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="n">yweight</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+<span class="c1"># end def</span>
+
+
+<div class="viewcode-block" id="scalar_color_map"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.scalar_color_map">[docs]</a><span class="k">def</span> <span class="nf">scalar_color_map</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; return a function that maps a number to a color</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    vmin (float): minimum scalar value</span>
+<span class="sd">    vmax (float): maximum scalar value</span>
+<span class="sd">    name (str, optional): color map name, default is &#39;viridis&#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">matplotlib.cm</span> <span class="k">import</span> <span class="n">get_cmap</span>
+  <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+  <span class="n">cmap</span> <span class="o">=</span> <span class="n">get_cmap</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+  <span class="n">norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+  <span class="n">v2c</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">cmap</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>  <span class="c1"># function mapping value to color</span>
+  <span class="k">return</span> <span class="n">v2c</span></div>
+<span class="c1"># end def scalar_color_map</span>
+
+
+<span class="c1"># ====================== level 0: basic legend edits =======================</span>
+
+
+<div class="viewcode-block" id="set_legend_marker_size"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.set_legend_marker_size">[docs]</a><span class="k">def</span> <span class="nf">set_legend_marker_size</span><span class="p">(</span><span class="n">leg</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+  <span class="n">handl</span> <span class="o">=</span> <span class="n">leg</span><span class="o">.</span><span class="n">legendHandles</span>
+  <span class="n">msl</span>   <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">handl</span><span class="p">)</span>  <span class="c1"># override marker sizes here</span>
+  <span class="k">for</span> <span class="n">hand</span><span class="p">,</span><span class="n">ms</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">handl</span><span class="p">,</span> <span class="n">msl</span><span class="p">):</span>
+    <span class="n">hand</span><span class="o">.</span><span class="n">_legmarker</span><span class="o">.</span><span class="n">set_markersize</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span></div>
+  <span class="c1"># end for</span>
+<span class="c1"># end def set_label_font</span>
+
+
+<span class="c1"># ======================== composition =========================</span>
+
+
+<div class="viewcode-block" id="pretty_up"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.pretty_up">[docs]</a><span class="k">def</span> <span class="nf">pretty_up</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+  <span class="n">set_tick_font</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+  <span class="n">set_label_font</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span></div>
+<span class="c1"># end def pretty_up</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">qharv</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

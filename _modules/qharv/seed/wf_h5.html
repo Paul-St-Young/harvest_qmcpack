@@ -48,41 +48,96 @@
   <h1>Source code for qharv.seed.wf_h5</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
 <span class="c1"># Email: yubo.paul.yang@gmail.com</span>
-<span class="c1"># Routines to read the QMCPACK wavefunction hdf5 file, usually named pwscf.pwscf.h5</span>
+<span class="c1"># Routines to read the QMCPACK wavefunction hdf5 file</span>
+<span class="c1">#  Mostly built around h5py module&#39;s API.</span>
+<span class="c1">#  The central object is h5py.File, which is usually named &quot;fp&quot;.</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
-  <span class="k">return</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="n">mode</span><span class="p">)</span></div>
+<span class="c1"># ====================== level 0: basic io =======================</span>
 
-<span class="c1"># =======================================================================</span>
-<span class="c1"># QMCPACK wavefunction hdf5 fixed locations</span>
-<span class="c1"># =======================================================================</span>
+
+<div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; read h5 file and return a h5py File object</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fname (str): hdf5 file</span>
+<span class="sd">    kwargs (dict): keyword arguments to pass on to h5py.File,</span>
+<span class="sd">      default is {&#39;mode&#39;:&#39;r&#39;}</span>
+<span class="sd">  Return:</span>
+<span class="sd">    h5py.File: h5py File object</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;mode&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span>
+  <span class="k">return</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ls"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.ls">[docs]</a><span class="k">def</span> <span class="nf">ls</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="n">r</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">indent</span><span class="o">=</span><span class="s2">&quot;  &quot;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; List directory structure</span>
+<span class="sd">  </span>
+<span class="sd">   Similar to the Linux `ls` command, but for an hdf5 file</span>
+
+<span class="sd">   Args:</span>
+<span class="sd">     handle (h5py.Group): or h5py.File or h5py.Dataset</span>
+<span class="sd">     r (bool): recursive list</span>
+<span class="sd">     level (int): level of indentation, only used if r=True</span>
+<span class="sd">     indent (str): indent string, only used if r=True</span>
+<span class="sd">   Returns:</span>
+<span class="sd">     str: mystr, a string representation of the directory structure</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">mystr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="n">h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="n">handle</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+      <span class="n">mystr</span> <span class="o">+=</span> <span class="n">indent</span><span class="o">*</span><span class="n">level</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+      <span class="k">if</span> <span class="n">r</span><span class="p">:</span>
+        <span class="n">mystr</span> <span class="o">+=</span> <span class="n">ls</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span>
+    <span class="c1"># end for</span>
+  <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;cannot handle type=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="nb">type</span><span class="p">(</span><span class="n">handle</span><span class="p">))</span>
+  <span class="c1"># end if</span>
+  <span class="k">return</span> <span class="n">mystr</span></div>
+
+<span class="c1"># ====== level 1: QMCPACK wavefunction hdf5 fixed locations ======</span>
 <span class="n">locations</span> <span class="o">=</span> <span class="p">{</span>
   <span class="s1">&#39;gvectors&#39;</span><span class="p">:</span><span class="s1">&#39;electrons/kpoint_0/gvectors&#39;</span><span class="p">,</span>
   <span class="s1">&#39;nkpt&#39;</span><span class="p">:</span><span class="s1">&#39;electrons/number_of_kpoints&#39;</span><span class="p">,</span>
   <span class="s1">&#39;nspin&#39;</span><span class="p">:</span><span class="s1">&#39;electrons/number_of_spins&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;nstate&#39;</span><span class="p">:</span><span class="s1">&#39;electrons/kpoint_0/spin_0/number_of_states&#39;</span><span class="p">,</span> <span class="c1"># !!!! same number of states per kpt</span>
+  <span class="s1">&#39;nstate&#39;</span><span class="p">:</span><span class="s1">&#39;electrons/kpoint_0/spin_0/number_of_states&#39;</span><span class="p">,</span>  <span class="c1"># !!!! same number of states per kpt</span>
   <span class="s1">&#39;axes&#39;</span><span class="p">:</span><span class="s1">&#39;supercell/primitive_vectors&#39;</span><span class="p">,</span>
   <span class="s1">&#39;pos&#39;</span><span class="p">:</span><span class="s1">&#39;atoms/positions&#39;</span>
 <span class="p">}</span>
 
+
 <div class="viewcode-block" id="get"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; retrieve data from a known location in pwscf.h5</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): hdf5 file object</span>
+<span class="sd">    name (str): a known name in locations</span>
+<span class="sd">  Return:</span>
+<span class="sd">    array_like: whatever fp[loc].value returns</span>
+<span class="sd">  &quot;&quot;&quot;</span>
   <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">locations</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;unknown attribute requested: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">fp</span><span class="p">[</span> <span class="n">locations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="p">]</span><span class="o">.</span><span class="n">value</span></div>
 
+
 <div class="viewcode-block" id="axes_elem_pos"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.axes_elem_pos">[docs]</a><span class="k">def</span> <span class="nf">axes_elem_pos</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; extract lattice vectors, atomic positions, and element names </span>
-<span class="sd">  from wavefunction hdf5 file</span>
+  <span class="sd">&quot;&quot;&quot; extract lattice vectors, atomic positions, and element names</span>
+<span class="sd">  The main difficulty is constructing the element names of each</span>
+<span class="sd">  atomic species. If elem is not needed, use get(fp,&#39;axes&#39;) and</span>
+<span class="sd">  get(fp,&#39;pos&#39;) to get the simulation cell and ion positions directly.</span>
+
 <span class="sd">  Args:</span>
-<span class="sd">    fp (h5py.File): hdf5 file pointer</span>
+<span class="sd">    fp (h5py.File): hdf5 file object</span>
 <span class="sd">  Returns:</span>
 <span class="sd">    (np.array,list[str],np.array): (axes,elem,pos)</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">axes</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span> <span class="n">locations</span><span class="p">[</span><span class="s1">&#39;axes&#39;</span><span class="p">]</span> <span class="p">]</span><span class="o">.</span><span class="n">value</span>
-  <span class="n">pos</span>  <span class="o">=</span> <span class="n">fp</span><span class="p">[</span> <span class="n">locations</span><span class="p">[</span><span class="s1">&#39;pos&#39;</span><span class="p">]</span> <span class="p">]</span><span class="o">.</span><span class="n">value</span>
+  <span class="n">axes</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;axes&#39;</span><span class="p">)</span>
+  <span class="n">pos</span>  <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;pos&#39;</span><span class="p">)</span>
 
   <span class="c1"># construct list of atomic labels</span>
   <span class="n">elem_id</span>  <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="s1">&#39;atoms/species_ids&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
@@ -96,11 +151,9 @@
   <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">axes</span><span class="p">,</span><span class="n">elem</span><span class="p">,</span><span class="n">pos</span></div>
 
-<span class="c1"># =======================================================================</span>
+<span class="c1"># ====== level 2: QMCPACK wavefunction hdf5 orbital locations ======</span>
 
-<span class="c1"># =======================================================================</span>
-<span class="c1"># QMCPACK wavefunction hdf5 orbital locations</span>
-<span class="c1"># =======================================================================</span>
+
 <div class="viewcode-block" id="kpoint_path"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.kpoint_path">[docs]</a><span class="k">def</span> <span class="nf">kpoint_path</span><span class="p">(</span><span class="n">ikpt</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; construct path to kpoint</span>
 
@@ -113,12 +166,17 @@
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;electrons/kpoint_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ikpt</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">path</span></div>
+
+
 <div class="viewcode-block" id="spin_path"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.spin_path">[docs]</a><span class="k">def</span> <span class="nf">spin_path</span><span class="p">(</span><span class="n">ikpt</span><span class="p">,</span><span class="n">ispin</span><span class="p">):</span>
   <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;electrons/kpoint_</span><span class="si">%d</span><span class="s1">/spin_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ikpt</span><span class="p">,</span><span class="n">ispin</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">path</span></div>
+
+
 <div class="viewcode-block" id="state_path"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.state_path">[docs]</a><span class="k">def</span> <span class="nf">state_path</span><span class="p">(</span><span class="n">ikpt</span><span class="p">,</span><span class="n">ispin</span><span class="p">,</span><span class="n">istate</span><span class="p">):</span>
   <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;electrons/kpoint_</span><span class="si">%d</span><span class="s1">/spin_</span><span class="si">%d</span><span class="s1">/state_</span><span class="si">%d</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ikpt</span><span class="p">,</span><span class="n">ispin</span><span class="p">,</span><span class="n">istate</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">path</span></div>
+
 
 <div class="viewcode-block" id="get_orb_in_pw"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.get_orb_in_pw">[docs]</a><span class="k">def</span> <span class="nf">get_orb_in_pw</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="n">ikpt</span><span class="p">,</span><span class="n">ispin</span><span class="p">,</span><span class="n">istate</span><span class="p">):</span>
   <span class="n">orb_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">state_path</span><span class="p">(</span><span class="n">ikpt</span><span class="p">,</span><span class="n">ispin</span><span class="p">,</span><span class="n">istate</span><span class="p">),</span> <span class="s1">&#39;psi_g&#39;</span> <span class="p">)</span>
@@ -127,7 +185,6 @@
   <span class="n">psig</span> <span class="o">=</span> <span class="n">psig_arr</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="nb">complex</span><span class="p">)</span> <span class="c1"># more elegant conversion</span>
   <span class="k">return</span> <span class="n">psig</span></div>
 <span class="c1"># =======================================================================</span>
-
 </pre></div>
 
           </div>

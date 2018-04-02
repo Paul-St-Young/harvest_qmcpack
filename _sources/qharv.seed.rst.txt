@@ -12,6 +12,14 @@ qharv\.seed\.pset module
     :undoc-members:
     :show-inheritance:
 
+qharv\.seed\.qmcpack\_in module
+-------------------------------
+
+.. automodule:: qharv.seed.qmcpack_in
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 qharv\.seed\.wf\_h5 module
 --------------------------
 

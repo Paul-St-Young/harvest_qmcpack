@@ -24,8 +24,8 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="qharv package" href="qharv.html" />
-    <link rel="prev" title="qharv.reel package" href="qharv.reel.html" /> 
+    <link rel="next" title="qharv.trans package" href="qharv.trans.html" />
+    <link rel="prev" title="qharv.seed package" href="qharv.seed.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -38,12 +38,13 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="qharv.html" title="qharv package"
+          <a href="qharv.trans.html" title="qharv.trans package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="qharv.reel.html" title="qharv.reel package"
+          <a href="qharv.seed.html" title="qharv.seed package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="qharv.html" accesskey="U">qharv package</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -111,6 +112,34 @@ the different runs.</li>
 </dd></dl>
 
 <dl class="function">
+<dt id="qharv.sieve.scalar_df.mix_est_correction">
+<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">mix_est_correction</code><span class="sig-paren">(</span><em>mydf</em>, <em>names</em>, <em>vseries</em>, <em>dseries</em>, <em>series_name='series'</em>, <em>group_name='group'</em>, <em>kind='linear'</em>, <em>drop_missing_twists=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#mix_est_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.mix_est_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>extrapolate dmc energy to zero time-step limit
+:param mydf: dataframe of VMC and DMC mixed estimators
+:type mydf: pd.DataFrame
+:param names: list of DMC mixed estimators names to extrapolate
+:type names: list
+:param vseries: VMC series id
+:type vseries: int
+:param dseries: DMC series id
+:type dseries: int
+:param series_name: column name identifying the series
+:type series_name: str,optional
+:param kind: extrapolation kind, must be either ‘linear’ or ‘log’
+:type kind: str,optinoal</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">an entry copied from the smallest time-step DMC entry, then edited with extrapolated pure estimators. !!!! Series index is not changed!</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pd.Series</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="qharv.sieve.scalar_df.reblock">
 <code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">reblock</code><span class="sig-paren">(</span><em>trace</em>, <em>block_size</em>, <em>min_nblock=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#reblock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.reblock" title="Permalink to this definition">¶</a></dt>
 <dd><p>block scalar trace to remove autocorrelation; see usage example in reblock_scalar_df
@@ -139,6 +168,26 @@ the different runs.</li>
 see reblock for details</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="qharv.sieve.scalar_df.ts_extrap">
+<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">ts_extrap</code><span class="sig-paren">(</span><em>calc_df</em>, <em>issl</em>, <em>new_series</em>, <em>tname='timestep'</em>, <em>ename='LocalEnergy'</em>, <em>series_name='series'</em>, <em>order=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#ts_extrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.ts_extrap" title="Permalink to this definition">¶</a></dt>
+<dd><p>extrapolate dmc energy to zero time-step limit
+:param calc_df: must contain columns [tname,ename,series_name]
+:type calc_df: pd.DataFrame
+:param issl: list of DMC series index to use in fit
+:type issl: list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">an entry copied from the smallest time-step DMC entry, then edited with extrapolated energy and corresponding info; series is set to -1</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pd.Series</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="module-qharv.sieve">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-qharv.sieve" title="Permalink to this headline">¶</a></h2>
@@ -164,30 +213,23 @@ see reblock for details</p>
 <h3><a href="index.html">Table Of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="qharv.seed.html">qharv.seed package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="qharv.inspect.html">qharv.inspect package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="qharv.cross.html">qharv.cross package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="qharv.reel.html">qharv.reel package</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">qharv.sieve package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-qharv.sieve.mean_df">qharv.sieve.mean_df module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-qharv.sieve.scalar_df">qharv.sieve.scalar_df module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-qharv.sieve">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l1 current"><a class="reference internal" href="qharv.html">qharv package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="qharv.html#subpackages">Subpackages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qharv.html#module-contents">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">qharv</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="qharv.html">qharv package</a></li>
+</ul>
+</li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="qharv.reel.html"
-                        title="previous chapter">qharv.reel package</a></p>
+  <p class="topless"><a href="qharv.seed.html"
+                        title="previous chapter">qharv.seed package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="qharv.html"
-                        title="next chapter">qharv package</a></p>
+  <p class="topless"><a href="qharv.trans.html"
+                        title="next chapter">qharv.trans package</a></p>
         </div>
       </div>
       <div class="clearer"></div>
@@ -202,12 +244,13 @@ see reblock for details</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="qharv.html" title="qharv package"
+          <a href="qharv.trans.html" title="qharv.trans package"
              >next</a> |</li>
         <li class="right" >
-          <a href="qharv.reel.html" title="qharv.reel package"
+          <a href="qharv.seed.html" title="qharv.seed package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="qharv.html" >qharv package</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

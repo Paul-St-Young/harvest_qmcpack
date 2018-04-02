@@ -54,6 +54,7 @@
 
 <div class="viewcode-block" id="abc"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.abc">[docs]</a><span class="k">def</span> <span class="nf">abc</span><span class="p">(</span><span class="n">axes</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; a,b,c lattice parameters</span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    axes (np.array): lattice vectors in row-major</span>
 <span class="sd">  Returns:</span>
@@ -63,18 +64,37 @@
   <span class="k">return</span> <span class="n">abc</span></div>
 <span class="c1"># end def</span>
 
+<div class="viewcode-block" id="raxes"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.raxes">[docs]</a><span class="k">def</span> <span class="nf">raxes</span><span class="p">(</span><span class="n">axes</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; find reciprocal lattice vectors </span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): lattice vectors in row-major</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    np.array: raxes, reciprocal lattice vectors in row-major</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">a1</span><span class="p">,</span><span class="n">a2</span><span class="p">,</span><span class="n">a3</span> <span class="o">=</span> <span class="n">axes</span>
+  <span class="n">vol</span> <span class="o">=</span> <span class="n">volume</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+
+  <span class="n">b1</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">)</span><span class="o">/</span><span class="n">vol</span>
+  <span class="n">b2</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">a3</span><span class="p">,</span> <span class="n">a1</span><span class="p">)</span><span class="o">/</span><span class="n">vol</span>
+  <span class="n">b3</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span><span class="o">/</span><span class="n">vol</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">b1</span><span class="p">,</span><span class="n">b2</span><span class="p">,</span><span class="n">b3</span><span class="p">])</span></div>
+<span class="c1"># end def</span>
+
 <div class="viewcode-block" id="volume"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.volume">[docs]</a><span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="n">axes</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; volume of a simulation cell</span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    axes (np.array): lattice vectors in row-major</span>
 <span class="sd">  Returns:</span>
 <span class="sd">    float: volume of cell</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span></div>
+  <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span></div>
 <span class="c1"># end def volume</span>
 
 <div class="viewcode-block" id="rs"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.rs">[docs]</a><span class="k">def</span> <span class="nf">rs</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">natom</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; rs density parameter (!!!! axes MUST be in units of bohr)</span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    axes (np.array): lattice vectors in row-major, MUST be in units of bohr</span>
 <span class="sd">  Returns:</span>
@@ -88,6 +108,7 @@
 
 <div class="viewcode-block" id="rins"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.rins">[docs]</a><span class="k">def</span> <span class="nf">rins</span><span class="p">(</span><span class="n">axes</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; radius of the inscribed sphere inside the given cell</span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    axes (np.array): lattice vectors in row-major</span>
 <span class="sd">  Returns:</span>
@@ -103,54 +124,174 @@
   <span class="k">return</span> <span class="n">rins</span></div>
 <span class="c1"># end def rins</span>
 
-<div class="viewcode-block" id="properties_from_axes_pos"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.properties_from_axes_pos">[docs]</a><span class="k">def</span> <span class="nf">properties_from_axes_pos</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">pos</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; calculate properties from axes,pos alone; essentially the simplified/customized version of: pymatgen.Structure(axes,elem,pos,coords_are_cartesian=True)</span>
+<div class="viewcode-block" id="rwsc"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.rwsc">[docs]</a><span class="k">def</span> <span class="nf">rwsc</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">dn</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; radius of the inscribed sphere inside the real-space Wigner-Seitz cell of the given cell</span>
+
 <span class="sd">  Args:</span>
-<span class="sd">    axes (np.array): crystal lattice vectors in row-major storage</span>
-<span class="sd">    pos (np.array):  atomic positions in row-major storage</span>
+<span class="sd">    axes (np.array): lattice vectors in row-major</span>
+<span class="sd">    dn (int,optional): number of image cells to search in each dimension, default dn=1 searches 26 images in 3D.</span>
 <span class="sd">  Returns:</span>
-<span class="sd">    pd.Series: a list of properties</span>
+<span class="sd">    float: Wigner-Seitz cell radius</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+  <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
+  <span class="n">r2imgl</span>  <span class="o">=</span> <span class="p">[]</span> <span class="c1"># keep a list of distance^2 to all neighboring images</span>
+  <span class="n">images</span> <span class="o">=</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">dn</span><span class="p">,</span><span class="n">dn</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="n">repeat</span><span class="o">=</span><span class="n">ndim</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">ushift</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ushift</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span> <span class="k">continue</span> <span class="c1"># ignore self</span>
+    <span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ushift</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span>
+    <span class="n">r2imgl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">shift</span><span class="p">,</span><span class="n">shift</span><span class="p">)</span> <span class="p">)</span>
+  <span class="c1"># end for</span>
+  <span class="c1"># find minimum image distance</span>
+  <span class="n">rimg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="nb">min</span><span class="p">(</span><span class="n">r2imgl</span><span class="p">)</span> <span class="p">)</span>
+  <span class="k">return</span> <span class="n">rimg</span><span class="o">/</span><span class="mf">2.</span></div>
+<span class="c1"># def rwsc</span>
+
+<div class="viewcode-block" id="auto_distance_table"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.auto_distance_table">[docs]</a><span class="k">def</span> <span class="nf">auto_distance_table</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">pos</span><span class="p">,</span><span class="n">dn</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; calculate distance table of a set of particles among themselves </span>
+<span class="sd">  keep this function simple! use this to test distance_table(axes,pos1,pos2)</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): lattice vectors in row-major</span>
+<span class="sd">    pos  (np.array): particle positions in row-major</span>
+<span class="sd">    dn (int,optional): number of neighboring cells to search in each direction</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    np.array: dtable shape=(natom,natom), where natom=len(pos)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">natom</span><span class="p">,</span><span class="n">ndim</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">shape</span>
+  <span class="n">dtable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">natom</span><span class="p">,</span><span class="n">natom</span><span class="p">],</span><span class="nb">float</span><span class="p">)</span>
+  <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">combinations</span><span class="p">,</span><span class="n">product</span>
+  <span class="c1"># loop through all unique pairs of atoms</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">natom</span><span class="p">),</span><span class="mi">2</span><span class="p">):</span> <span class="c1"># 2 for pairs</span>
+    <span class="n">dists</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># loop through all neighboring periodic images of atom j</span>
+    <span class="c1">#  should be 27 images for a 3D box (dn=1)</span>
+    <span class="k">for</span> <span class="n">ushift</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">dn</span><span class="p">,</span><span class="n">dn</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="n">repeat</span><span class="o">=</span><span class="n">ndim</span><span class="p">):</span>
+      <span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ushift</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span>
+      <span class="n">disp</span>  <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">shift</span><span class="p">)</span>
+      <span class="n">dist</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">disp</span><span class="p">)</span>
+      <span class="n">dists</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+    <span class="c1"># end for ushift</span>
+    <span class="n">dtable</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtable</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dists</span><span class="p">)</span>
+  <span class="c1"># end for (i,j)</span>
+
+  <span class="k">return</span> <span class="n">dtable</span></div>
+<span class="c1"># end def auto_distance_table</span>
+
+<div class="viewcode-block" id="displacement"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.displacement">[docs]</a><span class="k">def</span> <span class="nf">displacement</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">spos1</span><span class="p">,</span><span class="n">spos2</span><span class="p">,</span><span class="n">dn</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; single particle displacement spos1-spos2 under minimum image convention</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): lattice vectors</span>
+<span class="sd">    spos1 (np.array): single particle position 1</span>
+<span class="sd">    spos2 (np.array): single particle position 2</span>
+<span class="sd">    dn (int,optional): number of neighboring cells to search in each direction</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    np.array: disp_table shape=(natom,natom,ndim)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spos1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spos2</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;dimension mismatch&#39;</span><span class="p">)</span>
+  <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spos1</span><span class="p">)</span>
+  <span class="n">npair</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">dn</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="n">ndim</span> <span class="c1"># number of images</span>
+
+  <span class="c1"># find minimum image displacement</span>
+  <span class="n">min_disp</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="n">min_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+  <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
+  <span class="k">for</span> <span class="n">ushift</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">dn</span><span class="p">,</span><span class="n">dn</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="n">repeat</span><span class="o">=</span><span class="n">ndim</span><span class="p">):</span>
+    <span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ushift</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span>
+    <span class="n">disp</span>  <span class="o">=</span> <span class="n">spos1</span> <span class="o">-</span> <span class="p">(</span><span class="n">spos2</span><span class="o">+</span><span class="n">shift</span><span class="p">)</span>
+    <span class="n">dist</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">disp</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;</span> <span class="n">min_dist</span><span class="p">:</span>
+      <span class="n">min_dist</span> <span class="o">=</span> <span class="n">dist</span>
+      <span class="n">min_disp</span> <span class="o">=</span> <span class="n">disp</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="c1"># end if</span>
+  <span class="c1"># end for</span>
+  <span class="k">return</span> <span class="n">min_disp</span></div>
+<span class="c1"># end def displacement</span>
+
+<div class="viewcode-block" id="pos_in_axes"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.pos_in_axes">[docs]</a><span class="k">def</span> <span class="nf">pos_in_axes</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">pos</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; particle position(s) in cell</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): crystal lattice vectors</span>
+<span class="sd">    pos (np.array): particle position(s)</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    pos0(np.array): particle position(s) inside the cell</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">upos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">axes</span><span class="p">))</span>
+  <span class="n">upos</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">upos</span><span class="p">)</span>
+  <span class="n">pos0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">upos</span><span class="p">,</span><span class="n">axes</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">pos0</span></div>
+<span class="c1"># end def pos_in_axes</span>
+
+<div class="viewcode-block" id="dimer_pairs_and_dists"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.dimer_pairs_and_dists">[docs]</a><span class="k">def</span> <span class="nf">dimer_pairs_and_dists</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">pos</span><span class="p">,</span><span class="n">rmax</span><span class="p">,</span><span class="n">rmin</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; find all dimers within a separtion of (rmin,rmax)</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): crystal lattice vectors</span>
+<span class="sd">    pos  (np.array): particle positions</span>
+<span class="sd">    rmax (float): maximum dimer separation</span>
+<span class="sd">    rmin (float,optional): minimum dimer separation</span>
+<span class="sd">  Return:</span>
+<span class="sd">    np.array: unique pairs, a list of (int,int) particle id pairs</span>
+<span class="sd">    np.array: unique distances, a list of floats</span>
 <span class="sd">  &quot;&quot;&quot;</span>
 
-  <span class="c1"># canonical properties</span>
-  <span class="n">natom</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
-  <span class="n">vol</span>    <span class="o">=</span> <span class="n">volume</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
-  <span class="n">vol_pp</span> <span class="o">=</span> <span class="n">vol</span><span class="o">/</span><span class="n">natom</span> <span class="c1"># volume per particle</span>
-  <span class="n">rs</span>     <span class="o">=</span> <span class="p">(</span><span class="mf">3.</span><span class="o">*</span><span class="n">vol_pp</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span>
-  <span class="n">inv_axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
-  <span class="n">upos</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span><span class="n">inv_axes</span><span class="p">)</span> <span class="c1"># fractional coordinates</span>
+  <span class="c1"># get distance table</span>
+  <span class="n">dtable</span> <span class="o">=</span> <span class="n">auto_distance_table</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">pos</span><span class="p">)</span>
 
-  <span class="n">entry</span> <span class="o">=</span> <span class="p">{}</span>
-  <span class="n">name_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;natom&#39;</span><span class="p">,</span><span class="s1">&#39;volume&#39;</span><span class="p">,</span><span class="s1">&#39;vol_pp&#39;</span><span class="p">,</span><span class="s1">&#39;rs&#39;</span><span class="p">,</span><span class="s1">&#39;rins&#39;</span><span class="p">,</span><span class="s1">&#39;inv_axes&#39;</span><span class="p">,</span><span class="s1">&#39;upos&#39;</span><span class="p">]</span>
-  <span class="n">val_list</span>  <span class="o">=</span> <span class="p">[</span><span class="n">natom</span><span class="p">,</span><span class="n">vol</span><span class="p">,</span><span class="n">vol_pp</span><span class="p">,</span><span class="n">rs</span><span class="p">,</span><span class="n">rins</span><span class="p">(</span><span class="n">axes</span><span class="p">),</span><span class="n">inv_axes</span><span class="p">,</span><span class="n">upos</span><span class="p">]</span>
-  <span class="k">for</span> <span class="n">name</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">name_list</span><span class="p">,</span><span class="n">val_list</span><span class="p">):</span>
-    <span class="n">entry</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
-  <span class="c1"># end for</span>
+  <span class="c1"># locate pairs</span>
+  <span class="n">sel</span> <span class="o">=</span> <span class="p">(</span><span class="n">dtable</span> <span class="o">&lt;</span> <span class="n">rmax</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dtable</span> <span class="o">&gt;</span> <span class="n">rmin</span><span class="p">)</span>
+  <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span>
 
-  <span class="c1"># return pd.Series(entry)</span>
+  <span class="c1"># remove permutation</span>
+  <span class="n">usel</span>  <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">pairs</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+  <span class="n">upair</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">usel</span><span class="p">]</span>
+  <span class="n">udist</span> <span class="o">=</span> <span class="n">dtable</span><span class="p">[</span><span class="n">sel</span><span class="p">][</span><span class="n">usel</span><span class="p">]</span>
+  <span class="k">return</span> <span class="n">upair</span><span class="p">,</span><span class="n">udist</span></div>
+<span class="c1"># def dimer_pairs_and_dists</span>
 
-  <span class="c1"># ad-hoc properties (scale crystal by alat)</span>
-  <span class="n">alat</span>  <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-  <span class="n">uaxes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">/</span><span class="n">alat</span>
-  <span class="n">pos1</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">upos</span><span class="p">,</span><span class="n">uaxes</span><span class="p">)</span>
+<div class="viewcode-block" id="c_over_a"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.c_over_a">[docs]</a><span class="k">def</span> <span class="nf">c_over_a</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">cmax</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">warn</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">abtol</span><span class="o">=</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; calculate c/a ratio given a=b</span>
 
-  <span class="n">name_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;uaxes&#39;</span><span class="p">,</span><span class="s1">&#39;pos1&#39;</span><span class="p">]</span>
-  <span class="n">val_list</span>  <span class="o">=</span> <span class="p">[</span><span class="n">uaxes</span><span class="p">,</span><span class="n">pos1</span><span class="p">]</span>
-  <span class="k">for</span> <span class="n">name</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">name_list</span><span class="p">,</span><span class="n">val_list</span><span class="p">):</span>
-    <span class="n">entry</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
-  <span class="c1"># end for</span>
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): lattice vectors</span>
+<span class="sd">    cmax (bool,optional): c vector is longest</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    float: c/a</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">myabc</span><span class="o">=</span> <span class="n">abc</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">cmax</span><span class="p">:</span>
+    <span class="n">cidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">myabc</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">cidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">myabc</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+  <span class="n">aidx</span> <span class="o">=</span> <span class="p">(</span><span class="n">cidx</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">3</span>
+  <span class="n">bidx</span> <span class="o">=</span> <span class="p">(</span><span class="n">cidx</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">%</span><span class="mi">3</span>
+  <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">myabc</span><span class="p">[</span><span class="n">cidx</span><span class="p">],</span><span class="n">myabc</span><span class="p">[</span><span class="n">aidx</span><span class="p">])</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">myabc</span><span class="p">[</span><span class="n">cidx</span><span class="p">],</span><span class="n">myabc</span><span class="p">[</span><span class="n">bidx</span><span class="p">]):</span>
+    <span class="k">if</span> <span class="n">warn</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;c is close to a/b; try set cmax&#39;</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">myabc</span><span class="p">[</span><span class="n">aidx</span><span class="p">],</span><span class="n">myabc</span><span class="p">[</span><span class="n">bidx</span><span class="p">],</span><span class="n">atol</span><span class="o">=</span><span class="n">abtol</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;lattice a,b not equal&#39;</span><span class="p">)</span>
+  <span class="c1"># end if </span>
+  <span class="k">return</span> <span class="n">myabc</span><span class="p">[</span><span class="n">cidx</span><span class="p">]</span><span class="o">/</span><span class="n">myabc</span><span class="p">[</span><span class="n">aidx</span><span class="p">]</span></div>
+<span class="c1"># end def c_over_a</span>
 
-  <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span></div>
-<span class="c1"># end def properties_from_axes_pos</span>
+<div class="viewcode-block" id="ase_get_spacegroup_id"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.ase_get_spacegroup_id">[docs]</a><span class="k">def</span> <span class="nf">ase_get_spacegroup_id</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">elem</span><span class="p">,</span><span class="n">pos</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; get space group ID using atomic simulation environment</span>
 
-<div class="viewcode-block" id="mg_lattice_from_axes_pos"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.mg_lattice_from_axes_pos">[docs]</a><span class="k">def</span> <span class="nf">mg_lattice_from_axes_pos</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">pos</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; transfer lattice propertires from pymatgen.Structure &quot;&quot;&quot;</span>
-  <span class="kn">import</span> <span class="nn">pymatgen</span> <span class="k">as</span> <span class="nn">mg</span>
-  <span class="n">elem</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
-  <span class="n">struct</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">Structure</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">elem</span><span class="p">,</span><span class="n">pos</span><span class="p">,</span><span class="n">coords_are_cartesian</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-  <span class="n">entry</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()[</span><span class="s1">&#39;lattice&#39;</span><span class="p">]</span>
-  <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span></div>
-<span class="c1"># end def</span>
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): lattice vectors</span>
+<span class="sd">    elem (np.array): atomic symbols</span>
+<span class="sd">    pos  (np.array): atomic positions</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">ase</span> <span class="k">import</span> <span class="n">Atom</span>
+  <span class="kn">from</span> <span class="nn">ase.spacegroup</span> <span class="k">import</span> <span class="n">get_spacegroup</span>
+  <span class="n">s1</span> <span class="o">=</span> <span class="n">ase</span><span class="o">.</span><span class="n">Atoms</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span><span class="n">pos</span><span class="p">,</span><span class="n">cell</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+  <span class="n">sg</span> <span class="o">=</span> <span class="n">get_spacegroup</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">sg</span><span class="o">.</span><span class="n">no</span></div>
+<span class="c1"># end def ase_get_spacegroup_id</span>
 </pre></div>
 
           </div>

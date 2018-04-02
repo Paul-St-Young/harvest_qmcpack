@@ -1,0 +1,22 @@
+qharv\.harvest package
+======================
+
+Submodules
+----------
+
+qharv\.harvest\.pick module
+---------------------------
+
+.. automodule:: qharv.harvest.pick
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: qharv.harvest
+    :members:
+    :undoc-members:
+    :show-inheritance:

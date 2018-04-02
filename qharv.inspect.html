@@ -24,8 +24,8 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="qharv.cross package" href="qharv.cross.html" />
-    <link rel="prev" title="qharv.seed package" href="qharv.seed.html" /> 
+    <link rel="next" title="qharv.plantation package" href="qharv.plantation.html" />
+    <link rel="prev" title="qharv.harvest package" href="qharv.harvest.html" /> 
   </head>
   <body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -38,12 +38,13 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="qharv.cross.html" title="qharv.cross package"
+          <a href="qharv.plantation.html" title="qharv.plantation package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="qharv.seed.html" title="qharv.seed package"
+          <a href="qharv.harvest.html" title="qharv.harvest package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="qharv.html" accesskey="U">qharv package</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -62,42 +63,180 @@
 <dl class="function">
 <dt id="qharv.inspect.axes_pos.abc">
 <code class="descclassname">qharv.inspect.axes_pos.</code><code class="descname">abc</code><span class="sig-paren">(</span><em>axes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/axes_pos.html#abc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.axes_pos.abc" title="Permalink to this definition">¶</a></dt>
-<dd><p>a,b,c lattice parameters
-:param axes: lattice vectors in row-major
-:type axes: np.array</p>
+<dd><p>a,b,c lattice parameters</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">[a,b,c]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>axes</strong> (<em>np.array</em>) – lattice vectors in row-major</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">[a,b,c]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="function">
-<dt id="qharv.inspect.axes_pos.mg_lattice_from_axes_pos">
-<code class="descclassname">qharv.inspect.axes_pos.</code><code class="descname">mg_lattice_from_axes_pos</code><span class="sig-paren">(</span><em>axes</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/axes_pos.html#mg_lattice_from_axes_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.axes_pos.mg_lattice_from_axes_pos" title="Permalink to this definition">¶</a></dt>
-<dd><p>transfer lattice propertires from pymatgen.Structure</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="qharv.inspect.axes_pos.properties_from_axes_pos">
-<code class="descclassname">qharv.inspect.axes_pos.</code><code class="descname">properties_from_axes_pos</code><span class="sig-paren">(</span><em>axes</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/axes_pos.html#properties_from_axes_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.axes_pos.properties_from_axes_pos" title="Permalink to this definition">¶</a></dt>
-<dd><p>calculate properties from axes,pos alone; essentially the simplified/customized version of: pymatgen.Structure(axes,elem,pos,coords_are_cartesian=True)
-:param axes: crystal lattice vectors in row-major storage
-:type axes: np.array
-:param pos: atomic positions in row-major storage
-:type pos: np.array</p>
+<dt id="qharv.inspect.axes_pos.ase_get_spacegroup_id">
+<code class="descclassname">qharv.inspect.axes_pos.</code><code class="descname">ase_get_spacegroup_id</code><span class="sig-paren">(</span><em>axes</em>, <em>elem</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/axes_pos.html#ase_get_spacegroup_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.axes_pos.ase_get_spacegroup_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>get space group ID using atomic simulation environment</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a list of properties</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>axes</strong> (<em>np.array</em>) – lattice vectors</li>
+<li><strong>elem</strong> (<em>np.array</em>) – atomic symbols</li>
+<li><strong>pos</strong> (<em>np.array</em>) – atomic positions</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pd.Series</td>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.inspect.axes_pos.auto_distance_table">
+<code class="descclassname">qharv.inspect.axes_pos.</code><code class="descname">auto_distance_table</code><span class="sig-paren">(</span><em>axes</em>, <em>pos</em>, <em>dn=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/axes_pos.html#auto_distance_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.axes_pos.auto_distance_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate distance table of a set of particles among themselves
+keep this function simple! use this to test distance_table(axes,pos1,pos2)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>axes</strong> (<em>np.array</em>) – lattice vectors in row-major</li>
+<li><strong>pos</strong> (<em>np.array</em>) – particle positions in row-major</li>
+<li><strong>dn</strong> (<em>int</em><em>,</em><em>optional</em>) – number of neighboring cells to search in each direction</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dtable shape=(natom,natom), where natom=len(pos)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.inspect.axes_pos.c_over_a">
+<code class="descclassname">qharv.inspect.axes_pos.</code><code class="descname">c_over_a</code><span class="sig-paren">(</span><em>axes</em>, <em>cmax=True</em>, <em>warn=True</em>, <em>abtol=1e-06</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/axes_pos.html#c_over_a"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.axes_pos.c_over_a" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate c/a ratio given a=b</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>axes</strong> (<em>np.array</em>) – lattice vectors</li>
+<li><strong>cmax</strong> (<em>bool</em><em>,</em><em>optional</em>) – c vector is longest</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">c/a</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.inspect.axes_pos.dimer_pairs_and_dists">
+<code class="descclassname">qharv.inspect.axes_pos.</code><code class="descname">dimer_pairs_and_dists</code><span class="sig-paren">(</span><em>axes</em>, <em>pos</em>, <em>rmax</em>, <em>rmin=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/axes_pos.html#dimer_pairs_and_dists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.axes_pos.dimer_pairs_and_dists" title="Permalink to this definition">¶</a></dt>
+<dd><p>find all dimers within a separtion of (rmin,rmax)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>axes</strong> (<em>np.array</em>) – crystal lattice vectors</li>
+<li><strong>pos</strong> (<em>np.array</em>) – particle positions</li>
+<li><strong>rmax</strong> (<em>float</em>) – maximum dimer separation</li>
+<li><strong>rmin</strong> (<em>float</em><em>,</em><em>optional</em>) – minimum dimer separation</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">unique pairs, a list of (int,int) particle id pairs
+np.array: unique distances, a list of floats</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.inspect.axes_pos.displacement">
+<code class="descclassname">qharv.inspect.axes_pos.</code><code class="descname">displacement</code><span class="sig-paren">(</span><em>axes</em>, <em>spos1</em>, <em>spos2</em>, <em>dn=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/axes_pos.html#displacement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.axes_pos.displacement" title="Permalink to this definition">¶</a></dt>
+<dd><p>single particle displacement spos1-spos2 under minimum image convention</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>axes</strong> (<em>np.array</em>) – lattice vectors</li>
+<li><strong>spos1</strong> (<em>np.array</em>) – single particle position 1</li>
+<li><strong>spos2</strong> (<em>np.array</em>) – single particle position 2</li>
+<li><strong>dn</strong> (<em>int</em><em>,</em><em>optional</em>) – number of neighboring cells to search in each direction</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">disp_table shape=(natom,natom,ndim)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.inspect.axes_pos.pos_in_axes">
+<code class="descclassname">qharv.inspect.axes_pos.</code><code class="descname">pos_in_axes</code><span class="sig-paren">(</span><em>axes</em>, <em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/axes_pos.html#pos_in_axes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.axes_pos.pos_in_axes" title="Permalink to this definition">¶</a></dt>
+<dd><p>particle position(s) in cell</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>axes</strong> (<em>np.array</em>) – crystal lattice vectors</li>
+<li><strong>pos</strong> (<em>np.array</em>) – particle position(s)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">particle position(s) inside the cell</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pos0(np.array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.inspect.axes_pos.raxes">
+<code class="descclassname">qharv.inspect.axes_pos.</code><code class="descname">raxes</code><span class="sig-paren">(</span><em>axes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/axes_pos.html#raxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.axes_pos.raxes" title="Permalink to this definition">¶</a></dt>
+<dd><p>find reciprocal lattice vectors</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>axes</strong> (<em>np.array</em>) – lattice vectors in row-major</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">raxes, reciprocal lattice vectors in row-major</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
 </tr>
 </tbody>
 </table>
@@ -106,16 +245,16 @@
 <dl class="function">
 <dt id="qharv.inspect.axes_pos.rins">
 <code class="descclassname">qharv.inspect.axes_pos.</code><code class="descname">rins</code><span class="sig-paren">(</span><em>axes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/axes_pos.html#rins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.axes_pos.rins" title="Permalink to this definition">¶</a></dt>
-<dd><p>radius of the inscribed sphere inside the given cell
-:param axes: lattice vectors in row-major
-:type axes: np.array</p>
+<dd><p>radius of the inscribed sphere inside the given cell</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">radius of the inscribed sphere</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>axes</strong> (<em>np.array</em>) – lattice vectors in row-major</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">radius of the inscribed sphere</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
 </tr>
 </tbody>
 </table>
@@ -124,16 +263,40 @@
 <dl class="function">
 <dt id="qharv.inspect.axes_pos.rs">
 <code class="descclassname">qharv.inspect.axes_pos.</code><code class="descname">rs</code><span class="sig-paren">(</span><em>axes</em>, <em>natom</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/axes_pos.html#rs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.axes_pos.rs" title="Permalink to this definition">¶</a></dt>
-<dd><p>rs density parameter (!!!! axes MUST be in units of bohr)
-:param axes: lattice vectors in row-major, MUST be in units of bohr
-:type axes: np.array</p>
+<dd><p>rs density parameter (!!!! axes MUST be in units of bohr)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">volume of cell</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>axes</strong> (<em>np.array</em>) – lattice vectors in row-major, MUST be in units of bohr</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">volume of cell</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.inspect.axes_pos.rwsc">
+<code class="descclassname">qharv.inspect.axes_pos.</code><code class="descname">rwsc</code><span class="sig-paren">(</span><em>axes</em>, <em>dn=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/axes_pos.html#rwsc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.axes_pos.rwsc" title="Permalink to this definition">¶</a></dt>
+<dd><p>radius of the inscribed sphere inside the real-space Wigner-Seitz cell of the given cell</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>axes</strong> (<em>np.array</em>) – lattice vectors in row-major</li>
+<li><strong>dn</strong> (<em>int</em><em>,</em><em>optional</em>) – number of image cells to search in each dimension, default dn=1 searches 26 images in 3D.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Wigner-Seitz cell radius</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -142,16 +305,16 @@
 <dl class="function">
 <dt id="qharv.inspect.axes_pos.volume">
 <code class="descclassname">qharv.inspect.axes_pos.</code><code class="descname">volume</code><span class="sig-paren">(</span><em>axes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/axes_pos.html#volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.axes_pos.volume" title="Permalink to this definition">¶</a></dt>
-<dd><p>volume of a simulation cell
-:param axes: lattice vectors in row-major
-:type axes: np.array</p>
+<dd><p>volume of a simulation cell</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">volume of cell</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>axes</strong> (<em>np.array</em>) – lattice vectors in row-major</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">volume of cell</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
 </tr>
 </tbody>
 </table>
@@ -193,7 +356,7 @@ see example in draw_crystal</p>
 
 <dl class="function">
 <dt id="qharv.inspect.crystal.draw_cell">
-<code class="descclassname">qharv.inspect.crystal.</code><code class="descname">draw_cell</code><span class="sig-paren">(</span><em>ax</em>, <em>axes</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/crystal.html#draw_cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.crystal.draw_cell" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">qharv.inspect.crystal.</code><code class="descname">draw_cell</code><span class="sig-paren">(</span><em>ax</em>, <em>axes</em>, <em>corner=None</em>, <em>enclose=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/crystal.html#draw_cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.crystal.draw_cell" title="Permalink to this definition">¶</a></dt>
 <dd><p>draw cell on ax
 see example in draw_crystal</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -203,6 +366,10 @@ see example in draw_crystal</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ax</strong> (<em>plt.Axes</em>) – matplotlib Axes object, must have projection=‘3d’</li>
 <li><strong>axes</strong> (<em>np.array</em>) – lattice vectors in row-major 3x3 array</li>
+<li><strong>corner</strong> (<em>np.array</em><em>,</em><em>optional</em>) – lower left corner of the lattice
+,use (0,0,0) by default</li>
+<li><strong>enclose</strong> (<em>bool</em>) – enclose the cell with lattice vectors
+,default is True. If False, then draw lattice vectors only</li>
 <li><strong>kwargs</strong> (<em>dict</em><em>,</em><em>optional</em>) – keyword arguments passed to plt.plot</li>
 </ul>
 </td>
@@ -267,6 +434,33 @@ plt.show()</p>
 <div class="section" id="module-qharv.inspect.inp_xml">
 <span id="qharv-inspect-inp-xml-module"></span><h2>qharv.inspect.inp_xml module<a class="headerlink" href="#module-qharv.inspect.inp_xml" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
+<dt id="qharv.inspect.inp_xml.check_wf_hdf5">
+<code class="descclassname">qharv.inspect.inp_xml.</code><code class="descname">check_wf_hdf5</code><span class="sig-paren">(</span><em>snode</em>, <em>calc_dir</em>, <em>folded</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/inp_xml.html#check_wf_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.inp_xml.check_wf_hdf5" title="Permalink to this definition">¶</a></dt>
+<dd><p>check that spline single-particle orbitals are defined in the correct
+simulation cell. snode must hold the simulation cell and basis builder with
+a reference to the wf hdf5.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>snode</strong> (<em>lxml.Element</em>) – e.g. parsed &lt;qmcsystem&gt;</li>
+<li><strong>calc_dir</strong> (<em>str</em>) – directory to contain the QMCPACK input</li>
+<li><strong>folded</strong> (<em>bool</em>) – True, if DFT was performed in unit cell and orbitals are tiled to super cell</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">consistent</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="qharv.inspect.inp_xml.rcut">
 <code class="descclassname">qharv.inspect.inp_xml.</code><code class="descname">rcut</code><span class="sig-paren">(</span><em>corr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/inp_xml.html#rcut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.inp_xml.rcut" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -274,18 +468,22 @@ plt.show()</p>
 <dl class="function">
 <dt id="qharv.inspect.inp_xml.validate_bspline_rcut">
 <code class="descclassname">qharv.inspect.inp_xml.</code><code class="descname">validate_bspline_rcut</code><span class="sig-paren">(</span><em>node</em>, <em>ignore_empty=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/inp_xml.html#validate_bspline_rcut"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.inp_xml.validate_bspline_rcut" title="Permalink to this definition">¶</a></dt>
-<dd><p>check that 1D bspline functions have valid cutoff radius
-:param node: xml node containing &lt;simulationcell&gt; and &lt;correlation&gt;.
-:type node: lxml.etree._Element
-:param ignore_empty: ignore inputs without &lt;correlation&gt;, default=False
-:type ignore_empty: bool,optional</p>
+<dd><p>check that 1D bspline functions have valid cutoff radius</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">valid input</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> (<em>lxml.etree._Element</em>) – xml node containing &lt;simulationcell&gt; and &lt;correlation&gt;.</li>
+<li><strong>ignore_empty</strong> (<em>bool</em><em>,</em><em>optional</em>) – ignore inputs without &lt;correlation&gt;, default=False</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">valid input</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -311,6 +509,32 @@ plt.show()</p>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dtype=float, shape=grid_shape; volumetric data</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">grid (np.array)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.inspect.volumetric.color_scatter">
+<code class="descclassname">qharv.inspect.volumetric.</code><code class="descname">color_scatter</code><span class="sig-paren">(</span><em>ax</em>, <em>data</em>, <em>cmap_name='viridis'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/inspect/volumetric.html#color_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.inspect.volumetric.color_scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>view sampled 3D scalar function using value as color</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> (<em>plt.Axes3D</em>) – ax = fig.add_subplot(1,1,1,projection=”3d”)</li>
+<li><strong>data</strong> (<em>np.array</em>) – aligned scatter data, the columns are [x,y,z,f(x,y,z)]</li>
+<li><strong>cmap_name</strong> (<em>str</em><em>, </em><em>optional</em>) – color map name, default is ‘viridis’</li>
+<li><strong>kwargs</strong> (<em>dict</em><em>, </em><em>optional</em>) – keyword arguments to be passed to ax.scatter</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">scatter plot</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">mpl_toolkits.mplot3d.art3d.Path3DCollection</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -453,32 +677,23 @@ plt.show()</dd>
 <h3><a href="index.html">Table Of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="qharv.seed.html">qharv.seed package</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">qharv.inspect package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-qharv.inspect.axes_pos">qharv.inspect.axes_pos module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-qharv.inspect.crystal">qharv.inspect.crystal module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-qharv.inspect.inp_xml">qharv.inspect.inp_xml module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-qharv.inspect.volumetric">qharv.inspect.volumetric module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-qharv.inspect">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="qharv.cross.html">qharv.cross package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="qharv.reel.html">qharv.reel package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="qharv.sieve.html">qharv.sieve package</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="qharv.html">qharv package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="qharv.html#subpackages">Subpackages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qharv.html#module-contents">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">qharv</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="qharv.html">qharv package</a></li>
+</ul>
+</li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="qharv.seed.html"
-                        title="previous chapter">qharv.seed package</a></p>
+  <p class="topless"><a href="qharv.harvest.html"
+                        title="previous chapter">qharv.harvest package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="qharv.cross.html"
-                        title="next chapter">qharv.cross package</a></p>
+  <p class="topless"><a href="qharv.plantation.html"
+                        title="next chapter">qharv.plantation package</a></p>
         </div>
       </div>
       <div class="clearer"></div>
@@ -493,12 +708,13 @@ plt.show()</dd>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="qharv.cross.html" title="qharv.cross package"
+          <a href="qharv.plantation.html" title="qharv.plantation package"
              >next</a> |</li>
         <li class="right" >
-          <a href="qharv.seed.html" title="qharv.seed package"
+          <a href="qharv.harvest.html" title="qharv.harvest package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="qharv.html" >qharv package</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
