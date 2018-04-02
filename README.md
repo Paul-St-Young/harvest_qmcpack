@@ -12,12 +12,22 @@ export PYTHONPATH=~/harvest_qmcpack:$PYTHONPATH
 export PATH=~/harvest_qmcpack/bin:$PATH
 ```
 
+Prerequisites can be installed following requirement.txt
+```shell
+cd ~/harvest_qmcpack; pip install --user -r requirements.txt
+```
+
+Unit tests should work with either nosetest or pytest
+```shell
+cd ~/harvest_qmcpack; pytest -v .
+```
+
 You can also use pip if you do not intend to change the code
 ```shell
 git clone https://github.com/Paul-St-Young/harvest_qmcpack.git ~/harvest_qmcpack
 pip install --user ~/harvest_qmcpack
 ```
-to update to the newest version:
+To update to the newest version:
 ```shell
 cd ~/harvest_qmcpack
 git pull
