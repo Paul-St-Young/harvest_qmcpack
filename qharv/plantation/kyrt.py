@@ -7,16 +7,19 @@
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FormatStrFormatter
 
 # expose some default colors for convenience
 from matplotlib.cm import get_cmap
 cmap   = get_cmap('viridis')
-colors = cmap.colors # 256 default colors
+colors = cmap.colors  # 256 default colors
 
 # ======================== level 0: basic ax edits =========================
-from matplotlib.ticker import FormatStrFormatter
-def set_xy_format(ax,xfmt='%3.2f',yfmt='%3.2f'):
+
+
+def set_xy_format(ax, xfmt='%3.2f', yfmt='%3.2f'):
   """ change x,y tick formats e.g. number of digits
+
   Args:
     ax (plt.Axes): matplotlib axes
     xfmt (int,optional): xtick format, default is '%3.2f'
@@ -26,9 +29,11 @@ def set_xy_format(ax,xfmt='%3.2f',yfmt='%3.2f'):
   ax.get_yaxis().set_major_formatter( FormatStrFormatter(yfmt) )
 # end def
 
-def set_tick_font(ax,xsize=14,ysize=14
-  ,xweight='bold',yweight='bold',**kwargs):
+
+def set_tick_font(ax, xsize=14, ysize=14
+  ,xweight='bold', yweight='bold', **kwargs):
   """ change x,y tick fonts
+
   Args:
     ax (plt.Axes): matplotlib axes
     xsize (int,optional): xtick fontsize, default is 14
@@ -37,15 +42,17 @@ def set_tick_font(ax,xsize=14,ysize=14
     yweight (str,optional): ytick fontweight, default is 'bold'
     kwargs (dict): other tick-related properties
   """
-  plt.setp(ax.get_xticklabels(),fontsize=xsize
+  plt.setp(ax.get_xticklabels(), fontsize=xsize
     ,fontweight=xweight,**kwargs)
-  plt.setp(ax.get_yticklabels(),fontsize=ysize
+  plt.setp(ax.get_yticklabels(), fontsize=ysize
     ,fontweight=yweight,**kwargs)
 # end def
 
-def set_label_font(ax,xsize=14,ysize=14
-  ,xweight='bold',yweight='bold',**kwargs):
+
+def set_label_font(ax, xsize=14, ysize=14
+  , xweight='bold', yweight='bold', **kwargs):
   """ change x,y label fonts
+
   Args:
     ax (plt.Axes): matplotlib axes
     xsize (int,optional): xlabel fontsize, default is 14
@@ -54,37 +61,45 @@ def set_label_font(ax,xsize=14,ysize=14
     yweight (str,optional): ylabel fontweight, default is 'bold'
     kwargs (dict): other label-related properties
   """
-  plt.setp(ax.xaxis.label,fontsize=xsize
+  plt.setp(ax.xaxis.label, fontsize=xsize
     ,fontweight=xweight,**kwargs)
-  plt.setp(ax.yaxis.label,fontsize=ysize
+  plt.setp(ax.yaxis.label, fontsize=ysize
     ,fontweight=yweight,**kwargs)
 # end def
 
-def scalar_color_map(vmin,vmax,name='viridis'):
+
+def scalar_color_map(vmin, vmax, name='viridis'):
   """ return a function that maps a number to a color
+
   Args:
     vmin (float): minimum scalar value
     vmax (float): maximum scalar value
-    name (str, optional): color map name, default is 'viridis' 
+    name (str, optional): color map name, default is 'viridis'
   """
-  from matplotlib.cm import get_cmap                                            
-  import matplotlib as mpl                                                      
+  from matplotlib.cm import get_cmap
+  import matplotlib as mpl
   cmap = get_cmap(name)
-  norm = mpl.colors.Normalize(vmin,vmax)
+  norm = mpl.colors.Normalize(vmin, vmax)
   v2c  = lambda v:cmap(norm(v))  # function mapping value to color
   return v2c
 # end def scalar_color_map
 
-# ======================== level 0: basic legend edits =========================
-def set_legend_marker_size(leg,ms=10):
+
+# ====================== level 0: basic legend edits =======================
+
+
+def set_legend_marker_size(leg, ms=10):
   handl = leg.legendHandles
   msl   = [ms]*len(handl)  # override marker sizes here
-  for hand,ms in zip(handl,msl):
+  for hand,ms in zip(handl, msl):
     hand._legmarker.set_markersize(ms)
   # end for
 # end def set_label_font
 
+
 # ======================== composition =========================
+
+
 def pretty_up(ax):
   set_tick_font(ax)
   set_label_font(ax)

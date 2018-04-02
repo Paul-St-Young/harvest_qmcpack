@@ -19,6 +19,7 @@ def rcut(corr):
 
 def validate_bspline_rcut(node,ignore_empty=False):
   """ check that 1D bspline functions have valid cutoff radius
+
   Args:
     node (lxml.etree._Element): xml node containing <simulationcell> and <correlation>.
     ignore_empty (bool,optional): ignore inputs without <correlation>, default=False
@@ -78,8 +79,10 @@ def validate_bspline_rcut(node,ignore_empty=False):
 # end def validate_bspline_rcut
 
 def check_wf_hdf5(snode,calc_dir,folded):
-  """ check that spline single-particle orbitals are defined in the correct simulation cell
-   snode must hold the simulation cell and basis builder with a reference to the wf hdf5
+  """ check that spline single-particle orbitals are defined in the correct 
+  simulation cell. snode must hold the simulation cell and basis builder with 
+  a reference to the wf hdf5.
+
   Args:
     snode (lxml.Element): e.g. parsed <qmcsystem>
     calc_dir (str): directory to contain the QMCPACK input

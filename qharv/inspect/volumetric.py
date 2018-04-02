@@ -51,6 +51,7 @@ def isosurf(ax,vol,level_frac=0.25):
 
 def color_scatter(ax,data,cmap_name='viridis',**kwargs):
   """ view sampled 3D scalar function using value as color
+
   Args:
     ax (plt.Axes3D): ax = fig.add_subplot(1,1,1,projection="3d")
     data (np.array): aligned scatter data, the columns are [x,y,z,f(x,y,z)]

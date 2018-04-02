@@ -6,6 +6,7 @@ import pandas as pd
 
 def abc(axes):
   """ a,b,c lattice parameters
+
   Args:
     axes (np.array): lattice vectors in row-major
   Returns:
@@ -17,6 +18,7 @@ def abc(axes):
 
 def raxes(axes):
   """ find reciprocal lattice vectors 
+
   Args:
     axes (np.array): lattice vectors in row-major
   Returns:
@@ -33,6 +35,7 @@ def raxes(axes):
 
 def volume(axes):
   """ volume of a simulation cell
+
   Args:
     axes (np.array): lattice vectors in row-major
   Returns:
@@ -43,6 +46,7 @@ def volume(axes):
 
 def rs(axes,natom):
   """ rs density parameter (!!!! axes MUST be in units of bohr)
+
   Args:
     axes (np.array): lattice vectors in row-major, MUST be in units of bohr
   Returns:
@@ -56,6 +60,7 @@ def rs(axes,natom):
 
 def rins(axes):
   """ radius of the inscribed sphere inside the given cell
+
   Args:
     axes (np.array): lattice vectors in row-major
   Returns:
@@ -73,6 +78,7 @@ def rins(axes):
 
 def rwsc(axes,dn=1):
   """ radius of the inscribed sphere inside the real-space Wigner-Seitz cell of the given cell
+
   Args:
     axes (np.array): lattice vectors in row-major
     dn (int,optional): number of image cells to search in each dimension, default dn=1 searches 26 images in 3D.
@@ -94,8 +100,9 @@ def rwsc(axes,dn=1):
 # def rwsc
 
 def auto_distance_table(axes,pos,dn=1):
-  """ calculate distance table of a set of particles among themselves
-   keep this function simple! use this to test distance_table(axes,pos1,pos2)
+  """ calculate distance table of a set of particles among themselves 
+  keep this function simple! use this to test distance_table(axes,pos1,pos2)
+
   Args:
     axes (np.array): lattice vectors in row-major
     pos  (np.array): particle positions in row-major
@@ -124,7 +131,8 @@ def auto_distance_table(axes,pos,dn=1):
 # end def auto_distance_table
 
 def displacement(axes,spos1,spos2,dn=1):
-  """ single particle displacement spos1-spos2 under minimum image convention in axes
+  """ single particle displacement spos1-spos2 under minimum image convention
+
   Args:
     axes (np.array): lattice vectors
     spos1 (np.array): single particle position 1
@@ -156,6 +164,7 @@ def displacement(axes,spos1,spos2,dn=1):
 
 def pos_in_axes(axes,pos):
   """ particle position(s) in cell
+
   Args:
     axes (np.array): crystal lattice vectors
     pos (np.array): particle position(s)
@@ -170,6 +179,7 @@ def pos_in_axes(axes,pos):
 
 def dimer_pairs_and_dists(axes,pos,rmax,rmin=0):
   """ find all dimers within a separtion of (rmin,rmax)
+
   Args:
     axes (np.array): crystal lattice vectors
     pos  (np.array): particle positions
@@ -196,6 +206,7 @@ def dimer_pairs_and_dists(axes,pos,rmax,rmin=0):
 
 def c_over_a(axes,cmax=True,warn=True,abtol=1e-6):
   """ calculate c/a ratio given a=b
+
   Args:
     axes (np.array): lattice vectors
     cmax (bool,optional): c vector is longest
@@ -221,6 +232,7 @@ def c_over_a(axes,cmax=True,warn=True,abtol=1e-6):
 
 def ase_get_spacegroup_id(axes,elem,pos):
   """ get space group ID using atomic simulation environment
+
   Args:
     axes (np.array): lattice vectors
     elem (np.array): atomic symbols
