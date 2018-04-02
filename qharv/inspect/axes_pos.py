@@ -219,3 +219,16 @@ def c_over_a(axes,cmax=True,warn=True,abtol=1e-6):
   return myabc[cidx]/myabc[aidx]
 # end def c_over_a
 
+def ase_get_spacegroup_id(axes,elem,pos):
+  """ get space group ID using atomic simulation environment
+  Args:
+    axes (np.array): lattice vectors
+    elem (np.array): atomic symbols
+    pos  (np.array): atomic positions
+  """
+  from ase import Atom
+  from ase.spacegroup import get_spacegroup
+  s1 = ase.Atoms(elem,pos,cell=axes)
+  sg = get_spacegroup(s1,**kwargs)
+  return sg.no
+# end def ase_get_spacegroup_id
