@@ -5,13 +5,36 @@
 from mmap import mmap
 import pandas as pd
 
+
 def read(fname):
+  """ get a memory map pointer to file
+
+  Args:
+    fname (str): filename
+  Return:
+    mmap.mmap: memory map to file
+  """
   with open(fname,'r+') as f:
     mm = mmap(f.fileno(),0)
   # end with
   return mm
+# end def read
 
-def name_sep_val(mm,name,sep='=',val_dtype=float,pos=-1):
+
+def name_sep_val(mm,name,sep='=',dtype=float,pos=-1):
+  """ read key-value pair
+  e.g. 
+  name_sep_val(mm, 'a'): 'a = 2.4'
+  name_sep_val(mm, 'volume', pos=-2): 'volume = 100.0 bohr^3'
+  name_sep_val(mm, 'key', sep=':'): 'key:val'
+  name_sep_val(mm, 'new', sep=':'): 'new:name'
+  name_sep_val(mm, 'natom', dtype=int): 'new:name'
+
+  Args:
+    fname (str): filename
+  Return:
+    mmap.mmap: memory map to file
+  """
   idx = mm.find(name)
   if idx == -1:
     raise RuntimeError(name+' not found')
@@ -21,9 +44,10 @@ def name_sep_val(mm,name,sep='=',val_dtype=float,pos=-1):
 
   # assume the text immediately next to the separator is the desired value
   val_text = tokens[pos].split()[0]
-  val = val_dtype( val_text )
+  val = dtype( val_text )
   return val
-# end def
+# end def name_sep_val
+
 
 def all_lines_with_tag(mm,tag,nline_max=1024*1024):
   """ return a list of memory indices pointing to the start of tag
@@ -46,6 +70,7 @@ def all_lines_with_tag(mm,tag,nline_max=1024*1024):
   return all_idx
 # end def all_lines_with_tag
 
+
 def all_lines_at_idx(mm,idx_list):
   lines = []
   for idx in idx_list:
@@ -54,6 +79,7 @@ def all_lines_at_idx(mm,idx_list):
   # end for
   return lines
 # end def
+
 
 def locate_block(mm,header,trailer,skip_header=True,skip_trailer=True):
   begin_idx = mm.find(header.encode())
@@ -71,10 +97,12 @@ def locate_block(mm,header,trailer,skip_header=True,skip_trailer=True):
   return begin_idx,end_idx
 # end def locate_block
 
+
 def block_text(mm,header,trailer,**kwargs):
   bidx,eidx = locate_block(mm,header,trailer,**kwargs)
   return mm[bidx:eidx]
 # end def block_text
+
 
 def lr_mark(line,lmark,rmark):
   """ read a string segment from line, which is enclosed between l&rmark
