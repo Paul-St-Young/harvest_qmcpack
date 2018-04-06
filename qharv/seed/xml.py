@@ -116,7 +116,8 @@ def text2arr(text,dtype=float,flatten=False):
   # end if
 # end def text2arr
 
-# ================= level 2: QMCPACK specialized elementary =================
+# ================= level 2: QMCPACK specialized read =================
+
 
 def get_param(node,pname):
   """ retrieve the str representation of a parameter from: 
@@ -130,6 +131,7 @@ def get_param(node,pname):
   pnode = node.find('.//parameter[@name="%s"]'%pname)
   return pnode.text
 # end def
+
 
 def set_param(node,pname,pval,new=False):
   """ set <parameter> with name 'pname' to 'pval' 
@@ -160,6 +162,7 @@ def set_param(node,pname,pval,new=False):
   # end if
 # end def
 
+
 def get_axes(doc):
   sc_node = doc.find('.//simulationcell')
   if sc_node is None:
@@ -170,6 +173,7 @@ def get_axes(doc):
   axes = text2arr( lat_node.text )
   return axes
 # end def 
+
 
 def get_pos(doc,pset='ion0',all_pos=True,group=None):
   # find <particleset>
@@ -209,7 +213,39 @@ def get_pos(doc,pset='ion0',all_pos=True,group=None):
   return pos
 # end def
 
-# ================= level 3: QMCPACK specialized advanced =================
+
+# ================= level 3: QMCPACK specialized construct =================
+
+
+def build_coeff(knots, **attribs):
+  """ construct an <coefficients/> 
+
+  example:
+    build_coeff([1,2]): 
+      <coefficients id="new" type="Array"> 1 2 </coefficients>
+
+  Args:
+    knots (list): a list of numbers
+  Return:
+    lxml.Element: <coefficients/>
+  """
+
+  # add required attributes
+  #id (str, optional): coefficient name, default 'new'
+  if not 'id' in attribs:
+    attribs['id'] = 'new'
+  #type (str, optional): coefficient type, default 'Array'
+  if not 'type' in attribs:
+    attribs['type'] = 'Array'
+
+  # construct node
+  coeff_node = etree.Element('coefficients',attribs)
+  coeff_node.text = ' ' + ' '.join( map(str,knots) ) + ' '  # 1D arr2text
+  return coeff_node
+# end def build_coeff
+
+
+# ================= level 4: QMCPACK specialized advanced =================
 
 def turn_off_jas_opt(wf_node):
   # turn off jastrow optimization
@@ -222,6 +258,7 @@ def turn_off_jas_opt(wf_node):
     # end for
   # end for
 # end def
+
 
 def opt_wf_fname(opt_inp,iqmc):
   """ Find the file containing the optimized <wavefunction> at optimization loop iqmc 
@@ -259,6 +296,7 @@ def opt_wf_fname(opt_inp,iqmc):
   return wf_fname
 # end def opt_wf_fname
 
+
 def swap_in_opt_wf(doc,wf_node):
   """ Put an optimized wavefunction into an xml input 
 
@@ -288,6 +326,7 @@ def swap_in_opt_wf(doc,wf_node):
   return doc
 # end def swap_in_opt_wf
 
+
 def add_bcc_backflow(wf_node,bf_node):
   # make sure inputs are not scrambled
   assert wf_node.tag == 'wavefunction'
@@ -314,6 +353,7 @@ def add_bcc_backflow(wf_node,bf_node):
   bb.set('truncate','no')
   return mywf
 # end def add_bcc_backflow
+
 
 def dset2spo(wf_node,det_map):
   """ change <wavefunction> from old style, <basis> in <determinantset>, to new style, <basis> in <sposet_builder>
