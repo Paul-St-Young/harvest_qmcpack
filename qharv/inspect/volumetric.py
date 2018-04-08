@@ -125,7 +125,19 @@ def axes_func_on_grid3d(axes,func,grid_shape):
   return grid
 # end def axes_func_on_grid3d
 
-def xsf_datagrid_3d_density(fname,header='BEGIN_DATAGRID_3D_density',trailer='END_DATAGRID_3D_density'):
+def xsf_datagrid_3d_density(fname
+  ,header='BEGIN_DATAGRID_3D_density'
+  ,trailer='END_DATAGRID_3D_density'):
+  """ 
+  parse DATAGRID_3D block in xsf file
+
+  Args:
+    fname (str): xsf file name 
+    header (str): tag marking the beginning of grid
+    trailer (str): tag marking the end of grid
+  Return:
+    np.array: data of 3D grid
+  """
   from qharv.reel import ascii_out
   mm   = ascii_out.read(fname)
   text = ascii_out.block_text(mm,header,trailer)
@@ -155,8 +167,77 @@ def xsf_datagrid_3d_density(fname,header='BEGIN_DATAGRID_3D_density',trailer='EN
 
   # flatten before converting to np.array
   data = np.array([x for numbers in all_numbers for x in numbers],dtype=float)
-  return data.reshape(grid_shape)
+  return data.reshape(grid_shape, order='F')
 # end def xsf_datagrid_3d_density
+
+
+def gaussian_cube(fcub, nskip=2):
+  """ 
+  parse Gaussian Cube file
+
+  example:
+    entry = gaussian_cube('density.cub')
+    data  = np.array(entry['data'])
+    assert np.allclose(data.shape,entry['nxyz'])
+
+  Args:
+    fcub (str): cube file name 
+    nskip (int, optional): skip the top two title lines
+  Return:
+    dict: dictionary of useful info 
+     [axes, elem, pos, nxyz, data]
+  """
+  ndim = 3  # 3 spatial dimensions
+
+  # hold entire file in memory
+  with open(fcub,'r') as f:
+    text = f.read()
+  
+  # split into lines
+  lines = text.split('\n')
+  
+  # read the number of atoms
+  natom_line = lines[nskip]
+  natom = int(natom_line.split()[0])
+
+  # read lattice vectors
+  axes = []
+  nxyz = []
+  for idim in range(ndim):
+    line   = lines[nskip+1+idim]
+    tokens = line.split()
+    nx = int(tokens[0])
+    nxyz.append(nx)
+    avec = np.array(tokens[-3:], dtype=float) * nx
+    axes.append(avec)
+  # end for
+
+  # read atomic positions
+  elem = []
+  pos  = []
+  for iatom in range(natom):
+    line = lines[nskip+ndim+1+iatom]
+    tokens = line.split()
+    atom_number   = int( float(tokens[1]) )
+    atom_position = map(float, tokens[2:2+ndim])
+    elem.append(atom_number)
+    pos.append(atom_position)
+  # end for
+
+  # density grid
+  data = lines[nskip+ndim+natom+1:-1]
+  data_text = ' '.join(data)
+  data_vals = map(float, data_text.split())
+
+  nx, ny, nz = nxyz
+  rgrid = np.array(data_vals,dtype=float).reshape([nx,ny,nz],order='C')
+
+  # turn file into dictionary
+  entry = {'axes':axes, 'elem': elem, 'pos':pos
+         , 'nxyz':nxyz, 'data':rgrid.tolist()}
+  return entry
+# end def gaussian_cube
+
 
 def wavefront_obj(verts,faces,normals):
   """ save polygons in obj format
