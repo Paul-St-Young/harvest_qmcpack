@@ -17,5 +17,5 @@ def check_file_before(write_file):
     if not os.path.isfile(fout):
       write_file(fout,*args,**kwargs)
     else:
-      print('%s exists'%fout)
+      raise RuntimeError('%s exists'%fout)
   return wrapper
