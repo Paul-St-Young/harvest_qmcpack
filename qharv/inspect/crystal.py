@@ -34,42 +34,6 @@ def atomic_coords(fname,pset='ion0'):
   return pos
 
 
-def add_pbc_atoms(axes, pos, atol = 1e-8):
-  """ for each atom too close to periodic boundary, add its image 
-  on the other side of the periodic boundary. useful for visualization.
-  could be written as a decorator on pos
-  
-  Args:
-    axes (np.array): lattice vectors
-    pos  (np.array): atomic positions
-    atol (float, optional): how close is too close? default = 1e-8 bohr
-  Return:
-    np.array: new_pos, pos with extra atoms
-  """
-  
-  new_pos = pos.copy()
-  for idim in xrange(3):
-
-    # find atoms too close to PBC on the left
-    sel = abs(pos[:,idim]) < atol
-    
-    # add atoms on the other side
-    pos1   = pos[sel]
-    latvec = axes[idim]
-    pos1  += latvec[np.newaxis,:]
-    new_pos = np.concatenate([new_pos, pos1], axis=0)
-
-    # find atoms too close to PBC on the right
-    sel = np.linalg.norm(pos - latvec[np.newaxis,:], axis=1) < atol
-    
-    # add atoms on the other side
-    pos1   = pos[sel]
-    pos1  -= latvec[np.newaxis,:]
-    new_pos = np.concatenate([new_pos, pos1], axis=0)
-
-  return new_pos
-
-
 def draw_atoms(ax,pos,**kwargs):
   """ draw atoms on ax
   see example in draw_crystal
@@ -183,9 +147,8 @@ def draw_crystal(ax,axes,pos,draw_super=False):
    atoms is a list of plt.Line3D for the atoms.
   """
   # draw primitive cell
-  cell = draw_cell(ax, axes)
-  pos1 = add_pbc_atoms(axes, pos)
-  dots = draw_atoms(ax, pos1)
+  cell = draw_cell (ax, axes)
+  dots = draw_atoms(ax, pos)
   atoms = [dots]
 
   if draw_super: # draw supercell
