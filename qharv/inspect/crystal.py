@@ -5,15 +5,70 @@
 import numpy as np
 from qharv.seed import xml
 
+
 def lattice_vectors(fname):
+  """ extract lattice vectors from QMCPACK input
+  similar to ase.Atoms.get_cell()
+  
+  Args:
+    fname (str): xml input filename
+  Return:
+    np.array: axes
+  """
   doc  = xml.read(fname)
   axes = xml.get_axes(doc)
   return axes
 
+
 def atomic_coords(fname,pset='ion0'):
+  """ extract atomic positions from QMCPACK input
+  similar to ase.Atoms.get_positions()
+  
+  Args:
+    fname (str): xml input filename
+  Return:
+    np.array: axes
+  """
   doc = xml.read(fname)
   pos = xml.get_pos(doc,pset=pset)
   return pos
+
+
+def add_pbc_atoms(axes, pos, atol = 1e-8):
+  """ for each atom too close to periodic boundary, add its image 
+  on the other side of the periodic boundary. useful for visualization.
+  could be written as a decorator on pos
+  
+  Args:
+    axes (np.array): lattice vectors
+    pos  (np.array): atomic positions
+    atol (float, optional): how close is too close? default = 1e-8 bohr
+  Return:
+    np.array: new_pos, pos with extra atoms
+  """
+  
+  new_pos = pos.copy()
+  for idim in xrange(3):
+
+    # find atoms too close to PBC on the left
+    sel = abs(pos[:,idim]) < atol
+    
+    # add atoms on the other side
+    pos1   = pos[sel]
+    latvec = axes[idim]
+    pos1  += latvec[np.newaxis,:]
+    new_pos = np.concatenate([new_pos, pos1], axis=0)
+
+    # find atoms too close to PBC on the right
+    sel = np.linalg.norm(pos - latvec[np.newaxis,:], axis=1) < atol
+    
+    # add atoms on the other side
+    pos1   = pos[sel]
+    pos1  -= latvec[np.newaxis,:]
+    new_pos = np.concatenate([new_pos, pos1], axis=0)
+
+  return new_pos
+
 
 def draw_atoms(ax,pos,**kwargs):
   """ draw atoms on ax
@@ -26,16 +81,20 @@ def draw_atoms(ax,pos,**kwargs):
   Returns:
    list: a list of plt.Line3D
   """
-  # set defaults
+
+  # set default styles
   if not ( ('c' in kwargs) or ('color' in kwargs) ):
     kwargs['c'] = 'b'
+  if not ('alpha' in kwargs):
+    kwargs['alpha'] = 0.25
   if not ( ('ls' in kwargs) or ('linestyle' in kwargs) ):
     kwargs['ls'] = ''
   if not ('marker' in kwargs):
     kwargs['marker'] = 'o'
   if not (('ms' in kwargs) or ('markersize' in kwargs)):
-    kwargs['ms'] = 10
+    kwargs['ms'] = 5
   dots  = ax.plot(pos[:,0],pos[:,1],pos[:,2],**kwargs)
+
   return dots
 
 def draw_cell(ax,axes,corner=None,enclose=True,**kwargs):
@@ -120,16 +179,17 @@ def draw_crystal(ax,axes,pos,draw_super=False):
    pos (np.array): array of atomic positions
    draw_super (bool): draw 2x2x2 supercell
   Returns:
-   list,list: (atoms,cell) a list of plt.Line3D for the atoms,
-    a list of plt.Line3D for the cell.
+   list,list: (cell, atoms) cell is a list of plt.Line3D for the cell, 
+   atoms is a list of plt.Line3D for the atoms.
   """
   # draw primitive cell
-  cell = draw_cell(ax,axes)
-  dots = draw_atoms(ax,pos)
+  cell = draw_cell(ax, axes)
+  pos1 = add_pbc_atoms(axes, pos)
+  dots = draw_atoms(ax, pos1)
   atoms = [dots]
 
-  nx = ny = nz = 2 # !!!! hard-code 2x2x2 supercell
   if draw_super: # draw supercell
+    nx = ny = nz = 2 # !!!! hard-code 2x2x2 supercell
     import numpy as np
     from itertools import product
     for ix,iy,iz in product(range(nx),range(ny),range(nz)):
@@ -144,5 +204,5 @@ def draw_crystal(ax,axes,pos,draw_super=False):
     # end for
   # end if
 
-  return atoms,cell
+  return cell, atoms
 # end def
