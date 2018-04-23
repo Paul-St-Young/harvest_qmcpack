@@ -95,7 +95,8 @@ if __name__ == '__main__':
     # plot histogram of selected data
     ax = ax_arr[1]
     ax.set_xlabel('count',fontsize=14)
-    ax.hist(myy,normed=False,fc='gray',alpha=0.5,orientation='horizontal')
+    ax.hist(myy, density=False
+      , fc='gray', alpha=0.5, orientation='horizontal')
     ax.get_yaxis().tick_right() 
 
     # overlay statistics
