@@ -227,7 +227,7 @@ def build_coeff(knots, **attribs):
   Args:
     knots (list): a list of numbers
   Return:
-    lxml.Element: <coefficients/>
+    lxml.etree._Element: <coefficients/>
   """
 
   # add required attributes
@@ -243,6 +243,35 @@ def build_coeff(knots, **attribs):
   coeff_node.text = ' ' + ' '.join( map(str,knots) ) + ' '  # 1D arr2text
   return coeff_node
 # end def build_coeff
+
+
+def build_jk2_iso(coeffs, kc):
+  """ construct isotropic e-e reciprocal space Jastrow node
+
+  example:
+    build_jk2([1,2], 0.4):
+
+  Args:
+    coefs (list): a list of numbers at the
+    kc (float): k space cutoff in a.u.
+  Return:
+    lxml.etree._Element: <jastrow/>
+  """
+  coeff_node = build_coeff(coeffs, id='cG2')
+  corr_node = etree.Element('correlation', {
+    'type':'Two-Body'
+    , 'kc':str(kc)
+    , 'symmetry':'isotropic'
+  })
+  corr_node.append(coeff_node)
+
+  jk_node = etree.Element('jastrow',{
+    'name':'Jk'
+    , 'type':'kSpace'
+    , 'source':'e'
+  })
+  jk_node.append(corr_node)
+  return jk_node
 
 
 # ================= level 4: QMCPACK specialized advanced =================

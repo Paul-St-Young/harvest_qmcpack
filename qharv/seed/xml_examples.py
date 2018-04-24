@@ -146,3 +146,124 @@ def dynamic_ae_ham():
          <estimator hdf5="yes" name="latdev" per_xyz="yes" sgroup="H" source="wf_centers" target="e" tgroup="p" type="latticedeviation"/>
       </hamiltonian>'''
   return xml.parse(text)
+
+# =========================== <qmcsystem> section ===========================
+def heg_system(rs, nshell_up, polarized):
+  """ construct QMCPACK input xml <qmcsystem> node for the homogeneous
+  electron gas (HEG). Momentum shells must be fully filled. The HEG must
+  either be fully polarized or fully unpolarized.
+
+  number of particles is determined by the number of filled shells.
+   0 ->  1
+   1 ->  7
+   2 -> 19
+   3 -> 27
+   4 -> 33
+
+  e.g. heg_system(1.0, 2, False) for unpolarized HEG with 2 shells
+  (38 electrons) at rs=1.0
+
+  * note: this function aims to return the **simplest** functional input,
+  for more flexibility please edit the returned xml element instead of
+  adding to this function.
+
+  Args:
+    rs (float): Wigner-Seitz radius
+    nshell_up (int): number k shells filled by up electrons
+    polarized (bool): True: polarized (ndn=0); False: unpolarized (nup=ndn)
+  Return:
+    lxml.etree.Element: qsys_node containing the <qmcsystem> xml node
+  """
+  from lxml import etree
+  from copy import deepcopy
+
+  # !!!! hard-code the number of electrons at each shell filling
+  nshell2nelec = {
+   -1:0,  # hack to remove electron species
+    0:1,
+    1:7,
+    2:19,
+    3:27,
+    4:33,
+    5:57,
+    6:81,
+    7:93,
+    8:123,
+    9:147,
+    10:171
+  }
+  # check inputs
+  if polarized:
+    nshell_dn = -1
+  else:
+    nshell_dn = nshell_up
+
+  avail_nshell = nshell2nelec.keys()
+  if max(nshell_up, nshell_dn) > max(avail_nshell):
+    raise RuntimeError('add to nshell2nelec; see example in HEGGrid.h')
+  if nshell_up not in avail_nshell:
+    raise RuntimeError('up shell not fully filled')
+  if nshell_dn not in avail_nshell:
+    raise RuntimeError('down shell not fully filled')
+
+  # calculate and check polarization
+  nup = nshell2nelec[nshell_up]
+  ndn = nshell2nelec[nshell_dn]
+  nelec = nup + ndn
+  pol = int(round( abs(nup-ndn)/nelec ))
+  assert pol == int(polarized)
+
+  # build simulation cell using rs and nshell
+  sc_node = etree.Element('simulationcell')
+  rs_node = etree.Element('parameter', {
+    'name':'rs'
+    , 'condition': str(nelec)
+    , 'polarized': str( int(polarized) )
+  })
+  rs_node.text = ' ' + str(rs) + ' '
+  bc_node = etree.Element('parameter', {'name':'bconds'})
+  bc_node.text = ' p p p '
+  lr_node = etree.Element('parameter', {'name':'LR_dim_cutoff'})
+  lr_node.text = ' 15.0 '
+  for node in [rs_node, bc_node, lr_node]:
+    sc_node.append(node)
+
+  # build particleset node
+  pset_node = etree.Element('particleset',{'name':'e', 'random':'yes'})
+  ugrp_node = etree.Element('group',{'name':'u','size':str(nup)})
+  dgrp_node = etree.Element('group',{'name':'d','size':str(ndn)})
+  charge_node = etree.Element('parameter',{'name':'charge'})
+  charge_node.text = ' -1 '
+  for grp in [ugrp_node, dgrp_node]:
+    grp.append( deepcopy(charge_node) )
+    pset_node.append(grp)
+
+  # build wavefunction node
+  wf_node  = etree.Element('wavefunction', {'name':'psi0', 'target':'e'})
+  det_node = etree.Element('determinantset',{
+    'type':'electron-gas'
+    , 'shell':str(nshell_up)
+    , 'shell2':str(nshell_dn)
+  })
+  wf_node.append(det_node)
+
+  # build hamiltonian node
+  ham_node = etree.Element('hamiltonian', {
+    'name':'h0'
+    , 'type':'generic'
+    , 'target':'e'
+  })
+  pot_node = etree.Element('pairpot', {
+    'name':'ElecElec'
+    , 'type':'coulomb'
+    , 'source':'e'
+    , 'target':'e'
+  })
+  ham_node.append(pot_node)
+
+  # assemble qmcsystem
+  qsys_node = etree.Element('qmcsystem')
+  for node in [sc_node, pset_node, wf_node, ham_node]:
+    qsys_node.append(node)
+
+  return qsys_node
