@@ -192,7 +192,7 @@ def heg_system(rs, nshell_up, polarized):
     9:147,
     10:171
   }
-  # check inputs
+  # check shell
   if polarized:
     nshell_dn = -1
   else:
@@ -202,16 +202,17 @@ def heg_system(rs, nshell_up, polarized):
   if max(nshell_up, nshell_dn) > max(avail_nshell):
     raise RuntimeError('add to nshell2nelec; see example in HEGGrid.h')
   if nshell_up not in avail_nshell:
-    raise RuntimeError('up shell not fully filled')
+    raise RuntimeError('shell %d needs to be added' % nshell_up)
   if nshell_dn not in avail_nshell:
-    raise RuntimeError('down shell not fully filled')
+    raise RuntimeError('shell %d needs to be added' % nshell_dn)
 
   # calculate and check polarization
   nup = nshell2nelec[nshell_up]
   ndn = nshell2nelec[nshell_dn]
   nelec = nup + ndn
   pol = int(round( abs(nup-ndn)/nelec ))
-  assert pol == int(polarized)
+  if pol != int(polarized):
+    raise RuntimeError('polarization mismatch')
 
   # build simulation cell using rs and nshell
   sc_node = etree.Element('simulationcell')
@@ -234,7 +235,11 @@ def heg_system(rs, nshell_up, polarized):
   dgrp_node = etree.Element('group',{'name':'d','size':str(ndn)})
   charge_node = etree.Element('parameter',{'name':'charge'})
   charge_node.text = ' -1 '
-  for grp in [ugrp_node, dgrp_node]:
+  if polarized:
+    grpl = [ugrp_node]
+  else:
+    grpl = [ugrp_node, dgrp_node]
+  for grp in grpl:
     grp.append( deepcopy(charge_node) )
     pset_node.append(grp)
 
