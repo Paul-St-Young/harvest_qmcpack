@@ -49,28 +49,29 @@ def isosurf(ax,vol,level_frac=0.25):
     return mesh
 # end def isosurf
 
-def color_scatter(ax,data,cmap_name='viridis',**kwargs):
+def color_scatter(ax, xyz, vals, cmap_name='viridis', **kwargs):
   """ view sampled 3D scalar function using value as color
 
   Args:
     ax (plt.Axes3D): ax = fig.add_subplot(1,1,1,projection="3d")
-    data (np.array): aligned scatter data, the columns are [x,y,z,f(x,y,z)]
+    xyz  (np.array): a list of 3D vectors [(x1,y1,z1), (x2,y2,z2), ...]
+    vals (np.array): f(x,y,z) one for each xyz vector
     cmap_name (str, optional): color map name, default is 'viridis'
     kwargs (dict, optional): keyword arguments to be passed to ax.scatter
   Returns:
     mpl_toolkits.mplot3d.art3d.Path3DCollection: scatter plot
   """
-  x,y,z,val = data.T  # aligned scatter data
+  x, y, z = xyz.T
 
   # design color scheme, if none given
   if (not 'c' in kwargs.keys()) and (not 'color' in kwargs.keys()):
     from qharv.plantation import kyrt
-    v2c = kyrt.scalar_color_map(min(val),max(val),cmap_name)
-    kwargs['c'] = v2c(val)
+    v2c = kyrt.scalar_color_map(min(vals),max(vals),cmap_name)
+    kwargs['c'] = v2c(vals)
   # end if
 
   # scatter
-  s = ax.scatter(x,y,z,val,**kwargs)
+  s = ax.scatter(x, y, z, **kwargs)
   return s
 # end def color_scatter
 
