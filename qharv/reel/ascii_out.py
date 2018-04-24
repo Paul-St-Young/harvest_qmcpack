@@ -185,3 +185,32 @@ def lr_mark(line, lmark, rmark):
   assert ridx != -1
   return line[lidx+1:ridx]
 # end def
+
+def name_val_table(text, dtype=float):
+  """ designed to parse optVariables text block
+  e.g. '''uu_0 1.0770e+00 1 1  ON 0
+uu_1 6.7940e-01 1 1  ON 1
+uu_2 4.3156e-01 1 1  ON 2
+ud_0 1.6913e+00 1 1  ON 5
+ud_1 1.0443e+00 1 1  ON 6
+ud_2 6.1912e-01 1 1  ON 7
+'''
+
+  return variable-value map, only the first two columns are parsed.
+
+  Args:
+    text (str): text block such as given in the example
+    dtype (type): data type of value, default is float
+  Return:
+    dict: variable name -> value map
+  """
+
+  lines  = text.split('\n')[:-1]
+
+  var_dict = {}
+  for line in lines:
+    tokens = line.split()
+    name = tokens[0]
+    val  = dtype(tokens[1])
+    var_dict[name] = val
+  return var_dict
