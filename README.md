@@ -67,9 +67,7 @@ kappa  = 1.0 # None to re-calculate
 # a dictionary in the `for floc in flist` loop.
 
 # generate the list of scalar.dat files to analyze
-flist = mole.files_scalar_dat(folder)
-#  hint: use `moles.files_with_regex` for more general situations
-#   flist can also be written by hand to select files to analyze
+flist = mole.files_with_regex('*scalar.dat', folder)
 
 # analyze the list of scalar.dat files
 data  = []
