@@ -1,18 +1,20 @@
 # Author: Yubo "Paul" Yang
 # Email: yubo.paul.yang@gmail.com
-# Routines to roughly process scalar Dataframes. Mostly built around pandas's API.
+# Routines to roughly process scalar Dataframes.
+# Mostly built around pandas's API.
 #
-#  note: A scalar dataframe (scalar_df) is expected to contain the raw data, i.e.
-# block-resolved expectation values, of a SINGLE calculation. If multiple runs are
-# collected in the same dataframe, label by ['path','fdat'] and use groupby before
-# applying the functions in this script.
+#  note: A scalar dataframe (scalar_df) is expected to contain the raw data,
+# i.e. block-resolved expectation values, of a SINGLE calculation.
+# If multiple runs are collected in the same dataframe, label by ['path'
+# , 'fdat'] and use groupby before applying the functions in this script.
 import numpy as np
 import pandas as pd
 from qharv.reel.scalar_dat import error
 
-def mean_error_scalar_df(df,nequil,kappa=None):
-  """ get mean and average from a dataframe of raw scalar data (per-block) 
-   take dataframe having columns ['LocalEnergy','Variance',...] to a 
+
+def mean_error_scalar_df(df, nequil, kappa=None):
+  """ get mean and average from a dataframe of raw scalar data (per-block)
+   take dataframe having columns ['LocalEnergy','Variance',...] to a
    dataframe having columns ['LocalEnergy_mean','LocalEnergy_error',...]
 
    Args:
@@ -21,17 +23,17 @@ def mean_error_scalar_df(df,nequil,kappa=None):
      the different runs.
     nequil (int): number of equilibration blocks to throw out for each run.
    Returns:
-    pd.DataFrame: mean_error dataframe 
+    pd.DataFrame: mean_error dataframe
   """
-  sel = df['index'] >= nequil # zero indexing
+  sel = df['index'] >= nequil  # zero indexing
 
   # create pd.Series of mean
   msr = df.loc[sel].apply(np.mean).drop('index')
 
   # create pd.Series of error
-  efunc = lambda x:error(x,kappa=kappa) # if kappa is not None, then 
+  efunc = lambda x:error(x, kappa=kappa)  # if kappa is not None, then
   # auto-correlation is not re-calculated
-  esr = df.loc[sel].apply( # error cannot be directly applied to matrix yet
+  esr = df.loc[sel].apply(  # error cannot be directly applied to matrix yet
     lambda x:float( np.apply_along_axis(efunc,0,x) )
   ).drop('index')
 
@@ -39,7 +41,7 @@ def mean_error_scalar_df(df,nequil,kappa=None):
   df2 = esr.to_frame().T
   jdf = df1.join(df2,lsuffix='_mean',rsuffix='_error')
   return jdf
-# end def
+
 
 def reblock(trace,block_size,min_nblock=4):
   """ block scalar trace to remove autocorrelation; see usage example in reblock_scalar_df
@@ -57,7 +59,7 @@ def reblock(trace,block_size,min_nblock=4):
   # end if
   blocked_trace = trace[:nkeep].reshape(nblock,block_size,*trace.shape[1:])
   return np.mean(blocked_trace,axis=1)
-# end def
+
 
 def reblock_scalar_df(df,block_size,min_nblock=4):
   """ create a re-blocked scalar dataframe from a current scalar dataframe
@@ -67,45 +69,77 @@ def reblock_scalar_df(df,block_size,min_nblock=4):
     reblock(df.values,block_size,min_nblock=min_nblock)
     ,columns=df.columns
   )
-# end def
 
-def ts_extrap(calc_df,issl,new_series,tname='timestep',ename='LocalEnergy',series_name='series',order=1):
-  """ extrapolate dmc energy to zero time-step limit
+
+def ts_extrap_obs(calc_df, sel, tname, obs, order=1):
+  """ extrapolate a single dmc observable to zero time-step limit
+
   Args:
-    calc_df (pd.DataFrame): must contain columns [tname,ename,series_name]
-    issl (list): list of DMC series index to use in fit
-  Returns:
-    pd.Series: an entry copied from the smallest time-step DMC entry, then edited with extrapolated energy and corresponding info; series is set to -1
+    calc_df (pd.DataFrame): must contain columns [tname, obs_mean, obs_error]
+    sel (np.array): boolean selector array
+    tname (str): timestep column name, e.g. 'timestep'
+    obs (str): observable column name, e.g. 'LocalEnergy'
+  Return:
+    tuple: (myx, y0m, y0e) of type (list, float, float) containing
+    (timesteps, t=0 value, t=0 error)
   """
   import scipy.optimize as op
-  sel  = calc_df[series_name].apply(lambda x:x in issl)
-  nfound = len(calc_df.loc[sel])
-  if nfound != len(issl):
-    raise RuntimeError('found %d series, when %d are requested' % (nfound,len(issl)) )
-  # end if
+
   # !!!! need to check that the selected runs are actually DMC !
-  myx  = calc_df.loc[sel,tname]
-  myym = calc_df.loc[sel,ename+'_mean']
-  myye = calc_df.loc[sel,ename+'_error']
+  myx  = np.array(calc_df.loc[sel, tname].values)
+  myym = np.array(calc_df.loc[sel, obs+'_mean'].values)
+  myye = np.array(calc_df.loc[sel, obs+'_error'].values)
 
   if order != 1:
-    raise NotImplementedError('only linear extrapolation; order=%d not supported'%order)
-  # end if
-  model = lambda x,a,b:a*x+b
-  popt,pcov = op.curve_fit(model,myx,myym,sigma=myye,absolute_sigma=True)
+    raise NotImplementedError('order=%d not supported'%order)
+
+  model = lambda x, a, b:a+b*x  # keep constant as zeroth parameter
+  popt, pcov = op.curve_fit(model, myx, myym
+    , sigma=myye, absolute_sigma=True)
   perr = np.sqrt(np.diag(pcov))
   # return popt,perr to check fit
 
-  y0m = popt[1]
-  y0e = perr[1]
+  y0m = popt[0]
+  y0e = perr[0]
+  return myx, y0m, y0e
 
+
+def ts_extrap(calc_df, issl, new_series, obsl
+  , tname='timestep', series_name='series', **kwargs):
+  """ extrapolate all dmc observables to zero time-step limit
+
+  Args:
+    calc_df (pd.DataFrame): must contain columns [tname, series_name]
+    issl (list): list of DMC series index to use in fit
+    new_series (int): new series number, recommend: max(issl)+1
+    obsl (list): a list of observable names to extrapolate
+  Return:
+    pd.Series: an entry copied from the smallest time-step DMC entry,
+    then edited with extrapolated energy and corresponding info
+    series is set to new_series
+  """
+
+  sel  = calc_df[series_name].apply(lambda x:x in issl)
+  nfound = len(calc_df.loc[sel])
+  if nfound != len(issl):
+    raise RuntimeError('found %d series, when %d are requested' % (nfound, len(issl)) )
+  # end if
+
+  # copy smallest timestep DMC entry
+  myx  = calc_df.loc[sel, tname]
   entry = calc_df.loc[calc_df[tname]==min(myx)].copy()
+
+  # fill entry with new data
   entry[tname] = 0
-  entry[ename+'_mean']  = y0m
-  entry[ename+'_error'] = y0e
   entry[series_name] = new_series
+
+  for obs in obsl:
+    myx0, y0m, y0e = ts_extrap_obs(calc_df, sel
+      , tname, obs, **kwargs)
+    entry['%s_mean'%obs]  = y0m
+    entry['%s_error'%obs] = y0e
   return entry
-# end def
+
 
 def mix_est_correction(mydf,names,vseries,dseries,series_name='series',group_name='group',kind='linear',drop_missing_twists=False):
   """ extrapolate dmc energy to zero time-step limit
