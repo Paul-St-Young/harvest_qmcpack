@@ -104,19 +104,18 @@ def ts_extrap_obs(calc_df, sel, tname, obs, order=1):
   return myx, y0m, y0e
 
 
-def ts_extrap(calc_df, issl, new_series, obsl
+def ts_extrap(calc_df, issl, obsl
   , tname='timestep', series_name='series', **kwargs):
   """ extrapolate all dmc observables to zero time-step limit
 
   Args:
     calc_df (pd.DataFrame): must contain columns [tname, series_name]
     issl (list): list of DMC series index to use in fit
-    new_series (int): new series number, recommend: max(issl)+1
     obsl (list): a list of observable names to extrapolate
   Return:
     pd.Series: an entry copied from the smallest time-step DMC entry,
     then edited with extrapolated energy and corresponding info
-    series is set to new_series
+    !!!! series number is unchanged
   """
 
   sel  = calc_df[series_name].apply(lambda x:x in issl)
@@ -131,7 +130,6 @@ def ts_extrap(calc_df, issl, new_series, obsl
 
   # fill entry with new data
   entry[tname] = 0
-  entry[series_name] = new_series
 
   for obs in obsl:
     myx0, y0m, y0e = ts_extrap_obs(calc_df, sel
@@ -141,13 +139,15 @@ def ts_extrap(calc_df, issl, new_series, obsl
   return entry
 
 
-def mix_est_correction(mydf,names,vseries,dseries,series_name='series',group_name='group',kind='linear',drop_missing_twists=False):
+def mix_est_correction(mydf, vseries, dseries, names
+  , series_name='series', group_name='group', kind='linear'
+  , drop_missing_twists=False):
   """ extrapolate dmc energy to zero time-step limit
   Args:
     mydf (pd.DataFrame): dataframe of VMC and DMC mixed estimators
-    names (list): list of DMC mixed estimators names to extrapolate
     vseries (int): VMC series id
     dseries (int): DMC series id
+    names (list): list of DMC mixed estimators names to extrapolate
     series_name (str,optional): column name identifying the series
     kind (str,optinoal): extrapolation kind, must be either 'linear' or 'log'
   Returns:
