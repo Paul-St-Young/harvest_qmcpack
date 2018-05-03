@@ -5,6 +5,8 @@
 import numpy as np
 import pandas as pd
 
+# =================== level 0: generally useful functions ====================
+
 
 def mix_extrap_gofr(y0m, y0e, y1m, y1e, ythres=1e-2):
   """ use VMC g(r) to correct mixed-estimator DMC g(r)
@@ -44,7 +46,12 @@ def mix_extrap_gofr(y0m, y0e, y1m, y1e, ythres=1e-2):
   return y2m, y2e
 
 
-def pure_gofr(entry, iss0, iss1, iss2, yname
+# =================== level 2: stat_df interface ====================
+#  column naming scheme: [series, timestep, yname_mean, yname_error]
+#  filename scheme: prefix.s002.obs.json
+
+
+def pure_gofr(entry, iss0, iss1, yname
               , series_name='series'):
 
   # select VMC and DMC entries
@@ -54,8 +61,8 @@ def pure_gofr(entry, iss0, iss1, iss2, yname
   assert len(entry.loc[sel1]) == 1
 
   # perform extrapolation
-  ymean_name = yname + '_mean'
-  yerror_name = yname + '_error'
+  ymean_name = '%s_mean' % yname
+  yerror_name = '%s_error' % yname
   y0m = np.array(entry.loc[sel0, ymean_name].squeeze())
   y0e = np.array(entry.loc[sel0, yerror_name].squeeze())
   y1m = np.array(entry.loc[sel1, ymean_name].squeeze())
@@ -66,5 +73,33 @@ def pure_gofr(entry, iss0, iss1, iss2, yname
   entry2 = entry.loc[sel1].copy()
   entry2[ymean_name]  = [y2m.tolist()]
   entry2[yerror_name] = [y2e.tolist()]
-  entry2[series_name] = iss2
+  return entry2
+
+
+def ts_extrap_two_steps(entry, iss0, iss1, yname
+                        , series_name='series', ts_name='timestep'):
+  # select VMC and DMC entries
+  sel0 = entry[series_name] == iss0
+  sel1 = entry[series_name] == iss1
+  assert len(entry.loc[sel0]) == 1
+  assert len(entry.loc[sel1]) == 1
+
+  # perform extrapolation
+  ymean_name = '%s_mean' % yname
+  yerror_name = '%s_error' % yname
+  y0m = np.array(entry.loc[sel0, ymean_name].squeeze())
+  y0e = np.array(entry.loc[sel0, yerror_name].squeeze())
+  y1m = np.array(entry.loc[sel1, ymean_name].squeeze())
+  y1e = np.array(entry.loc[sel1, yerror_name].squeeze())
+
+  ts0 = entry.loc[sel0, ts_name].squeeze()
+  ts1 = entry.loc[sel1, ts_name].squeeze()
+
+  y2m = (ts0/ts1-1)**(-1) * (ts0/ts1*y1m-y0m)
+  y2e = (ts0/ts1-1)**(-1) * np.sqrt((ts0/ts1*y1e)**2.+y0e**2.)
+
+  # create new entry
+  entry2 = entry.loc[sel1].copy()
+  entry2[ymean_name] = [y2m.tolist()]
+  entry2[yerror_name] = [y2e.tolist()]
   return entry2
