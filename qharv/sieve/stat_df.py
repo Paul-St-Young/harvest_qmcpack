@@ -51,8 +51,8 @@ def mix_extrap_gofr(y0m, y0e, y1m, y1e, ythres=1e-2):
 #  filename scheme: prefix.s002.obs.json
 
 
-def pure_gofr(entry, iss0, iss1, yname
-              , series_name='series'):
+def mix_extrap_two_steps_log(entry, iss0, iss1, yname
+  , series_name='series'):
 
   # select VMC and DMC entries
   sel0 = entry[series_name] == iss0
@@ -76,8 +76,9 @@ def pure_gofr(entry, iss0, iss1, yname
   return entry2
 
 
-def ts_extrap_two_steps(entry, iss0, iss1, yname
-                        , series_name='series', ts_name='timestep'):
+def ts_extrap_two_steps_linear(entry, iss0, iss1, yname
+  , series_name='series', ts_name='timestep'):
+
   # select VMC and DMC entries
   sel0 = entry[series_name] == iss0
   sel1 = entry[series_name] == iss1
