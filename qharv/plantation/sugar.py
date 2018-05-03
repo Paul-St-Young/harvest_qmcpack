@@ -11,11 +11,21 @@ def check_dir_before(mkdir):
 
 mkdir = lambda x:check_dir_before( os.mkdir )(x)
 
+
 def check_file_before(write_file):
   """ check if file exists before calling a function that overwrites the file """
-  def wrapper(fout,*args,**kwargs):
+  def wrapper(fout, *args, **kwargs):
     if not os.path.isfile(fout):
-      write_file(fout,*args,**kwargs)
+      write_file(fout, *args, **kwargs)
     else:
       raise RuntimeError('%s exists'%fout)
+  return wrapper
+
+
+def skip_exist_file(write_file):
+  def wrapper(fout, *args, **kwargs):
+    if not os.path.isfile(fout):
+      write_file(fout, *args, **kwargs)
+    else:
+      print('%s exists'%fout)
   return wrapper
