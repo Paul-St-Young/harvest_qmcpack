@@ -37,6 +37,7 @@ def name_sep_val(mm, name, sep='=', dtype=float, pos=-1):
   Return:
     dtype: value of requested variable
   """
+  cur_idx = mm.tell()
   idx = mm.find(name)
   if idx == -1:
     raise RuntimeError(name+' not found')
@@ -47,6 +48,7 @@ def name_sep_val(mm, name, sep='=', dtype=float, pos=-1):
   # assume the text immediately next to the separator is the desired value
   val_text = tokens[pos].split()[0]
   val = dtype( val_text )
+  mm.seek(cur_idx)
   return val
 # end def name_sep_val
 
