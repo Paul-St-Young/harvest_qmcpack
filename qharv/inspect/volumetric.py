@@ -3,6 +3,21 @@
 # Routines to visualize volumetric data
 import numpy as np
 
+
+def figax3d():
+  """ get a pair of fig and Axes3D
+  similar to subplots() but for a single 3D figure
+
+  Return:
+    tuple: matplotlib.figure.Figure, matplotlib.axes._subplots.Axes3DSubplot
+  """
+  import matplotlib.pyplot as plt
+  from mpl_toolkits.mplot3d import Axes3D
+  fig = plt.figure()
+  ax = fig.add_subplot(1, 1, 1, projection='3d')
+  return fig, ax
+
+
 def isosurf(ax,vol,level_frac=0.25):
     """ draw iso surface of volumetric data on matplotlib axis at given level
 
