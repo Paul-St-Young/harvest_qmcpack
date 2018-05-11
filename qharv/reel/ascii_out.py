@@ -19,7 +19,7 @@ def read(fname):
   return mm
 
 
-def name_sep_val(mm, name, sep='=', dtype=float, pos=-1):
+def name_sep_val(mm, name, sep='=', dtype=float, pos=1):
   """ read key-value pair such as "name = value"
   e.g. 
   name_sep_val(mm, 'a'): 'a = 2.4'
