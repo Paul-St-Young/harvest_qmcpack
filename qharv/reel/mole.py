@@ -21,7 +21,7 @@ def files_with_regex(regex, rundir, case=True, ftype='f'):
   if not case:
     popt = '-ipath'  # not case sensitive
   out = sp.check_output(['find',rundir,popt,regex,'-type',ftype])
-  flist = out.split('\n')[:-1]
+  flist = out.decode().split('\n')[:-1]
   return flist
 # end def files_with_regex
 
