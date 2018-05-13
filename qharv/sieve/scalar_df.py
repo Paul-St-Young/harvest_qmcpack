@@ -71,6 +71,55 @@ def reblock_scalar_df(df,block_size,min_nblock=4):
   )
 
 
+def poly_extrap_to_x0(myx, myym, myye, order):
+  """ fit 1D data to 1D polynomial and extrpolate to x=0
+
+  The fit proceeds in two steps. The first polyfit does not take error into
+  account. It estimates the extrapolated value, which is then used to setup
+  a trust region (bounds). Using the setup trust region, curve_fit can
+  robustly estimator the error of the extrapolation.
+
+  Args:
+    myx (np.array): x values
+    myym (np.array): y values
+    myye (np.array): y errors (1 sigma)
+    order (int): order of 1D polynomial
+  Return:
+    2-tuple: floats (y0m, y0e), y mean and error at x=0
+  """
+  import scipy.optimize as op
+
+  if order != 1:
+    raise NotImplementedError('order=%d not supported'%order)
+  # keep target as zeroth parameter
+  model = lambda x, a, b:a+b*x
+
+  # setup trust region using 10*sigma around naive extrapolation
+
+  #  first do a fit without error
+  popt0 = np.polyfit(myx, myym, order)
+  val0 = np.poly1d(popt0)(0)
+
+  #  then use rough fit to setup trust region
+  sig0 = max(myye)  # extrapolated error should be larger than all data
+  nsig = 10  # !!!! hard-code 10 sigma
+  lbounds = [-np.inf for i in xrange(len(myx))]
+  ubounds = [ np.inf for i in xrange(len(myx))]
+  lbounds[0] = val0 - nsig*sig0
+  ubounds[0] = val0 + nsig*sig0
+  bounds = (lbounds, ubounds)
+
+  # fit using error and trust region
+  popt, pcov = op.curve_fit(model, myx, myym
+    , sigma=myye, absolute_sigma=True, bounds=bounds, method='trf')
+  perr = np.sqrt(np.diag(pcov))
+  # return popt,perr to check fit
+
+  y0m = popt[0]
+  y0e = perr[0]
+  return y0m, y0e
+
+
 def ts_extrap_obs(calc_df, sel, tname, obs, order=1):
   """ extrapolate a single dmc observable to zero time-step limit
 
@@ -83,24 +132,14 @@ def ts_extrap_obs(calc_df, sel, tname, obs, order=1):
     tuple: (myx, y0m, y0e) of type (list, float, float) containing
     (timesteps, t=0 value, t=0 error)
   """
-  import scipy.optimize as op
 
   # !!!! need to check that the selected runs are actually DMC !
   myx  = np.array(calc_df.loc[sel, tname].values)
   myym = np.array(calc_df.loc[sel, obs+'_mean'].values)
   myye = np.array(calc_df.loc[sel, obs+'_error'].values)
 
-  if order != 1:
-    raise NotImplementedError('order=%d not supported'%order)
+  y0m, y0e = poly_extrap_to_x0(myx, myym, myye, order)
 
-  model = lambda x, a, b:a+b*x  # keep constant as zeroth parameter
-  popt, pcov = op.curve_fit(model, myx, myym
-    , sigma=myye, absolute_sigma=True)
-  perr = np.sqrt(np.diag(pcov))
-  # return popt,perr to check fit
-
-  y0m = popt[0]
-  y0e = perr[0]
   return myx, y0m, y0e
 
 
