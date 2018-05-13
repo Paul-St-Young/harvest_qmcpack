@@ -162,7 +162,7 @@ def draw_crystal(ax,axes,pos,draw_super=False):
       #shift = (np.array([ix,iy,iz])*axes).sum(axis=0)
       shift = ix*axes[0] + iy*axes[1] + iz*axes[2]
       spos  = (shift.reshape(-1,1,3) + pos).reshape(-1,3)
-      dots  = draw_atoms(ax,spos,ls='',marker='o',c='gray',ms=10,alpha=0.8)
+      dots  = draw_atoms(ax,spos)
       atoms.append(dots)
     # end for
   # end if
