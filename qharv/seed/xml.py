@@ -40,7 +40,10 @@ def parse(text):
   Returns:
     lxml.etree._Element: root, parsed xml node
   """
-  root = read( StringIO(text.decode()) ).getroot()
+  try:  # Python2
+    root = read( StringIO(text.decode()) ).getroot()
+  except AttributeError:  # Python3
+    root = read( StringIO(text) ).getroot()
   return root
 
 def str_rep(node):
