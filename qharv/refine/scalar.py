@@ -3,6 +3,7 @@
 # Routines to refine collected data to be presentable
 import numpy as np
 import pandas as pd
+from qharv.plantation import sugar
 
 
 def text_mean_error(ym, ye):
@@ -16,13 +17,16 @@ def text_mean_error(ym, ye):
   """
 
   # find the number of digits to print
-  ndig = np.around(-np.log10(ye)).astype(int) + 1  # last digit is uncertain
+  ndig = np.around(-np.log10(ye)).astype(int)  # last digit is uncertain
 
   # print the desired number of digits
-  ymt = [str(np.around(y, n)).zfill(n) for (y, n) in zip(ym, ndig)]
+  ymt = []
+  for (y, n) in zip(ym, ndig):
+    fmt = '%10.'+str(n)+'f'
+    ymt.append(fmt%y)
 
   # get last digit error
-  yet = np.around(ye*10**(ndig-1)).astype(int).astype(str)
+  yet = np.ceil(ye*10**(ndig)).astype(int).astype(str)
 
   # append error in parenteses
   yt = [m+'('+e+')' for (m, e) in zip(ymt, yet)]
@@ -51,3 +55,35 @@ def text_df_sel(df, sel, obsl):
 
   tdf = pd.DataFrame(tdata)
   return tdf
+
+
+def text_df_sel_obs_exobs(df, sel, obsl, exobsl):
+  """ construct text dataframe
+
+  sel selects rows; obsl and exact_obsl select columns.
+  assume obsl have associated _mean and _error columns.
+
+  Args:
+    df (pd.DataFrame): scalar database
+    sel (np.array): boolean array row selector
+    obsl (list): a list of observable names, each with _mean and _error
+    exobsl (list): a list of exact observable names
+  Return:
+    pd.DataFrame: text database
+  """
+  tdf = text_df_sel(df, sel, obsl)
+  for col in exobsl:
+    tdf[col] = df.loc[sel, col].values
+  return tdf
+
+
+@sugar.check_file_before
+def write_latex_table(table_tex, tdf):
+  """ write LaTeX table using a chunk of database df
+  will throw exception is table_tex already exists on disk
+
+  Args:
+    table_tex (str): latex file to hold table
+    tdf (pd.DataFrame): text database
+  """
+  tdf.to_latex(table_tex)
