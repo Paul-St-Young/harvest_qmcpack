@@ -17,7 +17,7 @@ def text_mean_error(ym, ye):
   """
 
   # find the number of digits to print
-  ndig = np.around(-np.log10(ye)).astype(int)  # last digit is uncertain
+  ndig = np.ceil(-np.log10(ye)).astype(int)  # last digit is uncertain
 
   # print the desired number of digits
   ymt = []
@@ -26,7 +26,7 @@ def text_mean_error(ym, ye):
     ymt.append(fmt%y)
 
   # get last digit error
-  yet = np.ceil(ye*10**(ndig)).astype(int).astype(str)
+  yet = np.around(ye*10**(ndig)).astype(int).astype(str)
 
   # append error in parenteses
   yt = [m+'('+e+')' for (m, e) in zip(ymt, yet)]
