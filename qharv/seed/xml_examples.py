@@ -6,6 +6,47 @@
 from qharv.seed import xml
 from io import StringIO
 
+# ============================= <project> section =============================
+
+
+def project(name, series0=0):
+  text = '''<project id="%s" series="%d"/>''' % (name, series0)
+  return xml.parse(text)
+
+
+# ============================= <hamiltonian> section =============================
+
+
+def static_coul_ae_ham():
+  text = '''<hamiltonian name="h0" type="generic" target="e">
+         <pairpot type="coulomb" name="ElecElec" source="e" target="e"/>
+         <pairpot type="coulomb" name="IonIon" source="ion0" target="ion0"/>
+         <pairpot type="coulomb" name="ElecIon" source="ion0" target="e"/>
+      </hamiltonian>'''
+  return xml.parse(text)
+
+
+def static_ae_ham():
+  text = '''<hamiltonian name="h0" type="generic" target="e">
+         <pairpot type="coulomb" name="ElecElec" source="e" target="e"/>
+         <pairpot type="coulomb" name="IonIon" source="ion0" target="ion0"/>
+         <pairpot type="coulomb" name="ElecIon" source="ion0" target="e"/>
+         <estimator name="csk" type="csk" hdf5="yes"/>
+         <estimator type="gofr" name="gofr" num_bin="128"/>
+         <estimator type="Pressure"/>
+      </hamiltonian>'''
+  return xml.parse(text)
+
+def dynamic_ae_ham():
+  text = '''<hamiltonian name="h0" type="generic" target="e">
+         <pairpot type="coulomb" name="ElecElec" source="e" target="e"/>
+         <estimator name="csk" type="csk" hdf5="yes"/>
+         <estimator type="gofr" name="gofr" num_bin="128"/>
+         <estimator type="Pressure"/>
+         <estimator name="skinetic" type="specieskinetic"/>
+         <estimator hdf5="yes" name="latdev" per_xyz="yes" sgroup="H" source="wf_centers" target="e" tgroup="p" type="latticedeviation"/>
+      </hamiltonian>'''
+  return xml.parse(text)
 # ============================= <qmc> section =============================
 
 def wbyw_vmc():
@@ -123,29 +164,6 @@ def bcc54_dynamic_backflow():
         </backflow>'''
   return xml.parse(text)
 
-# ============================= <hamiltonian> section =============================
-
-def static_ae_ham():
-  text = '''<hamiltonian name="h0" type="generic" target="e">
-         <pairpot type="coulomb" name="ElecElec" source="e" target="e"/>
-         <pairpot type="coulomb" name="IonIon" source="ion0" target="ion0"/>
-         <pairpot type="coulomb" name="ElecIon" source="ion0" target="e"/>
-         <estimator name="csk" type="csk" hdf5="yes"/>
-         <estimator type="gofr" name="gofr" num_bin="128"/>
-         <estimator type="Pressure"/>
-      </hamiltonian>'''
-  return xml.parse(text)
-
-def dynamic_ae_ham():
-  text = '''<hamiltonian name="h0" type="generic" target="e">
-         <pairpot type="coulomb" name="ElecElec" source="e" target="e"/>
-         <estimator name="csk" type="csk" hdf5="yes"/>
-         <estimator type="gofr" name="gofr" num_bin="128"/>
-         <estimator type="Pressure"/>
-         <estimator name="skinetic" type="specieskinetic"/>
-         <estimator hdf5="yes" name="latdev" per_xyz="yes" sgroup="H" source="wf_centers" target="e" tgroup="p" type="latticedeviation"/>
-      </hamiltonian>'''
-  return xml.parse(text)
 
 # =========================== <qmcsystem> section ===========================
 def heg_system(rs, nshell_up, polarized):
