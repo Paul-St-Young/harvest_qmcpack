@@ -2,8 +2,31 @@
 # Email: yubo.paul.yang@gmail.com
 import os
 import subprocess as sp
+from lxml import etree
 
-from qharv.seed import xml
+from qharv.seed import xml, xml_examples
+
+# =============== level 0: build input from scratch ===============
+
+
+def assemble_project(nodel, name='qmc'):
+  """ assemble QMCPACK input using a list of xml nodes
+
+  usually nodel=[qmcsystem, qmc]
+
+  Args:
+    nodel (list): a list of xml node (lxml.Element)
+    name (str, optional): project name, default 'qmc'
+  """
+  qsim = etree.Element('simulation')
+  proj = xml_examples.project(name)
+  for node in [proj]+nodel:
+    qsim.append(node)
+  doc = etree.ElementTree(qsim)
+  return doc
+
+
+# ================== level 1: use existing input ===================
 
 
 def expand_twists(example_in_xml, twist_list, calc_dir, force=False):
