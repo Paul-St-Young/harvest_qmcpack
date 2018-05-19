@@ -9,6 +9,7 @@ import numpy as np
 
 from qharv.seed import xml
 from qharv.reel import mole
+# ======================== level 0: file location =========================
 
 
 def find_iopt(iopt, opt_dir):
@@ -28,6 +29,30 @@ def find_iopt(iopt, opt_dir):
   return floc
 
 
+# ======================== level 1: read .dat =========================
+
+
+def read_dat(j2_dat):
+  """ read the first two columns of a .dat file spewed out by QMCPACK
+
+  examples:
+    read_dat('J2.uu.dat')
+    read_dat('uk.g000.dat')
+    read_dat('BFe-e.ud.dat')
+
+  Args:
+    j2_dat (str): filename
+  Return:
+    tuple: (r, v), first two columns, probably (radial grid, values)
+  """
+  data = np.loadtxt(j2_dat)  # r v OR r v g l
+  r, v = data[:, :2].T
+  return r, v
+
+
+# ==================== level 2: construct from xml =====================
+
+
 def get_coeff(doc, coef_id):
   """ extract coefficients from a <coefficients> node
 
@@ -42,7 +67,7 @@ def get_coeff(doc, coef_id):
   return coefs
 
 
-def bspline_on_rgrid(doc, cid, rcut=None, cusp=None, rgrid=None):
+def bspline_on_rgrid(doc, cid, rgrid, rcut=None, cusp=None):
   """ evaluate QMCPACK Basis spline on a real-space grid
 
   doc must contain the desired Bspline <correlation> <coefficient> nodes
@@ -52,6 +77,12 @@ def bspline_on_rgrid(doc, cid, rcut=None, cusp=None, rgrid=None):
 
   Args:
     doc (etree.Element): must contain the Bspline component to read
+    cid (str): coefficient name (id)
+    rgrid (list): a list of radial grid values
+    rcut (float, optional): cutoff radius, default is to read from
+    <correlation>
+    cusp (float, optional): cusp at r=0, default is to read from
+    <correlation>
   Return:
     list: a list of floats
   """
