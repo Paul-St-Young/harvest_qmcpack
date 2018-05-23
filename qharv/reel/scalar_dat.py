@@ -18,7 +18,7 @@ def parse(dat_fname):
 
   # check if a header line exists, if it does not, then set header=None
   with open(dat_fname,'r') as fp:
-    header = fp.readline()
+    header = fp.readline().strip()
   # end with
   
   if not header.startswith('#'): # there is no header
