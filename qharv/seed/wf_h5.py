@@ -10,7 +10,7 @@ import numpy as np
 # ====================== level 0: basic io =======================
 
 
-def read(fname,**kwargs):
+def read(fname, **kwargs):
   """ read h5 file and return a h5py File object
 
   Args:
@@ -22,12 +22,12 @@ def read(fname,**kwargs):
   """
   if not ('mode' in kwargs):
     kwargs['mode'] = 'r'
-  return h5py.File(fname,**kwargs)
+  return h5py.File(fname, **kwargs)
 
 
-def ls(handle,r=False,level=0,indent="  "):
+def ls(handle, r=False, level=0, indent="  "):
   """ List directory structure
-  
+
    Similar to the Linux `ls` command, but for an hdf5 file
 
    Args:
@@ -39,31 +39,33 @@ def ls(handle,r=False,level=0,indent="  "):
      str: mystr, a string representation of the directory structure
   """
   mystr = ''
-  if isinstance(handle,h5py.File) or isinstance(handle,h5py.Group):
+  if isinstance(handle, h5py.File) or isinstance(handle, h5py.Group):
     for key,val in handle.items():
       mystr += indent*level+'/'+key + "\n"
       if r:
         mystr += ls(val,r=r,level=level+1,indent=indent)
     # end for
-  elif isinstance(handle,h5py.Dataset):
+  elif isinstance(handle, h5py.Dataset):
     return ''
   else:
-    raise RuntimeError('cannot handle type=%s'%type(handle))
+    raise RuntimeError('cannot handle type=%s' % type(handle))
   # end if
   return mystr
 
+
 # ====== level 1: QMCPACK wavefunction hdf5 fixed locations ======
 locations = {
-  'gvectors':'electrons/kpoint_0/gvectors',
-  'nkpt':'electrons/number_of_kpoints',
-  'nspin':'electrons/number_of_spins',
-  'nstate':'electrons/kpoint_0/spin_0/number_of_states',  # !!!! same number of states per kpt
-  'axes':'supercell/primitive_vectors',
-  'pos':'atoms/positions'
+  'gvectors': 'electrons/kpoint_0/gvectors',
+  'nkpt': 'electrons/number_of_kpoints',
+  'nspin': 'electrons/number_of_spins',
+  'nstate': 'electrons/kpoint_0/spin_0/number_of_states',
+  # !!!! assume same number of states per kpt
+  'axes': 'supercell/primitive_vectors',
+  'pos': 'atoms/positions'
 }
 
 
-def get(fp,name):
+def get(fp, name):
   """ retrieve data from a known location in pwscf.h5
 
   Args:
@@ -74,7 +76,8 @@ def get(fp,name):
   """
   if name not in locations.keys():
     raise RuntimeError('unknown attribute requested: %s' % name)
-  return fp[ locations[name] ].value
+  loc = locations[name]
+  return fp[loc].value
 
 
 def axes_elem_pos(fp):
@@ -96,7 +99,7 @@ def axes_elem_pos(fp):
   elem_map = {}
   nelem = fp['atoms/number_of_species'].value
   for ielem in range(nelem):
-    elem_name = fp['atoms/species_%d/name'%ielem].value[0]
+    elem_name = fp['atoms/species_%d/name' % ielem].value[0]
     elem_map[ielem] = elem_name
   # end for ielem
   elem = [elem_map[eid] for eid in elem_id]
@@ -111,7 +114,7 @@ def kpoint_path(ikpt):
 
   e.g. electrons/kpoint_0/spin_0/state_0
 
-  Args: 
+  Args:
    ikpt (int): kpoint index
   Returns:
    str: path in hdf5 file
@@ -120,20 +123,22 @@ def kpoint_path(ikpt):
   return path
 
 
-def spin_path(ikpt,ispin):
-  path = 'electrons/kpoint_%d/spin_%d' % (ikpt,ispin)
+def spin_path(ikpt, ispin):
+  path = 'electrons/kpoint_%d/spin_%d' % (ikpt, ispin)
   return path
 
 
-def state_path(ikpt,ispin,istate):
-  path = 'electrons/kpoint_%d/spin_%d/state_%d/' % (ikpt,ispin,istate)
+def state_path(ikpt, ispin, istate):
+  path = 'electrons/kpoint_%d/spin_%d/state_%d/' % (ikpt, ispin, istate)
   return path
 
 
-def get_orb_in_pw(fp,ikpt,ispin,istate):
-  orb_path = os.path.join( state_path(ikpt,ispin,istate), 'psi_g' )
-  psig_arr = fp[orb_path].value # stored in real view
-  #psig = psig_arr[:,0]+1j*psig_arr[:,1] # convert to complex view
-  psig = psig_arr.flatten().view(complex) # more elegant conversion
+def get_orb_in_pw(fp, ikpt, ispin, istate):
+  orb_path = os.path.join(state_path(ikpt,ispin,istate), 'psi_g')
+  psig_arr = fp[orb_path].value  # stored in real view
+  # psig = psig_arr[:,0]+1j*psig_arr[:,1]  # convert to complex view
+  psig = psig_arr.flatten().view(complex)  # more elegant conversion
   return psig
+
+
 # =======================================================================
