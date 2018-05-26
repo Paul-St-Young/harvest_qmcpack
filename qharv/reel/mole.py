@@ -20,10 +20,25 @@ def files_with_regex(regex, rundir, case=True, ftype='f'):
   popt = '-path'
   if not case:
     popt = '-ipath'  # not case sensitive
-  out = sp.check_output(['find',rundir,popt,regex,'-type',ftype])
+  out = sp.check_output(['find', rundir, popt, regex, '-type', ftype])
   flist = out.decode().split('\n')[:-1]
   return flist
-# end def files_with_regex
+
+
+def find(regex, rundir, **kwargs):
+  """ find the first file that matches the given regular expression
+  RuntimeError will be raised unless exactly one file is found
+
+  Args:
+    regex (str):  regular expression for file names
+    rundir (str): directory containing the files to be found
+  Return:
+    str: filename
+  """
+  flist = files_with_regex(regex, rundir, **kwargs)
+  if len(flist) != 1:
+    raise RuntimeError('expect 1 but found %d' % len(flist))
+  return flist[0]
 
 
 def interpret_qmcpack_fname(fname):
@@ -57,7 +72,7 @@ def interpret_qmcpack_fname(fname):
 
   # series index
   isst   = tokens[-3]  # s000
-  iss    = int(isst.replace('s',''))  # series index ('is' is a Python keyword)
+  iss    = int(isst.replace('s', ''))  # series index
 
   # group index
   grouped = False  # single input is not grouped
@@ -65,7 +80,7 @@ def interpret_qmcpack_fname(fname):
   ig = 0  # group index
   suf_list = [isst, cate, ext]
   if igt.startswith('g') and len(igt) == 4:
-    ig = int(igt.replace('g',''))
+    ig = int(igt.replace('g', ''))
     suf_list = [igt] + suf_list
     grouped = True
   else:  # there is no group index
@@ -74,13 +89,14 @@ def interpret_qmcpack_fname(fname):
 
   # get project id by removing the suffix
   suffix = '.' + '.'.join(suf_list)
-  prefix = fname.replace(suffix,'')
+  prefix = fname.replace(suffix, '')
 
   # metadata entry
-  entry = {'id':prefix, 'group':ig, 'series':iss
-    , 'category':cate, 'ext':ext, 'grouped':grouped}
+  entry = {
+    'id': prefix, 'group': ig, 'series': iss,
+    'category': cate, 'ext': ext, 'grouped': grouped
+  }
   return entry
-# end def interpret_qmcpack_fname
 
 
 def build_qmcpack_fname(entry):
@@ -92,9 +108,9 @@ def build_qmcpack_fname(entry):
   Return:
     str: filename
   """
-  order = ['id','series','category','ext']
+  order = ['id', 'series', 'category', 'ext']
   if entry['grouped']:
-    order.insert(1,'group')
+    order.insert(1, 'group')
   # end if
   tokens = []
   for key in order:
@@ -111,4 +127,3 @@ def build_qmcpack_fname(entry):
   # end for
   fname = '.'.join(tokens)
   return fname
-# end def build_qmcpack_fname
