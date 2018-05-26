@@ -104,7 +104,7 @@ def axes_elem_pos(fp):
   # end for ielem
   elem = [elem_map[eid] for eid in elem_id]
   assert len(elem) == len(pos)
-  return axes,elem,pos
+  return axes, elem, pos
 
 # ====== level 2: QMCPACK wavefunction hdf5 orbital locations ======
 
