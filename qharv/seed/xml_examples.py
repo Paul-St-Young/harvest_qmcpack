@@ -62,6 +62,19 @@ def wbyw_vmc():
   </qmc>'''
   return xml.parse(text)
 
+
+def pbyp_vmc():
+  text = '''<qmc method="vmc" move="pbyp" checkpoint="0">
+      <parameter name="blocks"              >    64              </parameter>
+      <parameter name="steps"               >    4               </parameter>
+      <parameter name="subSteps"            >    2               </parameter>
+      <parameter name="timestep"            >    2.0             </parameter>
+      <parameter name="warmupsteps"         >    16              </parameter>
+      <parameter name="samples"             >    576             </parameter>
+   </qmc>'''
+  return xml.parse(text)
+
+
 def wbyw_dmc():
   text = '''<qmc method="dmc" move="not_pbyp_or_whatever" checkpoint="0">
     <parameter name="usedrift">    yes  </parameter>
@@ -70,6 +83,17 @@ def wbyw_dmc():
     <parameter name="timestep">  0.002  </parameter>
   </qmc>'''
   return xml.parse(text)
+
+
+def pbyp_dmc():
+  text = '''<qmc method="dmc" move="pbyp" checkpoint="0">
+      <parameter name="blocks"              >    16              </parameter>
+      <parameter name="steps"               >    2               </parameter>
+      <parameter name="timestep"            >    0.4             </parameter>
+      <parameter name="targetwalkers"       >    576             </parameter>
+   </qmc>'''
+  return xml.parse(text)
+
 
 def wbyw_optimize():
   text = '''<loop max="8">
