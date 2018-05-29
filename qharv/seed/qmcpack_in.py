@@ -153,7 +153,7 @@ def bundle_twists(calc_dir, fregex='*twistnum_*.in.xml'):
   from qharv.reel import mole
   flist = mole.files_with_regex(fregex, calc_dir)
   flist.sort()
-  print('bundling %d inputs'%len(flist))
+  print('bundling %d inputs' % len(flist))
   text = ''
   for floc in flist:
     fname = os.path.basename(floc)
@@ -212,3 +212,26 @@ def disperse(ginp_loc,calc_dir,execute=False,overwrite=False):
   # end with open
   return flist
 # end def disperse
+
+
+def set_norb(doc, norb):
+  """ occupy the lowest norb Kohn-Sham orbitals
+
+  Args:
+    doc (etree.Element): must contain <particleset>, <sposet>, and <det...set>
+    norb (int): number of orbitals to occupy
+  Return:
+    None
+  Effect:
+    doc is modified
+  """
+  epset = doc.find('.//particleset[@name="e"]')
+  for group in epset.findall('.//group'):  # 'u' and 'd'
+    group.set('size', str(norb))
+
+  sposet = doc.find('.//sposet[@name="spo_ud"]')
+  sposet.set('size', str(norb))
+
+  detset = doc.find('.//determinantset')
+  for det in detset.findall('.//determinant'):
+    det.set('size', str(norb))
