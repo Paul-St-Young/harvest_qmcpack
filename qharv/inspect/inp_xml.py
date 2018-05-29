@@ -31,7 +31,6 @@ def check_wfh5_access(doc, calc_dir):
   for bb in bb_list:
     # get relative wf hdf5 location
     href = bb.get('href')
-    print href
 
     # get absolute wf hdf5 location
     wf_h5_floc = os.path.abspath( os.path.join(calc_dir,href) )
