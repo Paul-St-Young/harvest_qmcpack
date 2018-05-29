@@ -8,6 +8,40 @@ import numpy as np
 from qharv.seed import xml
 from qharv.inspect import axes_pos
 
+
+def check_wfh5_access(doc, calc_dir):
+  """ check that the Bspline h5 file can be accessed from input location
+
+  Args:
+    doc (lxml.Element): must containt <sposet_builder>
+    calc_dir (str): directory to contain the QMCPACK input (doc)
+  Returns:
+    bool: can access all h5 files
+  """
+
+  access = True
+
+  # not compatible with legacy input
+  detset = doc.find('.//determinantset[@type="bspline"]')
+  if detset is not None:
+    raise RuntimeError('legacy input')
+
+  # check all Bspline orbital builders
+  bb_list = doc.findall('.//sposet_builder[@type="bspline"]')
+  for bb in bb_list:
+    # get relative wf hdf5 location
+    href = bb.get('href')
+    print href
+
+    # get absolute wf hdf5 location
+    wf_h5_floc = os.path.abspath( os.path.join(calc_dir,href) )
+
+    # check accessibility
+    if not os.path.isfile(wf_h5_floc):
+      access = False
+  return access
+
+
 def rcut(corr):
   rca = corr.get('rcut')
   if rca is None:
