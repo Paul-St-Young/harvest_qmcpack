@@ -69,3 +69,15 @@ def test_raxes():
   f2b = axes_pos.raxes(fcc0)/(2.*np.pi)/2.
   assert np.allclose(f2b,bcc0)
 # end def
+
+def test_rwsc():
+  # a fairly extreme slab-like cell
+  axes = np.array([
+   [ 7.73625309, 18.39193864, -13.47014157],
+   [-0.08306451, 27.58607338,  17.96016072],
+   [-2.59722820, -0.00040676,  13.47012604]
+  ])
+  # dn = 2 is sufficient
+  rwsc = axes_pos.rwsc(axes, dn=2)
+  assert np.isclose(rwsc, 5.281986)
+# end def
