@@ -2,6 +2,8 @@
 # Email: yubo.paul.yang@gmail.com
 # Python candy i.e. decorators
 import os
+import subprocess as sp
+
 
 def check_dir_before(mkdir):
   def wrapper(dirname):
@@ -9,7 +11,10 @@ def check_dir_before(mkdir):
       mkdir(dirname)
   return wrapper
 
-mkdir = lambda x:check_dir_before( os.mkdir )(x)
+
+@check_dir_before
+def mkdirs(x):
+  sp.check_call(['mkdir', '-p', x])
 
 
 def check_file_before(write_file):
