@@ -1,6 +1,7 @@
 pytest
 lxml
 h5py
+tables
 numpy
 pandas
 progressbar2
