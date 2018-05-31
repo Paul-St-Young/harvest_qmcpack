@@ -24,6 +24,7 @@ def save_mat(mat, h5file, slab, name):
   """ save matrix as floating point numbers in h5file.slab.name
 
   for /name, use slab = h5file.root
+  see example usage in saveh5
 
   Args:
     mat (np.array): 2D numpy array of floats
@@ -34,3 +35,24 @@ def save_mat(mat, h5file, slab, name):
   atom = tables.Float64Atom()
   ca = h5file.create_carray(slab, name, atom, mat.shape)
   ca[:, :] = mat
+
+
+def saveh5(fname, mat, name='data'):
+  """ save matrix in h5 file, mimic call signature of np.savetxt
+
+  e.g. mat = np.eye(3)
+  saveh5('mat.h5', mat)
+  $ h5ls mat.h5
+  data               Dataset {3/2730, 3}
+
+  Args:
+    fname (str): name of hdf5 file to write
+    mat (np.array): 2D numpy array of floats
+    name (str, optional): CArray name at the root of the hdf5 file
+  """
+  filters = tables.Filters(complevel=5, complib='zlib')
+  fp = tables.open_file(fname, mode='w', filters=filters)
+
+  save_mat(mat, fp, fp.root, name)
+
+  fp.close()
