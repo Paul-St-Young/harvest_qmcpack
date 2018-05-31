@@ -5,6 +5,7 @@ Python module containing useful routines to inspect and modify qmcpack objects.
 ## Quick Start
 
 ### Install
+
 Clone the repository and add it to PYTHONPATH. To use examples, add bin to PATH.
 ```shell
 git clone https://github.com/Paul-St-Young/harvest_qmcpack.git ~
@@ -17,16 +18,12 @@ Prerequisites can be installed following requirement.txt
 cd ~/harvest_qmcpack; pip install --user -r requirements.txt
 ```
 
-Unit tests should work with either nosetest or pytest
-```shell
-cd ~/harvest_qmcpack; pytest -v .
-```
-
 You can also use pip if you do not intend to change the code
 ```shell
 git clone https://github.com/Paul-St-Young/harvest_qmcpack.git ~/harvest_qmcpack
 pip install --user ~/harvest_qmcpack
 ```
+
 To update to the newest version:
 ```shell
 cd ~/harvest_qmcpack
@@ -34,11 +31,18 @@ git pull
 pip install --user --upgrade ~/harvest_qmcpack
 ```
 
+### Tests
+Unit tests should work with either nosetest or pytest
+```shell
+cd ~/harvest_qmcpack; pytest -v .
+```
+
 ### Use
 The library functions can be used in a python script
 ```python
 # extract all scalar data from a run directory 
-#  (not necessarily from an actual run)
+#  look for scalar.dat files and collect statistics
+#  hint: run dirrctory does not have to be an actual run
 import os
 from qharv.reel  import scalar_dat, mole
 from qharv.sieve import scalar_df
@@ -84,15 +88,15 @@ df = pd.concat(data).reset_index() # index must be unique for the database to be
 
 The examples in the "bin" folder can be ran in the shell
 ```shell
-stalk vmc.in.xml
-stab vmc.s000.scalar.dat
+$ stalk vmc.in.xml
+$ stab vmc.s000.scalar.dat
+$ slash-and-burn -y -v nscf
+$ rebuild_wf opt.in.xml
 ```
 
-## Requirements
-Requirements can be installed without admin access using `pip install --user -r requirements.txt`.
-
 ## Documentation
-Documentation is available on [github pages][doc html]. A local copy can be generated using sphinx (`pip install --user sphinx`).
+Documentation is available on [github pages][doc html].
+A local copy can be generated using sphinx (`pip install --user sphinx`).
 To generate the documentation, first use sphinx-apidoc to convert doc strings to rst documentation:
 ```shell
 cd ~/harvest_qmcpack/doc; sphinx-apidoc -o source ../qharv
@@ -107,7 +111,8 @@ cd ~/harvest_qmcpack/doc/build; firefox index.html
 ```
 
 ## Examples
-Example usage of the qharv library are included in the "harvest_qmcpack/bin" folder. Each file in the folder is a Python script that performs a very specific task:
+Example usage of the qharv library are included in the "harvest_qmcpack/bin" folder.
+Each file in the folder is a Python script that performs a very specific task:
 * stalk: Show crystal structure specified in a QMCPACK input e.g. `stalk vmc.in.xml`
 * stab: Scalar TABle (stab) analyzer, analyze one column of a scalar table file, e.g. `stab vmc.s000.scalar.dat`
 * transplant: Backup nexus-generated folders. Allow user to select subfolders to backup. e.g. `transplant graphene attic -s opt -s qmc -e` will backup the QMC runs in folder "opt" and "qmc" from graphene/results and graphene/runs to attic/graphene/results and attic/graphene/runs. The "scf" and "nscf" folders will not be backed up.
@@ -115,14 +120,16 @@ Example usage of the qharv library are included in the "harvest_qmcpack/bin" fol
 * rebuild_wf: Rerun QMCPACK on optimized wavefunctions, e.g. `rebuild_wf opt.xml`
 
 ## Description
-This module is intended to speed up on-the-fly setup, run, and analysis of QMCPACK calculations. The module should be used as a collection of glorified bash commands, which are usable in Python.
-This module is NOT intended to be a full-fledged workflow tool. Please refer to [nexus][nexus] for complete workflow magnagement.
+This module is intended to speed up on-the-fly setup, run, and analysis of QMCPACK calculations.
+The module should be used as a collection of python equivalents of bash commands.
+This module is NOT intended to be a full-fledged workflow tool.
+Please refer to [nexus][nexus] for complete workflow magnagement.
 
 ## Development Guidelines
->sown the seeds, inspect the crop;
->crossbreed to improve, transplant to adapt;
->reel them in, sieve for good, and refine for the best.
->-- qharv maxim
+>sown the seeds, inspect the crop;  
+crossbreed to improve, transplant to adapt;  
+reel them in, sieve for good, and refine for the best.  
+-- qharv maxim
 
 ### Laws of Programming (fully plagiarized from Asimov)
 1. A program may not produce wrong results or, through inaction, allow a user to produce wrong results.
