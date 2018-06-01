@@ -119,6 +119,26 @@ def text2arr(text,dtype=float,flatten=False):
   # end if
 # end def text2arr
 
+
+def swap_node(doc, node):
+  """ replace the node in doc with the same tag as given node
+
+  Args:
+    doc (etree.Element): some level of parent of the node to swap
+    node (etree.Element): replacement node
+  """
+
+  nodel = doc.findall('.//%s' % node.tag)
+  if len(nodel) != 1:
+    raise RuntimeError('expecet 1 found %d' % len(nodel))
+  node0 = nodel[0]
+
+  parent = node0.getparent()
+  idx = parent.index(node0)
+  parent.remove(node0)
+  parent.insert(idx, node)
+
+
 # ================= level 2: QMCPACK specialized read =================
 
 
@@ -327,36 +347,6 @@ def opt_wf_fname(opt_inp,iqmc):
 
   return wf_fname
 # end def opt_wf_fname
-
-
-def swap_in_opt_wf(doc,wf_node):
-  """ Put an optimized wavefunction into an xml input 
-
-  Designed to help continue a wavefunction optimization. One can also use optimized wavefunction in a VMC or DMC calculation, but the <loop> section will have to be removed, and new <qmc> sections added. See xml_examples.py.
-
-  Args:
-    doc (lxml.etree._ElementTree): xml input having an old <wavefunction>
-    wf  (lxml.etree._Element): xml node containing the optimized <wavefunction>
-  Returns:
-    lxml.etree._ElementTree: xml input with optimized wavefunction """
-
-  # find new <wavefunction>
-  wf1 = wf_node.find('.//wavefunction')
-  if (wf1 is None) and (wf_node.tag == 'wavefunction'):
-    wf1 = wf_node
-  # end if
-  assert wf1 is not None
-  wf0 = doc.find('.//wavefunction')
-  assert wf0 is not None
-
-  # swap <wavefunction>
-  wup = wf0.getparent()
-  idx = wup.index(wf0)
-  wup.remove(wf0)
-  wup.insert(idx,wf1)
-
-  return doc
-# end def swap_in_opt_wf
 
 
 def add_bcc_backflow(wf_node,bf_node):

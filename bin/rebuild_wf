@@ -69,7 +69,9 @@ if __name__ == '__main__':
 
     # put optimized wavefunction at step 'iqmc' into input
     wf_fname = xml.opt_wf_fname(args.fname,iqmc)
-    doc = xml.swap_in_opt_wf(xml.read(args.fname),xml.read(wf_fname))
+    opt_wf = xml.read(wf_fname).getroot().find('.//wavefunction')
+    doc = xml.read(args.fname)
+    xml.swap_node(doc, opt_wf)
     if args.jastrow_only:
       wf_node = doc.find('.//wavefunction')
       for node in wf_node:
