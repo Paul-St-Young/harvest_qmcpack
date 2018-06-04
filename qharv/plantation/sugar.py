@@ -13,7 +13,7 @@ def check_dir_before(mkdir):
 
 
 @check_dir_before
-def mkdirs(x):
+def mkdir(x):
   sp.check_call(['mkdir', '-p', x])
 
 
