@@ -76,8 +76,8 @@ def poly_extrap_to_x0(myx, myym, myye, order):
 
   The fit proceeds in two steps. The first polyfit does not take error into
   account. It estimates the extrapolated value, which is then used to setup
-  a trust region (bounds). Using the setup trust region, curve_fit can
-  robustly estimator the error of the extrapolation.
+  a trust region (bounds). Using the trust region, curve_fit can robustly
+  estimate the error of the extrapolation.
 
   Args:
     myx (np.array): x values
@@ -103,13 +103,13 @@ def poly_extrap_to_x0(myx, myym, myye, order):
   #  then use rough fit to setup trust region
   sig0 = max(myye)  # extrapolated error should be larger than all data
   nsig = 10  # !!!! hard-code 10 sigma
-  lbounds = [-np.inf for i in xrange(len(myx))]
-  ubounds = [ np.inf for i in xrange(len(myx))]
+  lbounds = [-np.inf for i in range(order+1)]
+  ubounds = [ np.inf for i in range(order+1)]
   lbounds[0] = val0 - nsig*sig0
   ubounds[0] = val0 + nsig*sig0
   bounds = (lbounds, ubounds)
 
-  # fit using error and trust region
+  # finally fit using error and trust region
   popt, pcov = op.curve_fit(model, myx, myym
     , sigma=myye, absolute_sigma=True, bounds=bounds, method='trf')
   perr = np.sqrt(np.diag(pcov))
