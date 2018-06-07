@@ -13,7 +13,7 @@ def check_wfh5_access(doc, calc_dir):
   """ check that the Bspline h5 file can be accessed from input location
 
   Args:
-    doc (lxml.Element): must containt <sposet_builder>
+    doc (etree.Element): must containt <sposet_builder>
     calc_dir (str): directory to contain the QMCPACK input (doc)
   Returns:
     bool: can access all h5 files
@@ -29,14 +29,29 @@ def check_wfh5_access(doc, calc_dir):
   # check all Bspline orbital builders
   bb_list = doc.findall('.//sposet_builder[@type="bspline"]')
   for bb in bb_list:
-    # get relative wf hdf5 location
-    href = bb.get('href')
+    relpath = bb.get('href')
+    abspath = os.path.join(calc_dir, relpath)
+    if not os.path.isfile(abspath):
+      access = False
+  return access
 
-    # get absolute wf hdf5 location
-    wf_h5_floc = os.path.abspath( os.path.join(calc_dir,href) )
 
-    # check accessibility
-    if not os.path.isfile(wf_h5_floc):
+def check_psp_access(doc, calc_dir):
+  """ check that pseudopotential files can be accessed by input
+
+  Args:
+    doc (etree.Element): must contain <hamiltonian>
+  Return:
+    bool: can access all pseudopotentials
+  """
+
+  access = True
+
+  pspl = doc.findall('.//pseudo')
+  for psp in pspl:
+    relpath = psp.get('href')
+    abspath = os.path.join(calc_dir, relpath)
+    if not os.path.isfile(abspath):
       access = False
   return access
 
@@ -45,10 +60,9 @@ def rcut(corr):
   rca = corr.get('rcut')
   if rca is None:
     raise RuntimeError('no rcut found in %s'%xml.str_rep(corr))
-  # end if
   rc = float(rca)
   return rc
-# end def rcut
+
 
 def validate_bspline_rcut(node,ignore_empty=False):
   """ check that 1D bspline functions have valid cutoff radius
