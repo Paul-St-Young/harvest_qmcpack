@@ -300,56 +300,15 @@ def build_jk2_iso(coeffs, kc):
 # ================= level 4: QMCPACK specialized advanced =================
 
 def turn_off_jas_opt(wf_node):
-  # turn off jastrow optimization
-  all_jas = wf_node.findall('.//jastrow')
-  assert len(all_jas) > 0
+  mywf = deepcopy(wf_node)
+  all_jas = mywf.findall('.//jastrow')
   for jas in all_jas:
-    assert jas.tag == 'jastrow'
     for coeff in jas.findall('.//coefficients'):
-      coeff.set('optimize','no')
-    # end for
-  # end for
-# end def
+      coeff.set('optimize', 'no')
+  return mywf
 
 
-def opt_wf_fname(opt_inp,iqmc):
-  """ Find the file containing the optimized <wavefunction> at optimization loop iqmc 
-  example of a folder containing an optimization run:
-  $ls opt_dir
-    opt.xml
-    qmc.s000.scalar.dat
-    qmc.s000.opt.xml
-    qmc.s001.scalar.dat
-    qmc.s001.opt.xml
-  $
-  opt_wf_fname('opt_dir/opt.xml',1) returns 'opt_dir/qmc.s001.opt.xml'
-
-  Args:
-    opt_inp (str): optimization run input file
-    iqmc (int): optimization loop to target
-  Returns:
-    str: wf_fname, name of the xml file containing the optimized <wavefunction>
-  """
-
-  # read the optimization input for nqmc & prefix to find .opt files
-  doc = read(opt_inp)
-  nqmc   = int( doc.find('.//loop').get('max') )
-  assert iqmc < nqmc
-
-  # read project prefix to determine .opt filename
-  prefix = doc.find('.//project').get('id')
-  stext  = 's'+str(iqmc).zfill(3)
-  fopt   = '.'.join([prefix,stext,'opt','xml'])
-
-  # return location of file
-  opt_dir  = os.path.dirname(opt_inp)
-  wf_fname = os.path.join(opt_dir,fopt)
-
-  return wf_fname
-# end def opt_wf_fname
-
-
-def add_bcc_backflow(wf_node,bf_node):
+def add_backflow(wf_node, bf_node):
   # make sure inputs are not scrambled
   assert wf_node.tag == 'wavefunction'
   assert bf_node.tag == 'backflow'
@@ -363,18 +322,19 @@ def add_bcc_backflow(wf_node,bf_node):
 
   # use code path where <backflow> optimization still works
   bb = None # find basis set builder, should be either <sposet_builder> or <determinantset>
-  spo = mywf.find('.//sposet_builder') # !!!! warning: only the first builder is modified
+  spol = mywf.findall('.//sposet_builder')
+  assert len(spol) == 1
+  spo = spol[0]
   if spo is None:
     bb = dset
   else:
     bb = spo
   # end if
-  assert bb.tag in ('sposet_builder','determinantset')
+  assert bb.tag in ('sposet_builder', 'determinantset')
   bb.set('use_old_spline','yes')
   bb.set('precision','double')
   bb.set('truncate','no')
   return mywf
-# end def add_bcc_backflow
 
 
 def dset2spo(wf_node,det_map):
