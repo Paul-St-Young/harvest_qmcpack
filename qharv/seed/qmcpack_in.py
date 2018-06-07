@@ -144,6 +144,8 @@ def expand_twists(example_in_xml, twist_list, calc_dir, force=False):
 def bundle_twists(calc_dir, fregex='*twistnum_*.in.xml'):
   """ bundle all twist inputs
 
+  quick and dirty: `cd $calc_dir; ls > prefix.in`, then edit prefix.in
+
   Args:
     calc_dir (str): calculation directory
     fregex (str, optional): regular expression for all twists
@@ -153,7 +155,7 @@ def bundle_twists(calc_dir, fregex='*twistnum_*.in.xml'):
   from qharv.reel import mole
   flist = mole.files_with_regex(fregex, calc_dir)
   flist.sort()
-  print('bundling %d inputs' % len(flist))
+
   text = ''
   for floc in flist:
     fname = os.path.basename(floc)
