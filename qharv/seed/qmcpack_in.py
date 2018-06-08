@@ -4,6 +4,7 @@ import os
 import subprocess as sp
 from lxml import etree
 
+from qharv.reel import mole
 from qharv.seed import xml, xml_examples
 
 # =============== level 0: build input from scratch ===============
@@ -152,7 +153,6 @@ def bundle_twists(calc_dir, fregex='*twistnum_*.in.xml'):
   Return:
     str: bundled input text
   """
-  from qharv.reel import mole
   flist = mole.files_with_regex(fregex, calc_dir)
   flist.sort()
 
@@ -237,3 +237,26 @@ def set_norb(doc, norb):
   detset = doc.find('.//determinantset')
   for det in detset.findall('.//determinant'):
     det.set('size', str(norb))
+
+
+def set_gc_occ(norbl, calc_dir, fregex_fmt='*twistnum_{itwist:d}.in.xml'):
+  """ edit twist inputs in calc_dir according to occupation vector norbl
+
+  Args:
+    norbl (list): number of occupied orbitals at each twist
+    calc_dir (str): location of twist inputs
+  """
+  nocc = len(norbl)
+  wild_fregex = fregex_fmt.replace('{itwist:d}', '*')
+  flist = mole.files_with_regex(wild_fregex, calc_dir)
+  ntwist = len(flist)
+  if nocc != ntwist:
+    raise RuntimeError('%d occupations given for %d twists' % (nocc, ntwist))
+
+  for itwist in range(ntwist):
+    norb = int(norbl[itwist])
+    fregex = fregex_fmt.format(itwist=itwist)
+    fxml = mole.find(fregex, calc_dir)
+    doc = xml.read(fxml)
+    set_norb(doc, norb)
+    xml.write(fxml, doc)
