@@ -4,7 +4,7 @@
 #  useful routines for file transfer and file backup
 import os
 import subprocess as sp
-from qharv.plantation.sugar import mkdirs
+from qharv.plantation.sugar import mkdir
 
 
 def clean_path(path):
@@ -68,5 +68,5 @@ def move_by_st_map(st_map):
   """
   for floc, floc1 in st_map.items():
     path1 = os.path.dirname(floc1)
-    mkdirs(path1)
+    mkdir(path1)
     sp.check_call(['mv', floc, floc1])
