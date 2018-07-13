@@ -101,9 +101,8 @@ def arr2text(arr):
       raise RuntimeError('arr2text can only convert vector or matrix.')
   # end if
   return text
-# end def arr2text
 
-def text2arr(text,dtype=float,flatten=False):
+def text2arr(text, dtype=float, flatten=False):
   """ convert a text string into a numpy array """
   tlist = text.strip(' ').strip('\n').split('\n')
   if len(tlist) == 1:
@@ -115,28 +114,25 @@ def text2arr(text,dtype=float,flatten=False):
       return myarr.flatten()
     else:
       return np.array([line.split() for line in tlist],dtype=dtype)
-    # end if
-  # end if
-# end def text2arr
+
+def text2vec(text, dtype=float):
+  # unfold at the text level
+  line = ' '.join(text.split('\n'))
+  return np.array(line.split(), dtype=dtype)
 
 
-def swap_node(doc, node):
-  """ replace the node in doc with the same tag as given node
+def swap_node(node0, node1):
+  """ replace the node0 with node1
+  node0 must have a parent
 
   Args:
-    doc (etree.Element): some level of parent of the node to swap
-    node (etree.Element): replacement node
+    node0 (etree.Element): node to be swapped out
+    node1 (etree.Element): replacement node
   """
-
-  nodel = doc.findall('.//%s' % node.tag)
-  if len(nodel) != 1:
-    raise RuntimeError('expecet 1 found %d' % len(nodel))
-  node0 = nodel[0]
-
   parent = node0.getparent()
   idx = parent.index(node0)
   parent.remove(node0)
-  parent.insert(idx, node)
+  parent.insert(idx, node1)
 
 
 # ================= level 2: QMCPACK specialized read =================
