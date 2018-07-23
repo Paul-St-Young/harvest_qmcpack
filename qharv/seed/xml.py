@@ -1,6 +1,6 @@
 # Author: Yubo "Paul" Yang
 # Email: yubo.paul.yang@gmail.com
-# Routines to manipulate an xml input. 
+# Routines to manipulate an xml input.
 #  Almost all functions are built around the lxml module's API.
 #  The central object is lxml.etree.ElementTree, which is usually named "doc".
 import os
@@ -11,56 +11,67 @@ from io import StringIO
 
 # ======================== level 0: basic io =========================
 def read(fname):
-  """ read an xml file 
+  """ read an xml file
   wrap around lxml.etree.parse
+
   Args:
     fname (str): filename to read from
-  Returns:
+  Return:
     lxml.etree._ElementTree: doc, parsed xml document
   """
   parser = etree.XMLParser(remove_blank_text=True)
-  doc    = etree.parse(fname,parser)
+  doc    = etree.parse(fname, parser)
   return doc
 
-def write(fname,doc):
-  """ write an xml file 
+
+def write(fname, doc):
+  """ write an xml file
   wrap around lxml.etree._ElementTree.write
+
   Args:
     fname (str): filename to write to
     doc (lxml.etree._ElementTree): xml file in memory
-  Effects:
+  Effect:
     write fname using contents of doc
   """
-  doc.write(fname,pretty_print=True)
+  doc.write(fname, pretty_print=True)
+
 
 def parse(text):
   """ parse the text representation of an xml node
+  delegate to read()
+
   Args:
     text (str): string representation of an xml node
-  Returns:
+  Return:
     lxml.etree._Element: root, parsed xml node
   """
   try:  # Python2
-    root = read( StringIO(text.decode()) ).getroot()
+    node = StringIO(text.decode())
   except AttributeError:  # Python3
-    root = read( StringIO(text) ).getroot()
+    node = StringIO(text)
+  root = read(node).getroot()
   return root
+
 
 def str_rep(node):
   """ return the string representation of an xml node
+
   Args:
     node (lxml.etree._Element): xml node
-  Returns:
+  Return:
     str: string representation of node
   """
-  return etree.tostring(node,pretty_print=True)
+  return etree.tostring(node, pretty_print=True)
+
 
 def show(node):
-  print( str_rep(node) )
+  print(str_rep(node))
 
-def ls(node,r=False,level=0,indent="  "):
+
+def ls(node, r=False, level=0, indent="  "):
   """ List directory structure
-   
+
    Similar to the Linux `ls` command, but for an xml node
 
    Args:
@@ -68,23 +79,21 @@ def ls(node,r=False,level=0,indent="  "):
      r (bool): recursive
      level (int): level of indentation, used only if r=True
      indent (str): indent string, used only if r=True
-   Returns:
+   Return:
      str: mystr, a string representation of the directory structure
   """
-  mystr=''
+  mystr = ''
   children = node.getchildren()
-  if len(children)>0:
+  if len(children) > 0:
     for child in children:
       if type(child) is not etree._Element: continue
       mystr += indent*level + child.tag + '\n'
       if r:
         mystr += ls(child,r=r,level=level+1,indent=indent)
-      # end if r
-    # end for child
   else:
     return ''
-  # end if
   return mystr
+
 
 # ========================= level 1: node content io =========================
 #  node.get & node.set are sufficient for attribute manipulation
@@ -92,9 +101,9 @@ def ls(node,r=False,level=0,indent="  "):
 def arr2text(arr):
   """ format a numpy array into a text string """
   text = ''
-  if len(arr.shape) == 1: # vector
+  if len(arr.shape) == 1:  # vector
       text = " ".join(arr.astype(str))
-  elif len(arr.shape) == 2: # matrix
+  elif len(arr.shape) == 2:  # matrix
       mat  = [arr2text(line) for line in arr]
       text = "\n" + "\n".join(mat) + "\n"
   else:
@@ -116,6 +125,7 @@ def text2arr(text, dtype=float, flatten=False):
       return np.array([line.split() for line in tlist],dtype=dtype)
 
 def text2vec(text, dtype=float):
+  """ convert a text string into a 1D numpy array """
   # unfold at the text level
   line = ' '.join(text.split('\n'))
   return np.array(line.split(), dtype=dtype)
@@ -128,6 +138,8 @@ def swap_node(node0, node1):
   Args:
     node0 (etree.Element): node to be swapped out
     node1 (etree.Element): replacement node
+  Effect:
+    node0 is replaced by node1 in node0's owning tree
   """
   parent = node0.getparent()
   idx = parent.index(node0)
@@ -136,25 +148,24 @@ def swap_node(node0, node1):
 
 
 # ================= level 2: QMCPACK specialized read =================
-
-
-def get_param(node,pname):
-  """ retrieve the str representation of a parameter from: 
+def get_param(node, pname):
+  """ retrieve the str representation of a parameter from:
     <parameter name="pname"> str_rep </parameter>
+
   Args:
     node (lxml.etree._Element): xml node with <parameter>.
     pname (str): name of parameter
   Return:
     str: string representation of the parameter value
   """
-  pnode = node.find('.//parameter[@name="%s"]'%pname)
+  pnode = node.find('.//parameter[@name="%s"]' % pname)
   return pnode.text
-# end def
 
 
-def set_param(node,pname,pval,new=False):
-  """ set <parameter> with name 'pname' to 'pval' 
+def set_param(node, pname, pval, new=False):
+  """ set <parameter> with name 'pname' to 'pval'
   if new=True, then <parameter name="pname"> does not exist. create it
+
   Args:
     node (lxml.etree._Element): xml node with children having tag 'parameter'
     pname (str): name of parameter
@@ -164,12 +175,12 @@ def set_param(node,pname,pval,new=False):
     the text of <parameter> with 'pname' will be set to 'pval'
   """
   assert type(pval) is str
-  pnode = node.find('.//parameter[@name="%s"]'%pname)
+  pnode = node.find('.//parameter[@name="%s"]' % pname)
   # 4 paths dependent on (pnode is None) and new
-  if (pnode is None) and (not new): # unintended input
+  if (pnode is None) and (not new):  # unintended input
     raise RuntimeError('<parameter name="%s"> not found in %s\n\
       please set new=True' % (pname,node.tag))
-  elif (pnode is not None) and new: # unintended input
+  elif (pnode is not None) and new:  # unintended input
     raise RuntimeError('<parameter name="%s"> found in %s\n\
       please set new=False' % (pname,node.tag))
   elif (pnode is None) and new:
@@ -178,8 +189,6 @@ def set_param(node,pname,pval,new=False):
     node.append(pnode)
   else:
     pnode.text = pval
-  # end if
-# end def
 
 
 def get_axes(doc):
@@ -189,35 +198,36 @@ def get_axes(doc):
   lat_node = sc_node.find('.//parameter[@name="lattice"]')
   unit = lat_node.get('units')
   assert unit == 'bohr'
-  axes = text2arr( lat_node.text )
+  axes = text2arr(lat_node.text)
   return axes
-# end def 
 
 
-def get_pos(doc,pset='ion0',all_pos=True,group=None):
+def get_pos(doc, pset='ion0', all_pos=True, group=None):
   # find <particleset>
-  pset_node = doc.find('.//particleset[@name="%s"]'%pset)
+  pset_node = doc.find('.//particleset[@name="%s"]' % pset)
   if pset_node is None:
-    raise RuntimeError('%s not found'%pset)
-  
+    raise RuntimeError('%s not found' % pset)
+
   # find <group> if necessary
   groups = pset_node.findall('.//group')
   names = [grp.get('name') for grp in groups]
-  if (group is None): # no group give, better be requesting all particle positions
+  if (group is None):  # no group give, requesting all particle positions?
     if (not all_pos):
-      warn_msg = '%d groups found, please specify particle group from %s'%(len(groups),str(names))
+      warn_msg = '%d groups found, please specify particle group from %s' % (
+        len(groups),str(names)
+      )
       raise RuntimeError(warn_msg)
     # end if
-  else: # group given, see if it is available
+  else:  # group given, see if it is available
     if (all_pos): raise RuntimeError('specified group will be over-written with all_pos! Please set all_pos=False.')
     if (group not in names):
-      raise RuntimeError('no group with name "%s" in %s'%(group,str(names)))
+      raise RuntimeError('no group with name "%s" in %s' % (group,str(names)))
     # end if
   # end if
 
   pos_text = ''
-  if not all_pos: # get requested group positions
-    grp = pset_node.find('.//group[@name="%s"]'%group)
+  if not all_pos:  # get requested group positions
+    grp = pset_node.find('.//group[@name="%s"]' % group)
     pos_node = grp.find('.//attrib[@name="position"]')
     pos_text = pos_node.text
   else:
@@ -230,17 +240,16 @@ def get_pos(doc,pset='ion0',all_pos=True,group=None):
   # get requestsed particle positions
   pos = text2arr(pos_text.strip('\n'))
   return pos
-# end def
 
 
 # ================= level 3: QMCPACK specialized construct =================
 
 
 def build_coeff(knots, **attribs):
-  """ construct an <coefficients/> 
+  """ construct an <coefficients/>
 
   example:
-    build_coeff([1,2]): 
+    build_coeff([1,2]):
       <coefficients id="new" type="Array"> 1 2 </coefficients>
 
   Args:
@@ -250,16 +259,16 @@ def build_coeff(knots, **attribs):
   """
 
   # add required attributes
-  #id (str, optional): coefficient name, default 'new'
-  if not 'id' in attribs:
+  #  id (str, optional): coefficient name, default 'new'
+  if 'id' not in attribs:
     attribs['id'] = 'new'
-  #type (str, optional): coefficient type, default 'Array'
-  if not 'type' in attribs:
+  #  type (str, optional): coefficient type, default 'Array'
+  if 'type' not in attribs:
     attribs['type'] = 'Array'
 
   # construct node
   coeff_node = etree.Element('coefficients',attribs)
-  coeff_node.text = ' ' + ' '.join( map(str,knots) ) + ' '  # 1D arr2text
+  coeff_node.text = ' ' + ' '.join(map(str, knots)) + ' '  # 1D arr2text
   return coeff_node
 # end def build_coeff
 
@@ -278,16 +287,16 @@ def build_jk2_iso(coeffs, kc):
   """
   coeff_node = build_coeff(coeffs, id='cG2')
   corr_node = etree.Element('correlation', {
-    'type':'Two-Body'
-    , 'kc':str(kc)
-    , 'symmetry':'isotropic'
+    'type': 'Two-Body',
+    'kc': str(kc),
+    'symmetry': 'isotropic'
   })
   corr_node.append(coeff_node)
 
   jk_node = etree.Element('jastrow',{
-    'name':'Jk'
-    , 'type':'kSpace'
-    , 'source':'e'
+    'name':'Jk',
+    'type':'kSpace',
+    'source':'e'
   })
   jk_node.append(corr_node)
   return jk_node
@@ -317,7 +326,8 @@ def add_backflow(wf_node, bf_node):
   dset.insert(0,bf_node)
 
   # use code path where <backflow> optimization still works
-  bb = None # find basis set builder, should be either <sposet_builder> or <determinantset>
+  bb = None  # find basis set builder
+  # bb should be either <sposet_builder> or <determinantset>
   spol = mywf.findall('.//sposet_builder')
   assert len(spol) == 1
   spo = spol[0]
@@ -352,12 +362,12 @@ def dset2spo(wf_node,det_map):
 
   # add <sposet> to bb
   dets = dset.findall('.//determinant')
-  s2dname = {} # save spo_name -> det_id
+  s2dname = {}  # save spo_name -> det_id
   for det in dets:
     det.tag = 'sposet'
     det_id = det.get('id')
     if det_id not in det_map.keys():
-      raise RuntimeError('%s not in det_map'%det_id)
+      raise RuntimeError('%s not in det_map' % det_id)
     # end if
     spo_name = d2sname(det_id)
     s2dname[spo_name] = det_id
@@ -377,7 +387,11 @@ def dset2spo(wf_node,det_map):
   for spo_name in s2dname.keys():
     det_id = s2dname[spo_name]
     group  = det_map[det_id]
-    det = etree.Element('determinant',{'id':det_id,'group':group,'sposet':spo_name})
+    det = etree.Element('determinant', {
+      'id': det_id,
+      'group': group,
+      'sposet': spo_name
+    })
     slater.append(det)
   # end for spo_name
   dset.append(slater)
