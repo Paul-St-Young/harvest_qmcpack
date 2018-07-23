@@ -113,16 +113,16 @@ the different runs.</li>
 
 <dl class="function">
 <dt id="qharv.sieve.scalar_df.mix_est_correction">
-<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">mix_est_correction</code><span class="sig-paren">(</span><em>mydf</em>, <em>names</em>, <em>vseries</em>, <em>dseries</em>, <em>series_name='series'</em>, <em>group_name='group'</em>, <em>kind='linear'</em>, <em>drop_missing_twists=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#mix_est_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.mix_est_correction" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">mix_est_correction</code><span class="sig-paren">(</span><em>mydf</em>, <em>vseries</em>, <em>dseries</em>, <em>names</em>, <em>series_name='series'</em>, <em>group_name='group'</em>, <em>kind='linear'</em>, <em>drop_missing_twists=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#mix_est_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.mix_est_correction" title="Permalink to this definition">¶</a></dt>
 <dd><p>extrapolate dmc energy to zero time-step limit
 :param mydf: dataframe of VMC and DMC mixed estimators
 :type mydf: pd.DataFrame
-:param names: list of DMC mixed estimators names to extrapolate
-:type names: list
 :param vseries: VMC series id
 :type vseries: int
 :param dseries: DMC series id
 :type dseries: int
+:param names: list of DMC mixed estimators names to extrapolate
+:type names: list
 :param series_name: column name identifying the series
 :type series_name: str,optional
 :param kind: extrapolation kind, must be either ‘linear’ or ‘log’
@@ -134,6 +134,36 @@ the different runs.</li>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">an entry copied from the smallest time-step DMC entry, then edited with extrapolated pure estimators. !!!! Series index is not changed!</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pd.Series</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.sieve.scalar_df.poly_extrap_to_x0">
+<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">poly_extrap_to_x0</code><span class="sig-paren">(</span><em>myx</em>, <em>myym</em>, <em>myye</em>, <em>order</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#poly_extrap_to_x0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.poly_extrap_to_x0" title="Permalink to this definition">¶</a></dt>
+<dd><p>fit 1D data to 1D polynomial and extrpolate to x=0</p>
+<p>The fit proceeds in two steps. The first polyfit does not take error into
+account. It estimates the extrapolated value, which is then used to setup
+a trust region (bounds). Using the trust region, curve_fit can robustly
+estimate the error of the extrapolation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>myx</strong> (<em>np.array</em>) – x values</li>
+<li><strong>myym</strong> (<em>np.array</em>) – y values</li>
+<li><strong>myye</strong> (<em>np.array</em>) – y errors (1 sigma)</li>
+<li><strong>order</strong> (<em>int</em>) – order of 1D polynomial</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">floats (y0m, y0e), y mean and error at x=0</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">2-tuple</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -170,19 +200,53 @@ see reblock for details</p>
 
 <dl class="function">
 <dt id="qharv.sieve.scalar_df.ts_extrap">
-<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">ts_extrap</code><span class="sig-paren">(</span><em>calc_df</em>, <em>issl</em>, <em>new_series</em>, <em>tname='timestep'</em>, <em>ename='LocalEnergy'</em>, <em>series_name='series'</em>, <em>order=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#ts_extrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.ts_extrap" title="Permalink to this definition">¶</a></dt>
-<dd><p>extrapolate dmc energy to zero time-step limit
-:param calc_df: must contain columns [tname,ename,series_name]
-:type calc_df: pd.DataFrame
-:param issl: list of DMC series index to use in fit
-:type issl: list</p>
+<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">ts_extrap</code><span class="sig-paren">(</span><em>calc_df</em>, <em>issl</em>, <em>obsl</em>, <em>tname='timestep'</em>, <em>series_name='series'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#ts_extrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.ts_extrap" title="Permalink to this definition">¶</a></dt>
+<dd><p>extrapolate all dmc observables to zero time-step limit</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">an entry copied from the smallest time-step DMC entry, then edited with extrapolated energy and corresponding info; series is set to -1</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>calc_df</strong> (<em>pd.DataFrame</em>) – must contain columns [tname, series_name]</li>
+<li><strong>issl</strong> (<em>list</em>) – list of DMC series index to use in fit</li>
+<li><strong>obsl</strong> (<em>list</em>) – a list of observable names to extrapolate</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pd.Series</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">an entry copied from the smallest time-step DMC entry,
+then edited with extrapolated energy and corresponding info
+!!!! series number is unchanged</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pd.Series</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.sieve.scalar_df.ts_extrap_obs">
+<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">ts_extrap_obs</code><span class="sig-paren">(</span><em>calc_df</em>, <em>sel</em>, <em>tname</em>, <em>obs</em>, <em>order=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#ts_extrap_obs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.ts_extrap_obs" title="Permalink to this definition">¶</a></dt>
+<dd><p>extrapolate a single dmc observable to zero time-step limit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>calc_df</strong> (<em>pd.DataFrame</em>) – must contain columns [tname, obs_mean, obs_error]</li>
+<li><strong>sel</strong> (<em>np.array</em>) – boolean selector array</li>
+<li><strong>tname</strong> (<em>str</em>) – timestep column name, e.g. ‘timestep’</li>
+<li><strong>obs</strong> (<em>str</em>) – observable column name, e.g. ‘LocalEnergy’</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(myx, y0m, y0e) of type (list, float, float) containing
+(timesteps, t=0 value, t=0 error)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
+</td>
 </tr>
 </tbody>
 </table>

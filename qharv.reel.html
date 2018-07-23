@@ -63,41 +63,229 @@
 <dl class="function">
 <dt id="qharv.reel.ascii_out.all_lines_at_idx">
 <code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">all_lines_at_idx</code><span class="sig-paren">(</span><em>mm</em>, <em>idx_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#all_lines_at_idx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.all_lines_at_idx" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>return a list of lines given a list of memory locations
+follow up on all_lines_with_tag
+e.g. all_lines_at_idx(mm, all_lines_with_tag(mm, ‘Atom’) )
+reads ‘’’
+Atom 0 0 0 0
+Atom 1 1 1 1
+Atom 2 2 2 2
+‘’‘</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mm</strong> (<em>mmap.mmap</em>) – memory map to file</li>
+<li><strong>idx_list</strong> (<em>list</em>) – a list of memory locations (int)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a list of strings, each being the line at idx</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="qharv.reel.ascii_out.all_lines_with_tag">
 <code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">all_lines_with_tag</code><span class="sig-paren">(</span><em>mm</em>, <em>tag</em>, <em>nline_max=1048576</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#all_lines_with_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.all_lines_with_tag" title="Permalink to this definition">¶</a></dt>
-<dd><p>return a list of memory indices pointing to the start of tag
-the search is conducted starting from the current location of mm.</p>
+<dd><dl class="docutils">
+<dt>return a list of memory indices pointing to the start of tag</dt>
+<dd>the search is conducted starting from the current location of mm.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mm</strong> (<em>mmap.mmap</em>) – memory map to file</li>
+<li><strong>tag</strong> (<em>str</em>) – tag to identify lines to look for</li>
+<li><strong>nline_max</strong> (<em>int</em><em>, </em><em>optional</em>) – maximum number of lines to look for
+, default is 2^20. Error will be raised if max is too low</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a list of memory locations of all found tags</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.reel.ascii_out.block_text">
 <code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">block_text</code><span class="sig-paren">(</span><em>mm</em>, <em>header</em>, <em>trailer</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#block_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.block_text" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>find a block of text in between header and trailer
+header and trailer are not included by default</p>
+<p>e.g. given text in mm
+‘’’
+begin important data
+1 2 3
+4 5 6
+7 8 9
+end important data
+‘’‘</p>
+<p>mm.block_text(mm, ‘begin’, ‘end’) returns
+‘’‘1 2 3
+4 5 6
+7 8 9
+‘’‘</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mm</strong> (<em>mmap.mmap</em>) – memory map to text file</li>
+<li><strong>header</strong> (<em>str</em>) – string indicating the beginning of block</li>
+<li><strong>trailer</strong> (<em>str</em>) – string indicating the end of block</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="qharv.reel.ascii_out.locate_block">
 <code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">locate_block</code><span class="sig-paren">(</span><em>mm</em>, <em>header</em>, <em>trailer</em>, <em>skip_header=True</em>, <em>skip_trailer=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#locate_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.locate_block" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>find the memory locations bounding a block of text
+in between header and trailer; header and trailer are
+not included by default
+e.g. see block_text</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mm</strong> (<em>mmap.mmap</em>) – memory map to text file</li>
+<li><strong>header</strong> (<em>str</em>) – string indicating the beginning of block</li>
+<li><strong>trailer</strong> (<em>str</em>) – string indicating the end of block</li>
+<li><strong>skip_head</strong> (<em>bool</em><em>, </em><em>optional</em>) – skip header, default is True</li>
+<li><strong>skip_trailer</strong> (<em>bool</em><em>, </em><em>optional</em>) – skip trailer, default is True</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(begin_idx, end_idx), memory span of text block</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="qharv.reel.ascii_out.lr_mark">
 <code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">lr_mark</code><span class="sig-paren">(</span><em>line</em>, <em>lmark</em>, <em>rmark</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#lr_mark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.lr_mark" title="Permalink to this definition">¶</a></dt>
-<dd><p>read a string segment from line, which is enclosed between l&amp;rmark
-e.g. extract the contents in parenteses</p>
+<dd><dl class="docutils">
+<dt>read a string segment from line, which is enclosed between l&amp;rmark</dt>
+<dd>e.g. extract the contents in parenteses</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>line</strong> (<em>str</em>) – text line</li>
+<li><strong>lmark</strong> (<em>str</em>) – left marker, e.g. ‘(‘</li>
+<li><strong>rmark</strong> (<em>str</em>) – right marker, e.g. ‘)’</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">text in between left and right markers</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.reel.ascii_out.name_sep_val">
-<code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">name_sep_val</code><span class="sig-paren">(</span><em>mm</em>, <em>name</em>, <em>sep='='</em>, <em>val_dtype=&lt;type 'float'&gt;</em>, <em>pos=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#name_sep_val"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.name_sep_val" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">name_sep_val</code><span class="sig-paren">(</span><em>mm</em>, <em>name</em>, <em>sep='='</em>, <em>dtype=&lt;type 'float'&gt;</em>, <em>pos=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#name_sep_val"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.name_sep_val" title="Permalink to this definition">¶</a></dt>
+<dd><p>read key-value pair such as “name = value”
+e.g.
+name_sep_val(mm, ‘a’): ‘a = 2.4’
+name_sep_val(mm, ‘volume’, pos=-2): ‘volume = 100.0 bohr^3’
+name_sep_val(mm, ‘key’, sep=’:’): ‘key:val’
+name_sep_val(mm, ‘new’, sep=’:’): ‘new:name’
+name_sep_val(mm, ‘natom’, dtype=int): ‘new:name’</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mm</strong> (<em>mmap.mmap</em>) – memory map</li>
+<li><strong>name</strong> (<em>str</em>) – name of variable; used to find value line</li>
+<li><strong>sep</strong> (<em>str</em><em>, </em><em>optional</em>) – separator, default ‘=’</li>
+<li><strong>dtype</strong> (<em>type</em><em>, </em><em>optional</em>) – variable data type, default float</li>
+<li><strong>pos</strong> (<em>int</em><em>, </em><em>optiona</em>) – position of value in line, default last (-1)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">value of requested variable</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dtype</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.ascii_out.name_val_table">
+<code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">name_val_table</code><span class="sig-paren">(</span><em>text</em>, <em>dtype=&lt;type 'float'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#name_val_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.name_val_table" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>designed to parse optVariables text block</dt>
+<dd>e.g. ‘’‘uu_0 1.0770e+00 1 1  ON 0</dd>
+</dl>
+<p>uu_1 6.7940e-01 1 1  ON 1
+uu_2 4.3156e-01 1 1  ON 2
+ud_0 1.6913e+00 1 1  ON 5
+ud_1 1.0443e+00 1 1  ON 6
+ud_2 6.1912e-01 1 1  ON 7
+‘’‘</p>
+<blockquote>
+<div><p>return variable-value map, only the first two columns are parsed.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>text (str): text block such as given in the example
+dtype (type): data type of value, default is float</dd>
+<dt>Return:</dt>
+<dd>dict: variable name -&gt; value map</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
 
 <dl class="function">
 <dt id="qharv.reel.ascii_out.read">
 <code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">read</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.read" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>get a memory map pointer to file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>str</em>) – filename</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">memory map to file</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">mmap.mmap</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="module-qharv.reel.mole">
@@ -105,69 +293,75 @@ e.g. extract the contents in parenteses</p>
 <dl class="function">
 <dt id="qharv.reel.mole.build_qmcpack_fname">
 <code class="descclassname">qharv.reel.mole.</code><code class="descname">build_qmcpack_fname</code><span class="sig-paren">(</span><em>entry</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#build_qmcpack_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.build_qmcpack_fname" title="Permalink to this definition">¶</a></dt>
-<dd><p>inverse of interpret_qmcpack_fname
-:param entry: a dictionary of meta data, must include [‘id’,’grouped’,’group’,’series’,’category’,’ext’] in key
-:type entry: dict</p>
+<dd><p>inverse of interpret_qmcpack_fname</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">filename</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>entry</strong> (<em>dict</em>) – a dictionary of meta data, must include</li>
+<li><strong>in key</strong> (<em>[</em><em>'id'</em><em>,</em><em>'grouped'</em><em>,</em><em>'group'</em><em>,</em><em>'series'</em><em>,</em><em>'category'</em><em>,</em><em>'ext'</em><em>]</em>) – </li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">fname (str)</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">filename</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
-
-<dl class="function">
-<dt id="qharv.reel.mole.files_scalar_dat">
-<code class="descclassname">qharv.reel.mole.</code><code class="descname">files_scalar_dat</code><span class="sig-paren">(</span><em>calcdir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#files_scalar_dat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.files_scalar_dat" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="qharv.reel.mole.files_stat_h5">
-<code class="descclassname">qharv.reel.mole.</code><code class="descname">files_stat_h5</code><span class="sig-paren">(</span><em>calcdir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#files_stat_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.files_stat_h5" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="function">
 <dt id="qharv.reel.mole.files_with_regex">
 <code class="descclassname">qharv.reel.mole.</code><code class="descname">files_with_regex</code><span class="sig-paren">(</span><em>regex</em>, <em>rundir</em>, <em>case=True</em>, <em>ftype='f'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#files_with_regex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.files_with_regex" title="Permalink to this definition">¶</a></dt>
-<dd><p>find files with the given suffix in folder rundir; rely on bash <cite>find</cite> command
-:param regex: regular expression for file names
-:type regex: str
-:param rundir: directory containing the files to be found
-:type rundir: str
-:param case: case sensity, default is True
-:type case: bool, optional
-:param ftype: files type, default is regular file ‘f’, may be directory ‘d’
-:type ftype: str, optional</p>
+<dd><p>find files with the given suffix in folder rundir
+rely on bash <cite>find</cite> command</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">flist, a list of filenames matching the given regular expression</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>regex</strong> (<em>str</em>) – regular expression for file names</li>
+<li><strong>rundir</strong> (<em>str</em>) – directory containing the files to be found</li>
+<li><strong>case</strong> (<em>bool</em><em>, </em><em>optional</em>) – case sensity, default is True</li>
+<li><strong>ftype</strong> (<em>str</em><em>, </em><em>optional</em>) – files type, default is regular file ‘f’</li>
+<li><strong>may be directory 'd'</strong> (<em>,</em>) – </li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">flist, a list of filenames matching the given regular expression</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="function">
-<dt id="qharv.reel.mole.group_map">
-<code class="descclassname">qharv.reel.mole.</code><code class="descname">group_map</code><span class="sig-paren">(</span><em>flist</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#group_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.group_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>group QMCPACK output files by series id; if a file does not have a group index, then append it to an indepenednt list
-:param flist: a list of filenames, should be QMCPACK outputs
-:type flist: list</p>
+<dt id="qharv.reel.mole.find">
+<code class="descclassname">qharv.reel.mole.</code><code class="descname">find</code><span class="sig-paren">(</span><em>regex</em>, <em>rundir</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>find the first file that matches the given regular expression
+RuntimeError will be raised unless exactly one file is found</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">groups, map series id (int) to a list of filenames
-list: indep, a list of independent filenames</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>regex</strong> (<em>str</em>) – regular expression for file names</li>
+<li><strong>rundir</strong> (<em>str</em>) – directory containing the files to be found</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">filename</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -176,7 +370,9 @@ list: indep, a list of independent filenames</td>
 <dl class="function">
 <dt id="qharv.reel.mole.interpret_qmcpack_fname">
 <code class="descclassname">qharv.reel.mole.</code><code class="descname">interpret_qmcpack_fname</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#interpret_qmcpack_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.interpret_qmcpack_fname" title="Permalink to this definition">¶</a></dt>
-<dd><p>extract metadata regarding the contents of a file based on its filename. QMCPACK generates files having a pre-determined suffix structure. This function will interpret the last 4 period-separated segments of the suffix.</p>
+<dd><p>extract metadata regarding the contents of a file based on its filename.
+QMCPACK generates files having a pre-determined suffix structure. This
+function will interpret the last 4 period-separated segments of the suffix.</p>
 <dl class="docutils">
 <dt>fname examples:</dt>
 <dd>qmc.s000.scalar.dat

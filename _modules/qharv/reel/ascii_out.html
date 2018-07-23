@@ -49,17 +49,43 @@
 <span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
 <span class="c1"># Email: yubo.paul.yang@gmail.com</span>
 <span class="c1"># Routines to parse ASCII output. Mostly built around mmap&#39;s API.</span>
-
+<span class="c1">#  The central object is mmap.mmap, which is usually named &quot;mm&quot;.</span>
 <span class="kn">from</span> <span class="nn">mmap</span> <span class="k">import</span> <span class="n">mmap</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
+
 <div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
-  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">mm</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span><span class="mi">0</span><span class="p">)</span>
-  <span class="c1"># end with</span>
+  <span class="sd">&quot;&quot;&quot; get a memory map pointer to file</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fname (str): filename</span>
+<span class="sd">  Return:</span>
+<span class="sd">    mmap.mmap: memory map to file</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">mm</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">mm</span></div>
 
-<div class="viewcode-block" id="name_sep_val"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.name_sep_val">[docs]</a><span class="k">def</span> <span class="nf">name_sep_val</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;=&#39;</span><span class="p">,</span><span class="n">val_dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span><span class="n">pos</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+
+<div class="viewcode-block" id="name_sep_val"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.name_sep_val">[docs]</a><span class="k">def</span> <span class="nf">name_sep_val</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; read key-value pair such as &quot;name = value&quot;</span>
+<span class="sd">  e.g. </span>
+<span class="sd">  name_sep_val(mm, &#39;a&#39;): &#39;a = 2.4&#39;</span>
+<span class="sd">  name_sep_val(mm, &#39;volume&#39;, pos=-2): &#39;volume = 100.0 bohr^3&#39;</span>
+<span class="sd">  name_sep_val(mm, &#39;key&#39;, sep=&#39;:&#39;): &#39;key:val&#39;</span>
+<span class="sd">  name_sep_val(mm, &#39;new&#39;, sep=&#39;:&#39;): &#39;new:name&#39;</span>
+<span class="sd">  name_sep_val(mm, &#39;natom&#39;, dtype=int): &#39;new:name&#39;</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    mm (mmap.mmap): memory map</span>
+<span class="sd">    name (str): name of variable; used to find value line</span>
+<span class="sd">    sep (str, optional): separator, default &#39;=&#39;</span>
+<span class="sd">    dtype (type, optional): variable data type, default float</span>
+<span class="sd">    pos (int, optiona): position of value in line, default last (-1)</span>
+<span class="sd">  Return:</span>
+<span class="sd">    dtype: value of requested variable</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">cur_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
   <span class="n">idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39; not found&#39;</span><span class="p">)</span>
@@ -69,13 +95,24 @@
 
   <span class="c1"># assume the text immediately next to the separator is the desired value</span>
   <span class="n">val_text</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-  <span class="n">val</span> <span class="o">=</span> <span class="n">val_dtype</span><span class="p">(</span> <span class="n">val_text</span> <span class="p">)</span>
+  <span class="n">val</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span> <span class="n">val_text</span> <span class="p">)</span>
+  <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">cur_idx</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">val</span></div>
-<span class="c1"># end def</span>
+<span class="c1"># end def name_sep_val</span>
 
-<div class="viewcode-block" id="all_lines_with_tag"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.all_lines_with_tag">[docs]</a><span class="k">def</span> <span class="nf">all_lines_with_tag</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="n">tag</span><span class="p">,</span><span class="n">nline_max</span><span class="o">=</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">):</span>
+
+<div class="viewcode-block" id="all_lines_with_tag"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.all_lines_with_tag">[docs]</a><span class="k">def</span> <span class="nf">all_lines_with_tag</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">nline_max</span><span class="o">=</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; return a list of memory indices pointing to the start of tag</span>
-<span class="sd">   the search is conducted starting from the current location of mm. &quot;&quot;&quot;</span>
+<span class="sd">   the search is conducted starting from the current location of mm.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    mm (mmap.mmap): memory map to file</span>
+<span class="sd">    tag (str): tag to identify lines to look for</span>
+<span class="sd">    nline_max (int, optional): maximum number of lines to look for</span>
+<span class="sd">     , default is 2^20. Error will be raised if max is too low</span>
+<span class="sd">  Return:</span>
+<span class="sd">    list: a list of memory locations of all found tags</span>
+<span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">all_idx</span> <span class="o">=</span> <span class="p">[]</span>
   <span class="k">for</span> <span class="n">iline</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nline_max</span><span class="p">):</span>
     <span class="n">idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
@@ -92,41 +129,105 @@
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;may need to increase nline_max&#39;</span><span class="p">)</span>
   <span class="c1"># end if</span>
   <span class="k">return</span> <span class="n">all_idx</span></div>
-<span class="c1"># end def all_lines_with_tag</span>
+<span class="c1"># end def</span>
 
-<div class="viewcode-block" id="all_lines_at_idx"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.all_lines_at_idx">[docs]</a><span class="k">def</span> <span class="nf">all_lines_at_idx</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="n">idx_list</span><span class="p">):</span>
+
+<div class="viewcode-block" id="all_lines_at_idx"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.all_lines_at_idx">[docs]</a><span class="k">def</span> <span class="nf">all_lines_at_idx</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">idx_list</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; return a list of lines given a list of memory locations</span>
+<span class="sd">  follow up on all_lines_with_tag</span>
+<span class="sd">  e.g. all_lines_at_idx(mm, all_lines_with_tag(mm, &#39;Atom&#39;) )</span>
+<span class="sd">  reads &#39;&#39;&#39;</span>
+<span class="sd">  Atom 0 0 0 0</span>
+<span class="sd">  Atom 1 1 1 1</span>
+<span class="sd">  Atom 2 2 2 2</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    mm (mmap.mmap): memory map to file</span>
+<span class="sd">    idx_list (list): a list of memory locations (int)</span>
+<span class="sd">  Return:</span>
+<span class="sd">    list: a list of strings, each being the line at idx</span>
+<span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
   <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">idx_list</span><span class="p">:</span>
     <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span> <span class="p">)</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
   <span class="c1"># end for</span>
   <span class="k">return</span> <span class="n">lines</span></div>
 <span class="c1"># end def</span>
 
-<div class="viewcode-block" id="locate_block"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.locate_block">[docs]</a><span class="k">def</span> <span class="nf">locate_block</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="n">header</span><span class="p">,</span><span class="n">trailer</span><span class="p">,</span><span class="n">skip_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">skip_trailer</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-  <span class="n">begin_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+
+<div class="viewcode-block" id="locate_block"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.locate_block">[docs]</a><span class="k">def</span> <span class="nf">locate_block</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">trailer</span>
+  <span class="p">,</span> <span class="n">skip_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">skip_trailer</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; find the memory locations bounding a block of text</span>
+<span class="sd">  in between header and trailer; header and trailer are</span>
+<span class="sd">  not included by default</span>
+<span class="sd">  e.g. see block_text</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    mm (mmap.mmap): memory map to text file</span>
+<span class="sd">    header  (str): string indicating the beginning of block</span>
+<span class="sd">    trailer (str): string indicating the end of block</span>
+<span class="sd">    skip_head (bool, optional): skip header, default is True</span>
+<span class="sd">    skip_trailer (bool, optional): skip trailer, default is True</span>
+<span class="sd">  Return:</span>
+<span class="sd">    tuple: (begin_idx, end_idx), memory span of text block</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">begin_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span> <span class="n">header</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="p">)</span>
   <span class="k">if</span> <span class="n">skip_header</span><span class="p">:</span>
     <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">begin_idx</span><span class="p">)</span>
     <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
     <span class="n">begin_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
   <span class="c1"># end if</span>
-  <span class="n">end_idx</span>   <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">trailer</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+  <span class="n">end_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span> <span class="n">trailer</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="p">)</span>
   <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_trailer</span><span class="p">:</span>
     <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">end_idx</span><span class="p">)</span>
     <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
     <span class="n">end_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
   <span class="c1"># end if</span>
-  <span class="k">return</span> <span class="n">begin_idx</span><span class="p">,</span><span class="n">end_idx</span></div>
+  <span class="k">return</span> <span class="n">begin_idx</span><span class="p">,</span> <span class="n">end_idx</span></div>
 <span class="c1"># end def locate_block</span>
 
-<div class="viewcode-block" id="block_text"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.block_text">[docs]</a><span class="k">def</span> <span class="nf">block_text</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="n">header</span><span class="p">,</span><span class="n">trailer</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="block_text"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.block_text">[docs]</a><span class="k">def</span> <span class="nf">block_text</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">trailer</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; find a block of text in between header and trailer</span>
+<span class="sd">  header and trailer are not included by default</span>
+
+<span class="sd">  e.g. given text in mm</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+<span class="sd">  begin important data</span>
+<span class="sd">  1 2 3</span>
+<span class="sd">  4 5 6</span>
+<span class="sd">  7 8 9</span>
+<span class="sd">  end important data</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+
+<span class="sd">  mm.block_text(mm, &#39;begin&#39;, &#39;end&#39;) returns</span>
+<span class="sd">  &#39;&#39;&#39;1 2 3</span>
+<span class="sd">  4 5 6</span>
+<span class="sd">  7 8 9</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    mm (mmap.mmap): memory map to text file</span>
+<span class="sd">    header  (str): string indicating the beginning of block</span>
+<span class="sd">    trailer (str): string indicating the end of block</span>
+<span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">bidx</span><span class="p">,</span><span class="n">eidx</span> <span class="o">=</span> <span class="n">locate_block</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="n">header</span><span class="p">,</span><span class="n">trailer</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">mm</span><span class="p">[</span><span class="n">bidx</span><span class="p">:</span><span class="n">eidx</span><span class="p">]</span></div>
 <span class="c1"># end def block_text</span>
 
-<div class="viewcode-block" id="lr_mark"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.lr_mark">[docs]</a><span class="k">def</span> <span class="nf">lr_mark</span><span class="p">(</span><span class="n">line</span><span class="p">,</span><span class="n">lmark</span><span class="p">,</span><span class="n">rmark</span><span class="p">):</span>
+
+<div class="viewcode-block" id="lr_mark"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.lr_mark">[docs]</a><span class="k">def</span> <span class="nf">lr_mark</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">lmark</span><span class="p">,</span> <span class="n">rmark</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; read a string segment from line, which is enclosed between l&amp;rmark</span>
 <span class="sd">   e.g. extract the contents in parenteses</span>
+<span class="sd">  Args:</span>
+<span class="sd">    line (str): text line</span>
+<span class="sd">    lmark (str): left marker, e.g. &#39;(&#39;</span>
+<span class="sd">    rmark (str): right marker, e.g. &#39;)&#39;</span>
+<span class="sd">  Return:</span>
+<span class="sd">    str: text in between left and right markers</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">lidx</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">lmark</span><span class="p">)</span>
   <span class="k">assert</span> <span class="n">lidx</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
@@ -134,6 +235,35 @@
   <span class="k">assert</span> <span class="n">ridx</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
   <span class="k">return</span> <span class="n">line</span><span class="p">[</span><span class="n">lidx</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">ridx</span><span class="p">]</span></div>
 <span class="c1"># end def</span>
+
+<div class="viewcode-block" id="name_val_table"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.name_val_table">[docs]</a><span class="k">def</span> <span class="nf">name_val_table</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; designed to parse optVariables text block</span>
+<span class="sd">  e.g. &#39;&#39;&#39;uu_0 1.0770e+00 1 1  ON 0</span>
+<span class="sd">uu_1 6.7940e-01 1 1  ON 1</span>
+<span class="sd">uu_2 4.3156e-01 1 1  ON 2</span>
+<span class="sd">ud_0 1.6913e+00 1 1  ON 5</span>
+<span class="sd">ud_1 1.0443e+00 1 1  ON 6</span>
+<span class="sd">ud_2 6.1912e-01 1 1  ON 7</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">  return variable-value map, only the first two columns are parsed.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    text (str): text block such as given in the example</span>
+<span class="sd">    dtype (type): data type of value, default is float</span>
+<span class="sd">  Return:</span>
+<span class="sd">    dict: variable name -&gt; value map</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="n">lines</span>  <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+  <span class="n">var_dict</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">val</span>  <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">var_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+  <span class="k">return</span> <span class="n">var_dict</span></div>
 </pre></div>
 
           </div>

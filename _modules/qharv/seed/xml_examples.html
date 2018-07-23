@@ -54,6 +54,47 @@
 <span class="kn">from</span> <span class="nn">qharv.seed</span> <span class="k">import</span> <span class="n">xml</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">StringIO</span>
 
+<span class="c1"># ============================= &lt;project&gt; section =============================</span>
+
+
+<div class="viewcode-block" id="project"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.project">[docs]</a><span class="k">def</span> <span class="nf">project</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">series0</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;project id=&quot;</span><span class="si">%s</span><span class="s1">&quot; series=&quot;</span><span class="si">%d</span><span class="s1">&quot;/&gt;&#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">series0</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+
+<span class="c1"># ============================= &lt;hamiltonian&gt; section =============================</span>
+
+
+<div class="viewcode-block" id="static_coul_ae_ham"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.static_coul_ae_ham">[docs]</a><span class="k">def</span> <span class="nf">static_coul_ae_ham</span><span class="p">():</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;hamiltonian name=&quot;h0&quot; type=&quot;generic&quot; target=&quot;e&quot;&gt;</span>
+<span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;ElecElec&quot; source=&quot;e&quot; target=&quot;e&quot;/&gt;</span>
+<span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;IonIon&quot; source=&quot;ion0&quot; target=&quot;ion0&quot;/&gt;</span>
+<span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;ElecIon&quot; source=&quot;ion0&quot; target=&quot;e&quot;/&gt;</span>
+<span class="s1">      &lt;/hamiltonian&gt;&#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="static_ae_ham"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.static_ae_ham">[docs]</a><span class="k">def</span> <span class="nf">static_ae_ham</span><span class="p">():</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;hamiltonian name=&quot;h0&quot; type=&quot;generic&quot; target=&quot;e&quot;&gt;</span>
+<span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;ElecElec&quot; source=&quot;e&quot; target=&quot;e&quot;/&gt;</span>
+<span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;IonIon&quot; source=&quot;ion0&quot; target=&quot;ion0&quot;/&gt;</span>
+<span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;ElecIon&quot; source=&quot;ion0&quot; target=&quot;e&quot;/&gt;</span>
+<span class="s1">         &lt;estimator name=&quot;csk&quot; type=&quot;csk&quot; hdf5=&quot;yes&quot;/&gt;</span>
+<span class="s1">         &lt;estimator type=&quot;gofr&quot; name=&quot;gofr&quot; num_bin=&quot;128&quot;/&gt;</span>
+<span class="s1">         &lt;estimator type=&quot;Pressure&quot;/&gt;</span>
+<span class="s1">      &lt;/hamiltonian&gt;&#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="dynamic_ae_ham"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.dynamic_ae_ham">[docs]</a><span class="k">def</span> <span class="nf">dynamic_ae_ham</span><span class="p">():</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;hamiltonian name=&quot;h0&quot; type=&quot;generic&quot; target=&quot;e&quot;&gt;</span>
+<span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;ElecElec&quot; source=&quot;e&quot; target=&quot;e&quot;/&gt;</span>
+<span class="s1">         &lt;estimator name=&quot;csk&quot; type=&quot;csk&quot; hdf5=&quot;yes&quot;/&gt;</span>
+<span class="s1">         &lt;estimator type=&quot;gofr&quot; name=&quot;gofr&quot; num_bin=&quot;128&quot;/&gt;</span>
+<span class="s1">         &lt;estimator type=&quot;Pressure&quot;/&gt;</span>
+<span class="s1">         &lt;estimator name=&quot;skinetic&quot; type=&quot;specieskinetic&quot;/&gt;</span>
+<span class="s1">         &lt;estimator hdf5=&quot;yes&quot; name=&quot;latdev&quot; per_xyz=&quot;yes&quot; sgroup=&quot;H&quot; source=&quot;wf_centers&quot; target=&quot;e&quot; tgroup=&quot;p&quot; type=&quot;latticedeviation&quot;/&gt;</span>
+<span class="s1">      &lt;/hamiltonian&gt;&#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 <span class="c1"># ============================= &lt;qmc&gt; section =============================</span>
 
 <div class="viewcode-block" id="wbyw_vmc"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.wbyw_vmc">[docs]</a><span class="k">def</span> <span class="nf">wbyw_vmc</span><span class="p">():</span>
@@ -69,6 +110,19 @@
 <span class="s1">  &lt;/qmc&gt;&#39;&#39;&#39;</span>
   <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="pbyp_vmc"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.pbyp_vmc">[docs]</a><span class="k">def</span> <span class="nf">pbyp_vmc</span><span class="p">():</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;qmc method=&quot;vmc&quot; move=&quot;pbyp&quot; checkpoint=&quot;0&quot;&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;blocks&quot;              &gt;    64              &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;steps&quot;               &gt;    4               &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;subSteps&quot;            &gt;    2               &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;timestep&quot;            &gt;    2.0             &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;warmupsteps&quot;         &gt;    16              &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;samples&quot;             &gt;    576             &lt;/parameter&gt;</span>
+<span class="s1">   &lt;/qmc&gt;&#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="wbyw_dmc"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.wbyw_dmc">[docs]</a><span class="k">def</span> <span class="nf">wbyw_dmc</span><span class="p">():</span>
   <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;qmc method=&quot;dmc&quot; move=&quot;not_pbyp_or_whatever&quot; checkpoint=&quot;0&quot;&gt;</span>
 <span class="s1">    &lt;parameter name=&quot;usedrift&quot;&gt;    yes  &lt;/parameter&gt;</span>
@@ -77,6 +131,17 @@
 <span class="s1">    &lt;parameter name=&quot;timestep&quot;&gt;  0.002  &lt;/parameter&gt;</span>
 <span class="s1">  &lt;/qmc&gt;&#39;&#39;&#39;</span>
   <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="pbyp_dmc"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.pbyp_dmc">[docs]</a><span class="k">def</span> <span class="nf">pbyp_dmc</span><span class="p">():</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;qmc method=&quot;dmc&quot; move=&quot;pbyp&quot; checkpoint=&quot;0&quot;&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;blocks&quot;              &gt;    16              &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;steps&quot;               &gt;    2               &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;timestep&quot;            &gt;    0.4             &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;targetwalkers&quot;       &gt;    576             &lt;/parameter&gt;</span>
+<span class="s1">   &lt;/qmc&gt;&#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="wbyw_optimize"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.wbyw_optimize">[docs]</a><span class="k">def</span> <span class="nf">wbyw_optimize</span><span class="p">():</span>
   <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;loop max=&quot;8&quot;&gt;</span>
@@ -92,6 +157,22 @@
 <span class="s1">      &lt;parameter name=&quot;samples&quot;&gt;      49152  &lt;/parameter&gt;</span>
 <span class="s1">      &lt;parameter name=&quot;usedrift&quot;&gt;       yes  &lt;/parameter&gt;</span>
 <span class="s1">      &lt;parameter name=&quot;MinMethod&quot;&gt; OneShiftOnly &lt;/parameter&gt;</span>
+<span class="s1">    &lt;/qmc&gt;</span>
+<span class="s1">  &lt;/loop&gt;&#39;&#39;&#39;</span>
+  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="pbyp_var_optimize"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.pbyp_var_optimize">[docs]</a><span class="k">def</span> <span class="nf">pbyp_var_optimize</span><span class="p">():</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;loop max=&quot;16&quot;&gt;</span>
+<span class="s1">    &lt;qmc method=&quot;linear&quot; move=&quot;pbyp&quot; checkpoint=&quot;-1&quot;&gt;</span>
+<span class="s1">      &lt;cost name=&quot;energy&quot;&gt;               0.05  &lt;/cost&gt;</span>
+<span class="s1">      &lt;cost name=&quot;unreweightedvariance&quot;&gt; 0.95  &lt;/cost&gt;</span>
+<span class="s1">      &lt;cost name=&quot;reweightedvariance&quot;&gt;   0.00  &lt;/cost&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;blocks&quot;&gt;         64 &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;warmupsteps&quot;&gt;    40 &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;timestep&quot;&gt;      3.5 &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;subSteps&quot;&gt;        3 &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;samples&quot;&gt;    49152  &lt;/parameter&gt;</span>
+<span class="s1">      &lt;parameter name=&quot;MinMethod&quot;&gt; quartic &lt;/parameter&gt;</span>
 <span class="s1">    &lt;/qmc&gt;</span>
 <span class="s1">  &lt;/loop&gt;&#39;&#39;&#39;</span>
   <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
@@ -171,29 +252,132 @@
 <span class="s1">        &lt;/backflow&gt;&#39;&#39;&#39;</span>
   <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
-<span class="c1"># ============================= &lt;hamiltonian&gt; section =============================</span>
 
-<div class="viewcode-block" id="static_ae_ham"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.static_ae_ham">[docs]</a><span class="k">def</span> <span class="nf">static_ae_ham</span><span class="p">():</span>
-  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;hamiltonian name=&quot;h0&quot; type=&quot;generic&quot; target=&quot;e&quot;&gt;</span>
-<span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;ElecElec&quot; source=&quot;e&quot; target=&quot;e&quot;/&gt;</span>
-<span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;IonIon&quot; source=&quot;ion0&quot; target=&quot;ion0&quot;/&gt;</span>
-<span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;ElecIon&quot; source=&quot;ion0&quot; target=&quot;e&quot;/&gt;</span>
-<span class="s1">         &lt;estimator name=&quot;csk&quot; type=&quot;csk&quot; hdf5=&quot;yes&quot;/&gt;</span>
-<span class="s1">         &lt;estimator type=&quot;gofr&quot; name=&quot;gofr&quot; num_bin=&quot;128&quot;/&gt;</span>
-<span class="s1">         &lt;estimator type=&quot;Pressure&quot;/&gt;</span>
-<span class="s1">      &lt;/hamiltonian&gt;&#39;&#39;&#39;</span>
-  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+<span class="c1"># =========================== &lt;qmcsystem&gt; section ===========================</span>
+<div class="viewcode-block" id="heg_system"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.heg_system">[docs]</a><span class="k">def</span> <span class="nf">heg_system</span><span class="p">(</span><span class="n">rs</span><span class="p">,</span> <span class="n">nshell_up</span><span class="p">,</span> <span class="n">polarized</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; construct QMCPACK input xml &lt;qmcsystem&gt; node for the homogeneous</span>
+<span class="sd">  electron gas (HEG). Momentum shells must be fully filled. The HEG must</span>
+<span class="sd">  either be fully polarized or fully unpolarized.</span>
 
-<div class="viewcode-block" id="dynamic_ae_ham"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml_examples.dynamic_ae_ham">[docs]</a><span class="k">def</span> <span class="nf">dynamic_ae_ham</span><span class="p">():</span>
-  <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;&lt;hamiltonian name=&quot;h0&quot; type=&quot;generic&quot; target=&quot;e&quot;&gt;</span>
-<span class="s1">         &lt;pairpot type=&quot;coulomb&quot; name=&quot;ElecElec&quot; source=&quot;e&quot; target=&quot;e&quot;/&gt;</span>
-<span class="s1">         &lt;estimator name=&quot;csk&quot; type=&quot;csk&quot; hdf5=&quot;yes&quot;/&gt;</span>
-<span class="s1">         &lt;estimator type=&quot;gofr&quot; name=&quot;gofr&quot; num_bin=&quot;128&quot;/&gt;</span>
-<span class="s1">         &lt;estimator type=&quot;Pressure&quot;/&gt;</span>
-<span class="s1">         &lt;estimator name=&quot;skinetic&quot; type=&quot;specieskinetic&quot;/&gt;</span>
-<span class="s1">         &lt;estimator hdf5=&quot;yes&quot; name=&quot;latdev&quot; per_xyz=&quot;yes&quot; sgroup=&quot;H&quot; source=&quot;wf_centers&quot; target=&quot;e&quot; tgroup=&quot;p&quot; type=&quot;latticedeviation&quot;/&gt;</span>
-<span class="s1">      &lt;/hamiltonian&gt;&#39;&#39;&#39;</span>
-  <span class="k">return</span> <span class="n">xml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+<span class="sd">  number of particles is determined by the number of filled shells.</span>
+<span class="sd">   0 -&gt;  1</span>
+<span class="sd">   1 -&gt;  7</span>
+<span class="sd">   2 -&gt; 19</span>
+<span class="sd">   3 -&gt; 27</span>
+<span class="sd">   4 -&gt; 33</span>
+
+<span class="sd">  e.g. heg_system(1.0, 2, False) for unpolarized HEG with 2 shells</span>
+<span class="sd">  (38 electrons) at rs=1.0</span>
+
+<span class="sd">  * note: this function aims to return the **simplest** functional input,</span>
+<span class="sd">  for more flexibility please edit the returned xml element instead of</span>
+<span class="sd">  adding to this function.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    rs (float): Wigner-Seitz radius</span>
+<span class="sd">    nshell_up (int): number k shells filled by up electrons</span>
+<span class="sd">    polarized (bool): True: polarized (ndn=0); False: unpolarized (nup=ndn)</span>
+<span class="sd">  Return:</span>
+<span class="sd">    lxml.etree.Element: qsys_node containing the &lt;qmcsystem&gt; xml node</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">lxml</span> <span class="k">import</span> <span class="n">etree</span>
+  <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+
+  <span class="c1"># !!!! hard-code the number of electrons at each shell filling</span>
+  <span class="n">nshell2nelec</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># hack to remove electron species</span>
+    <span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+    <span class="mi">1</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span>
+    <span class="mi">2</span><span class="p">:</span><span class="mi">19</span><span class="p">,</span>
+    <span class="mi">3</span><span class="p">:</span><span class="mi">27</span><span class="p">,</span>
+    <span class="mi">4</span><span class="p">:</span><span class="mi">33</span><span class="p">,</span>
+    <span class="mi">5</span><span class="p">:</span><span class="mi">57</span><span class="p">,</span>
+    <span class="mi">6</span><span class="p">:</span><span class="mi">81</span><span class="p">,</span>
+    <span class="mi">7</span><span class="p">:</span><span class="mi">93</span><span class="p">,</span>
+    <span class="mi">8</span><span class="p">:</span><span class="mi">123</span><span class="p">,</span>
+    <span class="mi">9</span><span class="p">:</span><span class="mi">147</span><span class="p">,</span>
+    <span class="mi">10</span><span class="p">:</span><span class="mi">171</span>
+  <span class="p">}</span>
+  <span class="c1"># check shell</span>
+  <span class="k">if</span> <span class="n">polarized</span><span class="p">:</span>
+    <span class="n">nshell_dn</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">nshell_dn</span> <span class="o">=</span> <span class="n">nshell_up</span>
+
+  <span class="n">avail_nshell</span> <span class="o">=</span> <span class="n">nshell2nelec</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+  <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">nshell_up</span><span class="p">,</span> <span class="n">nshell_dn</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">avail_nshell</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;add to nshell2nelec; see example in HEGGrid.h&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">nshell_up</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">avail_nshell</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;shell </span><span class="si">%d</span><span class="s1"> needs to be added&#39;</span> <span class="o">%</span> <span class="n">nshell_up</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">nshell_dn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">avail_nshell</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;shell </span><span class="si">%d</span><span class="s1"> needs to be added&#39;</span> <span class="o">%</span> <span class="n">nshell_dn</span><span class="p">)</span>
+
+  <span class="c1"># calculate and check polarization</span>
+  <span class="n">nup</span> <span class="o">=</span> <span class="n">nshell2nelec</span><span class="p">[</span><span class="n">nshell_up</span><span class="p">]</span>
+  <span class="n">ndn</span> <span class="o">=</span> <span class="n">nshell2nelec</span><span class="p">[</span><span class="n">nshell_dn</span><span class="p">]</span>
+  <span class="n">nelec</span> <span class="o">=</span> <span class="n">nup</span> <span class="o">+</span> <span class="n">ndn</span>
+  <span class="n">pol</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span> <span class="nb">abs</span><span class="p">(</span><span class="n">nup</span><span class="o">-</span><span class="n">ndn</span><span class="p">)</span><span class="o">/</span><span class="n">nelec</span> <span class="p">))</span>
+  <span class="k">if</span> <span class="n">pol</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="n">polarized</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;polarization mismatch&#39;</span><span class="p">)</span>
+
+  <span class="c1"># build simulation cell using rs and nshell</span>
+  <span class="n">sc_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;simulationcell&#39;</span><span class="p">)</span>
+  <span class="n">rs_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;parameter&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;rs&#39;</span>
+    <span class="p">,</span> <span class="s1">&#39;condition&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">nelec</span><span class="p">)</span>
+    <span class="p">,</span> <span class="s1">&#39;polarized&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span> <span class="nb">int</span><span class="p">(</span><span class="n">polarized</span><span class="p">)</span> <span class="p">)</span>
+  <span class="p">})</span>
+  <span class="n">rs_node</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rs</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span>
+  <span class="n">bc_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;parameter&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;bconds&#39;</span><span class="p">})</span>
+  <span class="n">bc_node</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39; p p p &#39;</span>
+  <span class="n">lr_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;parameter&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;LR_dim_cutoff&#39;</span><span class="p">})</span>
+  <span class="n">lr_node</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39; 15.0 &#39;</span>
+  <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="p">[</span><span class="n">rs_node</span><span class="p">,</span> <span class="n">bc_node</span><span class="p">,</span> <span class="n">lr_node</span><span class="p">]:</span>
+    <span class="n">sc_node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+  <span class="c1"># build particleset node</span>
+  <span class="n">pset_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;particleset&#39;</span><span class="p">,{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;random&#39;</span><span class="p">:</span><span class="s1">&#39;yes&#39;</span><span class="p">})</span>
+  <span class="n">ugrp_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">,{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;u&#39;</span><span class="p">,</span><span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="nb">str</span><span class="p">(</span><span class="n">nup</span><span class="p">)})</span>
+  <span class="n">dgrp_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">,{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;d&#39;</span><span class="p">,</span><span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="nb">str</span><span class="p">(</span><span class="n">ndn</span><span class="p">)})</span>
+  <span class="n">charge_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;parameter&#39;</span><span class="p">,{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;charge&#39;</span><span class="p">})</span>
+  <span class="n">charge_node</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39; -1 &#39;</span>
+  <span class="k">if</span> <span class="n">polarized</span><span class="p">:</span>
+    <span class="n">grpl</span> <span class="o">=</span> <span class="p">[</span><span class="n">ugrp_node</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">grpl</span> <span class="o">=</span> <span class="p">[</span><span class="n">ugrp_node</span><span class="p">,</span> <span class="n">dgrp_node</span><span class="p">]</span>
+  <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">grpl</span><span class="p">:</span>
+    <span class="n">grp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">charge_node</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">pset_node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grp</span><span class="p">)</span>
+
+  <span class="c1"># build wavefunction node</span>
+  <span class="n">wf_node</span>  <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;wavefunction&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;psi0&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span><span class="s1">&#39;e&#39;</span><span class="p">})</span>
+  <span class="n">det_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;determinantset&#39;</span><span class="p">,{</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;electron-gas&#39;</span>
+    <span class="p">,</span> <span class="s1">&#39;shell&#39;</span><span class="p">:</span><span class="nb">str</span><span class="p">(</span><span class="n">nshell_up</span><span class="p">)</span>
+    <span class="p">,</span> <span class="s1">&#39;shell2&#39;</span><span class="p">:</span><span class="nb">str</span><span class="p">(</span><span class="n">nshell_dn</span><span class="p">)</span>
+  <span class="p">})</span>
+  <span class="n">wf_node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">det_node</span><span class="p">)</span>
+
+  <span class="c1"># build hamiltonian node</span>
+  <span class="n">ham_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;hamiltonian&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;h0&#39;</span>
+    <span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;generic&#39;</span>
+    <span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span><span class="s1">&#39;e&#39;</span>
+  <span class="p">})</span>
+  <span class="n">pot_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;pairpot&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;ElecElec&#39;</span>
+    <span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;coulomb&#39;</span>
+    <span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">:</span><span class="s1">&#39;e&#39;</span>
+    <span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span><span class="s1">&#39;e&#39;</span>
+  <span class="p">})</span>
+  <span class="n">ham_node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pot_node</span><span class="p">)</span>
+
+  <span class="c1"># assemble qmcsystem</span>
+  <span class="n">qsys_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;qmcsystem&#39;</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="p">[</span><span class="n">sc_node</span><span class="p">,</span> <span class="n">pset_node</span><span class="p">,</span> <span class="n">wf_node</span><span class="p">,</span> <span class="n">ham_node</span><span class="p">]:</span>
+    <span class="n">qsys_node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">qsys_node</span></div>
 </pre></div>
 
           </div>

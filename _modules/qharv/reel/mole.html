@@ -49,64 +49,50 @@
 <span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
 <span class="c1"># Email: yubo.paul.yang@gmail.com</span>
 <span class="c1"># dig around for goodies</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
-<span class="kn">from</span> <span class="nn">lxml</span> <span class="k">import</span> <span class="n">etree</span>
 
-<div class="viewcode-block" id="files_with_regex"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.files_with_regex">[docs]</a><span class="k">def</span> <span class="nf">files_with_regex</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span><span class="n">rundir</span><span class="p">,</span><span class="n">case</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">ftype</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; find files with the given suffix in folder rundir; rely on bash `find` command</span>
+
+<div class="viewcode-block" id="files_with_regex"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.files_with_regex">[docs]</a><span class="k">def</span> <span class="nf">files_with_regex</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">rundir</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; find files with the given suffix in folder rundir</span>
+<span class="sd">  rely on bash `find` command</span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    regex (str):  regular expression for file names</span>
 <span class="sd">    rundir (str): directory containing the files to be found</span>
 <span class="sd">    case (bool, optional): case sensity, default is True</span>
-<span class="sd">    ftype (str, optional): files type, default is regular file &#39;f&#39;, may be directory &#39;d&#39;</span>
-<span class="sd">  Returns:</span>
+<span class="sd">    ftype (str, optional): files type, default is regular file &#39;f&#39;</span>
+<span class="sd">    , may be directory &#39;d&#39;</span>
+<span class="sd">  Return:</span>
 <span class="sd">    list: flist, a list of filenames matching the given regular expression</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">popt</span> <span class="o">=</span> <span class="s1">&#39;-path&#39;</span>
   <span class="k">if</span> <span class="ow">not</span> <span class="n">case</span><span class="p">:</span>
-    <span class="n">popt</span> <span class="o">=</span> <span class="s1">&#39;-ipath&#39;</span> <span class="c1"># not case sensitive</span>
-  <span class="n">out</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;find&#39;</span><span class="p">,</span><span class="n">rundir</span><span class="p">,</span><span class="n">popt</span><span class="p">,</span><span class="n">regex</span><span class="p">,</span><span class="s1">&#39;-type&#39;</span><span class="p">,</span><span class="n">ftype</span><span class="p">])</span>
-  <span class="n">flist</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">popt</span> <span class="o">=</span> <span class="s1">&#39;-ipath&#39;</span>  <span class="c1"># not case sensitive</span>
+  <span class="n">out</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;find&#39;</span><span class="p">,</span> <span class="n">rundir</span><span class="p">,</span> <span class="n">popt</span><span class="p">,</span> <span class="n">regex</span><span class="p">,</span> <span class="s1">&#39;-type&#39;</span><span class="p">,</span> <span class="n">ftype</span><span class="p">])</span>
+  <span class="n">flist</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
   <span class="k">return</span> <span class="n">flist</span></div>
-<span class="c1"># end def files_with_regex</span>
-<div class="viewcode-block" id="files_scalar_dat"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.files_scalar_dat">[docs]</a><span class="k">def</span> <span class="nf">files_scalar_dat</span><span class="p">(</span><span class="n">calcdir</span><span class="p">):</span>
-  <span class="k">return</span> <span class="n">files_with_regex</span><span class="p">(</span><span class="s1">&#39;*scalar.dat&#39;</span><span class="p">,</span><span class="n">calcdir</span><span class="p">)</span></div>
-<div class="viewcode-block" id="files_stat_h5"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.files_stat_h5">[docs]</a><span class="k">def</span> <span class="nf">files_stat_h5</span><span class="p">(</span><span class="n">calcdir</span><span class="p">):</span>
-  <span class="k">return</span> <span class="n">files_with_regex</span><span class="p">(</span><span class="s1">&#39;*stat.h5&#39;</span><span class="p">,</span><span class="n">calcdir</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="group_map"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.group_map">[docs]</a><span class="k">def</span> <span class="nf">group_map</span><span class="p">(</span><span class="n">flist</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; group QMCPACK output files by series id; if a file does not have a group index, then append it to an indepenednt list</span>
+
+<div class="viewcode-block" id="find"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.find">[docs]</a><span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">rundir</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; find the first file that matches the given regular expression</span>
+<span class="sd">  RuntimeError will be raised unless exactly one file is found</span>
+
 <span class="sd">  Args:</span>
-<span class="sd">    flist (list): a list of filenames, should be QMCPACK outputs</span>
-<span class="sd">  Returns:</span>
-<span class="sd">    dict: groups, map series id (int) to a list of filenames</span>
-<span class="sd">    list: indep, a list of independent filenames</span>
+<span class="sd">    regex (str):  regular expression for file names</span>
+<span class="sd">    rundir (str): directory containing the files to be found</span>
+<span class="sd">  Return:</span>
+<span class="sd">    str: filename</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">indep</span>  <span class="o">=</span> <span class="p">[]</span>
-  <span class="n">groups</span> <span class="o">=</span> <span class="p">{}</span>
-  <span class="k">for</span> <span class="n">floc</span> <span class="ow">in</span> <span class="n">flist</span><span class="p">:</span>
-    <span class="n">fname</span>  <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">floc</span><span class="p">)</span>
-    <span class="n">tokens</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">):</span>
-      <span class="c1"># e.g. dmc.g006.s000.scalar.dat</span>
-      <span class="n">st</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
-      <span class="n">iss</span><span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
-      <span class="k">if</span> <span class="n">iss</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">groups</span><span class="p">[</span><span class="n">iss</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-      <span class="k">else</span><span class="p">:</span>
-        <span class="n">groups</span><span class="p">[</span><span class="n">iss</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fname</span><span class="p">]</span>
-      <span class="c1"># end if</span>
-    <span class="k">else</span><span class="p">:</span>
-      <span class="c1"># e.g. dmc.s000.scalar.dat</span>
-      <span class="n">indep</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-    <span class="c1"># end if</span>
-  <span class="c1"># end for</span>
-  <span class="k">return</span> <span class="n">groups</span><span class="p">,</span><span class="n">indep</span></div>
-<span class="c1"># def group_map</span>
+  <span class="n">flist</span> <span class="o">=</span> <span class="n">files_with_regex</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">rundir</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flist</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;expect 1 but found </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">flist</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">flist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
 
 <div class="viewcode-block" id="interpret_qmcpack_fname"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.interpret_qmcpack_fname">[docs]</a><span class="k">def</span> <span class="nf">interpret_qmcpack_fname</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; extract metadata regarding the contents of a file based on its filename. QMCPACK generates files having a pre-determined suffix structure. This function will interpret the last 4 period-separated segments of the suffix. </span>
+  <span class="sd">&quot;&quot;&quot; extract metadata regarding the contents of a file based on its filename.</span>
+<span class="sd">  QMCPACK generates files having a pre-determined suffix structure. This</span>
+<span class="sd">  function will interpret the last 4 period-separated segments of the suffix.</span>
 
 <span class="sd">  fname examples:</span>
 <span class="sd">    qmc.s000.scalar.dat</span>
@@ -116,13 +102,13 @@
 
 <span class="sd">  Args:</span>
 <span class="sd">    fname (str): filename, must end in one of [&#39;dat&#39;,&#39;h5&#39;,&#39;qmc&#39;,&#39;xml&#39;].</span>
-<span class="sd">  Returns:</span>
-<span class="sd">    dict: a dictionary of metadata. </span>
+<span class="sd">  Return:</span>
+<span class="sd">    dict: a dictionary of metadata.</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">known_extensions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span> <span class="p">[</span><span class="s1">&#39;dat&#39;</span><span class="p">,</span><span class="s1">&#39;h5&#39;</span><span class="p">,</span><span class="s1">&#39;qmc&#39;</span><span class="p">,</span><span class="s1">&#39;xml&#39;</span><span class="p">]</span> <span class="p">)</span>
+  <span class="n">known_extensions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;dat&#39;</span><span class="p">,</span> <span class="s1">&#39;h5&#39;</span><span class="p">,</span> <span class="s1">&#39;qmc&#39;</span><span class="p">,</span> <span class="s1">&#39;xml&#39;</span><span class="p">])</span>
 
   <span class="n">tokens</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-  <span class="n">ext</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># dat,h5,qmc</span>
+  <span class="n">ext</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># dat,h5,qmc</span>
   <span class="k">if</span> <span class="n">ext</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">known_extensions</span><span class="p">:</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;unable to interpret </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">fname</span><span class="p">)</span>
   <span class="c1"># end if</span>
@@ -130,44 +116,49 @@
   <span class="c1"># interpret various pieces of the filename</span>
 
   <span class="c1"># category</span>
-  <span class="n">cate</span>   <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># scalar,stat,config,random,qmc</span>
+  <span class="n">cate</span>   <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># scalar,stat,config,random,qmc</span>
 
   <span class="c1"># series index</span>
-  <span class="n">isst</span>   <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="c1"># s000</span>
-  <span class="n">iss</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">isst</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">))</span> <span class="c1"># series index (&#39;is&#39; is a Python keyword)</span>
+  <span class="n">isst</span>   <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>  <span class="c1"># s000</span>
+  <span class="n">iss</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">isst</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>  <span class="c1"># series index</span>
 
   <span class="c1"># group index</span>
-  <span class="n">grouped</span><span class="o">=</span> <span class="kc">False</span> <span class="c1"># single input is not grouped</span>
-  <span class="n">igt</span>    <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span> <span class="c1"># g000 or $prefix</span>
-  <span class="n">ig</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># group index</span>
-  <span class="n">suf_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">isst</span><span class="p">,</span><span class="n">cate</span><span class="p">,</span><span class="n">ext</span><span class="p">]</span>
-  <span class="k">if</span> <span class="n">igt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">igt</span><span class="p">)</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
-    <span class="n">ig</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">igt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">))</span>
+  <span class="n">grouped</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># single input is not grouped</span>
+  <span class="n">igt</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>  <span class="c1"># g000 or $prefix</span>
+  <span class="n">ig</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># group index</span>
+  <span class="n">suf_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">isst</span><span class="p">,</span> <span class="n">cate</span><span class="p">,</span> <span class="n">ext</span><span class="p">]</span>
+  <span class="k">if</span> <span class="n">igt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">igt</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+    <span class="n">ig</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">igt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
     <span class="n">suf_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">igt</span><span class="p">]</span> <span class="o">+</span> <span class="n">suf_list</span>
     <span class="n">grouped</span> <span class="o">=</span> <span class="kc">True</span>
   <span class="k">else</span><span class="p">:</span>  <span class="c1"># there is no group index</span>
-    <span class="k">pass</span> <span class="c1"># keep defaul ig=0, grouped=False</span>
+    <span class="k">pass</span>  <span class="c1"># keep defaul ig=0, grouped=False</span>
   <span class="c1"># end if</span>
 
   <span class="c1"># get project id by removing the suffix</span>
   <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">suf_list</span><span class="p">)</span>
-  <span class="n">prefix</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+  <span class="n">prefix</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 
   <span class="c1"># metadata entry</span>
-  <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span><span class="n">prefix</span><span class="p">,</span><span class="s1">&#39;group&#39;</span><span class="p">:</span><span class="n">ig</span><span class="p">,</span><span class="s1">&#39;series&#39;</span><span class="p">:</span><span class="n">iss</span><span class="p">,</span><span class="s1">&#39;category&#39;</span><span class="p">:</span><span class="n">cate</span><span class="p">,</span><span class="s1">&#39;ext&#39;</span><span class="p">:</span><span class="n">ext</span><span class="p">,</span><span class="s1">&#39;grouped&#39;</span><span class="p">:</span><span class="n">grouped</span><span class="p">}</span>
+  <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">prefix</span><span class="p">,</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="n">ig</span><span class="p">,</span> <span class="s1">&#39;series&#39;</span><span class="p">:</span> <span class="n">iss</span><span class="p">,</span>
+    <span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="n">cate</span><span class="p">,</span> <span class="s1">&#39;ext&#39;</span><span class="p">:</span> <span class="n">ext</span><span class="p">,</span> <span class="s1">&#39;grouped&#39;</span><span class="p">:</span> <span class="n">grouped</span>
+  <span class="p">}</span>
   <span class="k">return</span> <span class="n">entry</span></div>
-<span class="c1"># end def interpret_qmcpack_fname</span>
+
 
 <div class="viewcode-block" id="build_qmcpack_fname"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.build_qmcpack_fname">[docs]</a><span class="k">def</span> <span class="nf">build_qmcpack_fname</span><span class="p">(</span><span class="n">entry</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; inverse of interpret_qmcpack_fname</span>
+
 <span class="sd">  Args:</span>
-<span class="sd">    entry (dict): a dictionary of meta data, must include [&#39;id&#39;,&#39;grouped&#39;,&#39;group&#39;,&#39;series&#39;,&#39;category&#39;,&#39;ext&#39;] in key</span>
-<span class="sd">  Returns:</span>
-<span class="sd">    fname (str): filename</span>
+<span class="sd">    entry (dict): a dictionary of meta data, must include</span>
+<span class="sd">    [&#39;id&#39;,&#39;grouped&#39;,&#39;group&#39;,&#39;series&#39;,&#39;category&#39;,&#39;ext&#39;] in key</span>
+<span class="sd">  Return:</span>
+<span class="sd">    str: filename</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="s1">&#39;series&#39;</span><span class="p">,</span><span class="s1">&#39;category&#39;</span><span class="p">,</span><span class="s1">&#39;ext&#39;</span><span class="p">]</span>
+  <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;series&#39;</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;ext&#39;</span><span class="p">]</span>
   <span class="k">if</span> <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;grouped&#39;</span><span class="p">]:</span>
-    <span class="n">order</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;group&#39;</span><span class="p">)</span>
+    <span class="n">order</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;group&#39;</span><span class="p">)</span>
   <span class="c1"># end if</span>
   <span class="n">tokens</span> <span class="o">=</span> <span class="p">[]</span>
   <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
@@ -184,7 +175,6 @@
   <span class="c1"># end for</span>
   <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">fname</span></div>
-<span class="c1"># end def build_qmcpack_fname</span>
 </pre></div>
 
           </div>

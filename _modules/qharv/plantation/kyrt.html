@@ -57,10 +57,22 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="k">import</span> <span class="n">FormatStrFormatter</span>
 
+<span class="c1"># ======================== library of defaults =========================</span>
 <span class="c1"># expose some default colors for convenience</span>
 <span class="kn">from</span> <span class="nn">matplotlib.cm</span> <span class="k">import</span> <span class="n">get_cmap</span>
 <span class="n">cmap</span>   <span class="o">=</span> <span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
 <span class="n">colors</span> <span class="o">=</span> <span class="n">cmap</span><span class="o">.</span><span class="n">colors</span>  <span class="c1"># 256 default colors</span>
+<span class="n">errorbar_style</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s1">&#39;cyq&#39;</span><span class="p">:{</span>
+    <span class="s1">&#39;linestyle&#39;</span><span class="p">:</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>         <span class="c1"># do 1 thing</span>
+    <span class="s1">&#39;markersize&#39;</span><span class="p">:</span><span class="mf">3.5</span><span class="p">,</span>           <span class="c1"># readable</span>
+    <span class="s1">&#39;markeredgecolor&#39;</span><span class="p">:</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>  <span class="c1"># accentuate</span>
+    <span class="s1">&#39;markeredgewidth&#39;</span><span class="p">:</span><span class="mf">0.3</span><span class="p">,</span>
+    <span class="s1">&#39;capsize&#39;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span>
+    <span class="s1">&#39;elinewidth&#39;</span><span class="p">:</span><span class="mf">0.5</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+
 
 <span class="c1"># ======================== level 0: basic ax edits =========================</span>
 

@@ -49,71 +49,20 @@
 <span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
 <span class="c1"># Email: yubo.paul.yang@gmail.com</span>
 <span class="c1"># Routines to collect QMCPACK data</span>
-<span class="c1">#  building around qharv.reel, qharv.sieve</span>
+<span class="c1">#  pick the fruit of qharv.reel, qharv.sieve&#39;s labor</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="kn">from</span> <span class="nn">qharv.reel</span>  <span class="k">import</span> <span class="n">mole</span><span class="p">,</span><span class="n">scalar_dat</span>
-<span class="kn">from</span> <span class="nn">qharv.sieve</span> <span class="k">import</span> <span class="n">scalar_df</span>
+<div class="viewcode-block" id="get_kvecs_ym_ye"><a class="viewcode-back" href="../../../qharv.harvest.html#qharv.harvest.pick.get_kvecs_ym_ye">[docs]</a><span class="k">def</span> <span class="nf">get_kvecs_ym_ye</span><span class="p">(</span><span class="n">entry</span><span class="p">,</span> <span class="n">yname</span><span class="p">,</span> <span class="n">xname</span><span class="o">=</span><span class="s1">&#39;kvecs&#39;</span><span class="p">):</span>
+  <span class="n">ymean</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_mean&#39;</span> <span class="o">%</span> <span class="n">yname</span>
+  <span class="n">yerror</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_error&#39;</span> <span class="o">%</span> <span class="n">yname</span>
 
-<div class="viewcode-block" id="collect_flist"><a class="viewcode-back" href="../../../qharv.harvest.html#qharv.harvest.pick.collect_flist">[docs]</a><span class="k">def</span> <span class="nf">collect_flist</span><span class="p">(</span><span class="n">flist</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">kappa</span><span class="p">,</span><span class="n">tmp_dat</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; collect all scalar.dat files in flist</span>
-<span class="sd">  the search for scalar.dat is performed recursively</span>
-<span class="sd">  temporary data are stored in ASCII format in tmp_dat</span>
-<span class="sd">  there is one entry for each scalar.dat file</span>
+  <span class="n">kvecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">xname</span><span class="p">])</span>
+  <span class="n">ym</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">ymean</span><span class="p">])</span>
+  <span class="n">ye</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="n">yerror</span><span class="p">])</span>
 
-<span class="sd">  * this routine should eventually superseded collect_mean_df</span>
-
-<span class="sd">  Args:</span>
-<span class="sd">    flist (list): a list of scalar.dat files to collect</span>
-<span class="sd">    nequil (int): equilibration time</span>
-<span class="sd">    kappa (float): autocorrelation time. If None is given, then kappa is calculated on-the-fly. The calculation of kappa is slow for a long trace.</span>
-<span class="sd">  Returns:</span>
-<span class="sd">    pd.DataFrame: one entry for each scalar.dat, containing mean and error of all columns. Two metadata columns [&#39;path&#39;,&#39;fdat&#39;] contain the path and filename of the scalar.dat, respectively.</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-
-  <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">tmp_dat</span><span class="p">):</span>
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> exists; delete to reanalyze&#39;</span><span class="o">%</span><span class="n">tmp_dat</span><span class="p">)</span>
-  <span class="c1"># end if</span>
-
-  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;no scalar.dat given&#39;</span><span class="p">)</span>
-  <span class="c1"># end if</span>
-
-  <span class="n">dat_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">tmp_dat</span><span class="p">)</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dat_path</span><span class="p">):</span>
-    <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s1">&#39;mkdir&#39;</span><span class="p">,</span><span class="n">dat_path</span><span class="p">])</span>
-  <span class="c1"># end if</span>
-
-  <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmp_dat</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
-  <span class="n">data</span>  <span class="o">=</span> <span class="p">[]</span>
-  <span class="n">ifloc</span> <span class="o">=</span> <span class="mi">0</span>
-  <span class="k">for</span> <span class="n">floc</span> <span class="ow">in</span> <span class="n">flist</span><span class="p">:</span>
-    <span class="c1"># level 1: raw time series -&gt; return a scalar_df</span>
-    <span class="n">mydf</span> <span class="o">=</span> <span class="n">scalar_dat</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">floc</span><span class="p">)</span>
-    <span class="c1"># level 2: average over time series -&gt; return a mean_df</span>
-    <span class="n">mdf</span>  <span class="o">=</span> <span class="n">scalar_df</span><span class="o">.</span><span class="n">mean_error_scalar_df</span><span class="p">(</span><span class="n">mydf</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">kappa</span><span class="o">=</span><span class="n">kappa</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">mdf</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
-    <span class="n">mdf</span><span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">floc</span><span class="p">)</span>
-    <span class="n">mdf</span><span class="p">[</span><span class="s1">&#39;fdat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">floc</span><span class="p">)</span>
-
-    <span class="c1"># save processed data to file</span>
-    <span class="k">if</span> <span class="n">ifloc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> 
-      <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;# &#39;</span> <span class="o">+</span> <span class="s1">&#39;  &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mdf</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="c1"># end if</span>
-    <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;  &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mdf</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-
-    <span class="c1"># save processed data to memory</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mdf</span><span class="p">)</span>
-    <span class="n">ifloc</span> <span class="o">+=</span> <span class="mi">1</span>
-  <span class="c1"># end for</span>
-  <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-  <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">df</span></div>
-<span class="c1"># end def collect_flist</span>
+  <span class="k">return</span> <span class="n">kvecs</span><span class="p">,</span> <span class="n">ym</span><span class="p">,</span> <span class="n">ye</span></div>
 </pre></div>
 
           </div>

@@ -56,14 +56,61 @@
 <span class="kn">from</span> <span class="nn">qharv.seed</span> <span class="k">import</span> <span class="n">xml</span>
 <span class="kn">from</span> <span class="nn">qharv.inspect</span> <span class="k">import</span> <span class="n">axes_pos</span>
 
+
+<div class="viewcode-block" id="check_wfh5_access"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.inp_xml.check_wfh5_access">[docs]</a><span class="k">def</span> <span class="nf">check_wfh5_access</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">calc_dir</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; check that the Bspline h5 file can be accessed from input location</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    doc (etree.Element): must containt &lt;sposet_builder&gt;</span>
+<span class="sd">    calc_dir (str): directory to contain the QMCPACK input (doc)</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    bool: can access all h5 files</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="n">access</span> <span class="o">=</span> <span class="kc">True</span>
+
+  <span class="c1"># not compatible with legacy input</span>
+  <span class="n">detset</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//determinantset[@type=&quot;bspline&quot;]&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">detset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;legacy input&#39;</span><span class="p">)</span>
+
+  <span class="c1"># check all Bspline orbital builders</span>
+  <span class="n">bb_list</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//sposet_builder[@type=&quot;bspline&quot;]&#39;</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">bb</span> <span class="ow">in</span> <span class="n">bb_list</span><span class="p">:</span>
+    <span class="n">relpath</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">)</span>
+    <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">calc_dir</span><span class="p">,</span> <span class="n">relpath</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">abspath</span><span class="p">):</span>
+      <span class="n">access</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="k">return</span> <span class="n">access</span></div>
+
+
+<div class="viewcode-block" id="check_psp_access"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.inp_xml.check_psp_access">[docs]</a><span class="k">def</span> <span class="nf">check_psp_access</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">calc_dir</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; check that pseudopotential files can be accessed by input</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    doc (etree.Element): must contain &lt;hamiltonian&gt;</span>
+<span class="sd">  Return:</span>
+<span class="sd">    bool: can access all pseudopotentials</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="n">access</span> <span class="o">=</span> <span class="kc">True</span>
+
+  <span class="n">pspl</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//pseudo&#39;</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">psp</span> <span class="ow">in</span> <span class="n">pspl</span><span class="p">:</span>
+    <span class="n">relpath</span> <span class="o">=</span> <span class="n">psp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;href&#39;</span><span class="p">)</span>
+    <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">calc_dir</span><span class="p">,</span> <span class="n">relpath</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">abspath</span><span class="p">):</span>
+      <span class="n">access</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="k">return</span> <span class="n">access</span></div>
+
+
 <div class="viewcode-block" id="rcut"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.inp_xml.rcut">[docs]</a><span class="k">def</span> <span class="nf">rcut</span><span class="p">(</span><span class="n">corr</span><span class="p">):</span>
   <span class="n">rca</span> <span class="o">=</span> <span class="n">corr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rcut&#39;</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">rca</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;no rcut found in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">xml</span><span class="o">.</span><span class="n">str_rep</span><span class="p">(</span><span class="n">corr</span><span class="p">))</span>
-  <span class="c1"># end if</span>
   <span class="n">rc</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rca</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">rc</span></div>
-<span class="c1"># end def rcut</span>
+
 
 <div class="viewcode-block" id="validate_bspline_rcut"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.inp_xml.validate_bspline_rcut">[docs]</a><span class="k">def</span> <span class="nf">validate_bspline_rcut</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">ignore_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; check that 1D bspline functions have valid cutoff radius</span>

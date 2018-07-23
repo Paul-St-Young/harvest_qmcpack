@@ -1,0 +1,22 @@
+qharv\.refine package
+=====================
+
+Submodules
+----------
+
+qharv\.refine\.scalar module
+----------------------------
+
+.. automodule:: qharv.refine.scalar
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: qharv.refine
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -66,7 +66,7 @@
 
   <span class="c1"># check if a header line exists, if it does not, then set header=None</span>
   <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-    <span class="n">header</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
   <span class="c1"># end with</span>
   
   <span class="k">if</span> <span class="ow">not</span> <span class="n">header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span> <span class="c1"># there is no header</span>

@@ -48,7 +48,7 @@
   <h1>Source code for qharv.seed.xml</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
 <span class="c1"># Email: yubo.paul.yang@gmail.com</span>
-<span class="c1"># Routines to manipulate an xml input. </span>
+<span class="c1"># Routines to manipulate an xml input.</span>
 <span class="c1">#  Almost all functions are built around the lxml module&#39;s API.</span>
 <span class="c1">#  The central object is lxml.etree.ElementTree, which is usually named &quot;doc&quot;.</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -59,53 +59,67 @@
 
 <span class="c1"># ======================== level 0: basic io =========================</span>
 <div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; read an xml file </span>
+  <span class="sd">&quot;&quot;&quot; read an xml file</span>
 <span class="sd">  wrap around lxml.etree.parse</span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    fname (str): filename to read from</span>
-<span class="sd">  Returns:</span>
+<span class="sd">  Return:</span>
 <span class="sd">    lxml.etree._ElementTree: doc, parsed xml document</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">parser</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">XMLParser</span><span class="p">(</span><span class="n">remove_blank_text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-  <span class="n">doc</span>    <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="n">parser</span><span class="p">)</span>
+  <span class="n">doc</span>    <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">doc</span></div>
 
-<div class="viewcode-block" id="write"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.write">[docs]</a><span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="n">doc</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; write an xml file </span>
+
+<div class="viewcode-block" id="write"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.write">[docs]</a><span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; write an xml file</span>
 <span class="sd">  wrap around lxml.etree._ElementTree.write</span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    fname (str): filename to write to</span>
 <span class="sd">    doc (lxml.etree._ElementTree): xml file in memory</span>
-<span class="sd">  Effects:</span>
+<span class="sd">  Effect:</span>
 <span class="sd">    write fname using contents of doc</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">doc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+  <span class="n">doc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; parse the text representation of an xml node</span>
+<span class="sd">  delegate to read()</span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    text (str): string representation of an xml node</span>
-<span class="sd">  Returns:</span>
+<span class="sd">  Return:</span>
 <span class="sd">    lxml.etree._Element: root, parsed xml node</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">root</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span> <span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+  <span class="k">try</span><span class="p">:</span>  <span class="c1"># Python2</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+  <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>  <span class="c1"># Python3</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+  <span class="n">root</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
   <span class="k">return</span> <span class="n">root</span></div>
+
 
 <div class="viewcode-block" id="str_rep"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.str_rep">[docs]</a><span class="k">def</span> <span class="nf">str_rep</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; return the string representation of an xml node</span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    node (lxml.etree._Element): xml node</span>
-<span class="sd">  Returns:</span>
+<span class="sd">  Return:</span>
 <span class="sd">    str: string representation of node</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">return</span> <span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+  <span class="k">return</span> <span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="show"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.show">[docs]</a><span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
-  <span class="nb">print</span><span class="p">(</span> <span class="n">str_rep</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="p">)</span></div>
+  <span class="nb">print</span><span class="p">(</span><span class="n">str_rep</span><span class="p">(</span><span class="n">node</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="ls"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.ls">[docs]</a><span class="k">def</span> <span class="nf">ls</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">r</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">indent</span><span class="o">=</span><span class="s2">&quot;  &quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ls"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.ls">[docs]</a><span class="k">def</span> <span class="nf">ls</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;  &quot;</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; List directory structure</span>
-<span class="sd">   </span>
+
 <span class="sd">   Similar to the Linux `ls` command, but for an xml node</span>
 
 <span class="sd">   Args:</span>
@@ -113,23 +127,21 @@
 <span class="sd">     r (bool): recursive</span>
 <span class="sd">     level (int): level of indentation, used only if r=True</span>
 <span class="sd">     indent (str): indent string, used only if r=True</span>
-<span class="sd">   Returns:</span>
+<span class="sd">   Return:</span>
 <span class="sd">     str: mystr, a string representation of the directory structure</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">mystr</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+  <span class="n">mystr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
   <span class="n">children</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">getchildren</span><span class="p">()</span>
-  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
       <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">child</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">etree</span><span class="o">.</span><span class="n">_Element</span><span class="p">:</span> <span class="k">continue</span>
       <span class="n">mystr</span> <span class="o">+=</span> <span class="n">indent</span><span class="o">*</span><span class="n">level</span> <span class="o">+</span> <span class="n">child</span><span class="o">.</span><span class="n">tag</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
       <span class="k">if</span> <span class="n">r</span><span class="p">:</span>
         <span class="n">mystr</span> <span class="o">+=</span> <span class="n">ls</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span>
-      <span class="c1"># end if r</span>
-    <span class="c1"># end for child</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="k">return</span> <span class="s1">&#39;&#39;</span>
-  <span class="c1"># end if</span>
   <span class="k">return</span> <span class="n">mystr</span></div>
+
 
 <span class="c1"># ========================= level 1: node content io =========================</span>
 <span class="c1">#  node.get &amp; node.set are sufficient for attribute manipulation</span>
@@ -137,18 +149,17 @@
 <div class="viewcode-block" id="arr2text"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.arr2text">[docs]</a><span class="k">def</span> <span class="nf">arr2text</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; format a numpy array into a text string &quot;&quot;&quot;</span>
   <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># vector</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># vector</span>
       <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
-  <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="c1"># matrix</span>
+  <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># matrix</span>
       <span class="n">mat</span>  <span class="o">=</span> <span class="p">[</span><span class="n">arr2text</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">]</span>
       <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
   <span class="k">else</span><span class="p">:</span>
       <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;arr2text can only convert vector or matrix.&#39;</span><span class="p">)</span>
   <span class="c1"># end if</span>
   <span class="k">return</span> <span class="n">text</span></div>
-<span class="c1"># end def arr2text</span>
 
-<div class="viewcode-block" id="text2arr"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.text2arr">[docs]</a><span class="k">def</span> <span class="nf">text2arr</span><span class="p">(</span><span class="n">text</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span><span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="text2arr"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.text2arr">[docs]</a><span class="k">def</span> <span class="nf">text2arr</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; convert a text string into a numpy array &quot;&quot;&quot;</span>
   <span class="n">tlist</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -160,28 +171,49 @@
       <span class="k">return</span> <span class="n">myarr</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
       <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">tlist</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span></div>
-    <span class="c1"># end if</span>
-  <span class="c1"># end if</span>
-<span class="c1"># end def text2arr</span>
 
-<span class="c1"># ================= level 2: QMCPACK specialized elementary =================</span>
+<div class="viewcode-block" id="text2vec"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.text2vec">[docs]</a><span class="k">def</span> <span class="nf">text2vec</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; convert a text string into a 1D numpy array &quot;&quot;&quot;</span>
+  <span class="c1"># unfold at the text level</span>
+  <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="get_param"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.get_param">[docs]</a><span class="k">def</span> <span class="nf">get_param</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">pname</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; retrieve the str representation of a parameter from: </span>
+
+<div class="viewcode-block" id="swap_node"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.swap_node">[docs]</a><span class="k">def</span> <span class="nf">swap_node</span><span class="p">(</span><span class="n">node0</span><span class="p">,</span> <span class="n">node1</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; replace the node0 with node1</span>
+<span class="sd">  node0 must have a parent</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    node0 (etree.Element): node to be swapped out</span>
+<span class="sd">    node1 (etree.Element): replacement node</span>
+<span class="sd">  Effect:</span>
+<span class="sd">    node0 is replaced by node1 in node0&#39;s owning tree</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">parent</span> <span class="o">=</span> <span class="n">node0</span><span class="o">.</span><span class="n">getparent</span><span class="p">()</span>
+  <span class="n">idx</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">node0</span><span class="p">)</span>
+  <span class="n">parent</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">node0</span><span class="p">)</span>
+  <span class="n">parent</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">node1</span><span class="p">)</span></div>
+
+
+<span class="c1"># ================= level 2: QMCPACK specialized read =================</span>
+<div class="viewcode-block" id="get_param"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.get_param">[docs]</a><span class="k">def</span> <span class="nf">get_param</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pname</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; retrieve the str representation of a parameter from:</span>
 <span class="sd">    &lt;parameter name=&quot;pname&quot;&gt; str_rep &lt;/parameter&gt;</span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    node (lxml.etree._Element): xml node with &lt;parameter&gt;.</span>
 <span class="sd">    pname (str): name of parameter</span>
 <span class="sd">  Return:</span>
 <span class="sd">    str: string representation of the parameter value</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">pnode</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//parameter[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span><span class="o">%</span><span class="n">pname</span><span class="p">)</span>
+  <span class="n">pnode</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//parameter[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">pname</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">pnode</span><span class="o">.</span><span class="n">text</span></div>
-<span class="c1"># end def</span>
 
-<div class="viewcode-block" id="set_param"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.set_param">[docs]</a><span class="k">def</span> <span class="nf">set_param</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">pname</span><span class="p">,</span><span class="n">pval</span><span class="p">,</span><span class="n">new</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; set &lt;parameter&gt; with name &#39;pname&#39; to &#39;pval&#39; </span>
+
+<div class="viewcode-block" id="set_param"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.set_param">[docs]</a><span class="k">def</span> <span class="nf">set_param</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pname</span><span class="p">,</span> <span class="n">pval</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; set &lt;parameter&gt; with name &#39;pname&#39; to &#39;pval&#39;</span>
 <span class="sd">  if new=True, then &lt;parameter name=&quot;pname&quot;&gt; does not exist. create it</span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    node (lxml.etree._Element): xml node with children having tag &#39;parameter&#39;</span>
 <span class="sd">    pname (str): name of parameter</span>
@@ -191,12 +223,12 @@
 <span class="sd">    the text of &lt;parameter&gt; with &#39;pname&#39; will be set to &#39;pval&#39;</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">pval</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span>
-  <span class="n">pnode</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//parameter[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span><span class="o">%</span><span class="n">pname</span><span class="p">)</span>
+  <span class="n">pnode</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//parameter[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">pname</span><span class="p">)</span>
   <span class="c1"># 4 paths dependent on (pnode is None) and new</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">pnode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">new</span><span class="p">):</span> <span class="c1"># unintended input</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">pnode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">new</span><span class="p">):</span>  <span class="c1"># unintended input</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;&lt;parameter name=&quot;</span><span class="si">%s</span><span class="s1">&quot;&gt; not found in </span><span class="si">%s</span><span class="se">\n\</span>
 <span class="s1">      please set new=True&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pname</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
-  <span class="k">elif</span> <span class="p">(</span><span class="n">pnode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">new</span><span class="p">:</span> <span class="c1"># unintended input</span>
+  <span class="k">elif</span> <span class="p">(</span><span class="n">pnode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">new</span><span class="p">:</span>  <span class="c1"># unintended input</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;&lt;parameter name=&quot;</span><span class="si">%s</span><span class="s1">&quot;&gt; found in </span><span class="si">%s</span><span class="se">\n\</span>
 <span class="s1">      please set new=False&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pname</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
   <span class="k">elif</span> <span class="p">(</span><span class="n">pnode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">new</span><span class="p">:</span>
@@ -205,8 +237,7 @@
     <span class="n">node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pnode</span><span class="p">)</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="n">pnode</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">pval</span></div>
-  <span class="c1"># end if</span>
-<span class="c1"># end def</span>
+
 
 <div class="viewcode-block" id="get_axes"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.get_axes">[docs]</a><span class="k">def</span> <span class="nf">get_axes</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
   <span class="n">sc_node</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//simulationcell&#39;</span><span class="p">)</span>
@@ -215,34 +246,36 @@
   <span class="n">lat_node</span> <span class="o">=</span> <span class="n">sc_node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//parameter[@name=&quot;lattice&quot;]&#39;</span><span class="p">)</span>
   <span class="n">unit</span> <span class="o">=</span> <span class="n">lat_node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">)</span>
   <span class="k">assert</span> <span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;bohr&#39;</span>
-  <span class="n">axes</span> <span class="o">=</span> <span class="n">text2arr</span><span class="p">(</span> <span class="n">lat_node</span><span class="o">.</span><span class="n">text</span> <span class="p">)</span>
+  <span class="n">axes</span> <span class="o">=</span> <span class="n">text2arr</span><span class="p">(</span><span class="n">lat_node</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">axes</span></div>
-<span class="c1"># end def </span>
 
-<div class="viewcode-block" id="get_pos"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.get_pos">[docs]</a><span class="k">def</span> <span class="nf">get_pos</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span><span class="n">pset</span><span class="o">=</span><span class="s1">&#39;ion0&#39;</span><span class="p">,</span><span class="n">all_pos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_pos"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.get_pos">[docs]</a><span class="k">def</span> <span class="nf">get_pos</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">pset</span><span class="o">=</span><span class="s1">&#39;ion0&#39;</span><span class="p">,</span> <span class="n">all_pos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
   <span class="c1"># find &lt;particleset&gt;</span>
-  <span class="n">pset_node</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//particleset[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span><span class="o">%</span><span class="n">pset</span><span class="p">)</span>
+  <span class="n">pset_node</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//particleset[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">pset</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">pset_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> not found&#39;</span><span class="o">%</span><span class="n">pset</span><span class="p">)</span>
-  
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> not found&#39;</span> <span class="o">%</span> <span class="n">pset</span><span class="p">)</span>
+
   <span class="c1"># find &lt;group&gt; if necessary</span>
   <span class="n">groups</span> <span class="o">=</span> <span class="n">pset_node</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//group&#39;</span><span class="p">)</span>
   <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">grp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">group</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span> <span class="c1"># no group give, better be requesting all particle positions</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">group</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>  <span class="c1"># no group give, requesting all particle positions?</span>
     <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">all_pos</span><span class="p">):</span>
-      <span class="n">warn_msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> groups found, please specify particle group from </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
+      <span class="n">warn_msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> groups found, please specify particle group from </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+      <span class="p">)</span>
       <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">)</span>
     <span class="c1"># end if</span>
-  <span class="k">else</span><span class="p">:</span> <span class="c1"># group given, see if it is available</span>
+  <span class="k">else</span><span class="p">:</span>  <span class="c1"># group given, see if it is available</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">all_pos</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;specified group will be over-written with all_pos! Please set all_pos=False.&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">):</span>
-      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;no group with name &quot;</span><span class="si">%s</span><span class="s1">&quot; in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">group</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">names</span><span class="p">)))</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;no group with name &quot;</span><span class="si">%s</span><span class="s1">&quot; in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">group</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">names</span><span class="p">)))</span>
     <span class="c1"># end if</span>
   <span class="c1"># end if</span>
 
   <span class="n">pos_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">all_pos</span><span class="p">:</span> <span class="c1"># get requested group positions</span>
-    <span class="n">grp</span> <span class="o">=</span> <span class="n">pset_node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//group[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span><span class="o">%</span><span class="n">group</span><span class="p">)</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">all_pos</span><span class="p">:</span>  <span class="c1"># get requested group positions</span>
+    <span class="n">grp</span> <span class="o">=</span> <span class="n">pset_node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//group[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">group</span><span class="p">)</span>
     <span class="n">pos_node</span> <span class="o">=</span> <span class="n">grp</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//attrib[@name=&quot;position&quot;]&#39;</span><span class="p">)</span>
     <span class="n">pos_text</span> <span class="o">=</span> <span class="n">pos_node</span><span class="o">.</span><span class="n">text</span>
   <span class="k">else</span><span class="p">:</span>
@@ -255,88 +288,80 @@
   <span class="c1"># get requestsed particle positions</span>
   <span class="n">pos</span> <span class="o">=</span> <span class="n">text2arr</span><span class="p">(</span><span class="n">pos_text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
   <span class="k">return</span> <span class="n">pos</span></div>
-<span class="c1"># end def</span>
 
-<span class="c1"># ================= level 3: QMCPACK specialized advanced =================</span>
 
-<div class="viewcode-block" id="turn_off_jas_opt"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.turn_off_jas_opt">[docs]</a><span class="k">def</span> <span class="nf">turn_off_jas_opt</span><span class="p">(</span><span class="n">wf_node</span><span class="p">):</span>
-  <span class="c1"># turn off jastrow optimization</span>
-  <span class="n">all_jas</span> <span class="o">=</span> <span class="n">wf_node</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//jastrow&#39;</span><span class="p">)</span>
-  <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_jas</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-  <span class="k">for</span> <span class="n">jas</span> <span class="ow">in</span> <span class="n">all_jas</span><span class="p">:</span>
-    <span class="k">assert</span> <span class="n">jas</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;jastrow&#39;</span>
-    <span class="k">for</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="n">jas</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//coefficients&#39;</span><span class="p">):</span>
-      <span class="n">coeff</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;optimize&#39;</span><span class="p">,</span><span class="s1">&#39;no&#39;</span><span class="p">)</span></div>
-    <span class="c1"># end for</span>
-  <span class="c1"># end for</span>
-<span class="c1"># end def</span>
+<span class="c1"># ================= level 3: QMCPACK specialized construct =================</span>
 
-<div class="viewcode-block" id="opt_wf_fname"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.opt_wf_fname">[docs]</a><span class="k">def</span> <span class="nf">opt_wf_fname</span><span class="p">(</span><span class="n">opt_inp</span><span class="p">,</span><span class="n">iqmc</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; Find the file containing the optimized &lt;wavefunction&gt; at optimization loop iqmc </span>
-<span class="sd">  example of a folder containing an optimization run:</span>
-<span class="sd">  $ls opt_dir</span>
-<span class="sd">    opt.xml</span>
-<span class="sd">    qmc.s000.scalar.dat</span>
-<span class="sd">    qmc.s000.opt.xml</span>
-<span class="sd">    qmc.s001.scalar.dat</span>
-<span class="sd">    qmc.s001.opt.xml</span>
-<span class="sd">  $</span>
-<span class="sd">  opt_wf_fname(&#39;opt_dir/opt.xml&#39;,1) returns &#39;opt_dir/qmc.s001.opt.xml&#39;</span>
+
+<div class="viewcode-block" id="build_coeff"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.build_coeff">[docs]</a><span class="k">def</span> <span class="nf">build_coeff</span><span class="p">(</span><span class="n">knots</span><span class="p">,</span> <span class="o">**</span><span class="n">attribs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; construct an &lt;coefficients/&gt;</span>
+
+<span class="sd">  example:</span>
+<span class="sd">    build_coeff([1,2]):</span>
+<span class="sd">      &lt;coefficients id=&quot;new&quot; type=&quot;Array&quot;&gt; 1 2 &lt;/coefficients&gt;</span>
 
 <span class="sd">  Args:</span>
-<span class="sd">    opt_inp (str): optimization run input file</span>
-<span class="sd">    iqmc (int): optimization loop to target</span>
-<span class="sd">  Returns:</span>
-<span class="sd">    str: wf_fname, name of the xml file containing the optimized &lt;wavefunction&gt;</span>
+<span class="sd">    knots (list): a list of numbers</span>
+<span class="sd">  Return:</span>
+<span class="sd">    lxml.etree._Element: &lt;coefficients/&gt;</span>
 <span class="sd">  &quot;&quot;&quot;</span>
 
-  <span class="c1"># read the optimization input for nqmc &amp; prefix to find .opt files</span>
-  <span class="n">doc</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">opt_inp</span><span class="p">)</span>
-  <span class="n">nqmc</span>   <span class="o">=</span> <span class="nb">int</span><span class="p">(</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//loop&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max&#39;</span><span class="p">)</span> <span class="p">)</span>
-  <span class="k">assert</span> <span class="n">iqmc</span> <span class="o">&lt;</span> <span class="n">nqmc</span>
+  <span class="c1"># add required attributes</span>
+  <span class="c1">#  id (str, optional): coefficient name, default &#39;new&#39;</span>
+  <span class="k">if</span> <span class="s1">&#39;id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attribs</span><span class="p">:</span>
+    <span class="n">attribs</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;new&#39;</span>
+  <span class="c1">#  type (str, optional): coefficient type, default &#39;Array&#39;</span>
+  <span class="k">if</span> <span class="s1">&#39;type&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attribs</span><span class="p">:</span>
+    <span class="n">attribs</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Array&#39;</span>
 
-  <span class="c1"># read project prefix to determine .opt filename</span>
-  <span class="n">prefix</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//project&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
-  <span class="n">stext</span>  <span class="o">=</span> <span class="s1">&#39;s&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">iqmc</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-  <span class="n">fopt</span>   <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">prefix</span><span class="p">,</span><span class="n">stext</span><span class="p">,</span><span class="s1">&#39;opt&#39;</span><span class="p">,</span><span class="s1">&#39;xml&#39;</span><span class="p">])</span>
+  <span class="c1"># construct node</span>
+  <span class="n">coeff_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;coefficients&#39;</span><span class="p">,</span><span class="n">attribs</span><span class="p">)</span>
+  <span class="n">coeff_node</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">knots</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span>  <span class="c1"># 1D arr2text</span>
+  <span class="k">return</span> <span class="n">coeff_node</span></div>
+<span class="c1"># end def build_coeff</span>
 
-  <span class="c1"># return location of file</span>
-  <span class="n">opt_dir</span>  <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">opt_inp</span><span class="p">)</span>
-  <span class="n">wf_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">opt_dir</span><span class="p">,</span><span class="n">fopt</span><span class="p">)</span>
 
-  <span class="k">return</span> <span class="n">wf_fname</span></div>
-<span class="c1"># end def opt_wf_fname</span>
+<div class="viewcode-block" id="build_jk2_iso"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.build_jk2_iso">[docs]</a><span class="k">def</span> <span class="nf">build_jk2_iso</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">kc</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; construct isotropic e-e reciprocal space Jastrow node</span>
 
-<div class="viewcode-block" id="swap_in_opt_wf"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.swap_in_opt_wf">[docs]</a><span class="k">def</span> <span class="nf">swap_in_opt_wf</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span><span class="n">wf_node</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; Put an optimized wavefunction into an xml input </span>
-
-<span class="sd">  Designed to help continue a wavefunction optimization. One can also use optimized wavefunction in a VMC or DMC calculation, but the &lt;loop&gt; section will have to be removed, and new &lt;qmc&gt; sections added. See xml_examples.py.</span>
+<span class="sd">  example:</span>
+<span class="sd">    build_jk2([1,2], 0.4):</span>
 
 <span class="sd">  Args:</span>
-<span class="sd">    doc (lxml.etree._ElementTree): xml input having an old &lt;wavefunction&gt;</span>
-<span class="sd">    wf  (lxml.etree._Element): xml node containing the optimized &lt;wavefunction&gt;</span>
-<span class="sd">  Returns:</span>
-<span class="sd">    lxml.etree._ElementTree: xml input with optimized wavefunction &quot;&quot;&quot;</span>
+<span class="sd">    coefs (list): a list of numbers at the</span>
+<span class="sd">    kc (float): k space cutoff in a.u.</span>
+<span class="sd">  Return:</span>
+<span class="sd">    lxml.etree._Element: &lt;jastrow/&gt;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">coeff_node</span> <span class="o">=</span> <span class="n">build_coeff</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;cG2&#39;</span><span class="p">)</span>
+  <span class="n">corr_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;correlation&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Two-Body&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;kc&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">kc</span><span class="p">),</span>
+    <span class="s1">&#39;symmetry&#39;</span><span class="p">:</span> <span class="s1">&#39;isotropic&#39;</span>
+  <span class="p">})</span>
+  <span class="n">corr_node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coeff_node</span><span class="p">)</span>
 
-  <span class="c1"># find new &lt;wavefunction&gt;</span>
-  <span class="n">wf1</span> <span class="o">=</span> <span class="n">wf_node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//wavefunction&#39;</span><span class="p">)</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">wf1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">wf_node</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;wavefunction&#39;</span><span class="p">):</span>
-    <span class="n">wf1</span> <span class="o">=</span> <span class="n">wf_node</span>
-  <span class="c1"># end if</span>
-  <span class="k">assert</span> <span class="n">wf1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-  <span class="n">wf0</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//wavefunction&#39;</span><span class="p">)</span>
-  <span class="k">assert</span> <span class="n">wf0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+  <span class="n">jk_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;jastrow&#39;</span><span class="p">,{</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;Jk&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;kSpace&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;source&#39;</span><span class="p">:</span><span class="s1">&#39;e&#39;</span>
+  <span class="p">})</span>
+  <span class="n">jk_node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">corr_node</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">jk_node</span></div>
 
-  <span class="c1"># swap &lt;wavefunction&gt;</span>
-  <span class="n">wup</span> <span class="o">=</span> <span class="n">wf0</span><span class="o">.</span><span class="n">getparent</span><span class="p">()</span>
-  <span class="n">idx</span> <span class="o">=</span> <span class="n">wup</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">wf0</span><span class="p">)</span>
-  <span class="n">wup</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">wf0</span><span class="p">)</span>
-  <span class="n">wup</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span><span class="n">wf1</span><span class="p">)</span>
 
-  <span class="k">return</span> <span class="n">doc</span></div>
-<span class="c1"># end def swap_in_opt_wf</span>
+<span class="c1"># ================= level 4: QMCPACK specialized advanced =================</span>
 
-<div class="viewcode-block" id="add_bcc_backflow"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.add_bcc_backflow">[docs]</a><span class="k">def</span> <span class="nf">add_bcc_backflow</span><span class="p">(</span><span class="n">wf_node</span><span class="p">,</span><span class="n">bf_node</span><span class="p">):</span>
+<div class="viewcode-block" id="turn_off_jas_opt"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.turn_off_jas_opt">[docs]</a><span class="k">def</span> <span class="nf">turn_off_jas_opt</span><span class="p">(</span><span class="n">wf_node</span><span class="p">):</span>
+  <span class="n">mywf</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">wf_node</span><span class="p">)</span>
+  <span class="n">all_jas</span> <span class="o">=</span> <span class="n">mywf</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//jastrow&#39;</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">jas</span> <span class="ow">in</span> <span class="n">all_jas</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="n">jas</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//coefficients&#39;</span><span class="p">):</span>
+      <span class="n">coeff</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;optimize&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">mywf</span></div>
+
+
+<div class="viewcode-block" id="add_backflow"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.add_backflow">[docs]</a><span class="k">def</span> <span class="nf">add_backflow</span><span class="p">(</span><span class="n">wf_node</span><span class="p">,</span> <span class="n">bf_node</span><span class="p">):</span>
   <span class="c1"># make sure inputs are not scrambled</span>
   <span class="k">assert</span> <span class="n">wf_node</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;wavefunction&#39;</span>
   <span class="k">assert</span> <span class="n">bf_node</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;backflow&#39;</span>
@@ -349,19 +374,22 @@
   <span class="n">dset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">bf_node</span><span class="p">)</span>
 
   <span class="c1"># use code path where &lt;backflow&gt; optimization still works</span>
-  <span class="n">bb</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># find basis set builder, should be either &lt;sposet_builder&gt; or &lt;determinantset&gt;</span>
-  <span class="n">spo</span> <span class="o">=</span> <span class="n">mywf</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//sposet_builder&#39;</span><span class="p">)</span> <span class="c1"># !!!! warning: only the first builder is modified</span>
+  <span class="n">bb</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># find basis set builder</span>
+  <span class="c1"># bb should be either &lt;sposet_builder&gt; or &lt;determinantset&gt;</span>
+  <span class="n">spol</span> <span class="o">=</span> <span class="n">mywf</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//sposet_builder&#39;</span><span class="p">)</span>
+  <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">spol</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+  <span class="n">spo</span> <span class="o">=</span> <span class="n">spol</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
   <span class="k">if</span> <span class="n">spo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">bb</span> <span class="o">=</span> <span class="n">dset</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="n">bb</span> <span class="o">=</span> <span class="n">spo</span>
   <span class="c1"># end if</span>
-  <span class="k">assert</span> <span class="n">bb</span><span class="o">.</span><span class="n">tag</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;sposet_builder&#39;</span><span class="p">,</span><span class="s1">&#39;determinantset&#39;</span><span class="p">)</span>
+  <span class="k">assert</span> <span class="n">bb</span><span class="o">.</span><span class="n">tag</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;sposet_builder&#39;</span><span class="p">,</span> <span class="s1">&#39;determinantset&#39;</span><span class="p">)</span>
   <span class="n">bb</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;use_old_spline&#39;</span><span class="p">,</span><span class="s1">&#39;yes&#39;</span><span class="p">)</span>
   <span class="n">bb</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;precision&#39;</span><span class="p">,</span><span class="s1">&#39;double&#39;</span><span class="p">)</span>
   <span class="n">bb</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;truncate&#39;</span><span class="p">,</span><span class="s1">&#39;no&#39;</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">mywf</span></div>
-<span class="c1"># end def add_bcc_backflow</span>
+
 
 <div class="viewcode-block" id="dset2spo"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.dset2spo">[docs]</a><span class="k">def</span> <span class="nf">dset2spo</span><span class="p">(</span><span class="n">wf_node</span><span class="p">,</span><span class="n">det_map</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; change &lt;wavefunction&gt; from old style, &lt;basis&gt; in &lt;determinantset&gt;, to new style, &lt;basis&gt; in &lt;sposet_builder&gt;</span>
@@ -382,12 +410,12 @@
 
   <span class="c1"># add &lt;sposet&gt; to bb</span>
   <span class="n">dets</span> <span class="o">=</span> <span class="n">dset</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//determinant&#39;</span><span class="p">)</span>
-  <span class="n">s2dname</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># save spo_name -&gt; det_id</span>
+  <span class="n">s2dname</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># save spo_name -&gt; det_id</span>
   <span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">dets</span><span class="p">:</span>
     <span class="n">det</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="s1">&#39;sposet&#39;</span>
     <span class="n">det_id</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">det_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">det_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> not in det_map&#39;</span><span class="o">%</span><span class="n">det_id</span><span class="p">)</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> not in det_map&#39;</span> <span class="o">%</span> <span class="n">det_id</span><span class="p">)</span>
     <span class="c1"># end if</span>
     <span class="n">spo_name</span> <span class="o">=</span> <span class="n">d2sname</span><span class="p">(</span><span class="n">det_id</span><span class="p">)</span>
     <span class="n">s2dname</span><span class="p">[</span><span class="n">spo_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">det_id</span>
@@ -407,7 +435,11 @@
   <span class="k">for</span> <span class="n">spo_name</span> <span class="ow">in</span> <span class="n">s2dname</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
     <span class="n">det_id</span> <span class="o">=</span> <span class="n">s2dname</span><span class="p">[</span><span class="n">spo_name</span><span class="p">]</span>
     <span class="n">group</span>  <span class="o">=</span> <span class="n">det_map</span><span class="p">[</span><span class="n">det_id</span><span class="p">]</span>
-    <span class="n">det</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;determinant&#39;</span><span class="p">,{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span><span class="n">det_id</span><span class="p">,</span><span class="s1">&#39;group&#39;</span><span class="p">:</span><span class="n">group</span><span class="p">,</span><span class="s1">&#39;sposet&#39;</span><span class="p">:</span><span class="n">spo_name</span><span class="p">})</span>
+    <span class="n">det</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;determinant&#39;</span><span class="p">,</span> <span class="p">{</span>
+      <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">det_id</span><span class="p">,</span>
+      <span class="s1">&#39;group&#39;</span><span class="p">:</span> <span class="n">group</span><span class="p">,</span>
+      <span class="s1">&#39;sposet&#39;</span><span class="p">:</span> <span class="n">spo_name</span>
+    <span class="p">})</span>
     <span class="n">slater</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">det</span><span class="p">)</span>
   <span class="c1"># end for spo_name</span>
   <span class="n">dset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slater</span><span class="p">)</span>
