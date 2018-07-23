@@ -76,6 +76,32 @@ def mix_extrap_two_steps_log(entry, iss0, iss1, yname
   return entry2
 
 
+def mix_extrap_two_steps_linear(entry, iss0, iss1, yname
+  , series_name='series'):
+
+  # select VMC and DMC entries
+  sel0 = entry[series_name] == iss0
+  sel1 = entry[series_name] == iss1
+  assert len(entry.loc[sel0]) == 1
+  assert len(entry.loc[sel1]) == 1
+
+  # perform extrapolation
+  ymean_name = '%s_mean' % yname
+  yerror_name = '%s_error' % yname
+  y0m = np.array(entry.loc[sel0, ymean_name].squeeze())
+  y0e = np.array(entry.loc[sel0, yerror_name].squeeze())
+  y1m = np.array(entry.loc[sel1, ymean_name].squeeze())
+  y1e = np.array(entry.loc[sel1, yerror_name].squeeze())
+  y2m = 2*y1m-y0m
+  y2e = np.sqrt(4*y1e**2+y0e**2)
+
+  # create new entry
+  entry2 = entry.loc[sel1].copy()
+  entry2[ymean_name]  = [y2m.tolist()]
+  entry2[yerror_name] = [y2e.tolist()]
+  return entry2
+
+
 def ts_extrap_two_steps_linear(entry, iss0, iss1, yname
   , series_name='series', ts_name='timestep'):
 
