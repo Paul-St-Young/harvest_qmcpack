@@ -37,6 +37,12 @@ def save_mat(mat, h5file, slab, name):
   ca[:, :] = mat
 
 
+def save_vec(vec, h5file, slab, name):
+  atom = tables.Float64Atom()
+  ca = h5file.create_carray(slab, name, atom, vec.shape)
+  ca[:] = vec
+
+
 def saveh5(fname, mat, name='data'):
   """ save matrix in h5 file, mimic call signature of np.savetxt
 
