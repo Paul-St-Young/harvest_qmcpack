@@ -28,7 +28,14 @@ def get_bb_node(doc,args): # get basis builder xml node for 'href' extraction
   if (not os.path.isfile(href)) and (not args.jastrow_only) and (not args.force):
     raise RuntimeError('cannot find wavefunction file, use -jas to circumvent this issue (href="%s")'%href)
   return spo_node
-# end def get_bb_node
+
+
+def opt_wf_fname(fname, iopt):
+  st = 's'+str(iopt).zfill(3)
+  doc = xml.read(fname)
+  proj_id = doc.find('project').get('id')
+  floc = '%s.%s.opt.xml' % (proj_id, st)
+  return floc
 
 if __name__ == '__main__':
   import os
@@ -68,10 +75,11 @@ if __name__ == '__main__':
     jas_dir = 'jas%d'%iqmc
 
     # put optimized wavefunction at step 'iqmc' into input
-    wf_fname = xml.opt_wf_fname(args.fname,iqmc)
+    wf_fname = opt_wf_fname(args.fname,iqmc)
     opt_wf = xml.read(wf_fname).getroot().find('.//wavefunction')
     doc = xml.read(args.fname)
-    xml.swap_node(doc, opt_wf)
+    old_wf = doc.find('.//wavefunction')
+    xml.swap_node(old_wf, opt_wf)
     if args.jastrow_only:
       wf_node = doc.find('.//wavefunction')
       for node in wf_node:
