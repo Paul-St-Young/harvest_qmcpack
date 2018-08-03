@@ -81,7 +81,7 @@ def color_scatter(ax, xyz, vals, cmap_name='viridis', **kwargs):
   # design color scheme, if none given
   if (not 'c' in kwargs.keys()) and (not 'color' in kwargs.keys()):
     from qharv.plantation import kyrt
-    v2c = kyrt.scalar_color_map(min(vals),max(vals),cmap_name)
+    v2c = kyrt.scalar_colormap(min(vals), max(vals), cmap_name)
     kwargs['c'] = v2c(vals)
   # end if
 
