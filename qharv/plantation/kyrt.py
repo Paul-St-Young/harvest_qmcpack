@@ -25,6 +25,71 @@ errorbar_style = {
    }
 }
 
+# ======================== level 0: basic color =========================
+
+
+def get_cmap(name='viridis'):
+  """ return color map by name
+
+  Args:
+    name (str, optional): name of color map, default 'viridis'
+  Return:
+    matplotlib.colors.ListedColormap: requested colormap
+  """
+  from matplotlib import cm
+  cmap = cm.get_cmap(name)
+  return cmap
+
+
+def get_norm(vmin, vmax):
+  """ return norm function for scalar in range (vmin, vmax)
+
+  Args:
+    vmin (float): value minimum
+    vmax (float): value maximum
+  Return:
+    matplotlib.colors.Normalize: color normalization function
+  """
+  norm = plt.Normalize(vmin, vmax)
+  return norm
+
+
+def scalar_colormap(vmin, vmax, name='viridis'):
+  """ return a function that maps a number to a color
+
+  Args:
+    vmin (float): minimum scalar value
+    vmax (float): maximum scalar value
+    name (str, optional): color map name, default is 'viridis'
+  Return:
+    function: float -> (float,)*4 RGBA color space
+  """
+  cmap = get_cmap(name)
+  norm = get_norm(vmin, vmax)
+
+  def v2c(v):  # function mapping value to color
+    return cmap(norm(v))
+  return v2c
+
+
+def scalar_colorbar(vmin, vmax, name='viridis', **kwargs):
+  """ return a colorbar for scalar_color_map()
+
+  Args:
+    vmin (float): minimum scalar value
+    vmax (float): maximum scalar value
+    name (str, optional): color map name, default is 'viridis'
+  Return:
+    matplotlib.colorbar.Colorbar: colorbar
+  """
+  cmap = get_cmap(name)
+  norm = get_norm(vmin, vmax)
+  # issue 3644
+  sm = plt.cm.ScalarMappable(norm=norm, cmap=cmap)
+  sm.set_array([])
+  cbar = plt.colorbar(sm, **kwargs)
+  return cbar
+
 
 # ======================== level 0: basic ax edits =========================
 
@@ -42,8 +107,8 @@ def set_xy_format(ax, xfmt='%3.2f', yfmt='%3.2f'):
 # end def
 
 
-def set_tick_font(ax, xsize=14, ysize=14
-  ,xweight='bold', yweight='bold', **kwargs):
+def set_tick_font(ax, xsize=14, ysize=14,
+  xweight='bold', yweight='bold', **kwargs):
   """ change x,y tick fonts
 
   Args:
@@ -54,15 +119,14 @@ def set_tick_font(ax, xsize=14, ysize=14
     yweight (str,optional): ytick fontweight, default is 'bold'
     kwargs (dict): other tick-related properties
   """
-  plt.setp(ax.get_xticklabels(), fontsize=xsize
-    ,fontweight=xweight,**kwargs)
-  plt.setp(ax.get_yticklabels(), fontsize=ysize
-    ,fontweight=yweight,**kwargs)
-# end def
+  plt.setp(ax.get_xticklabels(), fontsize=xsize,
+    fontweight=xweight,**kwargs)
+  plt.setp(ax.get_yticklabels(), fontsize=ysize,
+    fontweight=yweight,**kwargs)
 
 
-def set_label_font(ax, xsize=14, ysize=14
-  , xweight='bold', yweight='bold', **kwargs):
+def set_label_font(ax, xsize=14, ysize=14,
+  xweight='bold', yweight='bold', **kwargs):
   """ change x,y label fonts
 
   Args:
@@ -73,28 +137,10 @@ def set_label_font(ax, xsize=14, ysize=14
     yweight (str,optional): ylabel fontweight, default is 'bold'
     kwargs (dict): other label-related properties
   """
-  plt.setp(ax.xaxis.label, fontsize=xsize
-    ,fontweight=xweight,**kwargs)
-  plt.setp(ax.yaxis.label, fontsize=ysize
-    ,fontweight=yweight,**kwargs)
-# end def
-
-
-def scalar_color_map(vmin, vmax, name='viridis'):
-  """ return a function that maps a number to a color
-
-  Args:
-    vmin (float): minimum scalar value
-    vmax (float): maximum scalar value
-    name (str, optional): color map name, default is 'viridis'
-  """
-  from matplotlib.cm import get_cmap
-  import matplotlib as mpl
-  cmap = get_cmap(name)
-  norm = mpl.colors.Normalize(vmin, vmax)
-  v2c  = lambda v:cmap(norm(v))  # function mapping value to color
-  return v2c
-# end def scalar_color_map
+  plt.setp(ax.xaxis.label, fontsize=xsize,
+    fontweight=xweight,**kwargs)
+  plt.setp(ax.yaxis.label, fontsize=ysize,
+    fontweight=yweight,**kwargs)
 
 
 # ====================== level 0: basic legend edits =======================
@@ -105,8 +151,6 @@ def set_legend_marker_size(leg, ms=10):
   msl   = [ms]*len(handl)  # override marker sizes here
   for hand,ms in zip(handl, msl):
     hand._legmarker.set_markersize(ms)
-  # end for
-# end def set_label_font
 
 
 # ======================== composition =========================
@@ -115,4 +159,3 @@ def set_legend_marker_size(leg, ms=10):
 def pretty_up(ax):
   set_tick_font(ax)
   set_label_font(ax)
-# end def pretty_up
