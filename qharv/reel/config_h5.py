@@ -21,7 +21,7 @@ def extract_checkpoint_walkers(fconfig):
 
 
 def save_mat(mat, h5file, slab, name):
-  """ save matrix as floating point numbers in h5file.slab.name
+  """ save matrix in h5file.slab.name
 
   for /name, use slab = h5file.root
   see example usage in saveh5
@@ -32,19 +32,19 @@ def save_mat(mat, h5file, slab, name):
     slab (tables.Group): HDF5 slab, could be root slab
     name (str): name of CArray to create
   """
-  atom = tables.Float64Atom()
+  atom = tables.Atom.from_dtype(mat.dtype)
   ca = h5file.create_carray(slab, name, atom, mat.shape)
   ca[:, :] = mat
 
 
 def save_vec(vec, h5file, slab, name):
-  atom = tables.Float64Atom()
+  atom = tables.Atom.from_dtype(mat.dtype)
   ca = h5file.create_carray(slab, name, atom, vec.shape)
   ca[:] = vec
 
 
 def saveh5(fname, mat, name='data'):
-  """ save matrix in h5 file, mimic call signature of np.savetxt
+  """ save matrix at root of h5 file, mimic call signature of np.savetxt
 
   e.g. mat = np.eye(3)
   saveh5('mat.h5', mat)
@@ -58,7 +58,20 @@ def saveh5(fname, mat, name='data'):
   """
   filters = tables.Filters(complevel=5, complib='zlib')
   fp = tables.open_file(fname, mode='w', filters=filters)
-
   save_mat(mat, fp, fp.root, name)
-
   fp.close()
+
+
+def loadh5(fname, path='/data'):
+  """ load matrix from h5 file, mimic np.loadtxt
+
+  Args:
+    fname (str): name of hdf5 to read
+  Return:
+    np.array: matrix of data
+  """
+  fp = tables.open_file(fname, mode='r')
+  slab = fp.get_node(path)
+  mat = slab.read()
+  fp.close()
+  return mat
