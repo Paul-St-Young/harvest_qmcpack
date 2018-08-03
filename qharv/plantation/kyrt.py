@@ -9,10 +9,22 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 
+# ======================== library of defaults =========================
 # expose some default colors for convenience
 from matplotlib.cm import get_cmap
 cmap   = get_cmap('viridis')
 colors = cmap.colors  # 256 default colors
+errorbar_style = {
+  'cyq':{
+    'linestyle':'none',         # do 1 thing
+    'markersize':3.5,           # readable
+    'markeredgecolor':'black',  # accentuate
+    'markeredgewidth':0.3,
+    'capsize':4,
+    'elinewidth':0.5
+   }
+}
+
 
 # ======================== level 0: basic ax edits =========================
 
