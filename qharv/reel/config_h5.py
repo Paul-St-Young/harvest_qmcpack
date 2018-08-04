@@ -38,7 +38,7 @@ def save_mat(mat, h5file, slab, name):
 
 
 def save_vec(vec, h5file, slab, name):
-  atom = tables.Atom.from_dtype(mat.dtype)
+  atom = tables.Atom.from_dtype(vec.dtype)
   ca = h5file.create_carray(slab, name, atom, vec.shape)
   ca[:] = vec
 
