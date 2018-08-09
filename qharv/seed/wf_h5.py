@@ -57,6 +57,7 @@ def ls(handle, r=False, level=0, indent="  "):
 locations = {
   'gvectors': 'electrons/kpoint_0/gvectors',
   'nkpt': 'electrons/number_of_kpoints',
+  'nelecs': 'electrons/number_of_electrons',
   'nspin': 'electrons/number_of_spins',
   'nstate': 'electrons/kpoint_0/spin_0/number_of_states',
   # !!!! assume same number of states per kpt
@@ -75,7 +76,9 @@ def get(fp, name):
     array_like: whatever fp[loc].value returns
   """
   if name not in locations.keys():
-    raise RuntimeError('unknown attribute requested: %s' % name)
+    msg = 'unknown attribute requested: "%s"' % name
+    msg += '\n known attributes:\n  ' + '\n  '.join(locations.keys())
+    raise RuntimeError(msg)
   loc = locations[name]
   return fp[loc].value
 
