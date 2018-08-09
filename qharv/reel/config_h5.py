@@ -56,8 +56,7 @@ def saveh5(fname, mat, name='data'):
     mat (np.array): 2D numpy array of floats
     name (str, optional): CArray name at the root of the hdf5 file
   """
-  filters = tables.Filters(complevel=5, complib='zlib')
-  fp = tables.open_file(fname, mode='w', filters=filters)
+  fp = open_write(fname)
   save_mat(mat, fp, fp.root, name)
   fp.close()
 
@@ -70,8 +69,19 @@ def loadh5(fname, path='/data'):
   Return:
     np.array: matrix of data
   """
-  fp = tables.open_file(fname, mode='r')
+  fp = open_read(fname)
   slab = fp.get_node(path)
   mat = slab.read()
   fp.close()
   return mat
+
+
+def open_write(fname):
+  filters = tables.Filters(complevel=5, complib='zlib')
+  fp = tables.open_file(fname, mode='w', filters=filters)
+  return fp
+
+
+def open_read(fname):
+  fp = tables.open_file(fname, mode='r')
+  return fp
