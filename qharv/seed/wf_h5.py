@@ -40,10 +40,10 @@ def ls(handle, r=False, level=0, indent="  "):
   """
   mystr = ''
   if isinstance(handle, h5py.File) or isinstance(handle, h5py.Group):
-    for key,val in handle.items():
+    for key, val in handle.items():
       mystr += indent*level+'/'+key + "\n"
       if r:
-        mystr += ls(val,r=r,level=level+1,indent=indent)
+        mystr += ls(val, r=r, level=level+1, indent=indent)
     # end for
   elif isinstance(handle, h5py.Dataset):
     return ''
@@ -147,7 +147,7 @@ def get_orb_in_pw(fp, ikpt, ispin, istate):
   Return:
     (np.array, np.array): (gvecs, cmat), PWs and coefficient matrix
   """
-  orb_path = os.path.join(state_path(ikpt,ispin,istate), 'psi_g')
+  orb_path = os.path.join(state_path(ikpt, ispin, istate), 'psi_g')
   psig_arr = fp[orb_path].value  # stored in real view
   # psig = psig_arr[:,0]+1j*psig_arr[:,1]  # convert to complex view
   psig = psig_arr.flatten().view(complex)  # more elegant conversion
