@@ -137,11 +137,64 @@ def state_path(ikpt, ispin, istate):
 
 
 def get_orb_in_pw(fp, ikpt, ispin, istate):
+  """ get the plane wave coefficients of a single Kohn-Sham orbital
+
+  Args:
+    fp (h5py.File): wf h5 file
+    ikpt (int): kpoint index
+    ispin (int): spin index
+    istate (int): band index
+  Return:
+    (np.array, np.array): (gvecs, cmat), PWs and coefficient matrix
+  """
   orb_path = os.path.join(state_path(ikpt,ispin,istate), 'psi_g')
   psig_arr = fp[orb_path].value  # stored in real view
   # psig = psig_arr[:,0]+1j*psig_arr[:,1]  # convert to complex view
   psig = psig_arr.flatten().view(complex)  # more elegant conversion
   return psig
+
+
+# ====== level 3: single particle orbitals ======
+
+
+def get_cmat(fp, ikpt, ispin):
+  """ get Kohn-Sham orbital coefficients on a list of plane waves (PWs)
+
+  Args:
+    fp (h5py.File): wf h5 file
+    ikpt (int): kpoint index
+    ispin (int): spin index
+  Return:
+    (np.array, np.array): (gvecs, cmat), PWs and coefficient matrix
+  """
+  # decide how many orbitals to extract (norb)
+  nelecs = get(fp, 'nelecs')  # all spins
+  norb = nelecs[ispin]  # get all occupied orbitals
+  # count the number of PWs (npw)
+  gvecs = get(fp, 'gvectors')  # integer vectors
+  npw = len(gvecs)
+  # construct coefficient matrix
+  cmat = np.zeros([norb, npw], dtype=complex)
+  for iorb in range(norb):
+    ci = get_orb_in_pw(fp, ikpt, ispin, iorb)
+    cmat[iorb, :] = ci
+  return gvecs, cmat
+
+
+def normalize_cmat(cmat):
+  """ normalize PW orbital coefficients
+
+  Args:
+    cmat (np.array): coefficient matrix shape (norb, npw)
+  Return:
+    np.array: cmat with each row normalized to |ci|^2=1
+  """
+  norb, npw = cmat.shape
+  for iorb in range(norb):
+    ci = cmat[iorb]
+    norm = np.dot(ci.conj(), ci)
+    cmat[iorb] /= norm**0.5
+  return cmat
 
 
 # =======================================================================
