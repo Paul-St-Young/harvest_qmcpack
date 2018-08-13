@@ -183,18 +183,16 @@ def get_cmat(fp, ikpt, ispin):
 
 def normalize_cmat(cmat):
   """ normalize PW orbital coefficients
-
   Args:
     cmat (np.array): coefficient matrix shape (norb, npw)
-  Return:
-    np.array: cmat with each row normalized to |ci|^2=1
+  Effect:
+    each row of cmat will be normalized to |ci|^2=1
   """
   norb, npw = cmat.shape
   for iorb in range(norb):
     ci = cmat[iorb]
     norm = np.dot(ci.conj(), ci)
     cmat[iorb] /= norm**0.5
-  return cmat
 
 
 # =======================================================================
