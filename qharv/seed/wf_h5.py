@@ -164,7 +164,7 @@ def get_cmat(fp, ikpt, ispin):
     fp (h5py.File): wf h5 file
     ikpt (int): kpoint index
     ispin (int): spin index
-  Return:
+  Returns:
     (np.array, np.array): (gvecs, cmat), PWs and coefficient matrix
   """
   # decide how many orbitals to extract (norb)
@@ -183,6 +183,7 @@ def get_cmat(fp, ikpt, ispin):
 
 def normalize_cmat(cmat):
   """ normalize PW orbital coefficients
+
   Args:
     cmat (np.array): coefficient matrix shape (norb, npw)
   Effect:
@@ -193,6 +194,45 @@ def normalize_cmat(cmat):
     ci = cmat[iorb]
     norm = np.dot(ci.conj(), ci)
     cmat[iorb] /= norm**0.5
+
+
+def get_twists(fp, ndim=3):
+  """ return the list of available twist vectors
+
+  Args:
+    fp (h5py.File): wf h5 file
+    ndim (int, optional): number of spatial dimensions, default 3
+  Returns:
+    np.array: tvecs, twist vectors in reciprocal lattice units (nk, ndim)
+  """
+  nk = get(fp, 'nkpt')[0]
+  ukvecs = np.zeros([nk, ndim])
+  for ik in range(nk):
+    kpath = kpoint_path(ik)
+    ukvec = fp[os.path.join(kpath, 'reduced_k')].value
+    ukvecs[ik, :] = ukvec
+  return ukvecs
+
+
+def get_bands(fp, ispin=0):
+  """ return the list of available Kohn-Sham eigenvalues
+
+  Args:
+    fp (h5py.File): wf h5 file
+    ispin (int, optional): spin index, default 0
+  Returns:
+    np.array: tvecs, twist vectors in reciprocal lattice units (nk, nbnd)
+  """
+  nk = get(fp, 'nkpt')[0]
+  nbnd = get(fp, 'nstate')[0]
+  bands = np.zeros([nk, nbnd])
+  for ik in range(nk):
+    kpath = kpoint_path(ik)
+    spath = spin_path(ik, ispin)
+    bpath = os.path.join(spath, 'eigenvalues')
+    band = fp[bpath].value
+    bands[ik, :] = band
+  return bands
 
 
 # =======================================================================
