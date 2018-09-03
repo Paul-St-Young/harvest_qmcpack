@@ -57,7 +57,7 @@ def saveh5(fname, mat, name='data'):
     name (str, optional): CArray name at the root of the hdf5 file
   """
   fp = open_write(fname)
-  save_mat(mat, fp, fp.root, name)
+  save_vec(mat, fp, fp.root, name)
   fp.close()
 
 
