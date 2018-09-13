@@ -166,6 +166,9 @@ def draw_crystal(ax,axes,pos,draw_super=False):
       atoms.append(dots)
     # end for
   # end if
+  ax.set_xlabel('x')
+  ax.set_ylabel('y')
+  ax.set_zlabel('z')
 
   return cell, atoms
 # end def

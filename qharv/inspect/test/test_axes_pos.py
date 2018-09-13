@@ -77,7 +77,7 @@ def test_rwsc():
    [-0.08306451, 27.58607338,  17.96016072],
    [-2.59722820, -0.00040676,  13.47012604]
   ])
-  # dn = 2 is sufficient
+  # dn = 2 is sufficient !!!! THIS IS WRONG !!!!
   rwsc = axes_pos.rwsc(axes, dn=2)
   assert np.isclose(rwsc, 5.281986)
 # end def
