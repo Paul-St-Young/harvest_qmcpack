@@ -2,7 +2,6 @@
 # Email: yubo.paul.yang@gmail.com
 # Routines to process crystal structure specified by axes,pos
 import numpy as np
-import pandas as pd
 
 
 # ======================== level 0: axes properties =========================
