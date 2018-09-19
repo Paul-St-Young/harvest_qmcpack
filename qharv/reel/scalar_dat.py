@@ -66,9 +66,7 @@ def corr(trace):
     # calculate auto_correlation
     auto_correlation = 0.0
     num = len(trace)-k
-    for i in range(num):
-      auto_correlation += (trace[i]-mu)*(trace[i+k]-mu)
-    # end for i
+    auto_correlation = np.dot(trace[:num]-mu, trace[k:]-mu)
     auto_correlation *= 1.0/(num*stddev**2)
     if auto_correlation > 0:
       correlation_time += auto_correlation
