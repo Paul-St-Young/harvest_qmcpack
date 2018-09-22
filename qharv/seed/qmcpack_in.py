@@ -43,7 +43,7 @@ def simulationcell_from_axes(axes, bconds='p p p', rckc=15.):
     return ' ' + line + ' '
 
   # write primitive lattice vectors
-  lat_node = etree.Element('parameter',attrib={
+  lat_node = etree.Element('parameter', attrib={
     'name': 'lattice',
     'units': 'bohr'
   })
@@ -63,6 +63,32 @@ def simulationcell_from_axes(axes, bconds='p p p', rckc=15.):
   sc_node.append(bconds_node)
   sc_node.append(lr_node)
   return sc_node
+
+
+def particle_group_from_pos(pos, name, **kwargs):
+  """ construct a <group> in the <particleset> xml element
+
+   Args:
+     pos (np.array): positions, shape (nptcl, ndim)
+     name (str): name of particle group
+   Return:
+     etree.Element: <group> including <attrib name="positions">
+  """
+
+  group = xml.etree.Element('group', dict(
+    name = name,
+    size = str(len(pos)),
+  ))
+  for key, val in kwargs.items():
+    xml.set_param(group, key, str(val), new=True)
+  pos_attrib = xml.etree.Element('attrib', dict(
+    name = 'position',
+    datatype = 'posArray',
+    condition = str(0)
+  ))
+  pos_attrib.text = xml.arr2text(pos)
+  group.append(pos_attrib)
+  return group
 
 
 def ud_electrons(nup, ndown):
