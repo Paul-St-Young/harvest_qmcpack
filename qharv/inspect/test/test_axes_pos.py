@@ -81,3 +81,36 @@ def test_rwsc():
   rwsc = axes_pos.rwsc(axes, dn=2)
   assert np.isclose(rwsc, 5.281986)
 # end def
+
+def axes0_pos0(rs):
+  alat = np.sqrt(2*2*np.pi/3**0.5)*rs
+  axes = alat*np.eye(3)
+  axes[1, :] = [alat/2., 3**0.5*alat/2., 0]
+
+  upos = np.array([
+    [0.0, 0.0, 0.5],
+    [0.5, 0.5, 0.5]
+  ])
+  pos = np.dot(upos, axes)
+  return axes, pos
+
+def test_pos_in_box():
+  axes, pos = axes0_pos0(50.)
+
+  tmat = np.array([
+    [1, 0, 0],
+    [0, 3, 0],
+    [0, 0, 1]
+  ])
+  axes1 = np.dot(tmat, axes)
+  upos = np.dot(pos, np.linalg.inv(axes))
+  cpos = axes_pos.cubic_pos(2)
+  upos1 = np.concatenate([up+cpos for up in upos], axis=0)
+  pos1 = np.dot(upos1, axes)
+
+  pos2 = axes_pos.pos_in_axes(axes1, pos1, ztol=1e-8)
+  upos2 = np.dot(pos2, np.linalg.inv(axes1))
+  assert np.allclose(upos2[4:6], np.array([
+    [0, 0, 0.5],
+    [0, 0, 0.5]
+  ]))
