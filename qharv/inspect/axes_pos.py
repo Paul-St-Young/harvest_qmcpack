@@ -115,6 +115,23 @@ def pos_in_axes(axes, pos, ztol=1e-10):
   return pos0
 
 
+def cubic_pos(nx, ndim=3):
+  """ initialize simple cubic lattice in unit cube
+
+  Args:
+    nx (int): number of lattice points along each dimension
+    ndim (int): number of spatial dimensions
+  Return:
+    np.array: simple cubic lattice positions, shape (nx**3, ndim)
+  """
+  nl = np.arange(nx)
+  pos = np.stack(
+    np.meshgrid(*[nl]*ndim, indexing='ij'),
+    axis=-1
+  ).reshape(-1, 3)
+  return pos
+
+
 def auto_distance_table(axes, pos, dn=1):
   """ calculate distance table of a set of particles among themselves
   keep this function simple! use this to test distance_table(axes,pos1,pos2)
