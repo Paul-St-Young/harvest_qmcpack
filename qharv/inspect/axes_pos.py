@@ -99,7 +99,7 @@ def rwsc(axes, dn=1):
 
 
 # ======================== level 1: axes pos =========================
-def pos_in_axes(axes, pos):
+def pos_in_axes(axes, pos, ztol=1e-10):
   """ particle position(s) in cell
 
   Args:
@@ -108,9 +108,10 @@ def pos_in_axes(axes, pos):
   Returns:
     pos0(np.array): particle position(s) inside the cell
   """
-  upos = np.dot(pos,np.linalg.inv(axes))
-  upos -= np.floor(upos)
-  pos0 = np.dot(upos,axes)
+  upos = np.dot(pos, np.linalg.inv(axes))
+  zsel = abs(upos % 1-1)<ztol
+  upos[zsel] = 0
+  pos0 = np.dot(upos % 1, axes)
   return pos0
 
 
