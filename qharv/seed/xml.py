@@ -113,6 +113,8 @@ def arr2text(arr):
 
 def text2arr(text, dtype=float, flatten=False):
   """ convert a text string into a numpy array """
+  if type(text) is bytes:
+    text = text.decode()
   tlist = text.strip(' ').strip('\n').split('\n')
   if len(tlist) == 1:
     return np.array(tlist,dtype=dtype)
