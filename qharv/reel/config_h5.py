@@ -85,3 +85,16 @@ def open_write(fname):
 def open_read(fname):
   fp = tables.open_file(fname, mode='r')
   return fp
+
+
+def save_arr_dict(fh5, arr_dict):
+  """ save a dictory of numpy arrays into an h5 file
+
+  Args:
+    fh5 (str): hdf5 file name
+    arr_dict (dict): a dictionary of numpy arrays to save to file
+  """
+  fp = open_write(fh5)
+  for key, arr in arr_dict.items():
+    save_vec(arr, fp, fp.root, key)
+  fp.close()
