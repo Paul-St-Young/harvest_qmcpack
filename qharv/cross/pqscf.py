@@ -25,16 +25,14 @@ def atom_text(elem,pos):
   return atext
 # end def
 
-def mf_from_chkfile(chkfile,scf_class=None):
+def mf_from_chkfile(chkfile, scf_class=None):
   from pyscf.pbc import scf
   if scf_class is None:
     scf_class = scf.RHF
-
-  cell,scf_rec = scf.chkfile.load_scf(chkfile)
-  mf = scf.RHF(cell)
+  cell, scf_rec = scf.chkfile.load_scf(chkfile)
+  mf = scf_class(cell)
   mf.__dict__.update(scf_rec)
   return mf
-# end def
 
 def pw_to_r(gvecs,psig,grid_shape=None):
   """ convert a 3D function from plane-wave to real-space basis
