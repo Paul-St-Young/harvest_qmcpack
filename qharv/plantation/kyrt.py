@@ -153,6 +153,29 @@ def set_legend_marker_size(leg, ms=10):
     hand._legmarker.set_markersize(ms)
 
 
+# ===================== level 1: interpolate scatter ======================
+
+def show_spline(ax, line, spl_kws=dict(), nx=1024, **kwargs):
+  """ show a smooth spline through given line x y
+
+  Args:
+    ax (plt.Axes): matplotlib axes
+    line (Line1D): matplotlib line object
+    spl_kws (dict, optional): keyword arguments to splrep, default is empty
+    nx (int, optional): number of points to allocate to 1D grid
+  Return:
+    Line1D: interpolating line
+  """
+  import numpy as np
+  from scipy.interpolate import splrep, splev
+  myx = line.get_xdata()
+  myy = line.get_ydata()
+  color = line.get_color()
+  finex = np.linspace(min(myx), max(myx), nx)
+  tck = splrep(myx, myy, **spl_kws)
+  line1 = ax.plot(finex, splev(finex, tck), c=color, **kwargs)
+  return line1
+
 # ======================== composition =========================
 
 
