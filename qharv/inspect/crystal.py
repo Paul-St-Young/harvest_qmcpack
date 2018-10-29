@@ -76,9 +76,12 @@ def draw_cell(ax,axes,corner=None,enclose=True,**kwargs):
   Returns:
    list: a list of plt.Line3D, one for each lattice vector
   """
+  ndim = len(axes)
+  if ndim not in [2, 3]:
+    raise RuntimeError('ndim = %d is not supported' % ndim)
   cell = []
   if corner is None:
-    corner = np.array([0,0,0])
+    corner = np.zeros(ndim)
   # end if
 
   # set defaults
@@ -90,34 +93,31 @@ def draw_cell(ax,axes,corner=None,enclose=True,**kwargs):
     kwargs['lw'] = 2
 
   # a,b,c lattice vectors
-  for iax in range(3):
+  for iax in range(ndim):
     start = corner
     end   = start + axes[iax]
     line = ax.plot(*zip(start,end),**kwargs)
     cell.append(line)
-  # end for iax
 
   if enclose:
     # counter a,b,c vectors
-    for iax in range(3):
+    for iax in range(ndim):
       start = corner+axes.sum(axis=0)
       end   = start - axes[iax]
       line = ax.plot(*zip(start,end),**kwargs)
       cell.append(line)
-    # end for iax
     
-    # remaining vectors needed to enclose cell
-    for iax in range(3):
-      start = corner+axes[iax]
-      for jax in range(3):
-        if jax == iax:
-          continue
-        end = start + axes[jax]
-        line = ax.plot(*zip(start,end),**kwargs)
-        cell.append(line)
-      # end for jax
-    # end for iax
-  # end if
+    if ndim >2:
+      # remaining vectors needed to enclose cell
+      for iax in range(ndim):
+        start = corner+axes[iax]
+        for jax in range(ndim):
+          if jax == iax:
+            continue
+          end = start + axes[jax]
+          line = ax.plot(*zip(start,end),**kwargs)
+          cell.append(line)
+  # end if enclose
 
   return cell
 
