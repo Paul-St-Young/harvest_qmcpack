@@ -26,6 +26,10 @@ double precision function corr(a, n)
   integer i, k
   mu = mean(a, n)
   sig = stddev(a, n)
+  if (abs(sig)<tiny(sig)) then
+    corr = huge(corr)
+    return
+  endif
   corr = 0
   do k=1,n
     ct = 0
