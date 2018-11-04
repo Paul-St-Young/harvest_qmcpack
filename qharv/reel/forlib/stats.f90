@@ -40,3 +40,16 @@ double precision function corr(a, n)
   enddo
   corr = corr + 1
 end function corr
+
+double precision function error(a, n)
+  double precision, intent(in) :: a(n)
+  double precision mu, sig, mean, stddev, kappa, corr
+  mu = mean(a, n)
+  sig = stddev(a, n)
+  if (abs(sig)<tiny(sig)) then
+    erorr = 0
+    return
+  endif
+  kappa = corr(a, n)
+  error = sig/sqrt(n/kappa)
+end function error
