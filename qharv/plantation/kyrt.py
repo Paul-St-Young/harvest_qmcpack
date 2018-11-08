@@ -26,8 +26,6 @@ errorbar_style = {
 }
 
 # ======================== level 0: basic color =========================
-
-
 def get_cmap(name='viridis'):
   """ return color map by name
 
@@ -40,7 +38,6 @@ def get_cmap(name='viridis'):
   cmap = cm.get_cmap(name)
   return cmap
 
-
 def get_norm(vmin, vmax):
   """ return norm function for scalar in range (vmin, vmax)
 
@@ -52,7 +49,6 @@ def get_norm(vmin, vmax):
   """
   norm = plt.Normalize(vmin, vmax)
   return norm
-
 
 def scalar_colormap(vmin, vmax, name='viridis'):
   """ return a function that maps a number to a color
@@ -70,7 +66,6 @@ def scalar_colormap(vmin, vmax, name='viridis'):
   def v2c(v):  # function mapping value to color
     return cmap(norm(v))
   return v2c
-
 
 def scalar_colorbar(vmin, vmax, name='viridis', **kwargs):
   """ return a colorbar for scalar_color_map()
@@ -90,10 +85,7 @@ def scalar_colorbar(vmin, vmax, name='viridis', **kwargs):
   cbar = plt.colorbar(sm, **kwargs)
   return cbar
 
-
 # ======================== level 0: basic ax edits =========================
-
-
 def set_xy_format(ax, xfmt='%3.2f', yfmt='%3.2f'):
   """ change x,y tick formats e.g. number of digits
 
@@ -104,8 +96,6 @@ def set_xy_format(ax, xfmt='%3.2f', yfmt='%3.2f'):
   """
   ax.get_xaxis().set_major_formatter( FormatStrFormatter(xfmt) )
   ax.get_yaxis().set_major_formatter( FormatStrFormatter(yfmt) )
-# end def
-
 
 def set_tick_font(ax, xsize=14, ysize=14,
   xweight='bold', yweight='bold', **kwargs):
@@ -124,7 +114,6 @@ def set_tick_font(ax, xsize=14, ysize=14,
   plt.setp(ax.get_yticklabels(), fontsize=ysize,
     fontweight=yweight,**kwargs)
 
-
 def set_label_font(ax, xsize=14, ysize=14,
   xweight='bold', yweight='bold', **kwargs):
   """ change x,y label fonts
@@ -142,19 +131,14 @@ def set_label_font(ax, xsize=14, ysize=14,
   plt.setp(ax.yaxis.label, fontsize=ysize,
     fontweight=yweight,**kwargs)
 
-
 # ====================== level 0: basic legend edits =======================
-
-
 def set_legend_marker_size(leg, ms=10):
   handl = leg.legendHandles
   msl   = [ms]*len(handl)  # override marker sizes here
   for hand,ms in zip(handl, msl):
     hand._legmarker.set_markersize(ms)
 
-
 # ===================== level 1: interpolate scatter ======================
-
 def show_spline(ax, line, spl_kws=dict(), nx=1024, **kwargs):
   """ show a smooth spline through given line x y
 
@@ -177,8 +161,6 @@ def show_spline(ax, line, spl_kws=dict(), nx=1024, **kwargs):
   return line1
 
 # ======================== composition =========================
-
-
 def pretty_up(ax):
   set_tick_font(ax)
   set_label_font(ax)
