@@ -138,6 +138,27 @@ def set_legend_marker_size(leg, ms=10):
   for hand,ms in zip(handl, msl):
     hand._legmarker.set_markersize(ms)
 
+# ====================== level 0: basic Line2D edits =======================
+def get_style(line):
+  """ get plot styles from Line2D object
+
+  mostly copied from "Line2D.update_from"
+
+  Args:
+    line (Line2D): source of style
+  Return:
+    dict: line styles readily usable for another plot
+  """
+  styles = {
+    'linestyle': line.get_linestyle(),
+    'linewidth': line.get_linewidth(),
+    'color': line.get_color(),
+    'markersize': line.get_markersize(),
+    'linestyle': line.get_linestyle(),
+    'marker': line.get_marker()
+  }
+  return styles
+
 # ===================== level 1: interpolate scatter ======================
 def show_spline(ax, line, spl_kws=dict(), nx=1024, **kwargs):
   """ show a smooth spline through given line x y
