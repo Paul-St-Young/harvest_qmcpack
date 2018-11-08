@@ -159,6 +159,45 @@ def get_style(line):
   }
   return styles
 
+# ===================== level 1: fit line ======================
+def show_fit(ax, line, sel, model, nx=64, xmin=None, xmax=None):
+  """ fit a segment of (x, y) data and show fit
+
+  get x, y data from line; use sel to make selection
+
+  Args:
+    ax (Axes): matplotlib axes
+    line (Line2D): line with data
+    sel (np.array): boolean selector array
+    model (callable): model function
+    nx (int, optional): grid size, default 64
+    xmin (float, optional): grid min
+    xmax (float, optional): grid max
+  """
+  import numpy as np
+  from scipy.optimize import curve_fit
+  # get and select data to fit
+  myx = line.get_xdata()
+  myy = line.get_ydata()
+  # show selected data
+  myx1 = myx[sel]
+  myy1 = myy[sel]
+  if xmin is None:
+    xmin = myx1.min()
+  if xmax is None:
+    xmax = myx1.max()
+  line1 = ax.plot(myx[sel], myy[sel], ls='',
+    c=line.get_color(), marker='o', fillstyle='none')
+  # perform fit
+  popt, pcov = curve_fit(model, myx1, myy1)
+  perr = np.sqrt(np.diag(pcov))
+  # show fit
+  finex = np.linspace(xmin, xmax, nx)
+  line2 = ax.plot(finex, model(finex, *popt),
+    c=line.get_color())
+  lines = [line1[0], line2[0]]
+  return popt, perr, lines
+
 # ===================== level 1: interpolate scatter ======================
 def show_spline(ax, line, spl_kws=dict(), nx=1024, **kwargs):
   """ show a smooth spline through given line x y
