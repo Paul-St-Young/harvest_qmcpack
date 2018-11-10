@@ -87,14 +87,17 @@ def open_read(fname):
   return fp
 
 
-def save_arr_dict(fh5, arr_dict):
+def save_arr_dict(fh5, arr_dict, group=None):
   """ save a dictory of numpy arrays into an h5 file
 
   Args:
     fh5 (str): hdf5 file name
     arr_dict (dict): a dictionary of numpy arrays to save to file
+    group (tables.group.Group, optional): h5 group slab
   """
+  if group is None:
+    group = fp.root
   fp = open_write(fh5)
   for key, arr in arr_dict.items():
-    save_vec(arr, fp, fp.root, key)
+    save_vec(arr, fp, group, key)
   fp.close()
