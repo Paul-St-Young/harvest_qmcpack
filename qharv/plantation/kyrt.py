@@ -131,6 +131,15 @@ def set_label_font(ax, xsize=14, ysize=14,
   plt.setp(ax.yaxis.label, fontsize=ysize,
     fontweight=yweight,**kwargs)
 
+def yright(ax):
+  """ move yaxis label and ticks to the right
+
+  Args:
+    ax (plt.Axes): matplotlib axes
+  """
+  ax.get_yaxis().tick_right()
+  ax.get_yaxis().set_label_position('right')
+
 # ====================== level 0: basic legend edits =======================
 def set_legend_marker_size(leg, ms=10):
   handl = leg.legendHandles
@@ -160,7 +169,7 @@ def get_style(line):
   return styles
 
 # ===================== level 1: fit line ======================
-def show_fit(ax, line, sel, model, nx=64, xmin=None, xmax=None):
+def show_fit(ax, line, sel, model, nx=64, xmin=None, xmax=None, **kwargs):
   """ fit a segment of (x, y) data and show fit
 
   get x, y data from line; use sel to make selection
@@ -194,7 +203,7 @@ def show_fit(ax, line, sel, model, nx=64, xmin=None, xmax=None):
   # show fit
   finex = np.linspace(xmin, xmax, nx)
   line2 = ax.plot(finex, model(finex, *popt),
-    c=line.get_color())
+    c=line.get_color(), **kwargs)
   lines = [line1[0], line2[0]]
   return popt, perr, lines
 
