@@ -23,7 +23,7 @@ def check_file_before(write_file):
     if not os.path.isfile(fout):
       write_file(fout, *args, **kwargs)
     else:
-      raise RuntimeError('%s exists'%fout)
+      raise RuntimeError('%s exists' % fout)
   return wrapper
 
 
@@ -32,7 +32,7 @@ def skip_exist_file(write_file):
     if not os.path.isfile(fout):
       write_file(fout, *args, **kwargs)
     else:
-      print('%s exists'%fout)
+      print('%s exists' % fout)
   return wrapper
 
 def show_h5progress(collect_h5file):
