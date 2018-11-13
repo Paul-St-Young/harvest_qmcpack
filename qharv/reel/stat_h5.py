@@ -139,4 +139,4 @@ def nofk(fp, obs_name, nequil, kappa=None):
   """
   kvecs = fp[obs_name]['kpoints'].value
   nkm, nke = mean_and_err(fp, '%s/value' % obs_name, nequil, kappa)
-  return kvecs, nofkm, nofke
+  return kvecs, nkm, nke
