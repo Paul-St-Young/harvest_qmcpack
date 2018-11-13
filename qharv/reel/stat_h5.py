@@ -9,6 +9,32 @@ from qharv.seed.wf_h5 import read, ls
 def path_loc(handle,path):
   return handle[path].value
 
+def me2d(edata, kappa=None, axis=0):
+  """ Calculate mean and error of a table of columns
+
+  Args:
+    edata (np.array): 2D array of equilibrated time series data
+    kappa (float, optional): pre-calculate auto-correlation, default is to
+     re-calculate on-the-fly
+    axis (int, optional): axis to average over, default 0 i.e. columns
+  Return:
+    (np.array, np.array): (mean, error) of each column
+  """
+  # get autocorrelation
+  if kappa is None:
+    try:
+      from qharv.reel.forlib.stats import corr
+    except:
+      raise RuntimeError('please compile qharv.reel.forlib')
+      #from qharv.reel.scalar_dat import corr  # slow Python implementation
+    kappa = np.apply_along_axis(corr, axis, edata)
+  neffective = len(edata)/kappa
+  # calculate mean and error
+  val_mean = edata.mean(axis=axis)
+  val_std  = edata.std(ddof=1, axis=axis)
+  val_err  = val_std/np.sqrt(neffective)
+  return val_mean, val_err
+
 def mean_and_err(handle,obs_path,nequil,kappa=None):
   """ calculate mean and variance of an observable from QMCPACK stat.h5 file
 
@@ -23,34 +49,24 @@ def mean_and_err(handle,obs_path,nequil,kappa=None):
   Returns:
     (np.array,np.array): (val_mean,val_err), the mean and error of the observable, assuming no autocorrelation. For correlated data, error is underestimated by a factor of sqrt(autocorrelation).
   """
+  # look for hdf5 group corresponding to the requested observable
   if not obs_path in handle:
     raise RuntimeError('group %s not found' % obs_path)
-  # end if
-  if kappa is None:
-    raise NotImplementedError('need an automatic way to calculate auto-correlation')
-  # end if
-
   val_path = os.path.join(obs_path,'value')
   if not (val_path in handle):
     val_path = obs_path # !!!! assuming obs_path includes value already
     # `handle[val_path]` will fail if this assumption is not correct
-  # end if
 
+  # get equilibrated data
   val_data = handle[val_path].value
   nblock   = len(val_data)
   if (nequil>=nblock):
     raise RuntimeError('cannot throw out %d blocks from %d blocks'%(nequil,nblock))
-  # end if
   edata      = val_data[nequil:] # equilibrated data
-  neffective = (nblock-nequil)/kappa
 
-  # calculate mean and error
-  val_mean = edata.mean(axis=0)
-  val_std  = edata.std(ddof=1,axis=0)
-  val_err  = val_std/np.sqrt(neffective)
-  
+  # get statistics
+  val_mean, val_err = me2d(edata)
   return val_mean,val_err
-# end def mean_and_err
 
 def absolute_magnetization(handle,nequil,obs_name='SpinDensity',up_name='u',dn_name='d'):
   """ calculate up-down spin density and the integral of its absolute value; first check that /SpinDensity/u and /SpinDensity/d both exist in the .stat.h5 file, then extract both densities, subtract and integrate
