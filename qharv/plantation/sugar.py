@@ -34,3 +34,13 @@ def skip_exist_file(write_file):
     else:
       print('%s exists'%fout)
   return wrapper
+
+def show_h5progress(collect_h5file):
+  def wrapper(h5file, flist, *args, **kwargs):
+    from progressbar import ProgressBar
+    bar = ProgressBar(maxval=len(flist))
+    ifile = 0
+    for ifile, floc in enumerate(flist):
+      collect_h5file(h5file, floc, *args, **kwargs)
+      bar.update(ifile)
+  return wrapper
