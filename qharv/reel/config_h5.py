@@ -95,9 +95,9 @@ def save_arr_dict(fh5, arr_dict, group=None):
     arr_dict (dict): a dictionary of numpy arrays to save to file
     group (tables.group.Group, optional): h5 group slab
   """
+  fp = open_write(fh5)
   if group is None:
     group = fp.root
-  fp = open_write(fh5)
   for key, arr in arr_dict.items():
     save_vec(arr, fp, group, key)
   fp.close()
