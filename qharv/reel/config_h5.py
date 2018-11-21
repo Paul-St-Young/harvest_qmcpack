@@ -38,12 +38,28 @@ def save_mat(mat, h5file, slab, name):
 
 
 def save_vec(vec, h5file, slab, name):
+  """ save numpy array into an h5 slab under name
+
+  Args:
+    vec (np.array): numpy ndarray of arbitrary dimension and type
+    h5file (tables.file.File): pytables File
+    slab (tables.Group): HDF5 slab
+    name (str): name of CArray to create
+  """
   atom = tables.Atom.from_dtype(vec.dtype)
   ca = h5file.create_carray(slab, name, atom, vec.shape)
   ca[:] = vec
 
 
 def save_dict(arr_dict, h5file, slab):
+  """ save a dictionary of numpy arrays into h5file
+   each entry will create its own sub-slab using key as name
+
+  Args:
+    arr_dict (dict): dictionary of numpy arrays
+    h5file (tables.file.File): pytables File
+    slab (tables.Group): HDF5 slab
+  """
   for key, arr in arr_dict.items():
     save_vec(arr, h5file, slab, key)
   h5file.flush()
