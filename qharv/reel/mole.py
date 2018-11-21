@@ -41,6 +41,20 @@ def find(regex, rundir, **kwargs):
   return flist[0]
 
 
+def clean_path(path):
+  """ remove . and .. from path
+
+  Args:
+    path (str): file or folder path
+  Return:
+    str: clean path
+  """
+  segs = path.split('/')
+  segs1 = [seg for seg in segs if seg not in ['.', '..']]
+  path1 = '/'.join(segs1)
+  return path1
+
+
 def interpret_qmcpack_fname(fname):
   """ extract metadata regarding the contents of a file based on its filename.
   QMCPACK generates files having a pre-determined suffix structure. This
