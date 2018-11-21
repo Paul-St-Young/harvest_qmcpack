@@ -43,6 +43,12 @@ def save_vec(vec, h5file, slab, name):
   ca[:] = vec
 
 
+def save_dict(arr_dict, h5file, slab):
+  for key, arr in arr_dict.items():
+    save_vec(arr, h5file, slab, key)
+  h5file.flush()
+
+
 def saveh5(fname, mat, name='data'):
   """ save matrix at root of h5 file, mimic call signature of np.savetxt
 
@@ -86,18 +92,24 @@ def open_read(fname):
   fp = tables.open_file(fname, mode='r')
   return fp
 
-
 def save_arr_dict(fh5, arr_dict, group=None):
   """ save a dictory of numpy arrays into an h5 file
+
+  !!!! too many decisions made in this funciton, use save_dict
 
   Args:
     fh5 (str): hdf5 file name
     arr_dict (dict): a dictionary of numpy arrays to save to file
     group (tables.group.Group, optional): h5 group slab
   """
-  fp = open_write(fh5)
+  need_to_close = False
+  if type(fh5) is tables.file.File:
+    fp = fh5
+  else:
+    fp = open_write(fh5)
+    need_to_close = True
   if group is None:
     group = fp.root
-  for key, arr in arr_dict.items():
-    save_vec(arr, fp, group, key)
-  fp.close()
+  save_dict(arr_dict, fp, group=group)
+  if need_to_close:
+    fp.close()
