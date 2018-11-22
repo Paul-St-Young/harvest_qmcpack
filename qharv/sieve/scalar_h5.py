@@ -64,3 +64,12 @@ def get_ymean_yerror(fp, twist0, msuffix='_mean', esuffix='_error'):
   if ynamem != ynamee:
     raise RuntimeError('yname mismatch')
   return ymean, yerror
+
+def twist_concat_h5(fh5, name):
+  fp = h5py.File(fh5)
+  data = []
+  for twist in fp:
+    path = os.path.join(twist, name)
+    data.append(fp[path].value)
+  fp.close()
+  return np.concatenate(data)
