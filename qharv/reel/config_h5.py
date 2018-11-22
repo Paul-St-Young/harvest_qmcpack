@@ -65,6 +65,16 @@ def save_dict(arr_dict, h5file, slab):
   h5file.flush()
 
 
+def load_dict(fh5, path='/'):
+  import h5py
+  fp = h5py.File(fh5, 'r')
+  data = {}
+  for key in fp[path].keys():
+    data[key] = fp[os.path.join(path, key)].value
+  fp.close()
+  return data
+
+
 def saveh5(fname, mat, name='data'):
   """ save matrix at root of h5 file, mimic call signature of np.savetxt
 
