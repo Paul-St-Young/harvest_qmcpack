@@ -44,3 +44,28 @@ def show_h5progress(collect_h5file):
       collect_h5file(h5file, floc, *args, **kwargs)
       bar.update(ifile)
   return wrapper
+
+def concat_return(show_progress=True):
+  """Show progress of concat reduce function"""
+  def _concat_return(collect):
+    """Concatenate the return value of a collect function on a file to a list
+
+    Args:
+      collect (callable): a function that parses a file into an object
+    Return:
+      list: a list of return values each from applying collect to a file
+    """
+    def wrapper(flist, *args, **kwargs):
+      if show_progress:
+        from progressbar import ProgressBar
+        bar = ProgressBar(maxval=len(flist))
+      ifile = 0
+      data = []
+      for ifile, floc in enumerate(flist):
+        result = collect(floc)
+        data.append(result)
+        if show_progress:
+          bar.update(ifile)
+      return data
+    return wrapper
+  return _concat_return
