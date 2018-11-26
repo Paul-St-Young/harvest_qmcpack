@@ -136,6 +136,6 @@ def save_arr_dict(fh5, arr_dict, group=None):
     need_to_close = True
   if group is None:
     group = fp.root
-  save_dict(arr_dict, fp, group=group)
+  save_dict(arr_dict, fp, group)
   if need_to_close:
     fp.close()
