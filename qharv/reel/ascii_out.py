@@ -3,7 +3,6 @@
 # Routines to parse ASCII output. Mostly built around mmap's API.
 #  The central object is mmap.mmap, which is usually named "mm".
 from mmap import mmap
-import pandas as pd
 
 
 def read(fname):
