@@ -31,8 +31,14 @@ def mean_error_scalar_df(df, nequil, kappa=None):
   msr = df.loc[sel].apply(np.mean).drop('index')
 
   # create pd.Series of error
-  efunc = lambda x:error(x, kappa=kappa)  # if kappa is not None, then
-  # auto-correlation is not re-calculated
+  if kappa is not None:
+    efunc = lambda x:error(x, kappa=kappa)
+  else:
+    try:  # use fortran library to recalculate kappa if compiled
+      from qharv.reel.forlib.stats import error
+    except:
+      print('failed to import fortran stats library')
+    efunc = error
   esr = df.loc[sel].apply(  # error cannot be directly applied to matrix yet
     lambda x:float( np.apply_along_axis(efunc,0,x) )
   ).drop('index')
