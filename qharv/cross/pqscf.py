@@ -25,8 +25,11 @@ def atom_text(elem,pos):
   return atext
 # end def
 
-def mf_from_chkfile(chkfile, scf_class=None):
-  from pyscf.pbc import scf
+def mf_from_chkfile(chkfile, scf_class=None, pbc=True):
+  if pbc:
+    from pyscf.pbc import scf
+  else:
+    from pyscf import scf
   if scf_class is None:
     scf_class = scf.RHF
   cell, scf_rec = scf.chkfile.load_scf(chkfile)
