@@ -2,7 +2,7 @@ import os
 import h5py
 import numpy as np
 
-def twist_average_h5(fh5, **suffix_kwargs):
+def twist_average_h5(fh5, weights=None, **suffix_kwargs):
   """ twist average data in an HDF5 archive
 
   each twist should be a group in at root
@@ -34,17 +34,29 @@ def twist_average_h5(fh5, **suffix_kwargs):
   # extract all ymean and yerror
   yml = []
   yel = []
-  for twist in fp.keys():
-    for name in fp[twist].keys():
-      mpath = os.path.join(twist, ymean)
-      epath = os.path.join(twist, yerror)
-      yml.append(fp[mpath].value)
-      yel.append(fp[epath].value)
+  twists = fp.keys()
+  ntwist = len(twists)
+  if weights is None:
+    weights = np.ones(ntwist)
+  else:
+    if len(weights) != ntwist:
+      raise RuntimeError('%d weights for %d twists' % (len(weights), ntwist))
+  wtot = weights.sum()
+  for twist in twists:
+    mpath = os.path.join(twist, ymean)
+    epath = os.path.join(twist, yerror)
+    yml.append(fp[mpath].value)
+    yel.append(fp[epath].value)
   fp.close()
-  # twist average
-  ym = np.mean(yml, axis=0)
+  yma = np.array(yml)
   yea = np.array(yel)
-  ye = np.sqrt(np.sum(yea**2, axis=0))/len(yml)
+  # twist average with weights
+  try:
+    ym = np.sum(weights[:, np.newaxis, np.newaxis]*yma, axis=0)/wtot
+    ye = np.sum(weights[:, np.newaxis, np.newaxis]*yea**2, axis=0)**0.5/wtot
+  except:
+    ym = np.sum(weights[:, np.newaxis]*yma, axis=0)/wtot
+    ye = np.sum(weights[:, np.newaxis]*yea**2, axis=0)**0.5/wtot
   return meta, ym, ye
 
 def get_ymean_yerror(fp, twist0, msuffix='_mean', esuffix='_error'):
