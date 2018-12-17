@@ -33,7 +33,7 @@ def text_mean_error(ym, ye):
   return np.array(yt)
 
 
-def text_df_sel(df, sel, obsl):
+def text_df(df, obsl):
   """ write a subset of df into readable text
 
   for each observable in obsl, there must be a mean and an error column
@@ -41,15 +41,14 @@ def text_df_sel(df, sel, obsl):
 
   Args:
     df (pd.DataFrame): database of Monte-Carlo data with *_mean and *_error
-    sel (np.array): array of boolean, i.e. row selector
     obsl (array-like): list of observable names
   """
   tdata = {}
   for obs in obsl:
     mcol = obs+'_mean'
     ecol = obs+'_error'
-    ym = df.loc[sel, mcol].values
-    ye = df.loc[sel, ecol].values
+    ym = df[mcol].values
+    ye = df[ecol].values
     yt = text_mean_error(ym, ye)
     tdata[obs] = yt
 
@@ -57,23 +56,21 @@ def text_df_sel(df, sel, obsl):
   return tdf
 
 
-def text_df_sel_obs_exobs(df, sel, obsl, exobsl):
+def text_df_obs_exobs(df, obsl, exobsl):
   """ construct text dataframe
 
-  sel selects rows; obsl and exact_obsl select columns.
   assume obsl have associated _mean and _error columns.
 
   Args:
     df (pd.DataFrame): scalar database
-    sel (np.array): boolean array row selector
     obsl (list): a list of observable names, each with _mean and _error
     exobsl (list): a list of exact observable names
   Return:
     pd.DataFrame: text database
   """
-  tdf = text_df_sel(df, sel, obsl)
+  tdf = text_df(df, obsl)
   for col in exobsl:
-    tdf[col] = df.loc[sel, col].values
+    tdf[col] = df[col].values
   return tdf
 
 
