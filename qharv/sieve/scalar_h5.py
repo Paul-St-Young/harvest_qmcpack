@@ -35,6 +35,9 @@ def twist_average_h5(fh5, weights=None, **suffix_kwargs):
   yml = []
   yel = []
   twists = fp.keys()
+  # !!!! make sure twists are sorted
+  itwists = [int(t.replace('twist', '')) for t in twists]
+  assert sorted(itwists)
   ntwist = len(twists)
   if weights is None:
     weights = np.ones(ntwist)
