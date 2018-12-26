@@ -203,6 +203,14 @@ def get_axes(doc):
   axes = text2arr(lat_node.text)
   return axes
 
+def get_nelec(doc):
+  nelec = 0
+  for pname in ['u', 'd']:
+    node = doc.find('.//group[@name="%s"]' % pname)
+    if node is not None:
+      npos = int(node.get('size'))
+      nelec += npos
+  return nelec
 
 def get_pos(doc, pset='ion0', all_pos=True, group=None):
   # find <particleset>
