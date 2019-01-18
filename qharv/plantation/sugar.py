@@ -62,7 +62,7 @@ def concat_return(show_progress=True):
       ifile = 0
       data = []
       for ifile, floc in enumerate(flist):
-        result = collect(floc)
+        result = collect(floc, *args, **kwargs)
         data.append(result)
         if show_progress:
           bar.update(ifile)
