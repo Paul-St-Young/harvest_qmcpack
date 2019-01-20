@@ -94,6 +94,18 @@ def ls(node, r=False, level=0, indent="  "):
     return ''
   return mystr
 
+def append(root, nodes):
+  """ append one or more nodes to a root node
+
+  Args:
+    root (lxml.etree._Element): xml node
+    nodes (list or lxml.etree._Element): xml node(s)
+  """
+  if type(nodes) is etree._Element:
+    root.append(nodes)
+  else:
+    for node in nodes:
+      root.append(node)
 
 # ========================= level 1: node content io =========================
 #  node.get & node.set are sufficient for attribute manipulation
