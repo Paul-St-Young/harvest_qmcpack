@@ -282,6 +282,23 @@ def build_coeff(knots, **attribs):
   return coeff_node
 # end def build_coeff
 
+def build_jr2(uuc, udc):
+  uu_node = build_coeff(uuc, **{'id': 'uu'})
+  cuu = etree.Element('correlation',
+    {'speciesA': 'u', 'speciesB': 'u', 'size': str(len(uuc))}
+  )
+  cuu.append(uu_node)
+  ud_node = build_coeff(udc, **{'id': 'ud'})
+  cud = etree.Element('correlation',
+    {'speciesA': 'u', 'speciesB': 'd', 'size': str(len(udc))}
+  )
+  cud.append(ud_node)
+  j2_node = etree.Element('jastrow',
+    {'name': 'J2', 'type': 'Two-Body', 'function': 'Bspline'}
+  )
+  j2_node.append(cuu)
+  j2_node.append(cud)
+  return j2_node
 
 def build_jk2_iso(coeffs, kc):
   """ construct isotropic e-e reciprocal space Jastrow node
