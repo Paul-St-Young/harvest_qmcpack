@@ -126,12 +126,16 @@ def locate_block(mm, header, trailer
     tuple: (begin_idx, end_idx), memory span of text block
   """
   begin_idx = mm.find( header.encode() )
+  if begin_idx == -1:
+    raise RuntimeError('failed to find "%s"' % header)
   if skip_header:
     mm.seek(begin_idx)
     mm.readline()
     begin_idx = mm.tell()
   # end if
   end_idx = mm.find( trailer.encode() )
+  if end_idx == -1:
+    raise RuntimeError('failed to find "%s"' % trailer)
   if not skip_trailer:
     mm.seek(end_idx)
     mm.readline()
