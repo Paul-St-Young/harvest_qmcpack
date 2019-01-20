@@ -117,7 +117,7 @@ def text2arr(text, dtype=float, flatten=False):
     text = text.decode()
   tlist = text.strip(' ').strip('\n').split('\n')
   if len(tlist) == 1:
-    return np.array(tlist,dtype=dtype)
+    return np.array(tlist[0].split(), dtype=dtype)
   else:
     if flatten:
       mytext = '\n'.join(['\n'.join(line.split()) for line in tlist])
