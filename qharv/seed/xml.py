@@ -176,7 +176,7 @@ def get_param(node, pname):
   return pnode.text
 
 
-def set_param(node, pname, pval, new=False):
+def set_param(node, pname, pval, new=False, pad=' '):
   """ set <parameter> with name 'pname' to 'pval'
   if new=True, then <parameter name="pname"> does not exist. create it
 
@@ -188,8 +188,8 @@ def set_param(node, pname, pval, new=False):
   Effect:
     the text of <parameter> with 'pname' will be set to 'pval'
   """
-  assert type(pval) is str
   pnode = node.find('.//parameter[@name="%s"]' % pname)
+  text = pad + str(pval) + pad
   # 4 paths dependent on (pnode is None) and new
   if (pnode is None) and (not new):  # unintended input
     raise RuntimeError('<parameter name="%s"> not found in %s\n\
@@ -199,10 +199,10 @@ def set_param(node, pname, pval, new=False):
       please set new=False' % (pname,node.tag))
   elif (pnode is None) and new:
     pnode = etree.Element('parameter',{'name':pname})
-    pnode.text = pval
+    pnode.text = text
     node.append(pnode)
   else:
-    pnode.text = pval
+    pnode.text = text
 
 
 def get_axes(doc):
