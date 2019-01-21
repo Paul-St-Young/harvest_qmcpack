@@ -16,6 +16,20 @@ def project(name, series0=0):
 
 # ============================= <hamiltonian> section =============================
 
+def ee_ham():
+  ham_node = xml.etree.Element('hamiltonian', {
+    'name':'h0'
+    , 'type':'generic'
+    , 'target':'e'
+  })
+  pot_node = xml.etree.Element('pairpot', {
+    'name':'ElecElec'
+    , 'type':'coulomb'
+    , 'source':'e'
+    , 'target':'e'
+  })
+  ham_node.append(pot_node)
+  return ham_node
 
 def static_coul_ae_ham():
   text = '''<hamiltonian name="h0" type="generic" target="e">
@@ -311,18 +325,7 @@ def heg_system(rs, nshell_up, polarized):
   wf_node.append(det_node)
 
   # build hamiltonian node
-  ham_node = etree.Element('hamiltonian', {
-    'name':'h0'
-    , 'type':'generic'
-    , 'target':'e'
-  })
-  pot_node = etree.Element('pairpot', {
-    'name':'ElecElec'
-    , 'type':'coulomb'
-    , 'source':'e'
-    , 'target':'e'
-  })
-  ham_node.append(pot_node)
+  ham_node = ee_ham()
 
   # assemble qmcsystem
   qsys_node = etree.Element('qmcsystem')
