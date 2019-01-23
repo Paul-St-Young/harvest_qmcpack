@@ -44,6 +44,27 @@ def parse(dat_fname):
   return df
 # end def parse
 
+def write(dat_fname, df, header_pad='# ', **kwargs):
+  """ write dataframe to plain text scalar table format
+
+  Lightly wrap around pandas.to_string with defaults to index and float_format
+
+  Args:
+    dat_fname (str): output data file name
+    df (pd.DataFrame): data
+    header_pad (str, optional): pad beginning of header with comment string, default '# '
+  """
+  default_kws = {
+    'index': False,
+    'float_format': '%8.6f'
+  }
+  for k, v in default_kws.items():
+    if k not in kwargs:
+      kwargs[k] = v
+  text = df.to_string(**kwargs)
+  with open(dat_fname, 'w') as f:
+    f.write(header_pad + text)
+
 def corr(trace):
   """ calculate the autocorrelation of a trace of scalar data
 
