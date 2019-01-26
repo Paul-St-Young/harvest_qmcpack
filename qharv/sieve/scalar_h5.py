@@ -30,7 +30,7 @@ def twist_average_h5(fh5, weights=None, **suffix_kwargs):
   meta = {}
   for name in fp[twist0].keys():
     if name not in [ymean, yerror]:
-      meta[name] = fp[os.path.join(twist0, name)].value
+      meta[name] = fp[os.path.join(twist0, name)][()]
   # extract all ymean and yerror
   yml = []
   yel = []
@@ -48,8 +48,8 @@ def twist_average_h5(fh5, weights=None, **suffix_kwargs):
   for twist in twists:
     mpath = os.path.join(twist, ymean)
     epath = os.path.join(twist, yerror)
-    yml.append(fp[mpath].value)
-    yel.append(fp[epath].value)
+    yml.append(fp[mpath][()])
+    yel.append(fp[epath][()])
   fp.close()
   yma = np.array(yml)
   yea = np.array(yel)
@@ -85,6 +85,6 @@ def twist_concat_h5(fh5, name):
   data = []
   for twist in fp:
     path = os.path.join(twist, name)
-    data.append(fp[path].value)
+    data.append(fp[path][()])
   fp.close()
   return np.concatenate(data)
