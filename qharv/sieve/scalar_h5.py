@@ -80,18 +80,14 @@ def get_ymean_yerror(fp, twist0, msuffix='_mean', esuffix='_error'):
     raise RuntimeError('yname mismatch')
   return ymean, yerror
 
-def twist_concat_h5(fh5, name, skip_bad_twist=False):
+def twist_concat_h5(fh5, name, twists=None):
   fp = h5py.File(fh5)
+  if twists is None:
+    twists = fp.keys()
   data = []
-  for twist in fp:
+  for twist in twists:
     path = os.path.join(twist, name)
-    try:
-      val = fp[path][()]
-    except Exception as err:
-      if skip_bad_twist:
-        continue
-      else:
-        raise err
+    val = fp[path][()]
     data.append(val)
   fp.close()
   return np.concatenate(data)
