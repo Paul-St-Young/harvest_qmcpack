@@ -284,4 +284,38 @@ def write_kpoint(kgrp, ikpt, utvec, evals, cmats):
   kgrp.create_dataset('symgroup', data=[1])
   kgrp.create_dataset('weight', data=[1])
 
+def write_wf(egrp, utvecs, gvecs, evalsl, cmatsl):
+  """ fill the wf portion of the electrons group in wf h5 file
+  !!!! WARNING: this function may require too much memory;
+  if so, use write_kpoint directly
+
+  Args:
+    egrp (h5py.Group): electrons group
+    utvecs (np.array): all twist vectors in reduced units
+    evalsl (list): list of Kohn-Sham eigenvalues to sort orbitals;
+      one real np.array of shape (norb) for each spin and twist
+    cmatsl (list): list of Kohn-Sham orbitals in PW basis;
+      one complex np.array of shape (norb, npw) for each spin and twist
+  """
+  npw0 = len(gvecs)  # number of PWs
+  # create kpoints
+  kp_fmt = 'kpoint_%d'
+  for ik, (utvec, evals, cmats) in enumerate(
+      zip(utvecs, evalsl, cmatsl)
+  ):
+    # check PW count
+    for ispin in range(len(cmats)):
+      npw = cmats[ispin].shape[1]
+      if npw != npw0:
+        raise RuntimeError('k%d has %d PW, not %d gvecs' % (ik, npw, npw0))
+    # create and fill kpoint group
+    kpath = kp_fmt % ik
+    kgrp = egrp.create_group(kpath)
+    write_kpoint(kgrp, ik, utvec, evals, cmats)
+  # add gvectors to kpoint0
+  kpath0 = kp_fmt % 0
+  kgrp0 = egrp[kpath0]
+  kgrp0.create_dataset('gvectors', data=gvecs)
+  kgrp0.create_dataset('number_of_gvectors', data=[len(gvecs)])
+
 # =======================================================================
