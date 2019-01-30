@@ -235,5 +235,53 @@ def get_bands(fp, ispin=0):
     bands[ik, :] = band
   return bands
 
+# ====== level 4: write wf h5 file from scratch ======
+
+def write_kpoint(kgrp, ikpt, utvec, evals, cmats):
+  """ fill the electrons/kpoint_$ikpt group in wf h5 file
+
+  Args:
+    kgrp (h5py.Group): kpoint group
+    ikpt (int): twist index
+    utvec (np.array): twist vector in reduced units
+    evals (list): list of Kohn-Sham eigenvalues to sort orbitals;
+      one real np.array of shape (norb) for each spin
+    cmats (list): list of Kohn-Sham orbitals in PW basis;
+      one complex np.array of shape (norb, npw) for each spin
+
+  Example:
+    >>> fp = h5py.File('pwscf.pwscf.h5', 'w')
+    >>> kgrp = fp.create_group('/electrons/kpoint_0')
+    >>> evals = [ np.array([0]) ]  # 1 spin, 1 state
+    >>> cmats = [ np.array([[0]], dtype=complex) ]
+    >>> write_kpoint(kgrp, 0, [0, 0, 0], evals, cmats)
+    >>> fp.close()
+  """
+  # write twist
+  kgrp.create_dataset('reduced_k', data=utvec)
+  # write Kohn-Sham system
+  nspin = len(cmats)
+  if len(evals) != nspin:
+    raise RuntimeError('%d evals %d cmats' % (len(evals), nspin))
+  for ispin, (evs, cmat) in enumerate(zip(evals, cmats)):
+    spath = 'spin_%d' % ispin
+    sgrp = kgrp.create_group(spath)
+    # write eigenvalues
+    nstate = len(cmat)
+    if len(evs) != nstate:
+      raise RuntimeError('%d evs for %d states' % (len(evs), nstate))
+    sgrp.create_dataset('number_of_states', data=[nstate])
+    sgrp.create_dataset('eigenvalues', data=evs)
+    # write eigenvectors
+    for istate, evec in enumerate(cmat):
+      psi_g_path = '%s/state_%d/psi_g' % (spath, istate)
+      real_emat = np.zeros([len(evec), 2])
+      real_emat[:, 0] = evec.real
+      real_emat[:, 1] = evec.imag
+      pgrp = kgrp.create_dataset(psi_g_path, data=real_emat)
+  # no symmetry infomation
+  kgrp.create_dataset('numsym', data=[1])
+  kgrp.create_dataset('symgroup', data=[1])
+  kgrp.create_dataset('weight', data=[1])
 
 # =======================================================================
