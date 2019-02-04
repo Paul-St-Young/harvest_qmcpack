@@ -51,15 +51,17 @@ def save_vec(vec, h5file, slab, name):
   ca[:] = vec
 
 
-def save_dict(arr_dict, h5file, slab):
+def save_dict(arr_dict, h5file, slab=None):
   """ save a dictionary of numpy arrays into h5file
    each entry will create its own sub-slab using key as name
 
   Args:
     arr_dict (dict): dictionary of numpy arrays
     h5file (tables.file.File): pytables File
-    slab (tables.Group): HDF5 slab
+    slab (tables.Group, optional): HDF5 slab, if None, then use root
   """
+  if slab is None:
+    slab = h5file.root
   for key, arr in arr_dict.items():
     save_vec(arr, h5file, slab, key)
   h5file.flush()
