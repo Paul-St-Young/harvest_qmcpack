@@ -254,6 +254,39 @@ def gaussian_cube(fcub, nskip=2):
   return entry
 # end def gaussian_cube
 
+def write_gaussian_cube(vol, axes,
+  elem=(1,), pos=((0, 0, 0),), origin=(0, 0, 0),
+  two_line_comment='cube\nfile\n'):
+  """Write Gaussian cube file using volumetric data
+
+  Args:
+    vol (np.array): volumetric data, shape (nx, ny, nz)
+    axes (np.array): grid basis, e.g. np.diag((dx, dy, dz))
+    elem (array-like, optional): list of atomic numbers, default (1,)
+    pos (array-like, optional): list of atomic positions
+    origin (array-like, optional): coordinates of the origin
+    two_line_comment (str, optional): comments at file head
+  Return:
+    str: Gaussian file content
+  """
+  text = two_line_comment
+  # natom, origin
+  natom = len(pos)
+  x, y, z = origin
+  line1 = '%4d %8.6f %8.6f %8.6f\n' % (natom, x, y, z)
+  # grid, axes
+  line2 = ''
+  for n, vec in zip(vol.shape, axes):
+    x, y, z = vec
+    line2 += '%4d %8.6f %8.6f %8.6f\n' % (n, x, y, z)
+  # atoms
+  line3 = ''
+  for num, vec in zip(elem, pos):
+    x, y, z = vec
+    line3 += '%4d %8.6f %8.6f %8.6f\n' % (num, x, y, z)
+  # volumetric data (not human-readable format)
+  dline = ' '.join(vol.ravel().astype(str))
+  return text + line1 + line2 + line3 + dline
 
 def wavefront_obj(verts,faces,normals):
   """ save polygons in obj format
