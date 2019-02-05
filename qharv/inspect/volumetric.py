@@ -141,7 +141,7 @@ def axes_func_on_grid3d(axes,func,grid_shape):
   return grid
 # end def axes_func_on_grid3d
 
-def xsf_datagrid_3d_density(fname
+def read_xsf_datagrid_3d_density(fname
   ,header='BEGIN_DATAGRID_3D_density'
   ,trailer='END_DATAGRID_3D_density'):
   """ 
@@ -284,7 +284,7 @@ def write_gaussian_cube(vol, axes,
   dline = ' '.join(vol.ravel().astype(str))
   return text + line1 + line2 + line3 + dline
 
-def wavefront_obj(verts,faces,normals):
+def write_wavefront_obj(verts,faces,normals):
   """ save polygons in obj format
 
   obj format is more commonly used than ply
@@ -325,7 +325,7 @@ def wavefront_obj(verts,faces,normals):
   return text
 # end def wavefront_obj
 
-def stanford_ply(verts,faces):
+def write_stanford_ply(verts,faces):
   """ save polygons in ply format
 
   ply is simpler than obj, but older and less used
