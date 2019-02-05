@@ -187,22 +187,22 @@ def xsf_datagrid_3d_density(fname
 # end def xsf_datagrid_3d_density
 
 
-def gaussian_cube(fcub, nskip=2):
+def read_gaussian_cube(fcub):
   """ 
-  parse Gaussian Cube file
+  Read Gaussian cube file
 
   example:
-    entry = gaussian_cube('density.cub')
+    entry = read_gaussian_cube('density.cub')
     data  = np.array(entry['data'])
-    assert np.allclose(data.shape,entry['nxyz'])
+    assert np.allclose(data.shape, entry['nxyz'])
 
   Args:
     fcub (str): cube file name 
-    nskip (int, optional): skip the top two title lines
   Return:
     dict: dictionary of useful info 
      [axes, elem, pos, nxyz, data]
   """
+  nskip = 2  # skip 2 comment lines
   ndim = 3  # 3 spatial dimensions
 
   # hold entire file in memory
@@ -226,7 +226,6 @@ def gaussian_cube(fcub, nskip=2):
     nxyz.append(nx)
     avec = np.array(tokens[-3:], dtype=float) * nx
     axes.append(avec)
-  # end for
 
   # read atomic positions
   elem = []
@@ -238,10 +237,9 @@ def gaussian_cube(fcub, nskip=2):
     atom_position = map(float, tokens[2:2+ndim])
     elem.append(atom_number)
     pos.append(atom_position)
-  # end for
 
   # density grid
-  data = lines[nskip+ndim+natom+1:-1]
+  data = lines[nskip+ndim+natom+1:]
   data_text = ' '.join(data)
   data_vals = map(float, data_text.split())
 
@@ -249,10 +247,8 @@ def gaussian_cube(fcub, nskip=2):
   rgrid = np.array(data_vals,dtype=float).reshape([nx,ny,nz],order='C')
 
   # turn file into dictionary
-  entry = {'axes':axes, 'elem': elem, 'pos':pos
-         , 'nxyz':nxyz, 'data':rgrid.tolist()}
+  entry = {'axes':axes, 'elem': elem, 'pos':pos, 'data':rgrid}
   return entry
-# end def gaussian_cube
 
 def write_gaussian_cube(vol, axes,
   elem=(1,), pos=((0, 0, 0),), origin=(0, 0, 0),
