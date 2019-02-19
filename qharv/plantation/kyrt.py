@@ -14,6 +14,16 @@ from matplotlib.ticker import FormatStrFormatter
 from matplotlib.cm import get_cmap
 cmap   = get_cmap('viridis')
 colors = cmap.colors  # 256 default colors
+dark8 = [  # Colors from www.ColorBrewer.org by Cynthia A. Brewer, Geography, Pennsylvania State University.
+  '#1b9e77',
+  '#d95f02',
+  '#7570b3',
+  '#e7298a',
+  '#66a61e',
+  '#e6ab02',
+  '#a6761d',
+  '#666666'
+]
 errorbar_style = {
   'cyq':{
     'linestyle':'none',         # do 1 thing
