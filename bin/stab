@@ -7,16 +7,6 @@
 #  auto-correlation of the 'Kinetic' column.
 #  arbitrary scalar file may be analyzed as long as it is in table format
 
-def reblock(trace,block_size,min_nblock=4):
-  nblock= len(trace)//block_size
-  nkeep = nblock*block_size
-  if (nblock<min_nblock):
-    raise RuntimeError('only %d blocks left after reblock'%nblock)
-  # end if
-  blocked_trace = trace[:nkeep].reshape(nblock,block_size,*trace.shape[1:])
-  return np.mean(blocked_trace,axis=1)
-# end def
-
 if __name__ == '__main__':
   import argparse
   import numpy as np
