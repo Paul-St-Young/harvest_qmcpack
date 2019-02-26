@@ -141,14 +141,25 @@ def set_label_font(ax, xsize=14, ysize=14,
   plt.setp(ax.yaxis.label, fontsize=ysize,
     fontweight=yweight,**kwargs)
 
+def xtop(ax):
+  """ move xaxis label and ticks to the top
+
+  Args:
+    ax (plt.Axes): matplotlib axes
+  """
+  xaxis = ax.get_xaxis()
+  xaxis.tick_top()
+  xaxis.set_label_position('top')
+
 def yright(ax):
   """ move yaxis label and ticks to the right
 
   Args:
     ax (plt.Axes): matplotlib axes
   """
-  ax.get_yaxis().tick_right()
-  ax.get_yaxis().set_label_position('right')
+  yaxis = ax.get_yaxis()
+  yaxis.tick_right()
+  yaxis.set_label_position('right')
 
 # ====================== level 0: basic legend edits =======================
 def set_legend_marker_size(leg, ms=10):
