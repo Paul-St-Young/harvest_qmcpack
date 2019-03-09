@@ -24,6 +24,22 @@ def files_with_regex(regex, rundir, case=True, ftype='f'):
   flist = out.decode().split('\n')[:-1]
   return flist
 
+def findall(regex, rundir, prepend_star=True, **kwargs):
+  """ find all matching files with regular expression in rundir
+
+  Args:
+    regex (str):  regular expression for file names
+    rundir (str): directory containing the files to be found
+    prepend_star (bool, optional): add '*' to regex, default True
+  Return:
+    list: flist, list of all matching files
+  """
+  if prepend_star:
+    myregex = '*'+regex
+  else:
+    myregex = regex
+  flist = files_with_regex(myregex, rundir, **kwargs)
+  return flist
 
 def find(regex, rundir, **kwargs):
   """ find the first file that matches the given regular expression
