@@ -42,3 +42,18 @@ def copy_charge_density(scf_dir, nscf_dir, execute=True):
         msg += ' and %s ' % fpsp
     msg += '\n to %s' % save_new
     print(msg)
+
+def ktext_frac(kpts):
+  """Write K_POINTS card assuming fractional kpoints with uniform weight.
+
+  Args:
+    kpts (np.array): kpoints in reciprocal lattice units
+  Return:
+    str: ktext to be fed into pw.x input
+  """
+  line_fmt = '%8.6f %8.6f %8.6f 1'
+  nk = len(kpts)
+  header = 'K_POINTS crystal\n%d\n' % nk
+  lines = [line_fmt % (kpt[0], kpt[1], kpt[2]) for kpt in kpts]
+  ktext = header + '\n'.join(lines)
+  return ktext
