@@ -61,6 +61,14 @@ def draw_atoms(ax,pos,**kwargs):
 
   return dots
 
+def set_default_cell_styles(kwargs):
+  if not ( ('c' in kwargs) or ('color' in kwargs) ):
+    kwargs['c'] = 'gray'
+  if not ('alpha' in kwargs):
+    kwargs['alpha'] = 0.6
+  if not ( ('lw' in kwargs) or ('linewidth' in kwargs) ):
+    kwargs['lw'] = 2
+
 def draw_cell(ax,axes,corner=None,enclose=True,**kwargs):
   """ draw cell on ax
   see example in draw_crystal
@@ -84,13 +92,7 @@ def draw_cell(ax,axes,corner=None,enclose=True,**kwargs):
     corner = np.zeros(ndim)
   # end if
 
-  # set defaults
-  if not ( ('c' in kwargs) or ('color' in kwargs) ):
-    kwargs['c'] = 'gray'
-  if not ('alpha' in kwargs):
-    kwargs['alpha'] = 0.6
-  if not ( ('lw' in kwargs) or ('linewidth' in kwargs) ):
-    kwargs['lw'] = 2
+  set_default_cell_styles(kwargs)
 
   # a,b,c lattice vectors
   for iax in range(ndim):
@@ -172,3 +174,53 @@ def draw_crystal(ax,axes,pos,draw_super=False):
 
   return cell, atoms
 # end def
+
+def draw_wigner_seitz_cell(ax, axes, nsh=1, **kwargs):
+  from scipy.spatial import Voronoi
+  set_default_cell_styles(kwargs)
+  # create Voronoi tessellation
+  from qharv.inspect.axes_pos import cubic_pos
+  qvecs = cubic_pos(2*nsh+1)-nsh
+  dots = np.dot(qvecs, axes)
+  vor = Voronoi(dots)
+  verts = vor.vertices  # vertices (basis for the rest)
+  regs = vor.regions
+  rverts = vor.ridge_vertices  # ridges separate regions
+  # find vertices of THE enclosed region
+  enclosed_regions = []
+  for reg in regs:
+    if len(reg) == 0:
+      continue
+    if -1 in reg:
+      continue
+    enclosed_regions.append(reg)
+  nreg = len(enclosed_regions)
+  if not nreg == 1:
+    raise RuntimeError('found %d region; try increase nsh' % nreg)
+  ereg = enclosed_regions[0]
+  # find rigdes that enclose this region
+  #  also append first region to close each face
+  myrverts = []
+  for rvert in rverts:
+    # skip all with unknown vertices
+    if -1 in rvert:
+      continue
+    # skip all not belonginig to THE region
+    skip = False
+    for iv in rvert:
+      if iv not in ereg:
+        skip = True
+    if skip:
+      continue
+    myrvert = rvert+[rvert[0]]  # close face
+    myrverts.append(myrvert)
+  # draw enclosing regions
+  lines = []
+  for rvert in myrverts:
+    if -1 in rvert:
+      continue
+    pts = verts[rvert]
+    x, y, z = pts.T
+    line = ax.plot(x, y, z, **kwargs)
+    lines.append(line)
+  return lines
