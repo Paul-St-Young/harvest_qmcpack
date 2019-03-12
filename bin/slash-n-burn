@@ -20,10 +20,10 @@ if __name__ == '__main__':
 
   from qharv.reel import mole
   kpoints  = mole.files_with_regex('*K0*', args.rundir, ftype='d')
-  wfc = mole.files_with_regex('*.wfc*', args.rundir)
-  igk = mole.files_with_regex('*.igk*', args.rundir)
-  mix = mole.files_with_regex('*.mix*', args.rundir)
-  vdw = mole.files_with_regex('*vdW_kernel_table', args.rundir)
+  wfc = mole.findall('wfc*', args.rundir)
+  igk = mole.findall('.igk*', args.rundir)
+  mix = mole.findall('.mix*', args.rundir)
+  vdw = mole.findall('vdW_kernel_table', args.rundir)
 
   # inform
   files2rm = kpoints + wfc + igk + mix + vdw
