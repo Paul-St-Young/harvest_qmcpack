@@ -168,6 +168,21 @@ def set_legend_marker_size(leg, ms=10):
   for hand,ms in zip(handl, msl):
     hand._legmarker.set_markersize(ms)
 
+def create_legend(ax, styles, labels, **kwargs):
+  """ create custom legend
+
+  learned from "Composing Custom Legends"
+
+  Args:
+    ax (plt.Axes): matplotlib axes
+  Return:
+    plt.legend.Legend: legend artist
+  """
+  from matplotlib.lines import Line2D
+  custom_lines = [Line2D([], [], **style) for style in styles]
+  leg = ax.legend(custom_lines, labels, **kwargs)
+  return leg
+
 # ====================== level 0: basic Line2D edits =======================
 def get_style(line):
   """ get plot styles from Line2D object
