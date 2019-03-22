@@ -27,7 +27,8 @@ if __name__ == '__main__':
   parser.add_argument('--append','-a',action='append',help='additional Scalar TABle (stab) file to be appended')
   args = parser.parse_args()
 
-  df  = scalar_dat.parse(args.fname)
+  dfl = scalar_dat.read_to_list(args.fname)
+  df = pd.concat(dfl).reset_index(drop=True)
   # concatenate extra scalar.dat files if given by -a
   if args.append is not None:
     dlist = [df]
