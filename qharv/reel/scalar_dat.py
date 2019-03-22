@@ -6,6 +6,17 @@ import numpy as np
 import pandas as pd
 
 def parse(dat_fname):
+  """ for backwards compatibility, please use read() instead!
+
+  for future reference: read() should read from a file on disk
+    parse() should parse text or another internal rep. in memory
+  """
+  try:
+    return read(dat_fname)
+  except IOError:
+    raise NotImplementedError('text parsing not yet implemented')
+
+def read(dat_fname):
   """ read the scalar.dat file, should be table format readable by numpy.loadtxt.
 
    The header line should start with '#' and contain column labels.
