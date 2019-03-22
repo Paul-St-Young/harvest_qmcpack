@@ -44,6 +44,40 @@ def parse(dat_fname):
   return df
 # end def parse
 
+def read_to_list(dat_fname):
+  """ read scalar.dat file into a list of pandas DataFrames
+
+  Header lines should start with '#', assumed to contain column labels.
+  Many scalar.dat files can be concatenated. A list will be returned.
+
+  Args:
+    dat_fname (str): name of input file
+  Return:
+    list: list of df(s) containing the table(s) of data
+  """
+  # first separate out the header lines and parse them
+  from StringIO import StringIO
+  from qharv.reel import ascii_out
+  mm = ascii_out.read(dat_fname)
+  idxl = ascii_out.all_lines_with_tag(mm, '#')
+  bidxl = []
+  headerl = []
+  for idx in idxl:
+    mm.seek(idx)
+    header = mm.readline()
+    bidxl.append(mm.tell())
+    headerl.append(header)
+  idxl.append(-1)
+  # now read data and use headers to label columns
+  dfl = []
+  for bidx, eidx, header in zip(bidxl, idxl[1:], headerl):
+    columns = header.replace('#', '').split()
+    text1 = mm[bidx:eidx]
+    df1 = pd.read_csv(StringIO(text1), sep='\s+', header=None)
+    df1.columns = columns
+    dfl.append(df1)
+  return dfl
+
 def write(dat_fname, df, header_pad='# ', **kwargs):
   """ write dataframe to plain text scalar table format
 
