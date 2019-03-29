@@ -59,7 +59,7 @@ if __name__ == '__main__':
    
   ymean,yerr,ycorr = scalar_dat.single_column(df,args.column,args.nequil)
   
-  prt_format = "{name:14s} {mean:10.6f} +/- {error:8.8f} {corr:4.2f}"
+  prt_format = "{name:14s} {mean:10.6f} +/- {error:10.6f} {corr:4.2f}"
   output = prt_format.format(
     name = str(args.column),
     mean = ymean,
