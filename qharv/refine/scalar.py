@@ -5,7 +5,6 @@ import numpy as np
 import pandas as pd
 from qharv.plantation import sugar
 
-
 def text_mean_error(ym, ye):
   """ convert data such as 1.23 +/- 0.01 to strings such as 1.23(1)
 
@@ -15,23 +14,18 @@ def text_mean_error(ym, ye):
   Return:
     np.array: an array of strings
   """
-
   # find the number of digits to print
   ndig = np.ceil(-np.log10(ye)).astype(int)  # last digit is uncertain
-
   # print the desired number of digits
   ymt = []
   for (y, n) in zip(ym, ndig):
     fmt = '%10.'+str(n)+'f'
-    ymt.append(fmt%y)
-
+    ymt.append(fmt % y)
   # get last digit error
   yet = np.around(ye*10**(ndig)).astype(int).astype(str)
-
   # append error in parenteses
   yt = [m+'('+e+')' for (m, e) in zip(ymt, yet)]
   return np.array(yt)
-
 
 def text_df(df, obsl):
   """ write a subset of df into readable text
@@ -55,7 +49,6 @@ def text_df(df, obsl):
   tdf = pd.DataFrame(tdata)
   return tdf
 
-
 def text_df_obs_exobs(df, obsl, exobsl):
   """ construct text dataframe
 
@@ -72,7 +65,6 @@ def text_df_obs_exobs(df, obsl, exobsl):
   for col in exobsl:
     tdf[col] = df[col].values
   return tdf
-
 
 @sugar.check_file_before
 def write_latex_table(table_tex, tdf):
