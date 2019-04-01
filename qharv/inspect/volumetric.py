@@ -189,7 +189,9 @@ def read_gaussian_cube(fcub):
   lines = text.split('\n')
   # read the number of atoms
   natom_line = lines[nskip]
-  natom = int(natom_line.split()[0])
+  tokens = natom_line.split()
+  natom = int(tokens[0])
+  origin = np.array(tokens[1:], dtype=float)
   # read lattice vectors
   axes = []
   nxyz = []
@@ -220,7 +222,8 @@ def read_gaussian_cube(fcub):
     [nx, ny, nz], order='C')
 
   # turn file into dictionary
-  entry = {'axes': axes, 'elem': elem, 'pos': pos, 'data': rgrid}
+  entry = {'origin': origin, 'axes': axes,
+           'elem': elem, 'pos': pos, 'data': rgrid}
   return entry
 
 def write_gaussian_cube(vol, axes,
