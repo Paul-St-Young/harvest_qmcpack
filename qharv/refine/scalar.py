@@ -27,6 +27,22 @@ def text_mean_error(ym, ye):
   yt = [m+'('+e+')' for (m, e) in zip(ymt, yet)]
   return np.array(yt)
 
+def mean_error_text(texts):
+  """ convert strings such as 1.23(1) to data such as 1.23 +/- 0.01
+  i.e. inverse of text_mean_error
+
+  Args:
+    texts (np.array): an array of texts
+  Return:
+    (np.array, np.array): (ym, ye), (mean, error)
+  """
+  def met(t):
+    ymt, yet = t.split('(')
+    ym = float(ymt.replace(' ', ''))
+    ye = float(yet.replace(')', ''))
+    return ym, ye
+  return np.vectorize(met)(texts)
+
 def text_df(df, obsl):
   """ write a subset of df into readable text
 
