@@ -200,7 +200,7 @@ def read_gaussian_cube(fcub):
     tokens = line.split()
     nx = int(tokens[0])
     nxyz.append(nx)
-    avec = np.array(tokens[-3:], dtype=float) * nx
+    avec = np.array(tokens[-3:], dtype=float)
     axes.append(avec)
   # read atomic positions
   elem = []
