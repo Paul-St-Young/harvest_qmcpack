@@ -128,7 +128,7 @@ def cubic_pos(nx, ndim=3):
   pos = np.stack(
     np.meshgrid(*[nl]*ndim, indexing='ij'),
     axis=-1
-  ).reshape(-1, 3)
+  ).reshape(-1, ndim)
   return pos
 
 
