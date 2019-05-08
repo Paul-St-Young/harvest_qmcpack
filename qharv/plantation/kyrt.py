@@ -204,6 +204,14 @@ def get_style(line):
   }
   return styles
 
+# ====================== level 0: basic Line2D =======================
+def errorshade(ax, x, ym, ye, **kwargs):
+  line = ax.plot(x, ym, **kwargs)
+  alpha = 0.4
+  myc = line[0].get_color()
+  eline = ax.fill_between(x, ym-ye, ym+ye, color=myc, alpha=alpha)
+  return line, eline
+
 # ===================== level 1: fit line ======================
 def show_fit(ax, line, model, sel=None, nx=64, xmin=None, xmax=None, **kwargs):
   """ fit a segment of (x, y) data and show fit
