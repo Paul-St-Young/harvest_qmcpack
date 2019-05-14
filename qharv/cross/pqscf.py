@@ -37,6 +37,46 @@ def mf_from_chkfile(chkfile, scf_class=None, pbc=True):
   mf.__dict__.update(scf_rec)
   return mf
 
+def ase_tile(cell, tmat):
+  """Create supercell from primitive cell and tiling matrix
+
+  Args:
+    cell (pyscf.Cell): cell object
+    tmat (np.array): 3x3 tiling matrix e.g. 2*np.eye(3)
+  Return:
+    pyscf.Cell: supercell
+  """
+  try:
+    from ase import Atoms
+    from ase.build import make_supercell
+  except:
+    msg = 'tiling with non-diagonal matrix require the "ase" package'
+    raise RuntimeError(msg)
+  pbc = [True]*3  # assume periodic boundary if tiling
+  # get crystal from cell object
+  axes = cell.lattice_vectors()
+  pos = cell.atom_coords()
+  elem = [atom[0] for atom in cell._atom]
+  atext = ''.join(elem)
+  s0 = Atoms(atext, cell=axes, positions=pos, pbc=pbc)
+  # tile
+  s1 = make_supercell(s0, tmat)
+  axes1 = s1.get_cell()
+  elem1 = s1.get_chemical_symbols()
+  pos1 = s1.get_positions()
+  # re-make cell object
+  cell1 = cell.copy()
+  cell1.atom = list(zip(elem1, pos1))
+  cell1.a = axes1
+  # !!!! how to change mesh ????
+  ncopy = np.diag(tmat)
+  cell1.mesh = np.array([ncopy[0]*cell.mesh[0],
+                         ncopy[1]*cell.mesh[1],
+                         ncopy[2]*cell.mesh[2]])
+  cell1.build(False, False, verbose=0)
+  cell1.verbose = cell.verbose
+  return cell1
+
 def pw_to_r(gvecs,psig,grid_shape=None):
   """ convert a 3D function from plane-wave to real-space basis
   
