@@ -96,9 +96,13 @@ if __name__ == '__main__':
       spo_node.set('href',os.path.join('..',spo_node0.get('href')))
     # end if
 
-    # remove <qmc> section
-    lnode = doc.find('loop')
-    lnode.getparent().remove(lnode)
+    # remove <qmc> sections
+    lnodes = doc.findall('loop')
+    for lnode in lnodes:
+      lnode.getparent().remove(qnode)
+    qnodes = doc.findall('qmc')
+    for qnode in qnodes:
+      qnode.getparent().remove(qnode)
 
     # write new input if no folder exists
     if not os.path.isdir(jas_dir):
