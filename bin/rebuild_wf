@@ -99,7 +99,7 @@ if __name__ == '__main__':
     # remove <qmc> sections
     lnodes = doc.findall('loop')
     for lnode in lnodes:
-      lnode.getparent().remove(qnode)
+      lnode.getparent().remove(lnode)
     qnodes = doc.findall('qmc')
     for qnode in qnodes:
       qnode.getparent().remove(qnode)
