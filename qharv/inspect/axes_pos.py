@@ -25,13 +25,7 @@ def raxes(axes):
   Returns:
     np.array: raxes, reciprocal lattice vectors in row-major
   """
-  a1,a2,a3 = axes
-  vol = volume(axes)
-
-  b1 = 2*np.pi*np.cross(a2, a3)/vol
-  b2 = 2*np.pi*np.cross(a3, a1)/vol
-  b3 = 2*np.pi*np.cross(a1, a2)/vol
-  return np.array([b1,b2,b3])
+  return 2*np.pi*np.linalg.inv(axes).T
 
 
 def volume(axes):
