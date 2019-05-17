@@ -73,14 +73,14 @@ def get(fp, name):
     fp (h5py.File): hdf5 file object
     name (str): a known name in locations
   Return:
-    array_like: whatever fp[loc].value returns
+    array_like: whatever fp[loc][()] returns
   """
   if name not in locations.keys():
     msg = 'unknown attribute requested: "%s"' % name
     msg += '\n known attributes:\n  ' + '\n  '.join(locations.keys())
     raise RuntimeError(msg)
   loc = locations[name]
-  return fp[loc].value
+  return fp[loc][()]
 
 
 def axes_elem_pos(fp):
@@ -98,11 +98,11 @@ def axes_elem_pos(fp):
   pos  = get(fp, 'pos')
 
   # construct list of atomic labels
-  elem_id  = fp['atoms/species_ids'].value
+  elem_id  = fp['atoms/species_ids'][()]
   elem_map = {}
-  nelem = fp['atoms/number_of_species'].value
+  nelem = fp['atoms/number_of_species'][()]
   for ielem in range(nelem):
-    elem_name = fp['atoms/species_%d/name' % ielem].value[0]
+    elem_name = fp['atoms/species_%d/name' % ielem][()][0]
     elem_map[ielem] = elem_name
   # end for ielem
   elem = [elem_map[eid] for eid in elem_id]
@@ -148,7 +148,7 @@ def get_orb_in_pw(fp, ikpt, ispin, istate):
     (np.array, np.array): (gvecs, cmat), PWs and coefficient matrix
   """
   orb_path = os.path.join(state_path(ikpt, ispin, istate), 'psi_g')
-  psig_arr = fp[orb_path].value  # stored in real view
+  psig_arr = fp[orb_path][()]  # stored in real view
   # psig = psig_arr[:,0]+1j*psig_arr[:,1]  # convert to complex view
   psig = psig_arr.flatten().view(complex)  # more elegant conversion
   return psig
@@ -210,7 +210,7 @@ def get_twists(fp, ndim=3):
   ukvecs = np.zeros([nk, ndim])
   for ik in range(nk):
     kpath = kpoint_path(ik)
-    ukvec = fp[os.path.join(kpath, 'reduced_k')].value
+    ukvec = fp[os.path.join(kpath, 'reduced_k')][()]
     ukvecs[ik, :] = ukvec
   return ukvecs
 
@@ -231,7 +231,7 @@ def get_bands(fp, ispin=0):
     kpath = kpoint_path(ik)
     spath = spin_path(ik, ispin)
     bpath = os.path.join(spath, 'eigenvalues')
-    band = fp[bpath].value
+    band = fp[bpath][()]
     bands[ik, :] = band
   return bands
 
