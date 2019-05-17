@@ -9,7 +9,7 @@ import numpy as np
 from qharv.seed.wf_h5 import read, ls
 
 def path_loc(handle, path):
-  return handle[path].value
+  return handle[path][()]
 
 def me2d(edata, kappa=None, axis=0):
   """ Calculate mean and error of a table of columns
@@ -26,8 +26,8 @@ def me2d(edata, kappa=None, axis=0):
   if kappa is None:
     try:
       from qharv.reel.forlib.stats import corr
-    except:
-      raise RuntimeError('please compile qharv.reel.forlib')
+    except ImportError:
+      raise ImportError('please compile qharv.reel.forlib')
       # from qharv.reel.scalar_dat import corr  # slow Python implementation
     kappa = np.apply_along_axis(corr, axis, edata)
   neffective = len(edata)/kappa
@@ -60,7 +60,7 @@ def mean_and_err(handle, obs_path, nequil, kappa=None):
     # `handle[val_path]` will fail if this assumption is not correct
 
   # get equilibrated data
-  val_data = handle[val_path].value
+  val_data = handle[val_path][()]
   nblock   = len(val_data)
   if (nequil >= nblock):
     msg = 'cannot throw out %d blocks from %d blocks' % (nequil, nblock)
@@ -88,9 +88,9 @@ def dsk_from_csk(fp, csk_name, nequil, kappa=None):
   kpt_path = '%s/kpoints/value' % csk_name
   csk_path = '%s/csk/value' % csk_name
   crho_path = '%s/crhok/value' % csk_name
-  kvecs = fp[kpt_path].value
-  cska = fp[csk_path].value
-  crhoa = fp[crho_path].value
+  kvecs = fp[kpt_path][()]
+  cska = fp[csk_path][()]
+  crhoa = fp[crho_path][()]
   nblock, nspin, nk = cska.shape
 
   # get dsk using equilibrated data
@@ -137,6 +137,26 @@ def nofk(fp, obs_name, nequil, kappa=None):
     (np.array, np.array, np.array): (kvecs,nkm,nke) k-vectors, n(k) mean and
      error
   """
-  kvecs = fp[obs_name]['kpoints'].value
+  kvecs = fp[obs_name]['kpoints'][()]
   nkm, nke = mean_and_err(fp, '%s/value' % obs_name, nequil, kappa)
   return kvecs, nkm, nke
+
+def rhok(fp, obs_name, nequil, kappa=None):
+  """ extract electronic density rho(k) from stat.h5 file
+
+  Args:
+    fp (h5py.File): h5py handle of stat.h5 file
+    obs_name (str): observable name, probably 'csk'
+    nequil (int): number of equilibration blocks to remove
+    kappa (float, optional): autocorrelation, default is to calculate
+     on-the-fly
+  Return:
+    (np.array, np.array, np.array): (kvecs,nkm,nke) k-vectors, n(k) mean and
+     error
+  """
+  # get data
+  kpt_path = '%s/kpoints/value' % obs_name
+  crho_path = '%s/crhok/value' % obs_name
+  kvecs = fp[kpt_path][()]
+  rhom, rhoe = mean_and_err(fp, crho_path, nequil, kappa)
+  return kvecs, rhom, rhoe
