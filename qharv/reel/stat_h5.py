@@ -151,12 +151,13 @@ def rhok(fp, obs_name, nequil, kappa=None):
     kappa (float, optional): autocorrelation, default is to calculate
      on-the-fly
   Return:
-    (np.array, np.array, np.array): (kvecs,nkm,nke) k-vectors, n(k) mean and
-     error
+    (np.array, np.array, np.array): (kvecs, rhokm, rhoke)
+      k-vectors, rho(k) mean and error
+      notice rhom has two columns for real and imag (nk, 2)
   """
   # get data
   kpt_path = '%s/kpoints/value' % obs_name
   crho_path = '%s/crhok/value' % obs_name
   kvecs = fp[kpt_path][()]
-  rhom, rhoe = mean_and_err(fp, crho_path, nequil, kappa)
-  return kvecs, rhom, rhoe
+  rhokm, rhoke = mean_and_err(fp, crho_path, nequil, kappa)
+  return kvecs, rhokm, rhoke
