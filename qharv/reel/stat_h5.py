@@ -153,7 +153,7 @@ def rhok(fp, obs_name, nequil, kappa=None):
   Return:
     (np.array, np.array, np.array): (kvecs, rhokm, rhoke)
       k-vectors, rho(k) mean and error
-      notice rhom has two columns for real and imag (nk, 2)
+      notice rhom has two rows for real and imag components (2, nk)
   """
   # get data
   kpt_path = '%s/kpoints/value' % obs_name
