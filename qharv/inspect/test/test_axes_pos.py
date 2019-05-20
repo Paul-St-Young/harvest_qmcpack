@@ -28,6 +28,19 @@ fcc0 = 0.5*np.array([
   [ 1.0, 1.0, 0.0],
 ])
 
+def test_abc():
+  axes_to_test = [
+    axes0, bcc0, fcc0
+  ]
+  abc_refs = [
+    (4.932757553357808, 4.932757553357808, 8.45173341),
+    (0.8660254037844386, 0.8660254037844386, 0.8660254037844386),
+    (0.7071067811865476, 0.7071067811865476, 0.7071067811865476)
+  ]
+  for axes, abc0 in zip(axes_to_test, abc_refs):
+    abc = axes_pos.abc(axes)
+    assert np.allclose(abc, abc0)
+
 def test_displacement():
   from itertools import combinations
   nptcl = len(pos0)
