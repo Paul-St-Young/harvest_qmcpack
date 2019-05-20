@@ -11,10 +11,10 @@ def abc(axes):
   Args:
     axes (np.array): lattice vectors in row-major
   Returns:
-    tuple: (a,b,c) lattice vector lengths
+    np.array: lattice vector lengths
   """
-  abc = [np.linalg.norm(vec) for vec in axes]
-  return tuple(abc)
+  abc = np.linalg.norm(axes, axis=-1)
+  return abc
 
 
 def raxes(axes):
