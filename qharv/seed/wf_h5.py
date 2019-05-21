@@ -157,29 +157,31 @@ def get_orb_in_pw(fp, ikpt, ispin, istate):
 # ====== level 3: single particle orbitals ======
 
 
-def get_cmat(fp, ikpt, ispin, norb=None):
+def get_cmat(fp, ikpt, ispin, norb=None, npw=None):
   """ get Kohn-Sham orbital coefficients on a list of plane waves (PWs)
 
   Args:
     fp (h5py.File): wf h5 file
     ikpt (int): kpoint index
     ispin (int): spin index
-  Returns:
-    (np.array, np.array): (gvecs, cmat), PWs and coefficient matrix
+    norb (int, optional): number of orbitals at this kpoint
+    npw (int, optional): number of PW for each orbital
+  Return:
+    np.array: cmat orbital coefficient matrix
   """
   # decide how many orbitals to extract (norb)
   if norb is None:
     nelecs = get(fp, 'nelecs')  # all spins
     norb = nelecs[ispin]  # get all occupied orbitals
-  # count the number of PWs (npw)
-  gvecs = get(fp, 'gvectors')  # integer vectors
-  npw = len(gvecs)
+  if npw is None:  # count the number of PWs (npw)
+    gvecs = get(fp, 'gvectors')  # integer vectors
+    npw = len(gvecs)
   # construct coefficient matrix
   cmat = np.zeros([norb, npw], dtype=complex)
   for iorb in range(norb):
     ci = get_orb_in_pw(fp, ikpt, ispin, iorb)
     cmat[iorb, :] = ci
-  return gvecs, cmat
+  return cmat
 
 
 def normalize_cmat(cmat):
