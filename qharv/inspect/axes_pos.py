@@ -91,6 +91,16 @@ def rwsc(axes, dn=1):
   rimg = np.sqrt( min(r2imgl) )
   return rimg/2.
 
+def tmat(axes0, axes1):
+  """ calculate the tiling matrix that takes axes0 to axes
+
+  Args:
+    axes0 (np.array): primitive cell lattice vectors in row-major
+    axes1 (np.array): supercell lattice vectors in row-major
+  Return:
+    np.array: tmat, such that axes1 = np.dot(tmat, axes0)
+  """
+  return np.dot(axes1, np.linalg.inv(axes0))
 
 # ======================== level 1: axes pos =========================
 def pos_in_axes(axes, pos, ztol=1e-10):
