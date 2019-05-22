@@ -47,23 +47,15 @@ def ase_tile(cell, tmat):
     pyscf.Cell: supercell
   """
   try:
-    from ase import Atoms
-    from ase.build import make_supercell
-  except:
+    from qharv.inspect.axes_elem_pos import ase_tile as atile
+  except ImportError:
     msg = 'tiling with non-diagonal matrix require the "ase" package'
     raise RuntimeError(msg)
-  pbc = [True]*3  # assume periodic boundary if tiling
   # get crystal from cell object
   axes = cell.lattice_vectors()
-  pos = cell.atom_coords()
   elem = [atom[0] for atom in cell._atom]
-  atext = ''.join(elem)
-  s0 = Atoms(atext, cell=axes, positions=pos, pbc=pbc)
-  # tile
-  s1 = make_supercell(s0, tmat)
-  axes1 = s1.get_cell()
-  elem1 = s1.get_chemical_symbols()
-  pos1 = s1.get_positions()
+  pos = cell.atom_coords()
+  axes1, elem1, pos1 = atile(axes, elem, pos, tmat)
   # re-make cell object
   cell1 = cell.copy()
   cell1.atom = list(zip(elem1, pos1))
