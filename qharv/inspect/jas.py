@@ -67,7 +67,7 @@ def get_coeff(doc, coef_id):
   return coefs
 
 
-def bspline_on_rgrid(doc, cid, rgrid, rcut=None, cusp=None):
+def bspline_on_rgrid(doc, cid, rgrid=None, rcut=None, cusp=None):
   """ evaluate QMCPACK Basis spline on a real-space grid
 
   doc must contain the desired Bspline <correlation> <coefficient> nodes
@@ -97,9 +97,17 @@ def bspline_on_rgrid(doc, cid, rgrid, rcut=None, cusp=None):
     if rcut is None:
       rcut = float(corr.get('rcut'))
     if cusp is None:
-      cusp = float(corr.get('cusp'))
+      try:
+        cusp = float(corr.get('cusp'))
+      except TypeError as err:
+        if (cid == 'uu'):
+          cusp = -0.25
+        elif (cid == 'ud'):
+          cusp = -0.5
+        else:
+          return err
     if rgrid is None:
-      rgrid = np.linspace(0, rcut, 64)
+      rgrid = np.linspace(0, rcut-1e-8, 64)
   # end if
   if max(rgrid) >= rcut:
     raise RuntimeError('grid exceeds rcut')
