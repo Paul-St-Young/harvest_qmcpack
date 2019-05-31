@@ -2,7 +2,25 @@
 # Email: yubo.paul.yang@gmail.com
 # Routines to process crystal structure specified by axes, elem, pos
 #  extend axes_pos to handle more than 1 species of atoms
+#  heavily borrow from the atomic simulation environment (ase) package
 import numpy as np
+
+def ase_atoms(axes, elem, pos, pbc=None):
+  """ create ase Atoms object
+
+  Args:
+    axes (np.array): lattice vectors in row-major
+    elem (np.array): chemical symbols
+    pos (np.array): atomic positions
+  Return:
+    ase.Atoms: object
+  """
+  from ase import Atoms
+  if pbc is None:
+    ndim = len(axes)
+    pbc = [True]*ndim
+  s0 = Atoms(''.join(elem), cell=axes, positions=pos, pbc=pbc)
+  return s0
 
 def ase_read(floc):
   """ use atomic simulation environment (ase) package to read file
