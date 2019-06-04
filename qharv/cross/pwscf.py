@@ -57,3 +57,19 @@ def ktext_frac(kpts):
   lines = [line_fmt % (kpt[0], kpt[1], kpt[2]) for kpt in kpts]
   ktext = header + '\n'.join(lines)
   return ktext
+
+def input_keywords(scf_in):
+  """Extract all keywords from a quantum espresso input file
+
+  Args:
+    scf_in (str): path to input file
+  Return:
+    dict: a dictionary of inputs
+  """
+  keywords = dict()
+  with open(scf_in, 'r') as f:
+    for line in f:
+      if '=' in line:
+        key, val = line.split('=')
+        keywords[key.strip()] = val.strip('\n')
+  return keywords
