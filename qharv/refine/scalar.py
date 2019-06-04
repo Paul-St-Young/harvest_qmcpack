@@ -83,7 +83,7 @@ def text_df_obs_exobs(df, obsl, exobsl):
   return tdf
 
 @sugar.check_file_before
-def write_latex_table(table_tex, tdf):
+def write_latex_table(table_tex, tdf, **kwargs):
   """ write LaTeX table using a chunk of database df
   will throw exception is table_tex already exists on disk
 
@@ -91,4 +91,6 @@ def write_latex_table(table_tex, tdf):
     table_tex (str): latex file to hold table
     tdf (pd.DataFrame): text database
   """
-  tdf.to_latex(table_tex)
+  if 'escape' not in kwargs:
+    kwargs['escape'] = False  # allow $ in column names
+  tdf.to_latex(table_tex, **kwargs)
