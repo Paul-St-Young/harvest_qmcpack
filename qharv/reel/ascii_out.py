@@ -4,7 +4,6 @@
 #  The central object is mmap.mmap, which is usually named "mm".
 from mmap import mmap
 
-
 def read(fname):
   """ get a memory map pointer to file
 
@@ -17,10 +16,9 @@ def read(fname):
     mm = mmap(f.fileno(), 0)
   return mm
 
-
 def name_sep_val(mm, name, sep='=', dtype=float, pos=1):
   """ read key-value pair such as "name = value"
-  e.g. 
+  e.g.
   name_sep_val(mm, 'a'): 'a = 2.4'
   name_sep_val(mm, 'volume', pos=-2): 'volume = 100.0 bohr^3'
   name_sep_val(mm, 'key', sep=':'): 'key:val'
@@ -46,11 +44,9 @@ def name_sep_val(mm, name, sep='=', dtype=float, pos=1):
 
   # assume the text immediately next to the separator is the desired value
   val_text = tokens[pos].split()[0]
-  val = dtype( val_text )
+  val = dtype(val_text)
   mm.seek(cur_idx)
   return val
-# end def name_sep_val
-
 
 def all_lines_with_tag(mm, tag, nline_max=1024*1024):
   """ return a list of memory indices pointing to the start of tag
@@ -69,19 +65,14 @@ def all_lines_with_tag(mm, tag, nline_max=1024*1024):
     idx = mm.find(tag)
     if idx == -1:
       break
-    # end if
     mm.seek(idx)
     all_idx.append(idx)
     mm.readline()
-  # end for iline
 
   # guard
   if iline >= nline_max-1:
     raise RuntimeError('may need to increase nline_max')
-  # end if
   return all_idx
-# end def
-
 
 def all_lines_at_idx(mm, idx_list):
   """ return a list of lines given a list of memory locations
@@ -111,13 +102,10 @@ def all_lines_at_idx(mm, idx_list):
     # read desired line
     line = mm.readline()
     lines.append(line)
-  # end for
   return lines
-# end def
 
-
-def locate_block(mm, header, trailer
-  , skip_header=True, skip_trailer=True):
+def locate_block(mm, header, trailer,
+                 skip_header=True, skip_trailer=True):
   """ find the memory locations bounding a block of text
   in between header and trailer; header and trailer are
   not included by default
@@ -132,25 +120,21 @@ def locate_block(mm, header, trailer
   Return:
     tuple: (begin_idx, end_idx), memory span of text block
   """
-  begin_idx = mm.find( header.encode() )
+  begin_idx = mm.find(header.encode())
   if begin_idx == -1:
     raise RuntimeError('failed to find "%s"' % header)
   if skip_header:
     mm.seek(begin_idx)
     mm.readline()
     begin_idx = mm.tell()
-  # end if
-  end_idx = mm.find( trailer.encode() )
+  end_idx = mm.find(trailer.encode())
   if end_idx == -1:
     raise RuntimeError('failed to find "%s"' % trailer)
   if not skip_trailer:
     mm.seek(end_idx)
     mm.readline()
     end_idx = mm.tell()
-  # end if
   return begin_idx, end_idx
-# end def locate_block
-
 
 def block_text(mm, header, trailer, **kwargs):
   """ find a block of text in between header and trailer
@@ -176,10 +160,8 @@ def block_text(mm, header, trailer, **kwargs):
     header  (str): string indicating the beginning of block
     trailer (str): string indicating the end of block
   """
-  bidx,eidx = locate_block(mm,header,trailer,**kwargs)
+  bidx, eidx = locate_block(mm, header, trailer, **kwargs)
   return mm[bidx:eidx]
-# end def block_text
-
 
 def lr_mark(line, lmark, rmark):
   """ read a string segment from line, which is enclosed between l&rmark
@@ -196,7 +178,6 @@ def lr_mark(line, lmark, rmark):
   ridx = line.find(rmark)
   assert ridx != -1
   return line[lidx+1:ridx]
-# end def
 
 def name_val_table(text, dtype=float):
   """ designed to parse optVariables text block
@@ -216,7 +197,6 @@ ud_2 6.1912e-01 1 1  ON 7
   Return:
     dict: variable name -> value map
   """
-
   lines  = text.split('\n')[:-1]
 
   var_dict = {}
