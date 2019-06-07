@@ -87,3 +87,20 @@ def basisset(fp):
       myabs.append(bg)
     bs.append(myabs)
   return bs
+
+def sposet(fp, bsname, cname, ik=0, ispin=0):
+  path = 'KPTS_%d/eigenset_%d' % (ik, ispin)
+  mo_coeff = fp[path][()]
+  nmo, nao = mo_coeff.shape # !!!! check transpose
+  # build <sposet>
+  ss = xml.etree.Element('sposet')
+  ss.set('basisset', bsname)
+  ss.set('name', 'spo-ud')
+  ss.set('size', str(nmo))
+  # add <coefficient>
+  cnode = xml.etree.Element('coefficient')
+  cnode.set('size', str(nao))
+  cnode.set('id', cname)
+  cnode.text = xml.arr2text(mo_coeff)
+  ss.append(cnode)
+  return ss
