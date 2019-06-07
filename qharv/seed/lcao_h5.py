@@ -5,6 +5,7 @@ from qharv.seed import xml
 from qharv.seed.wf_h5 import read, ls
 
 # ====================== level 1: extract basic info =======================
+
 def abs_grid(fp, iabs):
   """Extract <grid> for some <atomicBasisSet>
 
@@ -15,10 +16,7 @@ def abs_grid(fp, iabs):
   """
   path = 'basisset/atomicBasisSet%d' % iabs
   grid = xml.etree.Element('grid')
-  for attrib in ['type', 'ri', 'rf', 'npts']:
-    gpath = '%s/grid_%s' % (path, attrib)
-    val = fp[gpath][()][0]
-    grid.set(attrib, str(val))
+  _add_attribs(grid, fp, path, ['type', 'ri', 'rf', 'npts'], prefix='grid_')
   return grid
 
 def bg_radfunc(fp, iabs, ibg, irf):
@@ -32,10 +30,7 @@ def bg_radfunc(fp, iabs, ibg, irf):
   path = 'basisset/atomicBasisSet%d/basisGroup%d' % (iabs, ibg)
   rfpath = '%s/radfunctions/DataRad%d' % (path, irf)
   rf = xml.etree.Element('radfunc')
-  for attrib in ['exponent', 'contraction']:
-    apath = '%s/%s' % (rfpath, attrib)
-    val = fp[apath][()][0]
-    rf.set(attrib, str(val))
+  _add_attribs(rf, fp, rfpath, ['exponent', 'contraction'])
   return rf
 
 def basis_group(fp, iabs, ibg):
@@ -48,16 +43,19 @@ def basis_group(fp, iabs, ibg):
   """
   bgpath = 'basisset/atomicBasisSet%d/basisGroup%d' % (iabs, ibg)
   bg = xml.etree.Element('basisGroup')
-  for attrib in ['rid', 'n', 'l', 'type']:
-    apath = '%s/%s' % (bgpath, attrib)
-    val = fp[apath][()][0]
-    bg.set(attrib, str(val))
+  _add_attribs(bg, fp, bgpath, ['rid', 'n', 'l', 'type'])
   # add radial functions
   nrf = fp['%s/NbRadFunc' % bgpath][()][0]
   for irf in range(nrf):
     rf = bg_radfunc(fp, iabs, ibg, irf)
     bg.append(rf)
   return bg
+
+def _add_attribs(node, fp, path, attribs, prefix=''):
+  for attrib in attribs:
+    apath = '%s/%s' % (path, prefix+attrib)
+    val = fp[apath][()][0]
+    node.set(attrib, str(val))
 
 # ====================== level 2: hdf5 to xml =======================
 
@@ -77,10 +75,8 @@ def basisset(fp):
   for iabs in range(nabs):  # atomicBasisSet
     path = 'basisset/atomicBasisSet%d' % iabs
     myabs = xml.etree.Element('atomicBasisSet')
-    for attrib in ['name', 'angular', 'elementType', 'normalized']:
-      apath = '%s/%s' % (path, attrib)
-      val = fp[apath][()][0]
-      myabs.set(attrib, str(val))
+    abs_attribs = ['name', 'angular', 'elementType', 'normalized']
+    _add_attribs(myabs, fp, path, abs_attribs)
     # each atomic basis set should have a <grid> and a few <basisGroup>s
     grid = abs_grid(fp, iabs)
     myabs.append(grid)
