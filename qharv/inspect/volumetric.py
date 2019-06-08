@@ -226,7 +226,37 @@ def read_gaussian_cube(fcub):
            'elem': elem, 'pos': pos, 'data': rgrid}
   return entry
 
-def write_gaussian_cube(vol, axes,
+def write_gaussian_cube(fcub, data, overwrite=False, **kwargs):
+  import os
+  keys = data.keys()
+  if os.path.isfile(fcub) and not overwrite:
+    raise RuntimeError('%s exists' % fcub)
+  # required inputs: grid axes (3, 3) matrix and volumetric data
+  if 'axes' not in keys:
+    raise RuntimeError('grid axes is required')
+  if 'data' not in keys:
+    raise RuntimeError('data grid is required')
+  # optional inputs
+  if 'elem' in keys:
+    elem = data['elem']
+  else:
+    elem = (1,)
+  if 'pos' in keys:
+    pos = data['pos']
+  else:
+    pos = ((0, 0, 0),)
+  if 'origin' in data.keys():
+    origin = data['origin']
+  else:
+    origin = (0, 0, 0)
+  text = write_gaussian_cube_text(
+    data['data'], data['axes'],
+    elem=elem, pos=pos, origin=origin, **kwargs)
+  with open(fcub, 'w') as f:
+    f.write(text)
+
+def write_gaussian_cube_text(
+  vol, axes,
   elem=(1,), pos=((0, 0, 0),), origin=(0, 0, 0),
   two_line_comment='cube\nfile\n'):
   """Write Gaussian cube file using volumetric data
