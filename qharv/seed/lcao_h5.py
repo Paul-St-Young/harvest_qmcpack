@@ -90,19 +90,24 @@ def basisset(fp):
     bs.append(myabs)
   return bs
 
-def sposet(fp, bsname, cname, ik=0, ispin=0):
+def sposet(fp, bsname, cname, nstate=None, ik=0, ispin=0):
   path = 'KPTS_%d/eigenset_%d' % (ik, ispin)
-  mo_coeff = fp[path][()]
-  nmo, nao = mo_coeff.shape # !!!! check transpose
+  mo_coeff = fp[path][()].T
+  nmo, nao = mo_coeff.shape
+  if nstate is None:
+    nstate = nmo
+  if nstate > nmo:
+    raise RuntimeError('state %d/%d is not available' % (nstate, nmo))
   # build <sposet>
   ss = xml.etree.Element('sposet')
   ss.set('basisset', bsname)
   ss.set('name', 'spo-ud')
-  ss.set('size', str(nmo))
+  ss.set('size', str(nstate))
+  ss.set('optimize', 'yes')
   # add <coefficient>
   cnode = xml.etree.Element('coefficient')
   cnode.set('size', str(nao))
   cnode.set('id', cname)
-  cnode.text = xml.arr2text(mo_coeff)
+  cnode.text = xml.arr2text(mo_coeff[:nstate, :])
   ss.append(cnode)
   return ss
