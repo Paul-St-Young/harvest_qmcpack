@@ -77,6 +77,8 @@ def basisset(fp):
     myabs = xml.etree.Element('atomicBasisSet')
     abs_attribs = ['name', 'angular', 'elementType', 'normalized']
     _add_attribs(myabs, fp, path, abs_attribs)
+    # !!!! make type "Gaussian", otherwise default to "Numeric"
+    myabs.set('type', 'Gaussian')
     # each atomic basis set should have a <grid> and a few <basisGroup>s
     grid = abs_grid(fp, iabs)
     myabs.append(grid)
