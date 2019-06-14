@@ -5,7 +5,7 @@
 #  heavily borrow from the atomic simulation environment (ase) package
 import numpy as np
 
-def ase_atoms(axes, elem, pos, pbc=None):
+def ase_atoms(axes, elem, pos, **kwargs):
   """ create ase Atoms object
 
   Args:
@@ -16,10 +16,11 @@ def ase_atoms(axes, elem, pos, pbc=None):
     ase.Atoms: object
   """
   from ase import Atoms
+  pbc = kwargs.pop('pbc', None)
   if pbc is None:
     ndim = len(axes)
     pbc = [True]*ndim
-  s0 = Atoms(''.join(elem), cell=axes, positions=pos, pbc=pbc)
+  s0 = Atoms(''.join(elem), cell=axes, positions=pos, pbc=pbc, **kwargs)
   return s0
 
 def ase_read(floc):
