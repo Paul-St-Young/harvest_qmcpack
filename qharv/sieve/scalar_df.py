@@ -11,6 +11,17 @@ import numpy as np
 import pandas as pd
 from qharv.reel.scalar_dat import error
 
+def merge_list(dfl, labels):
+  """Merge a list of DataFrames sharing common labels
+
+  Args:
+    dfl (list): a list of pd.DataFrame objects
+    labels (list): a list of column labels
+  Return:
+    pd.DataFrame: merged df
+  """
+  df = reduce(lambda df1, df2: pd.merge(df1, df2, on=labels), dfl)
+  return df
 
 def mean_error_scalar_df(df, nequil, kappa=None):
   """ get mean and average from a dataframe of raw scalar data (per-block)
