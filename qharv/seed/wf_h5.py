@@ -237,6 +237,39 @@ def get_bands(fp, ispin=0):
     bands[ik, :] = band
   return bands
 
+def get_orbs(fp, orbs, truncate=False, tol=1e-8):
+  """ return the list of requested Kohn-Sham orbitals
+
+  Args:
+    fp (h5py.File): wf h5 file
+    orbs (list): a list of 3-tuples, each tuple species the KS state
+     by (kpoint/twist, spin, band) i.e. (ik, ispin, ib)
+    truncate (bool, optional): remove PWs with ``small'' coefficient
+    tol (float, optional): define ``small'' as |ck|^2 < tol
+  """
+  from qharv.inspect import axes_pos
+  gvecs = get(fp, 'gvectors')
+  qvecs = get_twists(fp)
+  axes = get(fp, 'axes')
+  raxes = axes_pos.raxes(axes)
+
+  kvecsl = []
+  psigl = []
+  for orb in orbs:
+    ik, ispin, ib = orb
+    # PW basis
+    kvecs = np.dot(gvecs+qvecs[ik], raxes)
+    npw = len(kvecs)
+    # PW coefficients
+    psig = get_orb_in_pw(fp, ik, ispin, ib)
+    sel = np.ones(npw, dtype=bool)
+    if truncate:  # cut down on the # of PWs
+      pg2 = (psig.conj()*psig).real
+      sel = pg2 > tol
+    kvecsl.append(kvecs[sel])
+    psigl.append(psig[sel])
+  return kvecsl, psigl
+
 # ====== level 4: write wf h5 file from scratch ======
 
 def write_kpoint(kgrp, ikpt, utvec, evals, cmats):
