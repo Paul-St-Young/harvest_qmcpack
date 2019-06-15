@@ -9,7 +9,6 @@ import numpy as np
 
 # ====================== level 0: basic io =======================
 
-
 def read(fname, **kwargs):
   """ read h5 file and return a h5py File object
 
@@ -23,7 +22,6 @@ def read(fname, **kwargs):
   if not ('mode' in kwargs):
     kwargs['mode'] = 'r'
   return h5py.File(fname, **kwargs)
-
 
 def ls(handle, r=False, level=0, indent="  "):
   """ List directory structure
@@ -52,7 +50,6 @@ def ls(handle, r=False, level=0, indent="  "):
   # end if
   return mystr
 
-
 # ====== level 1: QMCPACK wavefunction hdf5 fixed locations ======
 locations = {
   'gvectors': 'electrons/kpoint_0/gvectors',
@@ -64,7 +61,6 @@ locations = {
   'axes': 'supercell/primitive_vectors',
   'pos': 'atoms/positions'
 }
-
 
 def get(fp, name):
   """ retrieve data from a known location in pwscf.h5
@@ -81,7 +77,6 @@ def get(fp, name):
     raise RuntimeError(msg)
   loc = locations[name]
   return fp[loc][()]
-
 
 def axes_elem_pos(fp):
   """ extract lattice vectors, atomic positions, and element names
@@ -111,7 +106,6 @@ def axes_elem_pos(fp):
 
 # ====== level 2: QMCPACK wavefunction hdf5 orbital locations ======
 
-
 def kpoint_path(ikpt):
   """ construct path to kpoint
 
@@ -125,16 +119,13 @@ def kpoint_path(ikpt):
   path = 'electrons/kpoint_%d' % (ikpt)
   return path
 
-
 def spin_path(ikpt, ispin):
   path = 'electrons/kpoint_%d/spin_%d' % (ikpt, ispin)
   return path
 
-
 def state_path(ikpt, ispin, istate):
   path = 'electrons/kpoint_%d/spin_%d/state_%d/' % (ikpt, ispin, istate)
   return path
-
 
 def get_orb_in_pw(fp, ikpt, ispin, istate):
   """ get the plane wave coefficients of a single Kohn-Sham orbital
@@ -153,9 +144,7 @@ def get_orb_in_pw(fp, ikpt, ispin, istate):
   psig = psig_arr.flatten().view(complex)  # more elegant conversion
   return psig
 
-
 # ====== level 3: single particle orbitals ======
-
 
 def get_cmat(fp, ikpt, ispin, norb=None, npw=None):
   """ get Kohn-Sham orbital coefficients on a list of plane waves (PWs)
@@ -183,7 +172,6 @@ def get_cmat(fp, ikpt, ispin, norb=None, npw=None):
     cmat[iorb, :] = ci
   return cmat
 
-
 def normalize_cmat(cmat):
   """ normalize PW orbital coefficients
 
@@ -197,7 +185,6 @@ def normalize_cmat(cmat):
     ci = cmat[iorb]
     norm = np.dot(ci.conj(), ci)
     cmat[iorb] /= norm**0.5
-
 
 def get_twists(fp, ndim=3):
   """ return the list of available twist vectors
@@ -215,7 +202,6 @@ def get_twists(fp, ndim=3):
     ukvec = fp[os.path.join(kpath, 'reduced_k')][()]
     ukvecs[ik, :] = ukvec
   return ukvecs
-
 
 def get_bands(fp, ispin=0):
   """ return the list of available Kohn-Sham eigenvalues
