@@ -62,7 +62,7 @@ locations = {
   'pos': 'atoms/positions'
 }
 
-def get(fp, name):
+def get(fp, name):  # see more advanced get at level 3
   """ retrieve data from a known location in pwscf.h5
 
   Args:
