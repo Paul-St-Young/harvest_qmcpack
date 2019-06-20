@@ -90,4 +90,4 @@ def twist_concat_h5(fh5, name, twists=None):
     val = fp[path][()]
     data.append(val)
   fp.close()
-  return np.concatenate(data)
+  return np.concatenate(data, axis=0)
