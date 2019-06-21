@@ -3,12 +3,12 @@
 # Routines to manipulate pyscf results for use in QMCPACK
 import numpy as np
 
-def atom_text(elem,pos):
+def atom_text(elem, pos):
   """convert elem,pos to text representation
-  
-  for example, elem = ['C','C'], pos = [[0,0,0],[0.5,0.5,0.5]] will be 
+
+  for example, elem = ['C','C'], pos = [[0,0,0],[0.5,0.5,0.5]] will be
   converted to 'C 0 0 0;C 0.5 0.5 0.5'
-  
+
   Args:
    elem (list): a list of atomic symbols such as 'H','C','O'
    pos  (list): a list of atomic positions, assume in 3D
@@ -19,7 +19,8 @@ def atom_text(elem,pos):
   for iatom in range(len(elem)):
       mypos = pos[iatom]
       assert len(mypos) == 3
-      line = '%5s  %10.6f  %10.6f  %10.6f' % (elem[iatom],mypos[0],mypos[1],mypos[2])
+      line = '%5s  %10.6f  %10.6f  %10.6f' % (
+        elem[iatom], mypos[0], mypos[1], mypos[2])
       lines.append(line)
   atext = ';\n'.join(lines)
   return atext
@@ -71,18 +72,19 @@ def ase_tile(cell, tmat):
 
 def check_grid_shape(grid_shape, gvecs):
   pw_grid_shape = gvecs.max(axis=0)-gvecs.min(axis=0)+1
-  if grid_shape is None: # deduce minimum real-space basis to retain all information
+  if grid_shape is None:
+    # deduce minimum real-space basis to retain all information
     grid_shape = pw_grid_shape
-  else: # make sure no information is lost from pw representation
+  else:  # make sure no information is lost from pw representation
     if not (grid_shape >= pw_grid_shape).all():
       msg = 'grid shape %s is too small to preserve PW rep.' % str(grid_shape)
       msg += 'Please increase to at least %s' % str(pw_grid_shape)
       raise RuntimeError(msg)
   return grid_shape
 
-def pw_to_r(gvecs,psig,grid_shape=None):
+def pw_to_r(gvecs, psig, grid_shape=None):
   """ convert a 3D function from plane-wave to real-space basis
-  
+
   plane wave basis is assumed to be in reciprocal lattice units
   real space basis will be in grid units
 
@@ -104,9 +106,9 @@ def pw_to_r(gvecs,psig,grid_shape=None):
   rgrid = np.fft.ifftn(fftbox)
   return gs, rgrid
 
-def r_to_pw(moR0,grid_shape,gvecs=None):
+def r_to_pw(moR0, grid_shape, gvecs=None):
   """ convert a 3D function from real-space to plane-wave basis
-  
+
   This function is essentially the inverse of pw_to_r, but assumes that the real space grid is built around (0,0,0)
 
   Args:
@@ -117,33 +119,33 @@ def r_to_pw(moR0,grid_shape,gvecs=None):
   """
   assert np.prod(grid_shape) == len(moR0)
   cell_gs = (grid_shape-1)/2
-  
-  if gvecs is None: # deduce minimum plane-wave basis to retain all information
-    if not (2*cell_gs+1==grid_shape).all():
-      raise RuntimeError('Please provide grid_shape. I cannot deduce minimum plane-wave basis for even grid_shape %s'%' '.join(grid_shape.astype(str)))
-    # end if
 
-    nx,ny,nz = cell_gs
+  if gvecs is None:
+    # deduce minimum plane-wave basis to retain all information
+    if not (2*cell_gs+1 == grid_shape).all():
+      msg = 'Please provide grid_shape. I cannot deduce minimum PW basis'
+      msg += ' for even grid_shape %s' % str(grid_shape)
+      raise RuntimeError(msg)
+
+    nx, ny, nz = cell_gs
     from itertools import product
     gvecs = np.array([gvec for gvec in product(
-      range(-nx,nx+1),range(-ny,ny+1),range(-nz,nz+1))],dtype=int)
-  else: # make sure information is not missing from real-space representation
-    assert np.issubdtype(gvecs.dtype,np.integer)
-    valid = (gvecs.max(axis=0) <= cell_gs).all() and (-gvecs.min(axis=0) <= cell_gs).all()
+      range(-nx, nx+1), range(-ny, ny+1), range(-nz, nz+1))], dtype=int)
+  else:  # make sure information is not missing from real-space representation
+    assert np.issubdtype(gvecs.dtype, np.integer)
+    valid = (gvecs.max(axis=0) <= cell_gs).all() and \
+            (-gvecs.min(axis=0) <= cell_gs).all()
     if not valid:
-      raise RuntimeError('Please remove gvectors outside of cell_gs: %s' % ' '.join(cell_gs.astype(str)) )
-    # end if
-  # end if
+      msg = 'Please remove gvectors outside of cell_gs: %s' % str(cell_gs)
+      raise RuntimeError(msg)
 
-  npw,ndim = gvecs.shape
-    
+  npw, ndim = gvecs.shape
+  assert ndim == 3
+
   orb = moR0.reshape(grid_shape)
   moG = np.fft.fftn(orb)/np.prod(grid_shape)
 
-  psig = np.zeros(npw,dtype=complex)
+  psig = np.zeros(npw, dtype=complex)
   for ipw in range(npw):
     psig[ipw] = moG[tuple(gvecs[ipw])]
-  # end for ipw
-
-  return gvecs,psig
-# end def r_to_pw
+  return gvecs, psig
