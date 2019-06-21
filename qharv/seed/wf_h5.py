@@ -166,9 +166,9 @@ def get_orb_on_grid(fp, ikpt, ispin, istate, gshape=None):
   gs1, rgrid = pw_to_r(gvecs, psig, grid_shape=gs)
   # normalize FFT
   axes = get(fp, 'axes')
-  dvol = axes_pos.volume(axes/gs)
+  volume = axes_pos.volume(axes)
   npt = np.prod(gs)
-  norm = (dvol/npt)**0.5
+  norm = volume**0.5/npt
   return rgrid/norm
 
 # ====== level 3: single particle orbitals ======
