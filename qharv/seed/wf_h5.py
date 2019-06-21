@@ -199,7 +199,7 @@ def get_cmat(fp, ikpt, ispin, norb=None, npw=None):
     cmat[iorb, :] = ci
   return cmat
 
-def get_sc_cmat(fp, itwist, ispin, noccl):
+def get_sc_cmat(fp, itwist, ispin, noccl, sorted_orbs=False):
   """ get Kohn-Sham orbital coefficients at a supercell twist
 
   Args:
@@ -210,6 +210,10 @@ def get_sc_cmat(fp, itwist, ispin, noccl):
   Return:
     np.array: cmat orbital coefficient matrix
   """
+  if not sorted_orbs:
+    msg = 'I assume orbitals are sorted at each supercell twist.'
+    msg += ' If orbitals are not sorted, then results will be WRONG!'
+    raise RuntimeError(msg)
   # count PW
   gvecs0 = get(fp, 'gvectors')
   npw = len(gvecs0)
