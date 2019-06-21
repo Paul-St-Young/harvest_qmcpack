@@ -141,7 +141,7 @@ def get_orb_in_pw(fp, ikpt, ispin, istate):
   orb_path = os.path.join(state_path(ikpt, ispin, istate), 'psi_g')
   psig_arr = fp[orb_path][()]  # stored in real view
   # psig = psig_arr[:,0]+1j*psig_arr[:,1]  # convert to complex view
-  psig = psig_arr.flatten().view(complex)  # more elegant conversion
+  psig = psig_arr.ravel().view(complex)  # more elegant conversion
   return psig
 
 def get_orb_on_grid(fp, ikpt, ispin, istate, gshape=None):
