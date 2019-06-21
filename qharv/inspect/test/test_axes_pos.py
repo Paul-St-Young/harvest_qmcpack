@@ -127,3 +127,8 @@ def test_pos_in_box():
     [0, 0, 0.5],
     [0, 0, 0.5]
   ]))
+
+def test_cubic_pos():
+  cpos1 = axes_pos.cubic_pos(2)
+  cpos2 = axes_pos.cubic_pos([2, 2, 2])
+  assert np.allclose(cpos1, cpos2)

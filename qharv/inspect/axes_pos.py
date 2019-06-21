@@ -123,14 +123,18 @@ def cubic_pos(nx, ndim=3):
   """ initialize simple cubic lattice in unit cube
 
   Args:
-    nx (int): number of lattice points along each dimension
+    nx (int) OR nxnynz (np.array): number of points along each dimension
     ndim (int): number of spatial dimensions
   Return:
     np.array: simple cubic lattice positions, shape (nx**3, ndim)
   """
-  nl = np.arange(nx)
+  try:
+    len(nx) == ndim
+    nxnynz = [np.arange(n) for n in nx]
+  except TypeError:
+    nxnynz = [np.arange(nx)]*ndim
   pos = np.stack(
-    np.meshgrid(*[nl]*ndim, indexing='ij'),
+    np.meshgrid(*nxnynz, indexing='ij'),
     axis=-1
   ).reshape(-1, ndim)
   return pos
