@@ -199,36 +199,26 @@ def get_cmat(fp, ikpt, ispin, norb=None, npw=None):
     cmat[iorb, :] = ci
   return cmat
 
-def get_sc_cmat(fp, nprim, itwist, ispin, norb):
+def get_sc_cmat(fp, itwist, ispin, noccl):
   """ get Kohn-Sham orbital coefficients at a supercell twist
 
   Args:
     fp (h5py.File): wf h5 file
-    nprim (int): number of primitive cells in the supercell
     itwist (int): twist index
     ispin (int): spin index
-    norb (int): number of orbitals to extract (sorted by KS eigenvalue)
+    noccl (np.array): number of occupied orbitals at each kpoint
   Return:
     np.array: cmat orbital coefficient matrix
   """
   # count PW
   gvecs0 = get(fp, 'gvectors')
   npw = len(gvecs0)
+  nprim = len(noccl)  # number of primitive cells in the supercell
   # sort orbitals
   istart = itwist*nprim  # !!!! assume orbitals are sorted
-  bands = get_bands(fp)
-  mybands = bands[istart:istart+nprim, :]
-  evals = mybands.ravel()
-  idx = np.argsort(evals)
-  # find occupied orbitals
-  efermi = evals[idx][norb-1]
-  somat = mybands <= efermi
-  assert somat.sum() == norb
   # construct supercell orbital coefficient matrix
-  nkpt, nstate = somat.shape
   cmatl = []
-  for ikpt in range(nkpt):
-    nocc = somat[ikpt].sum()
+  for ikpt, nocc in enumerate(noccl):
     cmat1 = get_cmat(fp, istart+ikpt, ispin, norb=nocc, npw=npw)
     cmatl.append(cmat1)
   cmat = np.concatenate(cmatl, axis=0)
