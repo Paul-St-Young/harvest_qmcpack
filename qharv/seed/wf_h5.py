@@ -144,6 +144,33 @@ def get_orb_in_pw(fp, ikpt, ispin, istate):
   psig = psig_arr.flatten().view(complex)  # more elegant conversion
   return psig
 
+def get_orb_on_grid(fp, ikpt, ispin, istate, gshape=None):
+  """ get a single Kohn-Sham orbital on a real-space grid
+
+  Args:
+    fp (h5py.File): wf h5 file
+    ikpt (int): kpoint index
+    ispin (int): spin index
+    istate (int): band index
+    gshape (np.array): (3,) grid shape [nx, ny, nz]
+  Return:
+    np.array: orbital on grid with shape=gshape
+  """
+  from qharv.cross.pqscf import check_grid_shape, pw_to_r
+  from qharv.inspect import axes_pos
+  # define FFT grid
+  gvecs = get(fp, 'gvectors')
+  gs = check_grid_shape(gshape, gvecs)
+  # FFT orbital
+  psig = get_orb_in_pw(fp, ikpt, ispin, istate)
+  gs1, rgrid = pw_to_r(gvecs, psig, grid_shape=gs)
+  # normalize FFT
+  axes = get(fp, 'axes')
+  dvol = axes_pos.volume(axes/gs)
+  npt = np.prod(gs)
+  norm = (dvol/npt)**0.5
+  return rgrid/norm
+
 # ====== level 3: single particle orbitals ======
 
 def get_cmat(fp, ikpt, ispin, norb=None, npw=None):

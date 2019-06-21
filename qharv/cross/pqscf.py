@@ -69,6 +69,17 @@ def ase_tile(cell, tmat):
   cell1.verbose = cell.verbose
   return cell1
 
+def check_grid_shape(grid_shape, gvecs):
+  pw_grid_shape = gvecs.max(axis=0)-gvecs.min(axis=0)+1
+  if grid_shape is None: # deduce minimum real-space basis to retain all information
+    grid_shape = pw_grid_shape
+  else: # make sure no information is lost from pw representation
+    if not (grid_shape >= pw_grid_shape).all():
+      msg = 'grid shape %s is too small to preserve PW rep.' % str(grid_shape)
+      msg += 'Please increase to at least %s' % str(pw_grid_shape)
+      raise RuntimeError(msg)
+  return grid_shape
+
 def pw_to_r(gvecs,psig,grid_shape=None):
   """ convert a 3D function from plane-wave to real-space basis
   
@@ -82,26 +93,16 @@ def pw_to_r(gvecs,psig,grid_shape=None):
   Returns:
     (np.array,np.array): (grid_shape,moR), grid_shape is input if given. Otherwise constructed in function to hold all information from the plane-wave representation. moR has dtype=complex & shape = grid_shape. moR is the 3D function in real-space basis. Typically a molecular orbital.
   """
-  
-  pw_grid_shape = gvecs.max(axis=0) - gvecs.min(axis=0) + 1
-  if grid_shape is None: # deduce minimum real-space basis to retain all information
-    grid_shape = pw_grid_shape
-  else: # make sure no information is lost from pw representation
-    if not (grid_shape >= pw_grid_shape).all():
-      raise RuntimeError('Please increase grid_shape beyond (%s) to preserve all information from the plane-wave representation.' % ' '.join(pw_grid_shape.astype(str)) )
-    # end if
-  # end if
-
+  # verify user input
+  gs = check_grid_shape(grid_shape, gvecs)
   # perform Fourier transform
-  npw,ndim = gvecs.shape
+  npw, ndim = gvecs.shape
   assert ndim == 3
-  fftbox = np.zeros(grid_shape,dtype=complex)
+  fftbox = np.zeros(gs, dtype=complex)
   for ig in range(npw):
     fftbox[tuple(gvecs[ig])] = psig[ig]
-  # end for ig
-  rgrid = np.fft.ifftn(fftbox) * np.prod(grid_shape)
-  return grid_shape,rgrid
-# end def pw_to_r
+  rgrid = np.fft.ifftn(fftbox)
+  return gs, rgrid
 
 def r_to_pw(moR0,grid_shape,gvecs=None):
   """ convert a 3D function from real-space to plane-wave basis
