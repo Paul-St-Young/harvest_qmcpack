@@ -71,14 +71,15 @@ def ase_tile(cell, tmat):
   return cell1
 
 def check_grid_shape(grid_shape, gvecs):
-  pw_grid_shape = gvecs.max(axis=0)-gvecs.min(axis=0)+1
+  # Nyquist-Shannon sampling grid
+  ns_shape = 2*(gvecs.max(axis=0)-gvecs.min(axis=0))+1
   if grid_shape is None:
     # deduce minimum real-space basis to retain all information
-    grid_shape = pw_grid_shape
+    grid_shape = ns_shape
   else:  # make sure no information is lost from pw representation
-    if not (grid_shape >= pw_grid_shape).all():
+    if not (grid_shape >= ns_shape).all():
       msg = 'grid shape %s is too small to preserve PW rep.' % str(grid_shape)
-      msg += 'Please increase to at least %s' % str(pw_grid_shape)
+      msg += 'Please increase to at least %s' % str(ns_shape)
       raise RuntimeError(msg)
   return grid_shape
 
