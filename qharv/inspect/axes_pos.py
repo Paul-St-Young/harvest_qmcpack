@@ -3,7 +3,6 @@
 # Routines to process crystal structure specified by axes,pos
 import numpy as np
 
-
 # ======================== level 0: axes properties =========================
 def abc(axes):
   """ a,b,c lattice parameters
@@ -16,7 +15,6 @@ def abc(axes):
   abc = np.linalg.norm(axes, axis=-1)
   return abc
 
-
 def raxes(axes):
   """ find reciprocal lattice vectors
 
@@ -27,7 +25,6 @@ def raxes(axes):
   """
   return 2*np.pi*np.linalg.inv(axes).T
 
-
 def volume(axes):
   """ volume of a simulation cell
 
@@ -36,8 +33,7 @@ def volume(axes):
   Returns:
     float: volume of cell
   """
-  return abs(np.dot(axes[0],np.cross(axes[1],axes[2])))
-
+  return abs(np.dot(axes[0], np.cross(axes[1], axes[2])))
 
 def rs(axes, natom):
   """ rs density parameter (!!!! axes MUST be in units of bohr)
@@ -52,7 +48,6 @@ def rs(axes, natom):
   rs  = ((3*vol_pp)/(4*np.pi))**(1./3)  # radius for spherical vol_pp
   return rs
 
-
 def rins(axes):
   """ radius of the inscribed sphere inside the given cell
 
@@ -61,34 +56,36 @@ def rins(axes):
   Returns:
     float: radius of the inscribed sphere
   """
-  a01 = np.cross(axes[0],axes[1])
-  a12 = np.cross(axes[1],axes[2])
-  a20 = np.cross(axes[2],axes[0])
-  face_areas = [np.linalg.norm(x) for x in [a01,a12,a20]]
+  a01 = np.cross(axes[0], axes[1])
+  a12 = np.cross(axes[1], axes[2])
+  a20 = np.cross(axes[2], axes[0])
+  face_areas = [np.linalg.norm(x) for x in [a01, a12, a20]]
 
   # 2*rins is the height from face
   rins = volume(axes)/2./max(face_areas)
   return rins
 
-
 def rwsc(axes, dn=1):
-  """ radius of the inscribed sphere inside the real-space Wigner-Seitz cell of the given cell
+  """ radius of the inscribed sphere inside the real-space
+  Wigner-Seitz cell of the given cell
 
   Args:
     axes (np.array): lattice vectors in row-major
-    dn (int,optional): number of image cells to search in each dimension, default dn=1 searches 26 images in 3D.
+    dn (int,optional): number of image cells to search in each
+     dimension, default dn=1 searches 26 images in 3D.
   Returns:
     float: Wigner-Seitz cell radius
   """
   ndim = len(axes)
   from itertools import product
   r2imgl  = []  # keep a list of distance^2 to all neighboring images
-  images = product(range(-dn,dn+1),repeat=ndim)
+  images = product(range(-dn, dn+1), repeat=ndim)
   for ushift in images:
-    if sum(ushift)==0: continue  # ignore self
-    shift = np.dot(ushift,axes)
-    r2imgl.append( np.dot(shift,shift) )
-  rimg = np.sqrt( min(r2imgl) )
+    if sum(ushift) == 0:
+      continue  # ignore self
+    shift = np.dot(ushift, axes)
+    r2imgl.append(np.dot(shift, shift))
+  rimg = np.sqrt(min(r2imgl))
   return rimg/2.
 
 def tmat(axes0, axes1):
@@ -113,11 +110,10 @@ def pos_in_axes(axes, pos, ztol=1e-10):
     pos0(np.array): particle position(s) inside the cell
   """
   upos = np.dot(pos, np.linalg.inv(axes))
-  zsel = abs(upos % 1-1)<ztol
+  zsel = abs(upos % 1-1) < ztol
   upos[zsel] = 0
   pos0 = np.dot(upos % 1, axes)
   return pos0
-
 
 def cubic_pos(nx, ndim=3):
   """ initialize simple cubic lattice in unit cube
@@ -139,7 +135,6 @@ def cubic_pos(nx, ndim=3):
   ).reshape(-1, ndim)
   return pos
 
-
 def auto_distance_table(axes, pos, dn=1):
   """ calculate distance table of a set of particles among themselves
   keep this function simple! use this to test distance_table(axes,pos1,pos2)
@@ -151,26 +146,21 @@ def auto_distance_table(axes, pos, dn=1):
   Returns:
     np.array: dtable shape=(natom,natom), where natom=len(pos)
   """
-  natom,ndim = pos.shape
-  dtable = np.zeros([natom,natom],float)
-  from itertools import combinations,product
+  natom, ndim = pos.shape
+  dtable = np.zeros([natom, natom], float)
+  from itertools import combinations, product
   # loop through all unique pairs of atoms
-  for (i,j) in combinations(range(natom),2):  # 2 for pairs
+  for (i, j) in combinations(range(natom), 2):  # 2 for pairs
     dists = []
     # loop through all neighboring periodic images of atom j
     #  should be 27 images for a 3D box (dn=1)
-    for ushift in product(range(-dn,dn+1),repeat=ndim):
-      shift = np.dot(ushift,axes)
+    for ushift in product(range(-dn, dn+1), repeat=ndim):
+      shift = np.dot(ushift, axes)
       disp  = pos[i] - (pos[j]+shift)
       dist  = np.linalg.norm(disp)
       dists.append(dist)
-    # end for ushift
-    dtable[i,j] = dtable[j,i] = min(dists)
-  # end for (i,j)
-
+    dtable[i, j] = dtable[j, i] = min(dists)
   return dtable
-# end def auto_distance_table
-
 
 # ======================== level 2: advanced =========================
 def displacement(axes, spos1, spos2, dn=1):
@@ -193,15 +183,14 @@ def displacement(axes, spos1, spos2, dn=1):
   min_disp = None
   min_dist = np.inf
   from itertools import product
-  for ushift in product(range(-dn,dn+1),repeat=ndim):
-    shift = np.dot(ushift,axes)
+  for ushift in product(range(-dn, dn+1), repeat=ndim):
+    shift = np.dot(ushift, axes)
     disp  = spos1 - (spos2+shift)
     dist  = np.linalg.norm(disp)
     if dist < min_dist:
       min_dist = dist
       min_disp = disp.copy()
   return min_disp
-
 
 def dimer_pairs_and_dists(axes, pos, rmax, rmin=0):
   """ find all dimers within a separtion of (rmin,rmax)
@@ -217,20 +206,19 @@ def dimer_pairs_and_dists(axes, pos, rmax, rmin=0):
   """
 
   # get distance table
-  dtable = auto_distance_table(axes,pos)
+  dtable = auto_distance_table(axes, pos)
 
   # locate pairs
   sel = (dtable < rmax) & (dtable > rmin)
   pairs = np.argwhere(sel)
 
   # remove permutation
-  usel  = pairs[:,0] < pairs[:,1]
+  usel  = pairs[:, 0] < pairs[:, 1]
   upair = pairs[usel]
   udist = dtable[sel][usel]
-  return upair,udist
+  return upair, udist
 
-
-def c_over_a(axes,cmax=True,warn=True,abtol=1e-6):
+def c_over_a(axes, cmax=True, warn=True, abtol=1e-6):
   """ calculate c/a ratio given a=b
 
   Args:
@@ -246,15 +234,16 @@ def c_over_a(axes,cmax=True,warn=True,abtol=1e-6):
     cidx = np.argmin(myabc)
   aidx = (cidx+1) % 3
   bidx = (cidx+2) % 3
-  if np.isclose(myabc[cidx],myabc[aidx]) or \
-     np.isclose(myabc[cidx],myabc[bidx]):
-    if warn: print('c is close to a/b; try set cmax')
-  if not np.isclose(myabc[aidx],myabc[bidx],atol=abtol):
+  if np.isclose(myabc[cidx], myabc[aidx]) or \
+     np.isclose(myabc[cidx], myabc[bidx]):
+    if warn:
+      print('c is close to a/b; try set cmax')
+  if not np.isclose(myabc[aidx], myabc[bidx], atol=abtol):
     raise RuntimeError('lattice a,b not equal')
   return myabc[cidx]/myabc[aidx]
 
 
-def ase_get_spacegroup_id(axes,elem,pos,**kwargs):
+def ase_get_spacegroup_id(axes, elem, pos, **kwargs):
   """ get space group ID using atomic simulation environment
 
   Args:
@@ -264,6 +253,6 @@ def ase_get_spacegroup_id(axes,elem,pos,**kwargs):
   """
   from ase import Atoms
   from ase.spacegroup import get_spacegroup
-  s1 = Atoms(elem,pos,cell=axes)
-  sg = get_spacegroup(s1,**kwargs)
+  s1 = Atoms(elem, pos, cell=axes)
+  sg = get_spacegroup(s1, **kwargs)
   return sg.no
