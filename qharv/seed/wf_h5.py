@@ -144,7 +144,7 @@ def get_orb_in_pw(fp, ikpt, ispin, istate):
   psig = psig_arr.ravel().view(complex)  # more elegant conversion
   return psig
 
-def get_orb_on_grid(fp, ikpt, ispin, istate, gshape=None):
+def get_orb_on_grid(fp, ikpt, ispin, istate, grid_shape=None):
   """ get a single Kohn-Sham orbital on a real-space grid
 
   Args:
@@ -152,15 +152,15 @@ def get_orb_on_grid(fp, ikpt, ispin, istate, gshape=None):
     ikpt (int): kpoint index
     ispin (int): spin index
     istate (int): band index
-    gshape (np.array): (3,) grid shape [nx, ny, nz]
+    grid_shape (np.array): (3,) grid shape [nx, ny, nz]
   Return:
-    np.array: orbital on grid with shape=gshape
+    np.array: orbital on grid with shape=grid_shape
   """
   from qharv.cross.pqscf import check_grid_shape, pw_to_r
   from qharv.inspect import axes_pos
   # define FFT grid
   gvecs = get(fp, 'gvectors')
-  gs = check_grid_shape(gshape, gvecs)
+  gs = check_grid_shape(grid_shape, gvecs)
   # FFT orbital
   psig = get_orb_in_pw(fp, ikpt, ispin, istate)
   gs1, rgrid = pw_to_r(gvecs, psig, grid_shape=gs)
