@@ -86,8 +86,8 @@ def check_grid_shape(grid_shape, gvecs):
 def pw_to_r(gvecs, psig, grid_shape=None):
   """ convert a 3D function from plane-wave to real-space basis
 
-  plane wave basis is assumed to be in reciprocal lattice units
-  real space basis will be in grid units
+  plane wave basis is assumed to be in reciprocal-lattice units
+  real-space basis will be in grid units axes/grid_shape
 
   Args:
     gvecs (np.array):  dtype=int & shape = (npw,ndim), npw is the number of plane waves, and ndim is the number of spatial dimensions. ndim is expected to be 3. Each entry in gvecs should be a 3D vector of integers.  Each gvec specify a plane wave basis element exp(i*gvec*rvec).
