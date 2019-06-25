@@ -242,6 +242,12 @@ def normalize_cmat(cmat):
     norm = np.dot(ci.conj(), ci)
     cmat[iorb] /= norm**0.5
 
+def get_twist(fp, itwist):
+  kpath = kpoint_path(itwist)
+  tpath = os.path.join(kpath, 'reduced_k')
+  ukvec = fp[tpath][()]
+  return ukvec
+
 def get_twists(fp, ndim=3):
   """ return the list of available twist vectors
 
@@ -255,7 +261,7 @@ def get_twists(fp, ndim=3):
   ukvecs = np.zeros([nk, ndim])
   for ik in range(nk):
     kpath = kpoint_path(ik)
-    ukvec = fp[os.path.join(kpath, 'reduced_k')][()]
+    ukvec = get_twist(fp, ik)
     ukvecs[ik, :] = ukvec
   return ukvecs
 
