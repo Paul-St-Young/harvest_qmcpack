@@ -31,6 +31,18 @@ def atomic_coords(fname, pset='ion0'):
   pos = xml.get_pos(doc, pset=pset)
   return pos
 
+def set_default_atoms_styles(kwargs):
+  if not (('c' in kwargs) or ('color' in kwargs)):
+    kwargs['c'] = 'b'
+  if not ('alpha' in kwargs):
+    kwargs['alpha'] = 0.25
+  if not (('ls' in kwargs) or ('linestyle' in kwargs)):
+    kwargs['ls'] = ''
+  if not ('marker' in kwargs):
+    kwargs['marker'] = 'o'
+  if not (('ms' in kwargs) or ('markersize' in kwargs)):
+    kwargs['ms'] = 5
+
 def draw_atoms(ax, pos, **kwargs):
   """ draw atoms on ax
   see example in draw_crystal
@@ -42,17 +54,7 @@ def draw_atoms(ax, pos, **kwargs):
   Returns:
    list: a list of plt.Line3D
   """
-  # set default styles
-  if not (('c' in kwargs) or ('color' in kwargs)):
-    kwargs['c'] = 'b'
-  if not ('alpha' in kwargs):
-    kwargs['alpha'] = 0.25
-  if not (('ls' in kwargs) or ('linestyle' in kwargs)):
-    kwargs['ls'] = ''
-  if not ('marker' in kwargs):
-    kwargs['marker'] = 'o'
-  if not (('ms' in kwargs) or ('markersize' in kwargs)):
-    kwargs['ms'] = 5
+  set_default_atoms_styles(kwargs)
   dots  = ax.plot(*pos.T, **kwargs)
   return dots
 
