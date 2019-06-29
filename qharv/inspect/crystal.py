@@ -180,7 +180,7 @@ def draw_wigner_seitz_cell(ax, axes, nsh=1, **kwargs):
   set_default_cell_styles(kwargs)
   # create Voronoi tessellation
   from qharv.inspect.axes_pos import cubic_pos
-  qvecs = cubic_pos(2*nsh+1)-nsh
+  qvecs = cubic_pos(2*nsh+1, ndim=len(axes))-nsh
   dots = np.dot(qvecs, axes)
   vor = Voronoi(dots)
   verts = vor.vertices  # vertices (basis for the rest)
@@ -220,7 +220,6 @@ def draw_wigner_seitz_cell(ax, axes, nsh=1, **kwargs):
     if -1 in rvert:
       continue
     pts = verts[rvert]
-    x, y, z = pts.T
-    line = ax.plot(x, y, z, **kwargs)
+    line = ax.plot(*pts.T, **kwargs)
     lines.append(line)
   return lines
