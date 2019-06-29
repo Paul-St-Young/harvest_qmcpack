@@ -16,16 +16,14 @@ pos0 = np.array([
 
 dists0 = [4.37311998,2.26578821,2.43520807]
 
-bcc0 = 0.5*np.array([
-  [-1.0, 1.0, 1.0],
-  [ 1.0,-1.0, 1.0],
-  [ 1.0, 1.0,-1.0],
-])
-
-fcc0 = 0.5*np.array([
-  [ 0.0, 1.0, 1.0],
-  [ 1.0, 0.0, 1.0],
-  [ 1.0, 1.0, 0.0],
+# basic 3D lattice vectors
+sc0 = np.eye(3)
+bcc0 = 0.5*(np.ones(3)-2*np.eye(3))
+fcc0 = 0.5*(np.ones(3)-np.eye(3))
+# basic 2D lattice vectors
+tri0 = 0.5*np.array([
+  [3**0.5,  1],
+  [3**0.5, -1]
 ])
 
 def test_abc():
@@ -129,3 +127,24 @@ def test_cubic_pos():
   cpos1 = axes_pos.cubic_pos(2)
   cpos2 = axes_pos.cubic_pos([2, 2, 2])
   assert np.allclose(cpos1, cpos2)
+
+def test_rins():
+  for axes, r0 in zip(
+    [sc0, bcc0, fcc0],
+    [0.5, 0.3535534, 0.288675]
+  ):
+    assert np.isclose(axes_pos.rins(axes), r0, atol=1e-6)
+
+def test_rins2d():
+  for axes, r0 in zip(
+    [tri0],
+    [3**0.5/4]
+  ):
+    assert np.isclose(axes_pos.rins(axes), r0, atol=1e-6)
+
+def test_rwsc2d():
+  for axes, r0 in zip(
+    [tri0],
+    [0.5]
+  ):
+    assert np.isclose(axes_pos.rwsc(axes), r0, atol=1e-6)
