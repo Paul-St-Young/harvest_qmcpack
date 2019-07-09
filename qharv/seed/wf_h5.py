@@ -320,6 +320,22 @@ def get_orbs(fp, orbs, truncate=False, tol=1e-8):
 
 # ====== level 4: write wf h5 file from scratch ======
 
+def write_misc(fp, nup_ndn, nkpt):
+  """ fill /electrons/number_of_* and /format
+
+  Args:
+    fp (h5py.File): hdf5 file object
+    nup_ndn (tuple/list): number of up and down electrons (nup, ndn)
+    nkpt (int): number of kpoints/twists
+  """
+  nup, ndn = nup_ndn
+  nspin = nup-ndn
+  fp.require_group('/electrons')
+  fp.create_dataset('/electrons/number_of_electrons', data=[nup, ndn])
+  fp.create_dataset('/electrons/number_of_kpoints', data=[nkpt])
+  fp.create_dataset('/electrons/number_of_spins', data=[nspin])
+  fp.create_dataset('/format', data=['ES-HDF'])
+
 def write_gvecs(fp, gvecs, kpath='/electrons/kpoint_0'):
   """ fill the electrons/kpoint_0/gvectors group in wf h5 file
 
