@@ -33,7 +33,7 @@ def volume(axes):
   Returns:
     float: volume of cell
   """
-  return abs(np.dot(axes[0], np.cross(axes[1], axes[2])))
+  return abs(np.linalg.det(axes))
 
 def rs(axes, natom):
   """ rs density parameter (!!!! axes MUST be in units of bohr)
@@ -56,11 +56,18 @@ def rins(axes):
   Returns:
     float: radius of the inscribed sphere
   """
-  a01 = np.cross(axes[0], axes[1])
-  a12 = np.cross(axes[1], axes[2])
-  a20 = np.cross(axes[2], axes[0])
-  face_areas = [np.linalg.norm(x) for x in [a01, a12, a20]]
-
+  ndim = len(axes)
+  if ndim == 3:
+    a01 = np.cross(axes[0], axes[1])
+    a12 = np.cross(axes[1], axes[2])
+    a20 = np.cross(axes[2], axes[0])
+    face_areas = [np.linalg.norm(x) for x in [a01, a12, a20]]
+    volpre = 2.*max(face_areas)
+  elif ndim == 2:
+    face_areas = abc(axes)
+  else:
+    msg = 'cannot calculate rins of ndim=%d' % ndim
+    raise RuntimeError(msg)
   # 2*rins is the height from face
   rins = volume(axes)/2./max(face_areas)
   return rins

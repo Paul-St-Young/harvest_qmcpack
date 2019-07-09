@@ -5,11 +5,10 @@
 import numpy as np
 from qharv.seed import xml
 
-
 def lattice_vectors(fname):
   """ extract lattice vectors from QMCPACK input
   similar to ase.Atoms.get_cell()
-  
+
   Args:
     fname (str): xml input filename
   Return:
@@ -19,22 +18,32 @@ def lattice_vectors(fname):
   axes = xml.get_axes(doc)
   return axes
 
-
-def atomic_coords(fname,pset='ion0'):
+def atomic_coords(fname, pset='ion0'):
   """ extract atomic positions from QMCPACK input
   similar to ase.Atoms.get_positions()
-  
+
   Args:
     fname (str): xml input filename
   Return:
     np.array: axes
   """
   doc = xml.read(fname)
-  pos = xml.get_pos(doc,pset=pset)
+  pos = xml.get_pos(doc, pset=pset)
   return pos
 
+def set_default_atoms_styles(kwargs):
+  if not (('c' in kwargs) or ('color' in kwargs)):
+    kwargs['c'] = 'b'
+  if not ('alpha' in kwargs):
+    kwargs['alpha'] = 0.25
+  if not (('ls' in kwargs) or ('linestyle' in kwargs)):
+    kwargs['ls'] = ''
+  if not ('marker' in kwargs):
+    kwargs['marker'] = 'o'
+  if not (('ms' in kwargs) or ('markersize' in kwargs)):
+    kwargs['ms'] = 5
 
-def draw_atoms(ax,pos,**kwargs):
+def draw_atoms(ax, pos, **kwargs):
   """ draw atoms on ax
   see example in draw_crystal
 
@@ -45,31 +54,19 @@ def draw_atoms(ax,pos,**kwargs):
   Returns:
    list: a list of plt.Line3D
   """
-
-  # set default styles
-  if not ( ('c' in kwargs) or ('color' in kwargs) ):
-    kwargs['c'] = 'b'
-  if not ('alpha' in kwargs):
-    kwargs['alpha'] = 0.25
-  if not ( ('ls' in kwargs) or ('linestyle' in kwargs) ):
-    kwargs['ls'] = ''
-  if not ('marker' in kwargs):
-    kwargs['marker'] = 'o'
-  if not (('ms' in kwargs) or ('markersize' in kwargs)):
-    kwargs['ms'] = 5
-  dots  = ax.plot(pos[:,0],pos[:,1],pos[:,2],**kwargs)
-
+  set_default_atoms_styles(kwargs)
+  dots  = ax.plot(*pos.T, **kwargs)
   return dots
 
 def set_default_cell_styles(kwargs):
-  if not ( ('c' in kwargs) or ('color' in kwargs) ):
+  if not (('c' in kwargs) or ('color' in kwargs)):
     kwargs['c'] = 'gray'
   if not ('alpha' in kwargs):
     kwargs['alpha'] = 0.6
-  if not ( ('lw' in kwargs) or ('linewidth' in kwargs) ):
+  if not (('lw' in kwargs) or ('linewidth' in kwargs)):
     kwargs['lw'] = 2
 
-def draw_cell(ax,axes,corner=None,enclose=True,**kwargs):
+def draw_cell(ax, axes, corner=None, enclose=True, **kwargs):
   """ draw cell on ax
   see example in draw_crystal
 
@@ -90,7 +87,6 @@ def draw_cell(ax,axes,corner=None,enclose=True,**kwargs):
   cell = []
   if corner is None:
     corner = np.zeros(ndim)
-  # end if
 
   set_default_cell_styles(kwargs)
 
@@ -98,7 +94,7 @@ def draw_cell(ax,axes,corner=None,enclose=True,**kwargs):
   for iax in range(ndim):
     start = corner
     end   = start + axes[iax]
-    line = ax.plot(*zip(start,end),**kwargs)
+    line = ax.plot(*zip(start, end), **kwargs)
     cell.append(line)
 
   if enclose:
@@ -106,10 +102,10 @@ def draw_cell(ax,axes,corner=None,enclose=True,**kwargs):
     for iax in range(ndim):
       start = corner+axes.sum(axis=0)
       end   = start - axes[iax]
-      line = ax.plot(*zip(start,end),**kwargs)
+      line = ax.plot(*zip(start, end), **kwargs)
       cell.append(line)
-    
-    if ndim >2:
+
+    if ndim > 2:
       # remaining vectors needed to enclose cell
       for iax in range(ndim):
         start = corner+axes[iax]
@@ -117,70 +113,17 @@ def draw_cell(ax,axes,corner=None,enclose=True,**kwargs):
           if jax == iax:
             continue
           end = start + axes[jax]
-          line = ax.plot(*zip(start,end),**kwargs)
+          line = ax.plot(*zip(start, end), **kwargs)
           cell.append(line)
   # end if enclose
-
   return cell
-
-def draw_crystal(ax,axes,pos,draw_super=False):
-  """ draw crystal structure on ax
-
-  Example:
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from mpl_toolkits.mplot3d import Axes3D
-
-    axes = np.eye(3)
-    pos  = np.array([ [0.5,0.5,0.5] ])
-
-    fig = plt.figure()
-    ax  = fig.add_subplot(1,1,1,projection='3d')
-    draw_crystal(ax,axes,pos)
-    plt.show()
-
-  Args:
-   ax (plt.Axes): matplotlib Axes object, must have projection='3d'
-   axes (np.array): lattice vectors in row-major 3x3 array
-   pos (np.array): array of atomic positions
-   draw_super (bool): draw 2x2x2 supercell
-  Returns:
-   list,list: (cell, atoms) cell is a list of plt.Line3D for the cell, 
-   atoms is a list of plt.Line3D for the atoms.
-  """
-  # draw primitive cell
-  cell = draw_cell (ax, axes)
-  dots = draw_atoms(ax, pos)
-  atoms = [dots]
-
-  if draw_super: # draw supercell
-    nx = ny = nz = 2 # !!!! hard-code 2x2x2 supercell
-    import numpy as np
-    from itertools import product
-    for ix,iy,iz in product(range(nx),range(ny),range(nz)):
-      if ix==iy==iz==0:
-        continue
-      # end if
-      #shift = (np.array([ix,iy,iz])*axes).sum(axis=0)
-      shift = ix*axes[0] + iy*axes[1] + iz*axes[2]
-      spos  = (shift.reshape(-1,1,3) + pos).reshape(-1,3)
-      dots  = draw_atoms(ax,spos)
-      atoms.append(dots)
-    # end for
-  # end if
-  ax.set_xlabel('x')
-  ax.set_ylabel('y')
-  ax.set_zlabel('z')
-
-  return cell, atoms
-# end def
 
 def draw_wigner_seitz_cell(ax, axes, nsh=1, **kwargs):
   from scipy.spatial import Voronoi
   set_default_cell_styles(kwargs)
   # create Voronoi tessellation
   from qharv.inspect.axes_pos import cubic_pos
-  qvecs = cubic_pos(2*nsh+1)-nsh
+  qvecs = cubic_pos(2*nsh+1, ndim=len(axes))-nsh
   dots = np.dot(qvecs, axes)
   vor = Voronoi(dots)
   verts = vor.vertices  # vertices (basis for the rest)
@@ -220,7 +163,58 @@ def draw_wigner_seitz_cell(ax, axes, nsh=1, **kwargs):
     if -1 in rvert:
       continue
     pts = verts[rvert]
-    x, y, z = pts.T
-    line = ax.plot(x, y, z, **kwargs)
+    line = ax.plot(*pts.T, **kwargs)
     lines.append(line)
   return lines
+
+# ======================== composition =========================
+def draw_crystal(ax, axes, pos, draw_super=False):
+  """ draw crystal structure on ax
+
+  Example:
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
+
+    axes = np.eye(3)
+    pos  = np.array([ [0.5,0.5,0.5] ])
+
+    fig = plt.figure()
+    ax  = fig.add_subplot(1,1,1,projection='3d')
+    draw_crystal(ax,axes,pos)
+    plt.show()
+
+  Args:
+   ax (plt.Axes): matplotlib Axes object, must have projection='3d'
+   axes (np.array): lattice vectors in row-major 3x3 array
+   pos (np.array): array of atomic positions
+   draw_super (bool): draw 2x2x2 supercell
+  Returns:
+   list,list: (cell, atoms) cell is a list of plt.Line3D for the cell,
+   atoms is a list of plt.Line3D for the atoms.
+  """
+  # draw primitive cell
+  cell = draw_cell(ax, axes)
+  dots = draw_atoms(ax, pos)
+  atoms = [dots]
+
+  if draw_super:  # draw supercell
+    nx = ny = nz = 2  # !!!! hard-code 2x2x2 supercell
+    import numpy as np
+    from itertools import product
+    for ix, iy, iz in product(range(nx), range(ny), range(nz)):
+      if ix == iy == iz == 0:
+        continue
+      # end if
+      #shift = (np.array([ix,iy,iz])*axes).sum(axis=0)
+      shift = ix*axes[0] + iy*axes[1] + iz*axes[2]
+      spos  = (shift.reshape(-1, 1, 3) + pos).reshape(-1, 3)
+      dots  = draw_atoms(ax, spos)
+      atoms.append(dots)
+    # end for
+  # end if
+  ax.set_xlabel('x')
+  ax.set_ylabel('y')
+  ax.set_zlabel('z')
+
+  return cell, atoms
