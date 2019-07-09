@@ -320,6 +320,24 @@ def get_orbs(fp, orbs, truncate=False, tol=1e-8):
 
 # ====== level 4: write wf h5 file from scratch ======
 
+def write_gvecs(fp, gvecs, kpath='/electrons/kpoint_0'):
+  """ fill the electrons/kpoint_0/gvectors group in wf h5 file
+
+  Args:
+    fp (h5py.File): hdf5 file object
+    gvecs (np.array): PW basis as integer vectors
+    kpath (str, optional): kpoint group to contain gvecs, default is
+     '/electrons/kpoint_0'
+
+  Example:
+    >>> fp = h5py.File('pwscf.pwscf.h5', 'w')
+    >>> write_gvecs(fp, gvecs)
+    >>> fp.close()
+  """
+  fp.require_group(kpath)
+  kgrp = fp[kpath]
+  kgrp.create_dataset('gvectors', data=gvecs)
+
 def write_kpoint(kgrp, ikpt, utvec, evals, cmats):
   """ fill the electrons/kpoint_$ikpt group in wf h5 file
 
@@ -334,7 +352,7 @@ def write_kpoint(kgrp, ikpt, utvec, evals, cmats):
 
   Example:
     >>> fp = h5py.File('pwscf.pwscf.h5', 'w')
-    >>> kgrp = fp.create_group('/electrons/kpoint_0')
+    >>> kgrp = fp.require_group('/electrons/kpoint_0')
     >>> evals = [ np.array([0]) ]  # 1 spin, 1 state
     >>> cmats = [ np.array([[0]], dtype=complex) ]
     >>> write_kpoint(kgrp, 0, [0, 0, 0], evals, cmats)
@@ -401,4 +419,63 @@ def write_wf(egrp, utvecs, gvecs, evalsl, cmatsl):
   kgrp0.create_dataset('gvectors', data=gvecs)
   kgrp0.create_dataset('number_of_gvectors', data=[len(gvecs)])
 
+def write_supercell(fp, axes):
+  """ create and fill the /supercell group
+
+  Args:
+    fp (h5py.File): hdf5 file object
+    axes (np.array): lattice vectors in Bohr
+  """
+  fp.create_dataset('supercell/primitive_vectors', data=axes)
+
+def write_atoms(fp, elem, pos, pseudized_charge):
+  """ create and fill the /atoms group
+  !!!! QMCPACK does NOT check valence_charge, pseudized_charge matters?
+
+  Args:
+    fp (h5py.File): hdf5 file object
+    elem (np.array): array of atom names
+    pos (np.array): array of atomic coordinates in Bohr
+    pseudized_charge (dict): number of pseudized electrons for each species
+  Return:
+    list: species_id, a list of atomic numbers for each atom
+  Effect:
+    fill /atoms group in 'fp'
+  Example:
+    >>> fp = h5py.File('pwscf.pwscf.h5', 'a')
+    >>> wf_h5.write_atoms(fp, ['Li'],
+    >>>                   np.array([[0, 0, 0]]),
+    >>>                   pseudized_charge={'Li': 2})
+    >>> fp.close()
+  """
+  fp.create_dataset('atoms/number_of_atoms', data=[len(elem)])
+  fp.create_dataset('atoms/positions', data=pos)
+  # write species info
+  species  = np.unique(elem)
+  fp.create_dataset('atoms/number_of_species', data=[len(species)])
+  atomic_number = {'H': 1, 'Li': 3, 'C': 6}
+  number_of_electrons = {}
+  species_map = {}
+  for ispec, name in enumerate(species):
+    species_map[name] = ispec
+    spec_grp = fp.create_group('atoms/species_%d' % ispec)
+    # write name
+    if name not in species_map.keys():
+      raise NotImplementedError('unknown element %s' % name)
+    spec_grp.create_dataset('name', data=[name])
+    # write atomic number and valence
+    Zn   = atomic_number[name]
+    spec_grp.create_dataset('atomic_number', data=[Zn])
+    Zps  = Zn
+    if pseudized_charge is None:  # no pseudopotential, use bare charge
+      pass
+    else:
+      Zps -= pseudized_charge[name]
+    number_of_electrons[name] = Zps
+    spec_grp.create_dataset('valence_charge', data=[Zps])
+  # end for ispec
+  species_ids = [species_map[name] for name in elem]
+  fp.create_dataset('atoms/species_ids', data=species_ids)
+  nelec_list = [number_of_electrons[name] for name in elem]
+  return nelec_list  # return the number of valence electrons for each atom
 # =======================================================================
