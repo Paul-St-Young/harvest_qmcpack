@@ -329,7 +329,7 @@ def write_misc(fp, nup_ndn, nkpt):
     nkpt (int): number of kpoints/twists
   """
   nup, ndn = nup_ndn
-  nspin = nup-ndn
+  nspin = 1  # !!!! hard-code restricted orbitals
   fp.require_group('/electrons')
   fp.create_dataset('/electrons/number_of_electrons', data=[nup, ndn])
   fp.create_dataset('/electrons/number_of_kpoints', data=[nkpt])
