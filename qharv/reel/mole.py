@@ -4,7 +4,7 @@
 import subprocess as sp
 
 
-def files_with_regex(regex, rundir, case=True, ftype='f'):
+def files_with_regex(regex, rundir, case=True, ftype='f', **kwargs):
   """ find files with the given suffix in folder rundir
   rely on bash `find` command
 
@@ -20,7 +20,11 @@ def files_with_regex(regex, rundir, case=True, ftype='f'):
   popt = '-path'
   if not case:
     popt = '-ipath'  # not case sensitive
-  out = sp.check_output(['find', rundir, popt, regex, '-type', ftype])
+  options = []
+  for key, val in kwargs.items():
+    options.append('-'+key)
+    options.append(str(val))
+  out = sp.check_output(['find', rundir] + options + [popt, regex, '-type', ftype])
   flist = out.decode().split('\n')[:-1]
   return flist
 
