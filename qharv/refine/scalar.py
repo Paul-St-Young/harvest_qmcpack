@@ -16,6 +16,9 @@ def text_mean_error(ym, ye):
   """
   # find the number of digits to print
   ndig = np.ceil(-np.log10(ye)).astype(int)  # last digit is uncertain
+  #  in case no floating point part (use scientific notation pls)
+  sel = ndig < 0
+  ndig[sel] = 0
   # print the desired number of digits
   ymt = []
   for (y, n) in zip(ym, ndig):
