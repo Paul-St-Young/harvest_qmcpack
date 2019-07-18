@@ -142,6 +142,24 @@ def cubic_pos(nx, ndim=3):
   ).reshape(-1, ndim)
   return pos
 
+def get_nvecs(axes, pos):
+  """ find integer vectors of lattice positions from unit cell
+
+  Args:
+    axes (np.array): lattice vectors in row-major
+    pos (np.array): lattice sites
+  Return:
+    np.array: nvecs, integer vectors that label the lattice sites
+  Example:
+    >>> nvecs = get_nvecs(axes, pos)
+  """
+  ncands = np.dot(pos, np.linalg.inv(axes))  # candidates
+  nvecs = np.around(ncands).astype(int)  # convert to integer
+  success = np.allclose(np.dot(nvecs, axes), pos)  # check
+  if not success:
+    raise RuntimeError('problem in get_nvecs')
+  return nvecs
+
 def auto_distance_table(axes, pos, dn=1):
   """ calculate distance table of a set of particles among themselves
   keep this function simple! use this to test distance_table(axes,pos1,pos2)

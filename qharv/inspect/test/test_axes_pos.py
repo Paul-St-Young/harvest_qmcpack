@@ -148,3 +148,11 @@ def test_rwsc2d():
     [0.5]
   ):
     assert np.isclose(axes_pos.rwsc(axes), r0, atol=1e-6)
+
+def test_get_nvecs():
+  mx = 3
+  axes = axes0
+  nvecs0 = axes_pos.cubic_pos(mx)
+  pos = np.dot(nvecs0, axes)
+  nvecs = axes_pos.get_nvecs(axes, pos)
+  assert np.allclose(nvecs, nvecs0)
