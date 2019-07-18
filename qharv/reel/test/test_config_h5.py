@@ -9,6 +9,6 @@ def test_saveh5():
 
   config_h5.saveh5('mat.h5', mat, name='mat')
   fp = h5py.File('mat.h5', 'r')
-  mat1 = fp['mat'].value
+  mat1 = fp['mat'][()]
   fp.close()
   assert np.allclose(mat, mat1)
