@@ -41,9 +41,13 @@ def mean_error_text(texts):
   """
   def met(t):
     ymt, yet = t.split('(')
+    if '.' in ymt:
+      ndig = len(ymt.split('.')[1])
+    else:
+      ndig = 0
     ym = float(ymt.replace(' ', ''))
     ye = float(yet.replace(')', ''))
-    return ym, ye
+    return ym, ye*10**(-ndig)
   return np.vectorize(met)(texts)
 
 def text_df(df, obsl):
