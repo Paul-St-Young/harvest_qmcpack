@@ -35,6 +35,14 @@ def skip_exist_file(write_file):
       print('%s exists' % fout)
   return wrapper
 
+def cache(write_file):
+  def wrapper(fout, *args, **kwargs):
+    cache_dir = os.path.dirname(fout)
+    if cache_dir != '':
+      mkdir(cache_dir)
+    return skip_exist_file(write_file)(fout, *args, **kwargs)
+  return wrapper
+
 def show_h5progress(collect_h5file):
   def wrapper(h5file, flist, *args, **kwargs):
     from progressbar import ProgressBar
