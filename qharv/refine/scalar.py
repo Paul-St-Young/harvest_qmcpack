@@ -89,7 +89,7 @@ def text_df_obs_exobs(df, obsl, exobsl):
     tdf[col] = df[col].values
   return tdf
 
-@sugar.check_file_before
+@sugar.skip_exist_file
 def write_latex_table(table_tex, tdf, **kwargs):
   """ write LaTeX table using a chunk of database df
   will throw exception is table_tex already exists on disk
