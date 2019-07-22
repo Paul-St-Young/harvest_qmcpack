@@ -4,13 +4,11 @@
 import os
 import subprocess as sp
 
-
 def check_dir_before(mkdir):
   def wrapper(dirname):
     if not os.path.isdir(dirname):
       mkdir(dirname)
   return wrapper
-
 
 @check_dir_before
 def mkdir(x):
