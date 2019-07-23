@@ -88,7 +88,7 @@ def reblock_scalar_df(df,block_size,min_nblock=4):
   )
 
 
-def poly_extrap_to_x0(myx, myym, myye, order):
+def poly_extrap_to_x0(myx, myym, myye, order, return_fit=False):
   """ fit 1D data to 1D polynomial and extrpolate to x=0
 
   The fit proceeds in two steps. The first polyfit does not take error into
@@ -101,6 +101,7 @@ def poly_extrap_to_x0(myx, myym, myye, order):
     myym (np.array): y values
     myye (np.array): y errors (1 sigma)
     order (int): order of 1D polynomial
+    return_fit (bool, optional): if true, then return fit paramters
   Return:
     2-tuple: floats (y0m, y0e), y mean and error at x=0
   """
@@ -134,7 +135,10 @@ def poly_extrap_to_x0(myx, myym, myye, order):
 
   y0m = popt[0]
   y0e = perr[0]
-  return y0m, y0e
+  ret = (y0m, y0e)
+  if return_fit:
+    ret = (y0m, y0e, popt, pcov)
+  return ret
 
 
 def ts_extrap_obs(calc_df, sel, tname, obs, order=1):
