@@ -25,13 +25,13 @@ dark8 = [  # Colors from www.ColorBrewer.org by Cynthia A. Brewer, Geography, Pe
   '#666666'
 ]
 errorbar_style = {
-  'cyq':{
-    'linestyle':'none',         # do 1 thing
-    'markersize':3.5,           # readable
-    'markeredgecolor':'black',  # accentuate
-    'markeredgewidth':0.3,
-    'capsize':4,
-    'elinewidth':0.5
+  'cyq': {
+    'linestyle': 'none',         # do 1 thing
+    'markersize': 3.5,           # readable
+    'markeredgecolor': 'black',  # accentuate
+    'markeredgewidth': 0.3,
+    'capsize': 4,
+    'elinewidth': 0.5
    }
 }
 
@@ -118,8 +118,8 @@ def set_xy_format(ax, xfmt='%3.2f', yfmt='%3.2f'):
     xfmt (int,optional): xtick format, default is '%3.2f'
     yfmt (int,optional): ytick format, default is '%3.2f'
   """
-  ax.get_xaxis().set_major_formatter( FormatStrFormatter(xfmt) )
-  ax.get_yaxis().set_major_formatter( FormatStrFormatter(yfmt) )
+  ax.get_xaxis().set_major_formatter(FormatStrFormatter(xfmt))
+  ax.get_yaxis().set_major_formatter(FormatStrFormatter(yfmt))
 
 def set_tick_font(ax, xsize=14, ysize=14,
   xweight='bold', yweight='bold', **kwargs):
@@ -134,9 +134,9 @@ def set_tick_font(ax, xsize=14, ysize=14,
     kwargs (dict): other tick-related properties
   """
   plt.setp(ax.get_xticklabels(), fontsize=xsize,
-    fontweight=xweight,**kwargs)
+    fontweight=xweight, **kwargs)
   plt.setp(ax.get_yticklabels(), fontsize=ysize,
-    fontweight=yweight,**kwargs)
+    fontweight=yweight, **kwargs)
 
 def set_label_font(ax, xsize=14, ysize=14,
   xweight='bold', yweight='bold', **kwargs):
@@ -151,9 +151,9 @@ def set_label_font(ax, xsize=14, ysize=14,
     kwargs (dict): other label-related properties
   """
   plt.setp(ax.xaxis.label, fontsize=xsize,
-    fontweight=xweight,**kwargs)
+    fontweight=xweight, **kwargs)
   plt.setp(ax.yaxis.label, fontsize=ysize,
-    fontweight=yweight,**kwargs)
+    fontweight=yweight, **kwargs)
 
 def xtop(ax):
   """ move xaxis label and ticks to the top
@@ -179,7 +179,7 @@ def yright(ax):
 def set_legend_marker_size(leg, ms=10):
   handl = leg.legendHandles
   msl   = [ms]*len(handl)  # override marker sizes here
-  for hand,ms in zip(handl, msl):
+  for hand, ms in zip(handl, msl):
     hand._legmarker.set_markersize(ms)
 
 def create_legend(ax, styles, labels, **kwargs):
