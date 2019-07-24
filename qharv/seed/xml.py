@@ -255,6 +255,9 @@ def get_pos(doc, pset='ion0', all_pos=True, group=None):
   else:
     for grp in groups:
       pos_node  = grp.find('.//attrib[@name="position"]')
+      if pos_node is None:  # look in parent (old-style input)
+        pset_node = grp.getparent()
+        pos_node = pset_node.find('.//attrib[@name="position"]')
       pos_text += pos_node.text.strip('\n')+'\n'
     # end for
   # end if
