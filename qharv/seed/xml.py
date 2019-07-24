@@ -23,7 +23,6 @@ def read(fname):
   doc    = etree.parse(fname, parser)
   return doc
 
-
 def write(fname, doc):
   """ write an xml file
   wrap around lxml.etree._ElementTree.write
@@ -35,7 +34,6 @@ def write(fname, doc):
     write fname using contents of doc
   """
   doc.write(fname, pretty_print=True)
-
 
 def parse(text):
   """ parse the text representation of an xml node
@@ -53,7 +51,6 @@ def parse(text):
   root = read(node).getroot()
   return root
 
-
 def str_rep(node):
   """ return the string representation of an xml node
 
@@ -64,10 +61,8 @@ def str_rep(node):
   """
   return etree.tostring(node, pretty_print=True)
 
-
 def show(node):
   print(str_rep(node))
-
 
 def ls(node, r=False, level=0, indent="  "):
   """ List directory structure
@@ -86,10 +81,11 @@ def ls(node, r=False, level=0, indent="  "):
   children = node.getchildren()
   if len(children) > 0:
     for child in children:
-      if type(child) is not etree._Element: continue
+      if type(child) is not etree._Element:
+        continue
       mystr += indent*level + child.tag + '\n'
       if r:
-        mystr += ls(child,r=r,level=level+1,indent=indent)
+        mystr += ls(child, r=r, level=level+1, indent=indent)
   else:
     return ''
   return mystr
@@ -114,13 +110,12 @@ def arr2text(arr):
   """ format a numpy array into a text string """
   text = ''
   if len(arr.shape) == 1:  # vector
-      text = " ".join(arr.astype(str))
+    text = " ".join(arr.astype(str))
   elif len(arr.shape) == 2:  # matrix
-      mat  = [arr2text(line) for line in arr]
-      text = "\n" + "\n".join(mat) + "\n"
+    mat  = [arr2text(line) for line in arr]
+    text = "\n" + "\n".join(mat) + "\n"
   else:
-      raise RuntimeError('arr2text can only convert vector or matrix.')
-  # end if
+    raise RuntimeError('arr2text can only convert vector or matrix.')
   return text
 
 def text2arr(text, dtype=float, flatten=False):
@@ -136,14 +131,13 @@ def text2arr(text, dtype=float, flatten=False):
       myarr = text2arr(mytext)
       return myarr.flatten()
     else:
-      return np.array([line.split() for line in tlist],dtype=dtype)
+      return np.array([line.split() for line in tlist], dtype=dtype)
 
 def text2vec(text, dtype=float):
   """ convert a text string into a 1D numpy array """
   # unfold at the text level
   line = ' '.join(text.split('\n'))
   return np.array(line.split(), dtype=dtype)
-
 
 def swap_node(node0, node1):
   """ replace the node0 with node1
@@ -160,7 +154,6 @@ def swap_node(node0, node1):
   parent.remove(node0)
   parent.insert(idx, node1)
 
-
 # ================= level 2: QMCPACK specialized read =================
 def get_param(node, pname):
   """ retrieve the str representation of a parameter from:
@@ -174,7 +167,6 @@ def get_param(node, pname):
   """
   pnode = node.find('.//parameter[@name="%s"]' % pname)
   return pnode.text
-
 
 def set_param(node, pname, pval, new=False, pad=' '):
   """ set <parameter> with name 'pname' to 'pval'
@@ -193,17 +185,16 @@ def set_param(node, pname, pval, new=False, pad=' '):
   # 4 paths dependent on (pnode is None) and new
   if (pnode is None) and (not new):  # unintended input
     raise RuntimeError('<parameter name="%s"> not found in %s\n\
-      please set new=True' % (pname,node.tag))
+      please set new=True' % (pname, node.tag))
   elif (pnode is not None) and new:  # unintended input
     raise RuntimeError('<parameter name="%s"> found in %s\n\
-      please set new=False' % (pname,node.tag))
+      please set new=False' % (pname, node.tag))
   elif (pnode is None) and new:
-    pnode = etree.Element('parameter',{'name':pname})
+    pnode = etree.Element('parameter', {'name': pname})
     pnode.text = text
     node.append(pnode)
   else:
     pnode.text = text
-
 
 def get_axes(doc):
   sc_node = doc.find('.//simulationcell')
@@ -236,16 +227,16 @@ def get_pos(doc, pset='ion0', all_pos=True, group=None):
   if (group is None):  # no group give, requesting all particle positions?
     if (not all_pos):
       warn_msg = '%d groups found, please specify particle group from %s' % (
-        len(groups),str(names)
+        len(groups), str(names)
       )
       raise RuntimeError(warn_msg)
-    # end if
   else:  # group given, see if it is available
-    if (all_pos): raise RuntimeError('specified group will be over-written with all_pos! Please set all_pos=False.')
+    msg = 'specified group will be over-written with all_pos!\n'
+    msg += 'Please set all_pos=False.'
+    if (all_pos):
+      raise RuntimeError(msg)
     if (group not in names):
-      raise RuntimeError('no group with name "%s" in %s' % (group,str(names)))
-    # end if
-  # end if
+      raise RuntimeError('no group with name "%s" in %s' % (group, str(names)))
 
   pos_text = ''
   if not all_pos:  # get requested group positions
@@ -259,17 +250,12 @@ def get_pos(doc, pset='ion0', all_pos=True, group=None):
         pset_node = grp.getparent()
         pos_node = pset_node.find('.//attrib[@name="position"]')
       pos_text += pos_node.text.strip('\n')+'\n'
-    # end for
-  # end if
 
   # get requestsed particle positions
   pos = text2arr(pos_text.strip('\n'))
   return pos
 
-
 # ================= level 3: QMCPACK specialized construct =================
-
-
 def build_coeff(knots, **attribs):
   """ construct an <coefficients/>
 
@@ -292,10 +278,9 @@ def build_coeff(knots, **attribs):
     attribs['type'] = 'Array'
 
   # construct node
-  coeff_node = etree.Element('coefficients',attribs)
+  coeff_node = etree.Element('coefficients', attribs)
   coeff_node.text = ' ' + ' '.join(map(str, knots)) + ' '  # 1D arr2text
   return coeff_node
-# end def build_coeff
 
 def build_jr2(uuc, udc):
   uu_node = build_coeff(uuc, **{'id': 'uu'})
@@ -335,17 +320,15 @@ def build_jk2_iso(coeffs, kc):
   })
   corr_node.append(coeff_node)
 
-  jk_node = etree.Element('jastrow',{
-    'name':'Jk',
-    'type':'kSpace',
-    'source':'e'
+  jk_node = etree.Element('jastrow', {
+    'name': 'Jk',
+    'type': 'kSpace',
+    'source': 'e'
   })
   jk_node.append(corr_node)
   return jk_node
 
-
 # ================= level 4: QMCPACK specialized advanced =================
-
 def turn_off_jas_opt(wf_node):
   mywf = deepcopy(wf_node)
   all_jas = mywf.findall('.//jastrow')
@@ -353,7 +336,6 @@ def turn_off_jas_opt(wf_node):
     for coeff in jas.findall('.//coefficients'):
       coeff.set('optimize', 'no')
   return mywf
-
 
 def add_backflow(wf_node, bf_node):
   # make sure inputs are not scrambled
@@ -365,7 +347,7 @@ def add_backflow(wf_node, bf_node):
 
   # insert backflow block
   dset = mywf.find('.//determinantset')
-  dset.insert(0,bf_node)
+  dset.insert(0, bf_node)
 
   # use code path where <backflow> optimization still works
   bb = None  # find basis set builder
@@ -377,27 +359,29 @@ def add_backflow(wf_node, bf_node):
     bb = dset
   else:
     bb = spo
-  # end if
   assert bb.tag in ('sposet_builder', 'determinantset')
-  bb.set('use_old_spline','yes')
-  bb.set('precision','double')
-  bb.set('truncate','no')
+  bb.set('use_old_spline', 'yes')
+  bb.set('precision', 'double')
+  bb.set('truncate', 'no')
   return mywf
 
+def dset2spo(wf_node, det_map):
+  """ change <wavefunction> from old style, <basis> in <determinantset>,
+  to new style, <basis> in <sposet_builder>
 
-def dset2spo(wf_node,det_map):
-  """ change <wavefunction> from old style, <basis> in <determinantset>, to new style, <basis> in <sposet_builder>
   Args:
     wf_node (etree.Element): <wavefunction> node
-    det_map (dict): determinant name -> particle group name e.g. {'updet':'u','downdet':'d'}
+    det_map (dict): determinant name -> particle group name
+      e.g. {'updet':'u','downdet':'d'}
   Returns:
     None
   """
   # convert between sposet name and determinant id
-  d2sname = lambda x:'spo_'+det_map[x]
+  def d2sname(x):
+    return 'spo_'+det_map[x]
   # construct <sposet_builder> using nodes from <determinantset>
   dset = wf_node.find('.//determinantset')
-  bb = etree.Element('sposet_builder',dset.attrib)
+  bb = etree.Element('sposet_builder', dset.attrib)
 
   # add <basisset> to bb
   bb.append(dset.find('.//basisset'))
@@ -410,17 +394,15 @@ def dset2spo(wf_node,det_map):
     det_id = det.get('id')
     if det_id not in det_map.keys():
       raise RuntimeError('%s not in det_map' % det_id)
-    # end if
     spo_name = d2sname(det_id)
     s2dname[spo_name] = det_id
-    det.set('name',spo_name)
+    det.set('name', spo_name)
     det.attrib.pop('id')
     bb.append(det)
-  # end for det
 
   # replace <determinantset> with <sposet_builder>
   idx = wf_node.index(dset)
-  wf_node.insert(idx,bb)
+  wf_node.insert(idx, bb)
   wf_node.remove(dset)
 
   # rewrite <determinantset>
@@ -435,8 +417,6 @@ def dset2spo(wf_node,det_map):
       'sposet': spo_name
     })
     slater.append(det)
-  # end for spo_name
   dset.append(slater)
 
-  wf_node.insert(idx+1,dset)
-# end def dset2spo
+  wf_node.insert(idx+1, dset)
