@@ -117,9 +117,6 @@ def ud_electrons(nup, ndown):
 # ================== level 1: use existing input ===================
 def expand_twists(example_in_xml, twist_list, calc_dir, force=False):
   """ expand example input xml to all twists in twist_list
-  examples:
-    expand_twists('./vmc.in.xml',range(64),'.')
-    expand_twists('./ref/vmc.in.xml',[0,15,17],'./new')
 
   Naming convention of new inputs:
     [prefix].g001.twistnum_[itwist].in.xml
@@ -130,6 +127,9 @@ def expand_twists(example_in_xml, twist_list, calc_dir, force=False):
     calc_dir (str): folder to output new inputs
   Return:
     None
+  Examples:
+    >>> expand_twists('./vmc.in.xml',range(64),'.')
+    >>> expand_twists('./ref/vmc.in.xml',[0,15,17],'./new')
   """
   doc    = xml.read(example_in_xml)
   prefix = doc.find('.//project').get('id')
@@ -177,6 +177,7 @@ def bundle_twists(calc_dir, fregex='*twistnum_*.in.xml'):
 
 def disperse(ginp_loc, calc_dir, execute=False, overwrite=False):
   """ disperse inputs bundled up in a grouped input
+
   Args:
     ginp_loc (str): location of grouped input e.g. ../runs/dmc/qmc.in
     calc_dir (str): folder to output new inputs e.g. dmc1
