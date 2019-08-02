@@ -290,6 +290,33 @@ def show_spline(ax, line, spl_kws=dict(), nx=1024, **kwargs):
   line1 = ax.plot(finex, splev(finex, tck), c=color, **kwargs)
   return line1
 
+# ===================== level 2: insets ======================
+def inset_zoom(fig, ax_box, xlim, ylim, draw_func, xy_label=False):
+  """ show an inset that zooms into a given part of the figure
+
+  Args:
+    fig (plt.Figure): figure
+    ax_box (tuple): inset location and size (x0, y0, dx, dy) in figure ratio
+    xlim (tuple): (xmin, xmax)
+    ylim (tuple): (ymin, ymax)
+    draw_func (callable): draw_func(ax) should recreate the figure
+    xy_label (bool, optional): label inset axes, default is False
+  Return:
+    plt.Axes: inset axes
+  Example:
+    >>> ax1 = inset_zoom(fig, [0.15, 0.15, 0.3, 0.3], [0.1, 0.5], [-0.02, 0.01],
+    >>>                  lambda ax: ax.plot(x, y))
+    >>> ax.indicate_inset_zoom(axins)
+  """
+  ax1 = fig.add_axes(ax_box)
+  ax1.set_xlim(*xlim)
+  ax1.set_ylim(*ylim)
+  draw_func(ax1)
+  if not xy_label:
+    ax1.set_xticklabels('')
+    ax1.set_yticklabels('')
+  return ax1
+
 # ======================== composition =========================
 def pretty_up(ax):
   set_tick_font(ax)
