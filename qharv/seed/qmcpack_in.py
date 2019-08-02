@@ -8,8 +8,6 @@ from qharv.reel import mole
 from qharv.seed import xml, xml_examples
 
 # =============== level 0: build input from scratch ===============
-
-
 def assemble_project(nodel, name='qmc'):
   """ assemble QMCPACK input using a list of xml nodes
 
@@ -25,7 +23,6 @@ def assemble_project(nodel, name='qmc'):
     qsim.append(node)
   doc = etree.ElementTree(qsim)
   return doc
-
 
 def simulationcell_from_axes(axes, bconds='p p p', rckc=15.):
   """ construct the <simulationcell> xml element from axes
@@ -64,7 +61,6 @@ def simulationcell_from_axes(axes, bconds='p p p', rckc=15.):
   sc_node.append(lr_node)
   return sc_node
 
-
 def particle_group_from_pos(pos, name, **kwargs):
   """ construct a <group> in the <particleset> xml element
 
@@ -90,7 +86,6 @@ def particle_group_from_pos(pos, name, **kwargs):
   group.append(pos_attrib)
   return group
 
-
 def ud_electrons(nup, ndown):
   """ construct the <particleset name="e"> xml element for electrons
 
@@ -103,12 +98,12 @@ def ud_electrons(nup, ndown):
 
   epset = etree.Element('particleset', {'name': 'e', 'random': 'yes'})
 
-  up_group = etree.Element('group',{
+  up_group = etree.Element('group', {
     'name': 'u',
     'size': str(nup),
     'mass': '1.0'
   })
-  dn_group = etree.Element('group',{
+  dn_group = etree.Element('group', {
     'name': 'd',
     'size': str(ndown),
     'mass': '1.0'
@@ -119,10 +114,7 @@ def ud_electrons(nup, ndown):
 
   return epset
 
-
 # ================== level 1: use existing input ===================
-
-
 def expand_twists(example_in_xml, twist_list, calc_dir, force=False):
   """ expand example input xml to all twists in twist_list
   examples:
@@ -155,18 +147,12 @@ def expand_twists(example_in_xml, twist_list, calc_dir, force=False):
       gt     = gt,
       itwist = itwist
     )
-    floc = os.path.join(calc_dir,fname)
+    floc = os.path.join(calc_dir, fname)
 
     if not force:  # check if file exists
       if os.path.isfile(floc):
         raise RuntimeError('force to overwrite %s' % floc)
-    # end if
-
-    xml.write(floc,doc)
-  # end for itwist
-
-# end def expand_twists
-
+    xml.write(floc, doc)
 
 def bundle_twists(calc_dir, fregex='*twistnum_*.in.xml'):
   """ bundle all twist inputs
@@ -189,7 +175,7 @@ def bundle_twists(calc_dir, fregex='*twistnum_*.in.xml'):
   return text
 
 
-def disperse(ginp_loc,calc_dir,execute=False,overwrite=False):
+def disperse(ginp_loc, calc_dir, execute=False, overwrite=False):
   """ disperse inputs bundled up in a grouped input
   Args:
     ginp_loc (str): location of grouped input e.g. ../runs/dmc/qmc.in
@@ -204,7 +190,7 @@ def disperse(ginp_loc,calc_dir,execute=False,overwrite=False):
   path0 = os.path.dirname(ginp_loc)
   calc_dir0 = os.path.basename(path0)
   # path  is the folder to contain the dispersed inputs
-  path  = os.path.join(os.path.dirname(path0),calc_dir)
+  path  = os.path.join(os.path.dirname(path0), calc_dir)
   if execute:  # make folder if not there
     if not os.path.isdir(path):
       sp.check_call(['mkdir', path])
@@ -212,15 +198,15 @@ def disperse(ginp_loc,calc_dir,execute=False,overwrite=False):
   # for each input in grouped input file, add group text (gt) to project id
   #  if execute, write input in given folder
   flist = []
-  with open(ginp_loc,'r') as f:
+  with open(ginp_loc, 'r') as f:
     ig = 0
     for line in f:
       # construct source and target input paths
       infile = line.strip('\n')
-      floc0  = os.path.join(path0,infile)
+      floc0  = os.path.join(path0, infile)
       if not os.path.isfile(floc0):
         raise RuntimeError('%s not found' % floc0)
-      floc   = os.path.join(path,infile)
+      floc   = os.path.join(path, infile)
       if os.path.isfile(floc) and (not overwrite) and execute:
         raise RuntimeError('%s exists; delete or overwrite ' % floc)
       flist.append(floc)
@@ -230,17 +216,13 @@ def disperse(ginp_loc,calc_dir,execute=False,overwrite=False):
       doc = xml.read(floc0)
       pnode   = doc.find('.//project')
       prefix0 = pnode.get('id')
-      prefix  = '.'.join([prefix0,gt])
-      pnode.set('id',prefix)
+      prefix  = '.'.join([prefix0, gt])
+      pnode.set('id', prefix)
       if execute:
-        xml.write(floc,doc)
+        xml.write(floc, doc)
 
       ig += 1
-    # end for line
-  # end with open
   return flist
-# end def disperse
-
 
 def set_norb(doc, norb):
   """ occupy the lowest norb Kohn-Sham orbitals
@@ -263,7 +245,6 @@ def set_norb(doc, norb):
   detset = doc.find('.//determinantset')
   for det in detset.findall('.//determinant'):
     det.set('size', str(norb))
-
 
 def set_gc_occ(norbl, calc_dir, fregex_fmt='*twistnum_{itwist:d}.in.xml'):
   """ edit twist inputs in calc_dir according to occupation vector norbl
