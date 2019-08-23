@@ -286,8 +286,10 @@ def twist_average(df, name, weight_name=None, no_error=False):
   else:
     weights = df[weight_name].values
   if no_error:
+    wtot = weights.sum()
     ymean = name
-    aym = df[ymean].mean()
+    ym = df[ymean].values
+    aym = np.dot(ym, weights)/wtot
     return aym
   else:
     ymean = name + '_mean'
