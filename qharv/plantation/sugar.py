@@ -40,7 +40,7 @@ def show_h5progress(collect_h5file):
       bar.update(ifile)
   return wrapper
 
-def concat_return(show_progress=True):
+def concat_return(show_progress=True, fault_tolerant=False):
   """Show progress of concat reduce function"""
   def _concat_return(collect):
     """Concatenate the return value of a collect function on a file to a list
@@ -57,8 +57,15 @@ def concat_return(show_progress=True):
       ifile = 0
       data = []
       for ifile, floc in enumerate(flist):
-        result = collect(floc, *args, **kwargs)
-        data.append(result)
+        try:
+          result = collect(floc, *args, **kwargs)
+          data.append(result)
+        except Exception as err:
+          if fault_tolerant:
+            msg = str(err) + ' at:\n' floc
+            print(err)
+          else:
+            raise err
         if show_progress:
           bar.update(ifile)
       return data
