@@ -137,7 +137,9 @@ def expand_twists(example_in_xml, twist_list, calc_dir, force=False):
   fname_fmt = '{prefix:s}.{gt:s}.twistnum_{itwist:d}.in.xml'
   for itwist in twist_list:
     # change twist number
-    bb = doc.find('.//sposet_builder')
+    bb = doc.find('.//sposet_builder[@type="bspline"]')
+    if bb is None:  # assume old-style input
+      bb = doc.find('.//determinantset[@type="bspline"]')
     bb.set('twistnum', str(itwist))
 
     # construct file name
