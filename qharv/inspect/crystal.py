@@ -58,6 +58,22 @@ def draw_atoms(ax, pos, **kwargs):
   dots  = ax.plot(*pos.T, **kwargs)
   return dots
 
+def draw_forces(ax, pos, vel, **kwargs):
+  """ draw forces on atoms
+
+  Args:
+   ax (plt.Axes): matplotlib Axes object, must have projection='3d'
+   pos (np.array): array of atomic positions
+   vel (np.array): array of forces on each atom (or velocities)
+   kwargs (dict,optional): keyword arguments passed to plt.plot
+  Returns:
+   list: a list of plt.Line3D
+  """
+  x, y, z = zip(*pos)
+  vx, vy, vz = zip(*vel)
+  qvs = ax.quiver(x, y, z, vx, vy, vz, **kwargs)
+  return qvs
+
 def set_default_cell_styles(kwargs):
   if not (('c' in kwargs) or ('color' in kwargs)):
     kwargs['c'] = 'gray'
