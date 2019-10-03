@@ -105,9 +105,9 @@ def figaxad():
   gs = GridSpec(4, 4)
   fig = plt.figure()
   axa = fig.add_subplot(gs[0:3, :])
-  axd = fig.add_subplot(gs[3, :])
+  axd = fig.add_subplot(gs[3, :], sharex=axa)
+  plt.setp(axa.get_xticklabels(), visible=False)
   fig.subplots_adjust(hspace=0)
-  axa.set_xticks([])
   return fig, axa, axd
 
 def set_xy_format(ax, xfmt='%3.2f', yfmt='%3.2f'):
@@ -257,8 +257,11 @@ def show_fit(ax, line, model, sel=None, nx=64, xmin=None, xmax=None, **kwargs):
     xmin = myx1.min()
   if xmax is None:
     xmax = myx1.max()
-  line1 = ax.plot(myx[sel], myy[sel], ls='',
-    c=line.get_color(), marker='o', fillstyle='none')
+  styles = get_style(line)
+  styles['ls'] = ''
+  styles['marker'] = 'o'
+  styles['fillstyle'] = 'none'
+  line1 = ax.plot(myx[sel], myy[sel], **styles)
   # perform fit
   popt, pcov = curve_fit(model, myx1, myy1)
   perr = np.sqrt(np.diag(pcov))
@@ -313,8 +316,8 @@ def inset_zoom(fig, ax_box, xlim, ylim, draw_func, xy_label=False):
   ax1.set_ylim(*ylim)
   draw_func(ax1)
   if not xy_label:
-    ax1.set_xticklabels('')
-    ax1.set_yticklabels('')
+    ax1.set_xticks([])
+    ax1.set_yticks([])
   return ax1
 
 # ======================== composition =========================
