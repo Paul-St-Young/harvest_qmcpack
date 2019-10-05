@@ -167,7 +167,7 @@ def bundle_twists(calc_dir, fregex='*twistnum_*.in.xml'):
   Return:
     str: bundled input text
   """
-  flist = mole.files_with_regex(fregex, calc_dir)
+  flist = mole.files_with_regex(fregex, calc_dir, maxdepth=1)
   flist.sort()
 
   text = ''
