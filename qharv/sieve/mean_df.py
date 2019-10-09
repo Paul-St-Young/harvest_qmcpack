@@ -7,7 +7,7 @@
 import numpy as np
 import pandas as pd
 
-def xyye(df, xname, yname, sel=None, xerr=False, yerr=True):
+def xyye(df, xname, yname, sel=None, xerr=False, yerr=True, sort=False):
   """Get x vs. y data from a mean data frame.
 
   Args:
@@ -17,6 +17,7 @@ def xyye(df, xname, yname, sel=None, xerr=False, yerr=True):
     sel (np.array, optional): boolean selector for subset, default is all
     xerr (bool, optional): x variable has statistical error, default False
     yerr (bool, optional): y variable has statistical error, default True
+    sort (bool, optional): sort x
   Return:
     (x, ym, ye) OR (xm, xe, ym, ye) if xerr=True
   Examples:
@@ -42,7 +43,10 @@ def xyye(df, xname, yname, sel=None, xerr=False, yerr=True):
   else:
     ym = df.loc[sel, yname].values
   rets = (xm, xe, ym, ye)
-  return [ret for ret in rets if ret is not None]
+  idx = np.arange(len(xm))
+  if sort:
+    idx = np.argsort(xm)
+  return [ret[idx] for ret in rets if ret is not None]
 
 def twist_average_mean_df(df0,drop_null=False):
   ''' average scalar quantities over a set of calculations. The intented application is to average over a uniform grid of twist calculations.
