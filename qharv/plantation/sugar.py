@@ -17,7 +17,7 @@ def mkdir(x):
 def skip_exist_file(write_file):
   def wrapper(fout, *args, **kwargs):
     if not os.path.isfile(fout):
-      write_file(fout, *args, **kwargs)
+      return write_file(fout, *args, **kwargs)
     else:
       print('%s exists' % fout)
   return wrapper
