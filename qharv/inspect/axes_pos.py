@@ -142,7 +142,7 @@ def cubic_pos(nx, ndim=3):
   ).reshape(-1, ndim)
   return pos
 
-def get_nvecs(axes, pos):
+def get_nvecs(axes, pos, atol=1e-10):
   """ find integer vectors of lattice positions from unit cell
 
   Args:
@@ -155,7 +155,7 @@ def get_nvecs(axes, pos):
   """
   ncands = np.dot(pos, np.linalg.inv(axes))  # candidates
   nvecs = np.around(ncands).astype(int)  # convert to integer
-  success = np.allclose(np.dot(nvecs, axes), pos)  # check
+  success = np.allclose(np.dot(nvecs, axes), pos, atol=atol)  # check
   if not success:
     raise RuntimeError('problem in get_nvecs')
   return nvecs
