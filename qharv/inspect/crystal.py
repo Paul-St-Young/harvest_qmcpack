@@ -58,6 +58,29 @@ def draw_atoms(ax, pos, **kwargs):
   dots  = ax.plot(*pos.T, **kwargs)
   return dots
 
+def draw_dimers(ax, com, bonds, **kwargs):
+  """ draw dimers on ax
+
+  Args:
+   ax (plt.Axes): matplotlib Axes object, must have projection='3d'
+   com (np.array): center of mass of dimers
+   bonds (np.array): bond vectors of dimers
+   kwargs (dict,optional): keyword arguments passed to plt.plot
+  Returns:
+   tuple: 3 plot objects (monomer1, monomer2, bond)
+  """
+  set_default_atoms_styles(kwargs)
+  r1 = com - 0.5*bonds
+  kwargs['c'] = 'b'
+  dots1  = ax.plot(*r1.T, **kwargs)
+  r2 = com + 0.5*bonds
+  kwargs['c'] = 'r'
+  dots2  = ax.plot(*r2.T, **kwargs)
+  x, y, z = r1.T
+  vx, vy, vz = bonds.T
+  qv = ax.quiver(x, y, z, vx, vy, vz)
+  return dots1, dots2, qv
+
 def draw_forces(ax, pos, vel, **kwargs):
   """ draw forces on atoms
 
