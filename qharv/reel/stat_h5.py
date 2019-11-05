@@ -71,6 +71,34 @@ def mean_and_err(handle, obs_path, nequil, kappa=None):
   val_mean, val_err = me2d(edata)
   return val_mean, val_err
 
+def dsk_from_skall(fp, nequil, ska_name='skall', kappa=None):
+  """ extract fluctuating structure factor dS(k) from skall
+
+  Args:
+    fp (h5py.File): stat.h5 handle
+    nequil (int): equilibration length
+    ska_name (str, optional): name the "skall" estimator, default "skall"
+    kappa (float, optional): autocorrelation length, default is to calcaulte
+     on-the-fly
+  Return:
+    (np.array, np.array, np.array): (kvecs, dskm, dske), kvectors and S(k)
+    mean and error
+  """
+  # get data
+  kpt_path = '%s/kpoints/value' % ska_name
+  sk_path = '%s/rhok_e_e/value' % ska_name
+  rhoki_path = '%s/rhok_e_i/value' % ska_name
+  rhokr_path = '%s/rhok_e_r/value' % ska_name
+  kvecs = fp[kpt_path][()]
+  ska = fp[sk_path][()]
+  rkra = fp[rhokr_path][()]
+  rkia = fp[rhoki_path][()]
+  nblock, nk = ska.shape
+  assert len(kvecs) == nk
+  dska = ska[nequil:]-(rkra[nequil:]**2+rkia[nequil:]**2)
+  dskm, dske = me2d(dska)
+  return kvecs, dskm, dske
+
 def dsk_from_csk(fp, csk_name, nequil, kappa=None):
   """ extract fluctuating structure factor dS(k) from charged structure factor
 
