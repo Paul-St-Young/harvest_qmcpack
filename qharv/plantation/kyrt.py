@@ -113,8 +113,7 @@ def figaxad(labelsize=12):
   axd = fig.add_subplot(gs[3, :], sharex=axa)
   plt.setp(axa.get_xticklabels(), visible=False)
   axa.tick_params(axis='y', labelsize=labelsize)
-  axd.tick_params(axis='y', labelsize=labelsize)
-  axd.tick_params(axis='x', labelsize=labelsize)
+  axd.tick_params(labelsize=labelsize)
   fig.subplots_adjust(hspace=0)
   return fig, axa, axd
 
