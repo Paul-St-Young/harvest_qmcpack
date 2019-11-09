@@ -49,6 +49,29 @@ def xyye(df, xname, yname, sel=None, xerr=False, yerr=True, sort=False):
     idx = np.argsort(xm)
   return [ret[idx] for ret in rets if ret is not None]
 
+def dfme(df, labels, cols):
+  """ Average scalar quantities over a set of calculations.
+   This is a more intentional version of twist_average_mean_df, where
+    the user specifies the groups (labels) to average over and the
+    quantities to be averaged (cols). Only one assumption is made
+    about content of the dataframe (col_mean, col_error).
+
+  Args:
+    df (pd.DataFrame): a mean dataframe containing labels+col_mean+col_error
+    labels (list): a list of group names, e.g. ['rs', 'temperature']
+    cols (list): a list of column names, e.g. ['E_tot', 'KE_tot']
+  Return:
+    pd.DataFrame: averaged database
+  """
+  mcols = ['%s_mean' % col for col in cols]
+  ecols = ['%s_error' % col for col in cols]
+  def sqavg(x):
+    return np.sum(x**2)/len(x)
+  em = df.groupby(labels)[mcols].mean()
+  ee = df.groupby(labels)[ecols].apply(sqavg)
+  df1 = pd.concat([em, ee], axis=1)
+  return df1
+
 def twist_average_mean_df(df0, drop_null=False):
   ''' Average scalar quantities over a set of calculations. The intented
    application is to average over a uniform grid of twist calculations.
