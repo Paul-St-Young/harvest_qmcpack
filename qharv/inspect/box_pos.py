@@ -14,12 +14,11 @@ def pos_in_box(pos, box):
     np.array: particle positions under periodic bounary conditions.
   """
   ndim = pos.shape[-1]
-  try:  # take care of simple case first (lx=ly=lz)
+  try:
     ndim = len(box)  # except if box is float
-    assert len(box) == ndim
+  except TypeError as err:  # take care of simple case (lx=ly=lz)
     return pos % box
-  except TypeError as err:
-    pass  # general case
+  assert len(box) == ndim
   pos1 = pos.copy()
   for idim in range(ndim):
     pos1[:, idim] = pos1[:, idim] % box[idim]
@@ -35,13 +34,12 @@ def disp_in_box(drij, box):
     np.array: displacement vectors under MIC.
   """
   ndim = drij.shape[-1]
-  try:  # take care of simple case first (lx=ly=lz)
+  try:
     ndim = len(box)  # except if box is float
-    assert len(box) == ndim
+  except TypeError as err:  # take care of simple case (lx=ly=lz)
     nint = np.around(drij/box)
     return drij-box*nint
-  except TypeError as err:
-    pass  # general case
+  assert len(box) == ndim
   drij1 = drij.copy()
   for idim in range(ndim):
     nint = np.around(drij[:, :, idim]/box[idim])
