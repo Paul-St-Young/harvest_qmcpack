@@ -217,6 +217,37 @@ def displacement(axes, spos1, spos2, dn=1):
       min_disp = disp.copy()
   return min_disp
 
+def find_dimers(rij, rmax, rmin=0):
+  """ find all dimers within a separtion of (rmin, rmax)
+
+  Args:
+    rij  (np.array): distance table
+    rmax (float): maximum dimer separation
+    rmin (float,optional): minimum dimer separation
+  Return:
+    np.array: unique pairs, a list of (int, int) particle id pairs
+  """
+  natom = len(rij)
+  found = np.zeros(natom, dtype=bool)
+  idx = np.arange(natom)
+  mydiag = np.diag(rij)  # save diagonal values before overwrite
+  pairs = []
+  for iatom in range(natom):
+    if np.all(found):
+      break
+    # look for nearest neibhor, which is not already assigned
+    np.fill_diagonal(rij, np.inf)  # diagonal probably all zeros
+    j = np.argmin(rij[iatom, ~found])
+    jatom = idx[~found][j]
+    drij = rij[iatom, jatom]
+    if (rmin < drij) & (drij < rmax):
+      pair = [iatom, jatom] if (iatom < jatom) else [jatom, iatom]
+      found[iatom] = True
+      found[jatom] = True
+      pairs.append(pair)
+  np.fill_diagonal(rij, mydiag)  # restore diagonal values
+  return np.array(pairs)
+
 def dimer_pairs_and_dists(axes, pos, rmax, rmin=0):
   """ find all dimers within a separtion of (rmin,rmax)
 
