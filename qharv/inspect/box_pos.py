@@ -43,7 +43,7 @@ def disp_in_box(drij, box):
   drij1 = drij.copy()
   for idim in range(ndim):
     nint = np.around(drij[:, :, idim]/box[idim])
-    drij[:, :, idim] -= box[idim]*nint
+    drij1[:, :, idim] -= box[idim]*nint
   return drij1
 
 def displacement_table(pos, box):
