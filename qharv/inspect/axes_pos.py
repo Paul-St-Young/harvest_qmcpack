@@ -231,12 +231,14 @@ def find_dimers(rij, rmax, rmin=0):
   found = np.zeros(natom, dtype=bool)
   idx = np.arange(natom)
   mydiag = np.diag(rij)  # save diagonal values before overwrite
+  np.fill_diagonal(rij, np.inf)  # diagonal probably all zeros
   pairs = []
   for iatom in range(natom):
     if np.all(found):
       break
+    if found[iatom]:
+      continue
     # look for nearest neibhor, which is not already assigned
-    np.fill_diagonal(rij, np.inf)  # diagonal probably all zeros
     j = np.argmin(rij[iatom, ~found])
     jatom = idx[~found][j]
     drij = rij[iatom, jatom]
