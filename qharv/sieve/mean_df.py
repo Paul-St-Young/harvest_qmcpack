@@ -66,7 +66,7 @@ def dfme(df, labels, cols):
   mcols = ['%s_mean' % col for col in cols]
   ecols = ['%s_error' % col for col in cols]
   def sqavg(x):
-    return np.sum(x**2)/len(x)
+    return np.sum(x**2)**0.5/len(x)
   em = df.groupby(labels)[mcols].mean()
   ee = df.groupby(labels)[ecols].apply(sqavg)
   df1 = pd.concat([em, ee], axis=1)
