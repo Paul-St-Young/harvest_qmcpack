@@ -264,24 +264,3 @@ def mix_est_correction(mydf, vseries, dseries, names
   puredf = mydf.loc[msel].copy()
   puredf[mnames] = dym
   return puredf
-# end def
-
-def twist_average(df, name, weight_name=None, no_error=False):
-  """ twist average a named column of given data frame """
-  if weight_name is None:
-    weights = np.ones(len(df))
-  else:
-    weights = df[weight_name].values
-  if no_error:
-    wtot = weights.sum()
-    ymean = name
-    ym = df[ymean].values
-    aym = np.dot(ym, weights)/wtot
-    return aym
-  else:
-    ymean = name + '_mean'
-    yerror = name + '_error'
-    ym = df[ymean].values
-    ye = df[yerror].values
-    aym, aye = taw(ym, ye, weights)
-  return np.array([aym, aye])
