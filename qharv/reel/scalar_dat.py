@@ -20,15 +20,17 @@ def parse(text):
   import sys
   if sys.version_info[0] < 3:
     from StringIO import StringIO
+    fp = StringIO(text)
   else:
     from io import StringIO
-  lines = text.split('\n')
+    fp = StringIO(text.decode())
   # try to read header line
-  header = lines[0]
-  sep = r'\s+'
+  header = fp.readline()
+  fp.seek(0)
   # read data
+  sep = r'\s+'
   if header.startswith('#'):
-    df = pd.read_csv(StringIO(text), sep=sep)
+    df = pd.read_csv(fp, sep=sep)
     # remove first column name '#'
     columns = df.columns
     df.drop(columns[-1], axis=1, inplace=True)
@@ -37,7 +39,7 @@ def parse(text):
     if ('LocalEnergy' in columns) and ('LocalEnergy_sq' in columns):
       df['Variance'] = df['LocalEnergy_sq']-df['LocalEnergy']**2.
   else:
-    df = pd.read_csv(StringIO(text), sep=sep, header=None)
+    df = pd.read_csv(fp, sep=sep, header=None)
   # column labels should be strings
   df.columns = map(str, df.columns)
   return df
