@@ -55,11 +55,11 @@ def twist_average_h5(fh5, weights=None, **suffix_kwargs):
   yea = np.array(yel)
   # twist average with weights
   try:
-    ym = np.sum(weights[:, np.newaxis, np.newaxis]*yma, axis=0)/wtot
-    ye = np.sum(weights[:, np.newaxis, np.newaxis]**2*yea**2, axis=0)**0.5/wtot
-  except:
     ym = np.sum(weights[:, np.newaxis]*yma, axis=0)/wtot
     ye = np.sum(weights[:, np.newaxis]**2*yea**2, axis=0)**0.5/wtot
+  except:
+    ym = np.sum(weights[:, np.newaxis, np.newaxis]*yma, axis=0)/wtot
+    ye = np.sum(weights[:, np.newaxis, np.newaxis]**2*yea**2, axis=0)**0.5/wtot
   return meta, ym, ye
 
 def get_ymean_yerror(fp, twist0, msuffix='_mean', esuffix='_error'):
