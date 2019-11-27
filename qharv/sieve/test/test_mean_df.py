@@ -3,7 +3,7 @@ import pandas as pd
 
 def read_test_data():
   import os
-  path= os.path.dirname(os.path.relpath(__file__))
+  path = os.path.dirname(os.path.relpath(__file__))
   import tarfile
   from qharv.reel.scalar_dat import parse
   ftar = os.path.join(path, 'li61a_bfd-n54-t8s1-li38s1.tar.gz')
@@ -15,25 +15,25 @@ def read_test_data():
 
 def get_test_results():
   results = {  # label by series 0 (VMC), 1, 2, 3 (DMC)
-    0:{
+    0: {
       'LocalEnergy_mean': -13.845735734374998,
       'LocalEnergy_error': 0.0015776,
       'Variance_mean': 0.205234,
       'Variance_error': 0.002233,
     },
-    1:{
+    1: {
       'LocalEnergy_mean': -13.930791,
       'LocalEnergy_error': 0.000937,
       'Variance_mean': 0.238057,
       'Variance_error': 0.001881,
     },
-    2:{
+    2: {
       'LocalEnergy_mean': -13.916134,
       'LocalEnergy_error': 0.0007,
       'Variance_mean': 0.224522,
       'Variance_error': 0.000912,
     },
-    3:{
+    3: {
       'LocalEnergy_mean': -13.910996,
       'LocalEnergy_error': 0.000582,
       'Variance_mean': 0.218816,
