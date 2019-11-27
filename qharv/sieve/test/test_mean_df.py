@@ -42,6 +42,29 @@ def get_test_results():
   }
   return results
 
+def test_categorize_columns():
+  from qharv.sieve.mean_df import categorize_columns
+  df = read_test_data()
+  ret = categorize_columns(df)
+  # check exact columns
+  names = ret[0]
+  ref_names = ['series', 'group', 'nelec', 'weights', 'timestep', 'acc']
+  for name in ref_names:
+    assert name in names
+  # check mean and error columns
+  mcols = ret[1]
+  ecols = ret[2]
+  msuf = '_mean'
+  esuf = '_error'
+  ref_cols = ['LocalEnergy', 'Variance', 'Kinetic']
+  for mcol, ecol in zip(mcols, ecols):
+    assert msuf in mcol
+    assert esuf in ecol
+    col = mcol.replace(msuf, '')
+    col1 = ecol.replace(esuf, '')
+    assert col == col1
+    assert col in ref_cols
+
 def test_twist_average_with_weights():
   from qharv.sieve.mean_df import taw
   df = read_test_data()
