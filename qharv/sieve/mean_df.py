@@ -49,28 +49,40 @@ def xyye(df, xname, yname, sel=None, xerr=False, yerr=True, sort=False):
     idx = np.argsort(xm)
   return [ret[idx] for ret in rets if ret is not None]
 
-def dfme(df, labels, cols):
+def dfme(df, cols, no_error=False, weight_name=None):
   """ Average scalar quantities over a set of calculations.
-   This is a more intentional version of twist_average_mean_df, where
-    the user specifies the groups (labels) to average over and the
-    quantities to be averaged (cols). Only one assumption is made
-    about content of the dataframe (col_mean, col_error).
 
   Args:
     df (pd.DataFrame): a mean dataframe containing labels+col_mean+col_error
-    labels (list): a list of group names, e.g. ['rs', 'temperature']
     cols (list): a list of column names, e.g. ['E_tot', 'KE_tot']
+    weight_name (str, optional): name of weight column, default None, i.e.
+     every entry has the same weight
   Return:
     pd.DataFrame: averaged database
   """
-  mcols = ['%s_mean' % col for col in cols]
-  ecols = ['%s_error' % col for col in cols]
-  def sqavg(x):
-    return np.sum(x**2)**0.5/len(x)
-  em = df.groupby(labels)[mcols].mean()
-  ee = df.groupby(labels)[ecols].apply(sqavg)
-  df1 = pd.concat([em, ee], axis=1)
-  return df1
+  # goal: build pd.Series containing average
+  entry = {}
+  # extract weights
+  if weight_name is None:
+    wts = np.ones(len(df))
+  else:
+    wts = df[weight_name].values
+  # average with weights
+  if no_error:
+    mcols = cols
+    datm = df[cols].values
+    ym, ye_junk = taw(datm, datm, wts)
+  else:
+    mcols = ['%s_mean' % col for col in cols]
+    ecols = ['%s_error' % col for col in cols]
+    datm = df[mcols].values
+    date = df[ecols].values
+    ym, ye = taw(datm, date, wts)
+    for col, y1 in zip(ecols, ye):
+      entry[col] = y1
+  for col, y1 in zip(mcols, ym):
+    entry[col] = y1
+  return pd.Series(entry)
 
 def twist_average_mean_df(df0, drop_null=False):
   ''' Average scalar quantities over a set of calculations. The intented
