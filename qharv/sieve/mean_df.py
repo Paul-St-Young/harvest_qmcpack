@@ -118,3 +118,16 @@ def twist_average_mean_df(df0, drop_null=False):
 
   df1 = rdf.join(mdf).join(edf).reset_index().sort_values('series')
   return df1
+
+def taw(ym, ye, weights):
+  """ twist average with weights """
+  wtot = weights.sum()
+  try:
+    aym = np.dot(ym, weights)/wtot
+    aye = np.dot(ye**2, weights**2)**0.5/wtot
+  except ValueError as err:
+    if 'not aligned' not in str(err):
+      raise err
+    aym = (weights[:, np.newaxis]*ym).sum(axis=0)/wtot
+    aye = (weights[:, np.newaxis]**2*ye**2).sum(axis=0)**0.5/wtot
+  return aym, aye
