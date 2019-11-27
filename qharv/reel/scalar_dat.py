@@ -33,8 +33,13 @@ def parse(text):
     columns = df.columns
     df.drop(columns[-1], axis=1, inplace=True)
     df.columns = columns[1:]
+    # calculate local energy variance if possible (QMCPACK specific)
+    if ('LocalEnergy' in columns) and ('LocalEnergy_sq' in columns):
+      df['Variance'] = df['LocalEnergy_sq']-df['LocalEnergy']**2.
   else:
     df = pd.read_csv(StringIO(text), sep=sep, header=None)
+  # column labels should be strings
+  df.columns = map(str, df.columns)
   return df
 
 def read(dat_fname):
