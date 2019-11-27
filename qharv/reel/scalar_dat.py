@@ -5,20 +5,40 @@
 import numpy as np
 import pandas as pd
 
-def parse(dat_fname):
-  """ for backwards compatibility, please use read() instead!
+def parse(text):
+  """ Parse text of a scalar.dat file, should be table format.
 
-  for future reference: read() should read from a file on disk
-    parse() should parse text or another internal rep. in memory
+  Args:
+    text (str): content of scalar.dat file
+  Return:
+    pd.DataFrame: table data
+  Example:
+    >>> with open('vmc.s001.scalar.dat', 'r') as f:
+    >>>   text = f.read()
+    >>>   df = parse(text)
   """
-  try:
-    return read(dat_fname)
-  except IOError:
-    raise NotImplementedError('text parsing not yet implemented')
+  import sys
+  if sys.version_info[0] < 3:
+    from StringIO import StringIO
+  else:
+    from io import StringIO
+  lines = text.split('\n')
+  # try to read header line
+  header = lines[0]
+  sep = r'\s+'
+  # read data
+  if header.startswith('#'):
+    df = pd.read_csv(StringIO(text), sep=sep)
+    # remove first column name '#'
+    columns = df.columns
+    df.drop(columns[-1], axis=1, inplace=True)
+    df.columns = columns[1:]
+  else:
+    df = pd.read_csv(StringIO(text), sep=sep, header=None)
+  return df
 
 def read(dat_fname):
-  """ read the scalar.dat file, should be table format readable by numpy.loadtxt.
-
+  """ Read the scalar.dat file, should be table format.
    The header line should start with '#' and contain column labels.
 
   Args:
@@ -28,24 +48,9 @@ def read(dat_fname):
   Example:
     >>> df = read('vmc.s001.scalar.dat')
   """
-  # check if a header line exists, if it does not, then set header=None
-  with open(dat_fname, 'r') as fp:
-    header = fp.readline().strip()
-  if not header.startswith('#'):  # there is no header
-    # pandas's equivalent of numpy.loadtxt
-    df = pd.read_csv(dat_fname, sep='\s+', header=None)
-  else:  # do some extra parsing of the header
-    df = pd.read_csv(dat_fname, sep='\s+')
-    # remove first column name '#'
-    columns = df.columns
-    df.drop(columns[-1], axis=1, inplace=True)
-    df.columns = columns[1:]
-    # calculate local energy variance if possible
-    if ('LocalEnergy' in columns) and ('LocalEnergy_sq' in columns):
-      df['Variance'] = df['LocalEnergy_sq']-df['LocalEnergy']**2.
-  # column labels should be strings
-  df.columns = map(str, df.columns)
-  return df
+  with open(dat_fname, 'r') as f:
+    text = f.read()
+  return parse(text)
 
 def read_to_list(dat_fname):
   """ read scalar.dat file into a list of pandas DataFrames
@@ -62,7 +67,6 @@ def read_to_list(dat_fname):
     >>> df = pd.concat(dfl).reset_index(drop=True)
   """
   # first separate out the header lines and parse them
-  from StringIO import StringIO
   from qharv.reel import ascii_out
   mm = ascii_out.read(dat_fname)
   idxl = ascii_out.all_lines_with_tag(mm, '#')
@@ -79,7 +83,7 @@ def read_to_list(dat_fname):
   for bidx, eidx, header in zip(bidxl, idxl[1:], headerl):
     columns = header.replace('#', '').split()
     text1 = mm[bidx:eidx]
-    df1 = pd.read_csv(StringIO(text1), sep='\s+', header=None)
+    df1 = parse(text1)
     df1.columns = columns
     dfl.append(df1)
   return dfl
