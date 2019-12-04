@@ -248,7 +248,7 @@ def find_dimers(rij, rmax, rmin=0):
       found[jatom] = True
       pairs.append(pair)
   np.fill_diagonal(rij, mydiag)  # restore diagonal values
-  return np.array(pairs)
+  return np.array(pairs).reshape(-1, 2)
 
 def dimer_pairs_and_dists(axes, pos, rmax, rmin=0):
   """ find all dimers within a separtion of (rmin,rmax)
