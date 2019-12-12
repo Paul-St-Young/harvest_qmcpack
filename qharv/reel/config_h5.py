@@ -46,6 +46,10 @@ def save_vec(vec, h5file, slab, name):
     slab (tables.Group): HDF5 slab
     name (str): name of CArray to create
   """
+  try:
+    vec.dtype
+  except AttributeError as err:
+    vec = np.array([vec])
   atom = tables.Atom.from_dtype(vec.dtype)
   ca = h5file.create_carray(slab, name, atom, vec.shape)
   ca[:] = vec
