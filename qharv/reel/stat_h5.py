@@ -30,7 +30,7 @@ def me2d(edata, kappa=None, axis=0):
       raise ImportError('please compile qharv.reel.forlib')
       # from qharv.reel.scalar_dat import corr  # slow Python implementation
     kappa = np.apply_along_axis(corr, axis, edata)
-  neffective = len(edata)/kappa
+  neffective = edata.shape[axis]/kappa
   # calculate mean and error
   val_mean = edata.mean(axis=axis)
   val_std  = edata.std(ddof=1, axis=axis)
