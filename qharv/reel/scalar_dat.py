@@ -23,7 +23,10 @@ def parse(text):
     fp = StringIO(text)
   else:
     from io import StringIO
-    fp = StringIO(text.decode())
+    try:
+      fp = StringIO(text.decode())
+    except:
+      fp = StringIO(text)
   # try to read header line
   header = fp.readline()
   fp.seek(0)
