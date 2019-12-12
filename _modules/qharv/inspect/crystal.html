@@ -4,28 +4,21 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>qharv.inspect.crystal &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.0.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -53,11 +46,10 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">qharv.seed</span> <span class="k">import</span> <span class="n">xml</span>
 
-
 <div class="viewcode-block" id="lattice_vectors"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.lattice_vectors">[docs]</a><span class="k">def</span> <span class="nf">lattice_vectors</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; extract lattice vectors from QMCPACK input</span>
 <span class="sd">  similar to ase.Atoms.get_cell()</span>
-<span class="sd">  </span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    fname (str): xml input filename</span>
 <span class="sd">  Return:</span>
@@ -67,22 +59,32 @@
   <span class="n">axes</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">get_axes</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">axes</span></div>
 
-
-<div class="viewcode-block" id="atomic_coords"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.atomic_coords">[docs]</a><span class="k">def</span> <span class="nf">atomic_coords</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span><span class="n">pset</span><span class="o">=</span><span class="s1">&#39;ion0&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="atomic_coords"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.atomic_coords">[docs]</a><span class="k">def</span> <span class="nf">atomic_coords</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">pset</span><span class="o">=</span><span class="s1">&#39;ion0&#39;</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; extract atomic positions from QMCPACK input</span>
 <span class="sd">  similar to ase.Atoms.get_positions()</span>
-<span class="sd">  </span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    fname (str): xml input filename</span>
 <span class="sd">  Return:</span>
 <span class="sd">    np.array: axes</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">doc</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-  <span class="n">pos</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span><span class="n">pset</span><span class="o">=</span><span class="n">pset</span><span class="p">)</span>
+  <span class="n">pos</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">get_pos</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">pset</span><span class="o">=</span><span class="n">pset</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">pos</span></div>
 
+<div class="viewcode-block" id="set_default_atoms_styles"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.set_default_atoms_styles">[docs]</a><span class="k">def</span> <span class="nf">set_default_atoms_styles</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="s1">&#39;c&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;color&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)):</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;alpha&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.25</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="s1">&#39;ls&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;linestyle&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)):</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ls&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;marker&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;marker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="s1">&#39;ms&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;markersize&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)):</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span></div>
 
-<div class="viewcode-block" id="draw_atoms"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.draw_atoms">[docs]</a><span class="k">def</span> <span class="nf">draw_atoms</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">pos</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="draw_atoms"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.draw_atoms">[docs]</a><span class="k">def</span> <span class="nf">draw_atoms</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; draw atoms on ax</span>
 <span class="sd">  see example in draw_crystal</span>
 
@@ -93,23 +95,58 @@
 <span class="sd">  Returns:</span>
 <span class="sd">   list: a list of plt.Line3D</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-
-  <span class="c1"># set default styles</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;color&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="p">):</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;alpha&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.25</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span> <span class="p">(</span><span class="s1">&#39;ls&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;linestyle&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="p">):</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ls&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;marker&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;marker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="s1">&#39;ms&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;markersize&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)):</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
-  <span class="n">dots</span>  <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pos</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">pos</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">pos</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
+  <span class="n">set_default_atoms_styles</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="n">dots</span>  <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">pos</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">dots</span></div>
 
-<div class="viewcode-block" id="draw_cell"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.draw_cell">[docs]</a><span class="k">def</span> <span class="nf">draw_cell</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">axes</span><span class="p">,</span><span class="n">corner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">enclose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="draw_dimers"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.draw_dimers">[docs]</a><span class="k">def</span> <span class="nf">draw_dimers</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">com</span><span class="p">,</span> <span class="n">bonds</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; draw dimers on ax</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">   ax (plt.Axes): matplotlib Axes object, must have projection=&#39;3d&#39;</span>
+<span class="sd">   com (np.array): center of mass of dimers</span>
+<span class="sd">   bonds (np.array): bond vectors of dimers</span>
+<span class="sd">   kwargs (dict,optional): keyword arguments passed to plt.plot</span>
+<span class="sd">  Returns:</span>
+<span class="sd">   tuple: 3 plot objects (monomer1, monomer2, bond)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">set_default_atoms_styles</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="n">r1</span> <span class="o">=</span> <span class="n">com</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">bonds</span>
+  <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span>
+  <span class="n">dots1</span>  <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">r1</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="n">r2</span> <span class="o">=</span> <span class="n">com</span> <span class="o">+</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">bonds</span>
+  <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span>
+  <span class="n">dots2</span>  <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">r2</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">r1</span><span class="o">.</span><span class="n">T</span>
+  <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span> <span class="o">=</span> <span class="n">bonds</span><span class="o">.</span><span class="n">T</span>
+  <span class="n">qv</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">dots1</span><span class="p">,</span> <span class="n">dots2</span><span class="p">,</span> <span class="n">qv</span></div>
+
+<div class="viewcode-block" id="draw_forces"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.draw_forces">[docs]</a><span class="k">def</span> <span class="nf">draw_forces</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; draw forces on atoms</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">   ax (plt.Axes): matplotlib Axes object, must have projection=&#39;3d&#39;</span>
+<span class="sd">   pos (np.array): array of atomic positions</span>
+<span class="sd">   vel (np.array): array of forces on each atom (or velocities)</span>
+<span class="sd">   kwargs (dict,optional): keyword arguments passed to plt.plot</span>
+<span class="sd">  Returns:</span>
+<span class="sd">   list: a list of plt.Line3D</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">pos</span><span class="p">)</span>
+  <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">vel</span><span class="p">)</span>
+  <span class="n">qvs</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">qvs</span></div>
+
+<div class="viewcode-block" id="set_default_cell_styles"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.set_default_cell_styles">[docs]</a><span class="k">def</span> <span class="nf">set_default_cell_styles</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="s1">&#39;c&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;color&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)):</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;alpha&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="s1">&#39;lw&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;linewidth&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)):</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;lw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+<div class="viewcode-block" id="draw_cell"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.draw_cell">[docs]</a><span class="k">def</span> <span class="nf">draw_cell</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">corner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enclose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; draw cell on ax</span>
 <span class="sd">  see example in draw_crystal</span>
 
@@ -124,52 +161,94 @@
 <span class="sd">  Returns:</span>
 <span class="sd">   list: a list of plt.Line3D, one for each lattice vector</span>
 <span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;ndim = </span><span class="si">%d</span><span class="s1"> is not supported&#39;</span> <span class="o">%</span> <span class="n">ndim</span><span class="p">)</span>
   <span class="n">cell</span> <span class="o">=</span> <span class="p">[]</span>
   <span class="k">if</span> <span class="n">corner</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">corner</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
-  <span class="c1"># end if</span>
+    <span class="n">corner</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ndim</span><span class="p">)</span>
 
-  <span class="c1"># set defaults</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;color&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="p">):</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;alpha&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span> <span class="p">(</span><span class="s1">&#39;lw&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;linewidth&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="p">):</span>
-    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;lw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+  <span class="n">set_default_cell_styles</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
   <span class="c1"># a,b,c lattice vectors</span>
-  <span class="k">for</span> <span class="n">iax</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+  <span class="k">for</span> <span class="n">iax</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
     <span class="n">start</span> <span class="o">=</span> <span class="n">corner</span>
     <span class="n">end</span>   <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">axes</span><span class="p">[</span><span class="n">iax</span><span class="p">]</span>
-    <span class="n">line</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">),</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">cell</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-  <span class="c1"># end for iax</span>
 
   <span class="k">if</span> <span class="n">enclose</span><span class="p">:</span>
     <span class="c1"># counter a,b,c vectors</span>
-    <span class="k">for</span> <span class="n">iax</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">iax</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
       <span class="n">start</span> <span class="o">=</span> <span class="n">corner</span><span class="o">+</span><span class="n">axes</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
       <span class="n">end</span>   <span class="o">=</span> <span class="n">start</span> <span class="o">-</span> <span class="n">axes</span><span class="p">[</span><span class="n">iax</span><span class="p">]</span>
-      <span class="n">line</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">),</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+      <span class="n">line</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
       <span class="n">cell</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-    <span class="c1"># end for iax</span>
-    
-    <span class="c1"># remaining vectors needed to enclose cell</span>
-    <span class="k">for</span> <span class="n">iax</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-      <span class="n">start</span> <span class="o">=</span> <span class="n">corner</span><span class="o">+</span><span class="n">axes</span><span class="p">[</span><span class="n">iax</span><span class="p">]</span>
-      <span class="k">for</span> <span class="n">jax</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">jax</span> <span class="o">==</span> <span class="n">iax</span><span class="p">:</span>
-          <span class="k">continue</span>
-        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">axes</span><span class="p">[</span><span class="n">jax</span><span class="p">]</span>
-        <span class="n">line</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">end</span><span class="p">),</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">cell</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-      <span class="c1"># end for jax</span>
-    <span class="c1"># end for iax</span>
-  <span class="c1"># end if</span>
 
+    <span class="k">if</span> <span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+      <span class="c1"># remaining vectors needed to enclose cell</span>
+      <span class="k">for</span> <span class="n">iax</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">corner</span><span class="o">+</span><span class="n">axes</span><span class="p">[</span><span class="n">iax</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">jax</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
+          <span class="k">if</span> <span class="n">jax</span> <span class="o">==</span> <span class="n">iax</span><span class="p">:</span>
+            <span class="k">continue</span>
+          <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">axes</span><span class="p">[</span><span class="n">jax</span><span class="p">]</span>
+          <span class="n">line</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+          <span class="n">cell</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+  <span class="c1"># end if enclose</span>
   <span class="k">return</span> <span class="n">cell</span></div>
 
-<div class="viewcode-block" id="draw_crystal"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.draw_crystal">[docs]</a><span class="k">def</span> <span class="nf">draw_crystal</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">axes</span><span class="p">,</span><span class="n">pos</span><span class="p">,</span><span class="n">draw_super</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="draw_wigner_seitz_cell"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.draw_wigner_seitz_cell">[docs]</a><span class="k">def</span> <span class="nf">draw_wigner_seitz_cell</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">nsh</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">Voronoi</span>
+  <span class="n">set_default_cell_styles</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="c1"># create Voronoi tessellation</span>
+  <span class="kn">from</span> <span class="nn">qharv.inspect.axes_pos</span> <span class="k">import</span> <span class="n">cubic_pos</span>
+  <span class="n">qvecs</span> <span class="o">=</span> <span class="n">cubic_pos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">nsh</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">))</span><span class="o">-</span><span class="n">nsh</span>
+  <span class="n">dots</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">qvecs</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span>
+  <span class="n">vor</span> <span class="o">=</span> <span class="n">Voronoi</span><span class="p">(</span><span class="n">dots</span><span class="p">)</span>
+  <span class="n">verts</span> <span class="o">=</span> <span class="n">vor</span><span class="o">.</span><span class="n">vertices</span>  <span class="c1"># vertices (basis for the rest)</span>
+  <span class="n">regs</span> <span class="o">=</span> <span class="n">vor</span><span class="o">.</span><span class="n">regions</span>
+  <span class="n">rverts</span> <span class="o">=</span> <span class="n">vor</span><span class="o">.</span><span class="n">ridge_vertices</span>  <span class="c1"># ridges separate regions</span>
+  <span class="c1"># find vertices of THE enclosed region</span>
+  <span class="n">enclosed_regions</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">regs</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="k">continue</span>
+    <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">in</span> <span class="n">reg</span><span class="p">:</span>
+      <span class="k">continue</span>
+    <span class="n">enclosed_regions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+  <span class="n">nreg</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">enclosed_regions</span><span class="p">)</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">nreg</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;found </span><span class="si">%d</span><span class="s1"> region; try increase nsh&#39;</span> <span class="o">%</span> <span class="n">nreg</span><span class="p">)</span>
+  <span class="n">ereg</span> <span class="o">=</span> <span class="n">enclosed_regions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="c1"># find rigdes that enclose this region</span>
+  <span class="c1">#  also append first region to close each face</span>
+  <span class="n">myrverts</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">rvert</span> <span class="ow">in</span> <span class="n">rverts</span><span class="p">:</span>
+    <span class="c1"># skip all with unknown vertices</span>
+    <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">in</span> <span class="n">rvert</span><span class="p">:</span>
+      <span class="k">continue</span>
+    <span class="c1"># skip all not belonginig to THE region</span>
+    <span class="n">skip</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">iv</span> <span class="ow">in</span> <span class="n">rvert</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">iv</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ereg</span><span class="p">:</span>
+        <span class="n">skip</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">skip</span><span class="p">:</span>
+      <span class="k">continue</span>
+    <span class="n">myrvert</span> <span class="o">=</span> <span class="n">rvert</span><span class="o">+</span><span class="p">[</span><span class="n">rvert</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>  <span class="c1"># close face</span>
+    <span class="n">myrverts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">myrvert</span><span class="p">)</span>
+  <span class="c1"># draw enclosing regions</span>
+  <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">rvert</span> <span class="ow">in</span> <span class="n">myrverts</span><span class="p">:</span>
+    <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">in</span> <span class="n">rvert</span><span class="p">:</span>
+      <span class="k">continue</span>
+    <span class="n">pts</span> <span class="o">=</span> <span class="n">verts</span><span class="p">[</span><span class="n">rvert</span><span class="p">]</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">pts</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">lines</span></div>
+
+<span class="c1"># ======================== composition =========================</span>
+<div class="viewcode-block" id="draw_crystal"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.crystal.draw_crystal">[docs]</a><span class="k">def</span> <span class="nf">draw_crystal</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">draw_super</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; draw crystal structure on ax</span>
 
 <span class="sd">  Example:</span>
@@ -191,26 +270,26 @@
 <span class="sd">   pos (np.array): array of atomic positions</span>
 <span class="sd">   draw_super (bool): draw 2x2x2 supercell</span>
 <span class="sd">  Returns:</span>
-<span class="sd">   list,list: (cell, atoms) cell is a list of plt.Line3D for the cell, </span>
+<span class="sd">   list,list: (cell, atoms) cell is a list of plt.Line3D for the cell,</span>
 <span class="sd">   atoms is a list of plt.Line3D for the atoms.</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="c1"># draw primitive cell</span>
-  <span class="n">cell</span> <span class="o">=</span> <span class="n">draw_cell</span> <span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span>
+  <span class="n">cell</span> <span class="o">=</span> <span class="n">draw_cell</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span>
   <span class="n">dots</span> <span class="o">=</span> <span class="n">draw_atoms</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
   <span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">dots</span><span class="p">]</span>
 
-  <span class="k">if</span> <span class="n">draw_super</span><span class="p">:</span> <span class="c1"># draw supercell</span>
-    <span class="n">nx</span> <span class="o">=</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">nz</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1"># !!!! hard-code 2x2x2 supercell</span>
+  <span class="k">if</span> <span class="n">draw_super</span><span class="p">:</span>  <span class="c1"># draw supercell</span>
+    <span class="n">nx</span> <span class="o">=</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">nz</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># !!!! hard-code 2x2x2 supercell</span>
     <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
     <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
-    <span class="k">for</span> <span class="n">ix</span><span class="p">,</span><span class="n">iy</span><span class="p">,</span><span class="n">iz</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nx</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="n">ny</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="n">nz</span><span class="p">)):</span>
-      <span class="k">if</span> <span class="n">ix</span><span class="o">==</span><span class="n">iy</span><span class="o">==</span><span class="n">iz</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">iz</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nx</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">ny</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">nz</span><span class="p">)):</span>
+      <span class="k">if</span> <span class="n">ix</span> <span class="o">==</span> <span class="n">iy</span> <span class="o">==</span> <span class="n">iz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">continue</span>
       <span class="c1"># end if</span>
       <span class="c1">#shift = (np.array([ix,iy,iz])*axes).sum(axis=0)</span>
       <span class="n">shift</span> <span class="o">=</span> <span class="n">ix</span><span class="o">*</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">iy</span><span class="o">*</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">iz</span><span class="o">*</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-      <span class="n">spos</span>  <span class="o">=</span> <span class="p">(</span><span class="n">shift</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-      <span class="n">dots</span>  <span class="o">=</span> <span class="n">draw_atoms</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">spos</span><span class="p">)</span>
+      <span class="n">spos</span>  <span class="o">=</span> <span class="p">(</span><span class="n">shift</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+      <span class="n">dots</span>  <span class="o">=</span> <span class="n">draw_atoms</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">spos</span><span class="p">)</span>
       <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dots</span><span class="p">)</span>
     <span class="c1"># end for</span>
   <span class="c1"># end if</span>
@@ -219,7 +298,6 @@
   <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
 
   <span class="k">return</span> <span class="n">cell</span><span class="p">,</span> <span class="n">atoms</span></div>
-<span class="c1"># end def</span>
 </pre></div>
 
           </div>
@@ -229,15 +307,17 @@
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
@@ -263,7 +343,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

@@ -1,0 +1,209 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.inspect.jas &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.inspect.jas</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Routines to visualize jastrow potential U. Jastrow J=exp(-U).</span>
+<span class="c1">#</span>
+<span class="c1"># Most function take lxml.etree.Element as first input (doc). For example:</span>
+<span class="c1">#  doc = etree.parse(fxml)</span>
+<span class="c1">#  doc1 = doc.find(&#39;.//wavefunction&#39;)</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">qharv.seed</span> <span class="k">import</span> <span class="n">xml</span>
+<span class="kn">from</span> <span class="nn">qharv.reel</span> <span class="k">import</span> <span class="n">mole</span>
+<span class="c1"># ======================== level 0: file location =========================</span>
+
+
+<div class="viewcode-block" id="find_iopt"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.jas.find_iopt">[docs]</a><span class="k">def</span> <span class="nf">find_iopt</span><span class="p">(</span><span class="n">iopt</span><span class="p">,</span> <span class="n">opt_dir</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; locate opt.xml file in opt_dir</span>
+<span class="sd">  Args:</span>
+<span class="sd">    iopt (int): optimization step (series id)</span>
+<span class="sd">    opt_dir (str): path to optimization run</span>
+<span class="sd">  Return:</span>
+<span class="sd">    str: floc, location of the requested opt.xml file</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">st</span> <span class="o">=</span> <span class="s1">&#39;s&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">iopt</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+  <span class="n">regex</span> <span class="o">=</span> <span class="s1">&#39;*</span><span class="si">%s</span><span class="s1">.opt.xml&#39;</span> <span class="o">%</span> <span class="n">st</span>
+  <span class="n">flist</span> <span class="o">=</span> <span class="n">mole</span><span class="o">.</span><span class="n">files_with_regex</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">opt_dir</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flist</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;find </span><span class="si">%d</span><span class="s1"> expected 1&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">flist</span><span class="p">))</span>
+  <span class="n">floc</span> <span class="o">=</span> <span class="n">flist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="k">return</span> <span class="n">floc</span></div>
+
+
+<span class="c1"># ======================== level 1: read .dat =========================</span>
+
+
+<div class="viewcode-block" id="read_dat"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.jas.read_dat">[docs]</a><span class="k">def</span> <span class="nf">read_dat</span><span class="p">(</span><span class="n">j2_dat</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; read the first two columns of a .dat file spewed out by QMCPACK</span>
+
+<span class="sd">  examples:</span>
+<span class="sd">    read_dat(&#39;J2.uu.dat&#39;)</span>
+<span class="sd">    read_dat(&#39;uk.g000.dat&#39;)</span>
+<span class="sd">    read_dat(&#39;BFe-e.ud.dat&#39;)</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    j2_dat (str): filename</span>
+<span class="sd">  Return:</span>
+<span class="sd">    tuple: (r, v), first two columns, probably (radial grid, values)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">j2_dat</span><span class="p">)</span>  <span class="c1"># r v OR r v g l</span>
+  <span class="n">r</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+  <span class="k">return</span> <span class="n">r</span><span class="p">,</span> <span class="n">v</span></div>
+
+
+<span class="c1"># ==================== level 2: construct from xml =====================</span>
+
+
+<div class="viewcode-block" id="get_coeff"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.jas.get_coeff">[docs]</a><span class="k">def</span> <span class="nf">get_coeff</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">coef_id</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; extract coefficients from a &lt;coefficients&gt; node</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    doc (etree.Element): &lt;coefficient&gt; node</span>
+<span class="sd">    coef_id (str): coefficient name (id), e.g. &#39;uu&#39;, &#39;ud&#39;, &#39;cG2&#39;</span>
+<span class="sd">  Return:</span>
+<span class="sd">    array-like: extracted coefficients</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">cnode</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//coefficients[@id=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">coef_id</span><span class="p">)</span>
+  <span class="n">coefs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cnode</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">coefs</span></div>
+
+
+<div class="viewcode-block" id="bspline_on_rgrid"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.jas.bspline_on_rgrid">[docs]</a><span class="k">def</span> <span class="nf">bspline_on_rgrid</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">cid</span><span class="p">,</span> <span class="n">rgrid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rcut</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cusp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; evaluate QMCPACK Basis spline on a real-space grid</span>
+
+<span class="sd">  doc must contain the desired Bspline &lt;correlation&gt; &lt;coefficient&gt; nodes</span>
+<span class="sd">  &lt;correlation size=&quot;8&quot; rcut=&quot;4.0&quot;&gt;</span>
+<span class="sd">    &lt;coefficient id=&quot;cid&quot; type=&quot;Array&quot;&gt; 0.5 0.1 &lt;/coefficients&gt;</span>
+<span class="sd">  &lt;/correlation&gt;</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    doc (etree.Element): must contain the Bspline component to read</span>
+<span class="sd">    cid (str): coefficient name (id)</span>
+<span class="sd">    rgrid (list): a list of radial grid values</span>
+<span class="sd">    rcut (float, optional): cutoff radius, default is to read from</span>
+<span class="sd">    &lt;correlation&gt;</span>
+<span class="sd">    cusp (float, optional): cusp at r=0, default is to read from</span>
+<span class="sd">    &lt;correlation&gt;</span>
+<span class="sd">  Return:</span>
+<span class="sd">    list: a list of floats</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">import</span> <span class="nn">jastrow</span>  <span class="c1"># from Mark Dewing</span>
+
+  <span class="n">cnode</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//coefficients[@id=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">cid</span><span class="p">)</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">rcut</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">cusp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">rgrid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># need more info</span>
+    <span class="n">corr</span> <span class="o">=</span> <span class="n">cnode</span><span class="o">.</span><span class="n">getparent</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">corr</span><span class="o">.</span><span class="n">tag</span> <span class="o">!=</span> <span class="s1">&#39;correlation&#39;</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;found </span><span class="si">%s</span><span class="s1"> expected correlation&#39;</span> <span class="o">%</span> <span class="n">corr</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rcut</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">rcut</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">corr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;rcut&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">cusp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="n">cusp</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">corr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cusp&#39;</span><span class="p">))</span>
+      <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cid</span> <span class="o">==</span> <span class="s1">&#39;uu&#39;</span><span class="p">):</span>
+          <span class="n">cusp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.25</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">cid</span> <span class="o">==</span> <span class="s1">&#39;ud&#39;</span><span class="p">):</span>
+          <span class="n">cusp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="k">return</span> <span class="n">err</span>
+    <span class="k">if</span> <span class="n">rgrid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">rgrid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">rcut</span><span class="o">-</span><span class="mf">1e-8</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+  <span class="c1"># end if</span>
+  <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">rgrid</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">rcut</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;grid exceeds rcut&#39;</span><span class="p">)</span>
+
+  <span class="c1"># rcut, cusp and rgrid must be given by this point</span>
+  <span class="n">coefs</span> <span class="o">=</span> <span class="n">get_coeff</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">cid</span><span class="p">)</span>
+  <span class="n">fspl</span> <span class="o">=</span> <span class="n">jastrow</span><span class="o">.</span><span class="n">create_jastrow_from_param</span><span class="p">(</span><span class="n">coefs</span><span class="p">,</span> <span class="n">cusp</span><span class="p">,</span> <span class="n">rcut</span><span class="p">)</span>
+  <span class="n">vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">fspl</span><span class="o">.</span><span class="n">evaluate_v</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rgrid</span><span class="p">]</span>
+  <span class="k">return</span> <span class="n">vals</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">qharv</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

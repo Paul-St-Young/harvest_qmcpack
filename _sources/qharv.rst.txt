@@ -7,10 +7,10 @@ Subpackages
 .. toctree::
 
     qharv.cross
-    qharv.harvest
     qharv.inspect
     qharv.plantation
     qharv.reel
+    qharv.refine
     qharv.seed
     qharv.sieve
     qharv.trans

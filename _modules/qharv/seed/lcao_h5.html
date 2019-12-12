@@ -1,0 +1,203 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.seed.lcao_h5 &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.seed.lcao_h5</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Routines to read linear combination of atomic orbitals (LCAO) hdf5 file</span>
+<span class="kn">from</span> <span class="nn">qharv.seed</span> <span class="k">import</span> <span class="n">xml</span>
+<span class="kn">from</span> <span class="nn">qharv.seed.wf_h5</span> <span class="k">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">ls</span>
+
+<span class="c1"># ====================== level 1: extract basic info =======================</span>
+
+<div class="viewcode-block" id="abs_grid"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.lcao_h5.abs_grid">[docs]</a><span class="k">def</span> <span class="nf">abs_grid</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">iabs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Extract &lt;grid&gt; for some &lt;atomicBasisSet&gt;</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): LCAO h5</span>
+<span class="sd">  Return:</span>
+<span class="sd">    lxml.etree.Element: &lt;grid&gt;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;basisset/atomicBasisSet</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">iabs</span>
+  <span class="n">grid</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;grid&#39;</span><span class="p">)</span>
+  <span class="n">_add_attribs</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;ri&#39;</span><span class="p">,</span> <span class="s1">&#39;rf&#39;</span><span class="p">,</span> <span class="s1">&#39;npts&#39;</span><span class="p">],</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;grid_&#39;</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">grid</span></div>
+
+<div class="viewcode-block" id="bg_radfunc"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.lcao_h5.bg_radfunc">[docs]</a><span class="k">def</span> <span class="nf">bg_radfunc</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">iabs</span><span class="p">,</span> <span class="n">ibg</span><span class="p">,</span> <span class="n">irf</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Extract &lt;radfunc&gt; for some &lt;basisGroup&gt;</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): LCAO h5</span>
+<span class="sd">  Return:</span>
+<span class="sd">    lxml.etree.Element: &lt;radfunc&gt;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;basisset/atomicBasisSet</span><span class="si">%d</span><span class="s1">/basisGroup</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">iabs</span><span class="p">,</span> <span class="n">ibg</span><span class="p">)</span>
+  <span class="n">rfpath</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/radfunctions/DataRad</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">irf</span><span class="p">)</span>
+  <span class="n">rf</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;radfunc&#39;</span><span class="p">)</span>
+  <span class="n">_add_attribs</span><span class="p">(</span><span class="n">rf</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">rfpath</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;exponent&#39;</span><span class="p">,</span> <span class="s1">&#39;contraction&#39;</span><span class="p">])</span>
+  <span class="k">return</span> <span class="n">rf</span></div>
+
+<div class="viewcode-block" id="basis_group"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.lcao_h5.basis_group">[docs]</a><span class="k">def</span> <span class="nf">basis_group</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">iabs</span><span class="p">,</span> <span class="n">ibg</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Extract &lt;basisGroup&gt;</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): LCAO h5</span>
+<span class="sd">  Return:</span>
+<span class="sd">    lxml.etree.Element: &lt;basisGroup&gt;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">bgpath</span> <span class="o">=</span> <span class="s1">&#39;basisset/atomicBasisSet</span><span class="si">%d</span><span class="s1">/basisGroup</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">iabs</span><span class="p">,</span> <span class="n">ibg</span><span class="p">)</span>
+  <span class="n">bg</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;basisGroup&#39;</span><span class="p">)</span>
+  <span class="n">_add_attribs</span><span class="p">(</span><span class="n">bg</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">bgpath</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;rid&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">])</span>
+  <span class="c1"># add radial functions</span>
+  <span class="n">nrf</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/NbRadFunc&#39;</span> <span class="o">%</span> <span class="n">bgpath</span><span class="p">][()][</span><span class="mi">0</span><span class="p">]</span>
+  <span class="k">for</span> <span class="n">irf</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nrf</span><span class="p">):</span>
+    <span class="n">rf</span> <span class="o">=</span> <span class="n">bg_radfunc</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">iabs</span><span class="p">,</span> <span class="n">ibg</span><span class="p">,</span> <span class="n">irf</span><span class="p">)</span>
+    <span class="n">bg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rf</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">bg</span></div>
+
+<span class="k">def</span> <span class="nf">_add_attribs</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">attribs</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+  <span class="k">for</span> <span class="n">attrib</span> <span class="ow">in</span> <span class="n">attribs</span><span class="p">:</span>
+    <span class="n">apath</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">prefix</span><span class="o">+</span><span class="n">attrib</span><span class="p">)</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">apath</span><span class="p">][()][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">node</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">attrib</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+
+<span class="c1"># ====================== level 2: hdf5 to xml =======================</span>
+
+<div class="viewcode-block" id="basisset"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.lcao_h5.basisset">[docs]</a><span class="k">def</span> <span class="nf">basisset</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Extract &lt;basisset&gt;</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): LCAO h5</span>
+<span class="sd">  Return:</span>
+<span class="sd">    lxml.etree.Element: &lt;basisset&gt;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">bs</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;basisset&#39;</span><span class="p">)</span>
+  <span class="n">bsname</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="s1">&#39;basisset/name&#39;</span><span class="p">][()][</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">bs</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">bsname</span><span class="p">)</span>
+
+  <span class="n">nabs</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="s1">&#39;basisset/NbElements&#39;</span><span class="p">][()][</span><span class="mi">0</span><span class="p">]</span>
+  <span class="k">for</span> <span class="n">iabs</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nabs</span><span class="p">):</span>  <span class="c1"># atomicBasisSet</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;basisset/atomicBasisSet</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">iabs</span>
+    <span class="n">myabs</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;atomicBasisSet&#39;</span><span class="p">)</span>
+    <span class="n">abs_attribs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;angular&#39;</span><span class="p">,</span> <span class="s1">&#39;elementType&#39;</span><span class="p">,</span> <span class="s1">&#39;normalized&#39;</span><span class="p">]</span>
+    <span class="n">_add_attribs</span><span class="p">(</span><span class="n">myabs</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">abs_attribs</span><span class="p">)</span>
+    <span class="c1"># !!!! make type &quot;Gaussian&quot;, otherwise default to &quot;Numeric&quot;</span>
+    <span class="n">myabs</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;Gaussian&#39;</span><span class="p">)</span>
+    <span class="c1"># each atomic basis set should have a &lt;grid&gt; and a few &lt;basisGroup&gt;s</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">abs_grid</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">iabs</span><span class="p">)</span>
+    <span class="n">myabs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+    <span class="c1"># build basis groups</span>
+    <span class="n">nbg</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/NbBasisGroups&#39;</span> <span class="o">%</span> <span class="n">path</span><span class="p">][()][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">ibg</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nbg</span><span class="p">):</span>
+      <span class="n">bg</span> <span class="o">=</span> <span class="n">basis_group</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">iabs</span><span class="p">,</span> <span class="n">ibg</span><span class="p">)</span>
+      <span class="n">myabs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bg</span><span class="p">)</span>
+    <span class="n">bs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">myabs</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">bs</span></div>
+
+<div class="viewcode-block" id="sposet"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.lcao_h5.sposet">[docs]</a><span class="k">def</span> <span class="nf">sposet</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">bsname</span><span class="p">,</span> <span class="n">cname</span><span class="p">,</span> <span class="n">nstate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ik</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ispin</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;KPTS_</span><span class="si">%d</span><span class="s1">/eigenset_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ik</span><span class="p">,</span> <span class="n">ispin</span><span class="p">)</span>
+  <span class="n">mo_coeff</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">path</span><span class="p">][()]</span><span class="o">.</span><span class="n">T</span>
+  <span class="n">nmo</span><span class="p">,</span> <span class="n">nao</span> <span class="o">=</span> <span class="n">mo_coeff</span><span class="o">.</span><span class="n">shape</span>
+  <span class="k">if</span> <span class="n">nstate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">nstate</span> <span class="o">=</span> <span class="n">nmo</span>
+  <span class="k">if</span> <span class="n">nstate</span> <span class="o">&gt;</span> <span class="n">nmo</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;state </span><span class="si">%d</span><span class="s1">/</span><span class="si">%d</span><span class="s1"> is not available&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nstate</span><span class="p">,</span> <span class="n">nmo</span><span class="p">))</span>
+  <span class="c1"># build &lt;sposet&gt;</span>
+  <span class="n">ss</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;sposet&#39;</span><span class="p">)</span>
+  <span class="n">ss</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;basisset&#39;</span><span class="p">,</span> <span class="n">bsname</span><span class="p">)</span>
+  <span class="n">ss</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;spo-ud&#39;</span><span class="p">)</span>
+  <span class="n">ss</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">nstate</span><span class="p">))</span>
+  <span class="n">ss</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;optimize&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">)</span>
+  <span class="c1"># add &lt;coefficient&gt;</span>
+  <span class="n">cnode</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;coefficient&#39;</span><span class="p">)</span>
+  <span class="n">cnode</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">nao</span><span class="p">))</span>
+  <span class="n">cnode</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">cname</span><span class="p">)</span>
+  <span class="n">cnode</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">arr2text</span><span class="p">(</span><span class="n">mo_coeff</span><span class="p">[:</span><span class="n">nstate</span><span class="p">,</span> <span class="p">:])</span>
+  <span class="n">ss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cnode</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">ss</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">qharv</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

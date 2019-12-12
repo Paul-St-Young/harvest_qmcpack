@@ -4,30 +4,23 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>qharv.plantation package &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.0.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="qharv.reel package" href="qharv.reel.html" />
     <link rel="prev" title="qharv.inspect package" href="qharv.inspect.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -61,23 +54,195 @@
 <div class="section" id="module-qharv.plantation.kyrt">
 <span id="qharv-plantation-kyrt-module"></span><h2>qharv.plantation.kyrt module<a class="headerlink" href="#module-qharv.plantation.kyrt" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
+<dt id="qharv.plantation.kyrt.create_legend">
+<code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">create_legend</code><span class="sig-paren">(</span><em>ax</em>, <em>styles</em>, <em>labels</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#create_legend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.create_legend" title="Permalink to this definition">¶</a></dt>
+<dd><p>create custom legend</p>
+<p>learned from “Composing Custom Legends”</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ax</strong> (<em>plt.Axes</em>) – matplotlib axes</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">legend artist</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">plt.legend.Legend</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.plantation.kyrt.errorshade">
+<code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">errorshade</code><span class="sig-paren">(</span><em>ax</em>, <em>x</em>, <em>ym</em>, <em>ye</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#errorshade"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.errorshade" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.plantation.kyrt.figaxad">
+<code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">figaxad</code><span class="sig-paren">(</span><em>labelsize=12</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#figaxad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.figaxad" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>construct a absolute/difference (ad) figure</dt>
+<dd>top 3/4 of the plot will be comparison at an absolute scale
+bottom 1/4 of the plot will be comparison at a relative scale</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>labelsize</strong> (<em>int</em><em>, </em><em>optional</em>) – tick label size</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">figure and axes for absolute and difference plots</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(fig, axa, axd)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.plantation.kyrt.get_cmap">
+<code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">get_cmap</code><span class="sig-paren">(</span><em>name='viridis'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#get_cmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.get_cmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>return color map by name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – name of color map, default ‘viridis’</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">requested colormap</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">matplotlib.colors.ListedColormap</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.plantation.kyrt.get_norm">
+<code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">get_norm</code><span class="sig-paren">(</span><em>vmin</em>, <em>vmax</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#get_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.get_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>return norm function for scalar in range (vmin, vmax)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>vmin</strong> (<em>float</em>) – value minimum</li>
+<li><strong>vmax</strong> (<em>float</em>) – value maximum</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">color normalization function</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">matplotlib.colors.Normalize</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.plantation.kyrt.get_style">
+<code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">get_style</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#get_style"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.get_style" title="Permalink to this definition">¶</a></dt>
+<dd><p>get plot styles from Line2D object</p>
+<p>mostly copied from “Line2D.update_from”</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>line</strong> (<em>Line2D</em>) – source of style</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">line styles readily usable for another plot</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.plantation.kyrt.inset_zoom">
+<code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">inset_zoom</code><span class="sig-paren">(</span><em>fig</em>, <em>ax_box</em>, <em>xlim</em>, <em>ylim</em>, <em>draw_func</em>, <em>xy_label=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#inset_zoom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.inset_zoom" title="Permalink to this definition">¶</a></dt>
+<dd><p>show an inset that zooms into a given part of the figure</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fig</strong> (<em>plt.Figure</em>) – figure</li>
+<li><strong>ax_box</strong> (<em>tuple</em>) – inset location and size (x0, y0, dx, dy) in figure ratio</li>
+<li><strong>xlim</strong> (<em>tuple</em>) – (xmin, xmax)</li>
+<li><strong>ylim</strong> (<em>tuple</em>) – (ymin, ymax)</li>
+<li><strong>draw_func</strong> (<em>callable</em>) – draw_func(ax) should recreate the figure</li>
+<li><strong>xy_label</strong> (<em>bool</em><em>, </em><em>optional</em>) – label inset axes, default is False</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">inset axes</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">plt.Axes</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ax1</span> <span class="o">=</span> <span class="n">inset_zoom</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                 <span class="k">lambda</span> <span class="n">ax</span><span class="p">:</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ax</span><span class="o">.</span><span class="n">indicate_inset_zoom</span><span class="p">(</span><span class="n">axins</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="qharv.plantation.kyrt.pretty_up">
 <code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">pretty_up</code><span class="sig-paren">(</span><em>ax</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#pretty_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.pretty_up" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="qharv.plantation.kyrt.scalar_color_map">
-<code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">scalar_color_map</code><span class="sig-paren">(</span><em>vmin</em>, <em>vmax</em>, <em>name='viridis'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#scalar_color_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.scalar_color_map" title="Permalink to this definition">¶</a></dt>
+<dt id="qharv.plantation.kyrt.scalar_colorbar">
+<code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">scalar_colorbar</code><span class="sig-paren">(</span><em>vmin</em>, <em>vmax</em>, <em>name='viridis'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#scalar_colorbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.scalar_colorbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a colorbar for scalar_color_map()</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>vmin</strong> (<em>float</em>) – minimum scalar value</li>
+<li><strong>vmax</strong> (<em>float</em>) – maximum scalar value</li>
+<li><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – color map name, default is ‘viridis’</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">colorbar</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">matplotlib.colorbar.Colorbar</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.plantation.kyrt.scalar_colormap">
+<code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">scalar_colormap</code><span class="sig-paren">(</span><em>vmin</em>, <em>vmax</em>, <em>name='viridis'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#scalar_colormap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.scalar_colormap" title="Permalink to this definition">¶</a></dt>
 <dd><p>return a function that maps a number to a color</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>vmin</strong> (<em>float</em>) – minimum scalar value</li>
 <li><strong>vmax</strong> (<em>float</em>) – maximum scalar value</li>
 <li><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – color map name, default is ‘viridis’</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">float -&gt; (float,)*4 RGBA color space</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">function</p>
 </td>
 </tr>
 </tbody>
@@ -152,23 +317,122 @@
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="qharv.plantation.kyrt.show_fit">
+<code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">show_fit</code><span class="sig-paren">(</span><em>ax</em>, <em>line</em>, <em>model</em>, <em>sel=None</em>, <em>nx=64</em>, <em>xmin=None</em>, <em>xmax=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#show_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.show_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>fit a segment of (x, y) data and show fit</p>
+<p>get x, y data from line; use sel to make selection</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> (<em>Axes</em>) – matplotlib axes</li>
+<li><strong>line</strong> (<em>Line2D</em>) – line with data</li>
+<li><strong>model</strong> (<em>callable</em>) – model function</li>
+<li><strong>sel</strong> (<em>np.array</em><em>, </em><em>optional</em>) – boolean selector array</li>
+<li><strong>nx</strong> (<em>int</em><em>, </em><em>optional</em>) – grid size, default 64</li>
+<li><strong>xmin</strong> (<em>float</em><em>, </em><em>optional</em>) – grid min</li>
+<li><strong>xmax</strong> (<em>float</em><em>, </em><em>optional</em>) – grid max</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(popt, perr, lines)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array, np.array, list)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.plantation.kyrt.show_spline">
+<code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">show_spline</code><span class="sig-paren">(</span><em>ax</em>, <em>line</em>, <em>spl_kws={}</em>, <em>nx=1024</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#show_spline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.show_spline" title="Permalink to this definition">¶</a></dt>
+<dd><p>show a smooth spline through given line x y</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> (<em>plt.Axes</em>) – matplotlib axes</li>
+<li><strong>line</strong> (<em>Line1D</em>) – matplotlib line object</li>
+<li><strong>spl_kws</strong> (<em>dict</em><em>, </em><em>optional</em>) – keyword arguments to splrep, default is empty</li>
+<li><strong>nx</strong> (<em>int</em><em>, </em><em>optional</em>) – number of points to allocate to 1D grid</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">interpolating line</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Line1D</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.plantation.kyrt.xtop">
+<code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">xtop</code><span class="sig-paren">(</span><em>ax</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#xtop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.xtop" title="Permalink to this definition">¶</a></dt>
+<dd><p>move xaxis label and ticks to the top</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ax</strong> (<em>plt.Axes</em>) – matplotlib axes</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.plantation.kyrt.yright">
+<code class="descclassname">qharv.plantation.kyrt.</code><code class="descname">yright</code><span class="sig-paren">(</span><em>ax</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/kyrt.html#yright"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.kyrt.yright" title="Permalink to this definition">¶</a></dt>
+<dd><p>move yaxis label and ticks to the right</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ax</strong> (<em>plt.Axes</em>) – matplotlib axes</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="module-qharv.plantation.sugar">
 <span id="qharv-plantation-sugar-module"></span><h2>qharv.plantation.sugar module<a class="headerlink" href="#module-qharv.plantation.sugar" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="qharv.plantation.sugar.cache">
+<code class="descclassname">qharv.plantation.sugar.</code><code class="descname">cache</code><span class="sig-paren">(</span><em>write_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/sugar.html#cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.sugar.cache" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="function">
 <dt id="qharv.plantation.sugar.check_dir_before">
 <code class="descclassname">qharv.plantation.sugar.</code><code class="descname">check_dir_before</code><span class="sig-paren">(</span><em>mkdir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/sugar.html#check_dir_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.sugar.check_dir_before" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="qharv.plantation.sugar.check_file_before">
-<code class="descclassname">qharv.plantation.sugar.</code><code class="descname">check_file_before</code><span class="sig-paren">(</span><em>write_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/sugar.html#check_file_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.sugar.check_file_before" title="Permalink to this definition">¶</a></dt>
-<dd><p>check if file exists before calling a function that overwrites the file</p>
+<dt id="qharv.plantation.sugar.concat_return">
+<code class="descclassname">qharv.plantation.sugar.</code><code class="descname">concat_return</code><span class="sig-paren">(</span><em>show_progress=True</em>, <em>fault_tolerant=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/sugar.html#concat_return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.sugar.concat_return" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show progress of concat reduce function</p>
 </dd></dl>
+
+<dl class="function">
+<dt id="qharv.plantation.sugar.get_progress_bar">
+<code class="descclassname">qharv.plantation.sugar.</code><code class="descname">get_progress_bar</code><span class="sig-paren">(</span><em>maxval</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/sugar.html#get_progress_bar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.sugar.get_progress_bar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="qharv.plantation.sugar.mkdir">
 <code class="descclassname">qharv.plantation.sugar.</code><code class="descname">mkdir</code><span class="sig-paren">(</span><em>dirname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/sugar.html#mkdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.sugar.mkdir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.plantation.sugar.show_h5progress">
+<code class="descclassname">qharv.plantation.sugar.</code><code class="descname">show_h5progress</code><span class="sig-paren">(</span><em>collect_h5file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/plantation/sugar.html#show_h5progress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.plantation.sugar.show_h5progress" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -190,20 +454,22 @@
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-<h3><a href="index.html">Table Of Contents</a></h3>
+<h3><a href="index.html">Table of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="qharv.html">qharv package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="qharv.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="qharv.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qharv.html#module-qharv">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">qharv</a><ul class="current">
@@ -243,7 +509,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

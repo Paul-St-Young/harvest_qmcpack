@@ -4,28 +4,21 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>qharv.seed.xml &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.0.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -71,7 +64,6 @@
   <span class="n">doc</span>    <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">parser</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">doc</span></div>
 
-
 <div class="viewcode-block" id="write"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.write">[docs]</a><span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; write an xml file</span>
 <span class="sd">  wrap around lxml.etree._ElementTree.write</span>
@@ -83,7 +75,6 @@
 <span class="sd">    write fname using contents of doc</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">doc</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; parse the text representation of an xml node</span>
@@ -101,7 +92,6 @@
   <span class="n">root</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
   <span class="k">return</span> <span class="n">root</span></div>
 
-
 <div class="viewcode-block" id="str_rep"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.str_rep">[docs]</a><span class="k">def</span> <span class="nf">str_rep</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; return the string representation of an xml node</span>
 
@@ -112,10 +102,8 @@
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="k">return</span> <span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-
 <div class="viewcode-block" id="show"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.show">[docs]</a><span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
   <span class="nb">print</span><span class="p">(</span><span class="n">str_rep</span><span class="p">(</span><span class="n">node</span><span class="p">))</span></div>
-
 
 <div class="viewcode-block" id="ls"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.ls">[docs]</a><span class="k">def</span> <span class="nf">ls</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;  &quot;</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; List directory structure</span>
@@ -134,14 +122,27 @@
   <span class="n">children</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">getchildren</span><span class="p">()</span>
   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
-      <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">child</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">etree</span><span class="o">.</span><span class="n">_Element</span><span class="p">:</span> <span class="k">continue</span>
+      <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">child</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">etree</span><span class="o">.</span><span class="n">_Element</span><span class="p">:</span>
+        <span class="k">continue</span>
       <span class="n">mystr</span> <span class="o">+=</span> <span class="n">indent</span><span class="o">*</span><span class="n">level</span> <span class="o">+</span> <span class="n">child</span><span class="o">.</span><span class="n">tag</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
       <span class="k">if</span> <span class="n">r</span><span class="p">:</span>
-        <span class="n">mystr</span> <span class="o">+=</span> <span class="n">ls</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span>
+        <span class="n">mystr</span> <span class="o">+=</span> <span class="n">ls</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="k">return</span> <span class="s1">&#39;&#39;</span>
   <span class="k">return</span> <span class="n">mystr</span></div>
 
+<div class="viewcode-block" id="append"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.append">[docs]</a><span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; append one or more nodes to a root node</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    root (lxml.etree._Element): xml node</span>
+<span class="sd">    nodes (list or lxml.etree._Element): xml node(s)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="ow">is</span> <span class="n">etree</span><span class="o">.</span><span class="n">_Element</span><span class="p">:</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+      <span class="n">root</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
 
 <span class="c1"># ========================= level 1: node content io =========================</span>
 <span class="c1">#  node.get &amp; node.set are sufficient for attribute manipulation</span>
@@ -150,34 +151,34 @@
   <span class="sd">&quot;&quot;&quot; format a numpy array into a text string &quot;&quot;&quot;</span>
   <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># vector</span>
-      <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
   <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># matrix</span>
-      <span class="n">mat</span>  <span class="o">=</span> <span class="p">[</span><span class="n">arr2text</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">]</span>
-      <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">mat</span>  <span class="o">=</span> <span class="p">[</span><span class="n">arr2text</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">]</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
   <span class="k">else</span><span class="p">:</span>
-      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;arr2text can only convert vector or matrix.&#39;</span><span class="p">)</span>
-  <span class="c1"># end if</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;arr2text can only convert vector or matrix.&#39;</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">text</span></div>
 
 <div class="viewcode-block" id="text2arr"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.text2arr">[docs]</a><span class="k">def</span> <span class="nf">text2arr</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; convert a text string into a numpy array &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
   <span class="n">tlist</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tlist</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">flatten</span><span class="p">:</span>
       <span class="n">mytext</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">tlist</span><span class="p">])</span>
       <span class="n">myarr</span> <span class="o">=</span> <span class="n">text2arr</span><span class="p">(</span><span class="n">mytext</span><span class="p">)</span>
       <span class="k">return</span> <span class="n">myarr</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
-      <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">tlist</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span></div>
+      <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">tlist</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="text2vec"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.text2vec">[docs]</a><span class="k">def</span> <span class="nf">text2vec</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; convert a text string into a 1D numpy array &quot;&quot;&quot;</span>
   <span class="c1"># unfold at the text level</span>
   <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
   <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="swap_node"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.swap_node">[docs]</a><span class="k">def</span> <span class="nf">swap_node</span><span class="p">(</span><span class="n">node0</span><span class="p">,</span> <span class="n">node1</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; replace the node0 with node1</span>
@@ -194,7 +195,6 @@
   <span class="n">parent</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">node0</span><span class="p">)</span>
   <span class="n">parent</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">node1</span><span class="p">)</span></div>
 
-
 <span class="c1"># ================= level 2: QMCPACK specialized read =================</span>
 <div class="viewcode-block" id="get_param"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.get_param">[docs]</a><span class="k">def</span> <span class="nf">get_param</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pname</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; retrieve the str representation of a parameter from:</span>
@@ -209,8 +209,7 @@
   <span class="n">pnode</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//parameter[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">pname</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">pnode</span><span class="o">.</span><span class="n">text</span></div>
 
-
-<div class="viewcode-block" id="set_param"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.set_param">[docs]</a><span class="k">def</span> <span class="nf">set_param</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pname</span><span class="p">,</span> <span class="n">pval</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="set_param"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.set_param">[docs]</a><span class="k">def</span> <span class="nf">set_param</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pname</span><span class="p">,</span> <span class="n">pval</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; set &lt;parameter&gt; with name &#39;pname&#39; to &#39;pval&#39;</span>
 <span class="sd">  if new=True, then &lt;parameter name=&quot;pname&quot;&gt; does not exist. create it</span>
 
@@ -222,22 +221,21 @@
 <span class="sd">  Effect:</span>
 <span class="sd">    the text of &lt;parameter&gt; with &#39;pname&#39; will be set to &#39;pval&#39;</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">pval</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span>
   <span class="n">pnode</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//parameter[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">pname</span><span class="p">)</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="n">pad</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">pval</span><span class="p">)</span> <span class="o">+</span> <span class="n">pad</span>
   <span class="c1"># 4 paths dependent on (pnode is None) and new</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">pnode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">new</span><span class="p">):</span>  <span class="c1"># unintended input</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;&lt;parameter name=&quot;</span><span class="si">%s</span><span class="s1">&quot;&gt; not found in </span><span class="si">%s</span><span class="se">\n\</span>
-<span class="s1">      please set new=True&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pname</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
+<span class="s1">      please set new=True&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pname</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
   <span class="k">elif</span> <span class="p">(</span><span class="n">pnode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">new</span><span class="p">:</span>  <span class="c1"># unintended input</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;&lt;parameter name=&quot;</span><span class="si">%s</span><span class="s1">&quot;&gt; found in </span><span class="si">%s</span><span class="se">\n\</span>
-<span class="s1">      please set new=False&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pname</span><span class="p">,</span><span class="n">node</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
+<span class="s1">      please set new=False&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">pname</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
   <span class="k">elif</span> <span class="p">(</span><span class="n">pnode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">new</span><span class="p">:</span>
-    <span class="n">pnode</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;parameter&#39;</span><span class="p">,{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="n">pname</span><span class="p">})</span>
-    <span class="n">pnode</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">pval</span>
+    <span class="n">pnode</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;parameter&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">pname</span><span class="p">})</span>
+    <span class="n">pnode</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
     <span class="n">node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pnode</span><span class="p">)</span>
   <span class="k">else</span><span class="p">:</span>
-    <span class="n">pnode</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">pval</span></div>
-
+    <span class="n">pnode</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span></div>
 
 <div class="viewcode-block" id="get_axes"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.get_axes">[docs]</a><span class="k">def</span> <span class="nf">get_axes</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
   <span class="n">sc_node</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//simulationcell&#39;</span><span class="p">)</span>
@@ -249,6 +247,14 @@
   <span class="n">axes</span> <span class="o">=</span> <span class="n">text2arr</span><span class="p">(</span><span class="n">lat_node</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">axes</span></div>
 
+<div class="viewcode-block" id="get_nelec"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.get_nelec">[docs]</a><span class="k">def</span> <span class="nf">get_nelec</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+  <span class="n">nelec</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">]:</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//group[@name=&quot;</span><span class="si">%s</span><span class="s1">&quot;]&#39;</span> <span class="o">%</span> <span class="n">pname</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">npos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">))</span>
+      <span class="n">nelec</span> <span class="o">+=</span> <span class="n">npos</span>
+  <span class="k">return</span> <span class="n">nelec</span></div>
 
 <div class="viewcode-block" id="get_pos"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.get_pos">[docs]</a><span class="k">def</span> <span class="nf">get_pos</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">pset</span><span class="o">=</span><span class="s1">&#39;ion0&#39;</span><span class="p">,</span> <span class="n">all_pos</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
   <span class="c1"># find &lt;particleset&gt;</span>
@@ -262,16 +268,16 @@
   <span class="k">if</span> <span class="p">(</span><span class="n">group</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>  <span class="c1"># no group give, requesting all particle positions?</span>
     <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">all_pos</span><span class="p">):</span>
       <span class="n">warn_msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> groups found, please specify particle group from </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
-        <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
       <span class="p">)</span>
       <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">warn_msg</span><span class="p">)</span>
-    <span class="c1"># end if</span>
   <span class="k">else</span><span class="p">:</span>  <span class="c1"># group given, see if it is available</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">all_pos</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;specified group will be over-written with all_pos! Please set all_pos=False.&#39;</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;specified group will be over-written with all_pos!</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;Please set all_pos=False.&#39;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">all_pos</span><span class="p">):</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">):</span>
-      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;no group with name &quot;</span><span class="si">%s</span><span class="s1">&quot; in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">group</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">names</span><span class="p">)))</span>
-    <span class="c1"># end if</span>
-  <span class="c1"># end if</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;no group with name &quot;</span><span class="si">%s</span><span class="s1">&quot; in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">names</span><span class="p">)))</span>
 
   <span class="n">pos_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
   <span class="k">if</span> <span class="ow">not</span> <span class="n">all_pos</span><span class="p">:</span>  <span class="c1"># get requested group positions</span>
@@ -281,18 +287,16 @@
   <span class="k">else</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
       <span class="n">pos_node</span>  <span class="o">=</span> <span class="n">grp</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//attrib[@name=&quot;position&quot;]&#39;</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">pos_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># look in parent (old-style input)</span>
+        <span class="n">pset_node</span> <span class="o">=</span> <span class="n">grp</span><span class="o">.</span><span class="n">getparent</span><span class="p">()</span>
+        <span class="n">pos_node</span> <span class="o">=</span> <span class="n">pset_node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//attrib[@name=&quot;position&quot;]&#39;</span><span class="p">)</span>
       <span class="n">pos_text</span> <span class="o">+=</span> <span class="n">pos_node</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-    <span class="c1"># end for</span>
-  <span class="c1"># end if</span>
 
   <span class="c1"># get requestsed particle positions</span>
   <span class="n">pos</span> <span class="o">=</span> <span class="n">text2arr</span><span class="p">(</span><span class="n">pos_text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
   <span class="k">return</span> <span class="n">pos</span></div>
 
-
 <span class="c1"># ================= level 3: QMCPACK specialized construct =================</span>
-
-
 <div class="viewcode-block" id="build_coeff"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.build_coeff">[docs]</a><span class="k">def</span> <span class="nf">build_coeff</span><span class="p">(</span><span class="n">knots</span><span class="p">,</span> <span class="o">**</span><span class="n">attribs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; construct an &lt;coefficients/&gt;</span>
 
@@ -315,11 +319,27 @@
     <span class="n">attribs</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Array&#39;</span>
 
   <span class="c1"># construct node</span>
-  <span class="n">coeff_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;coefficients&#39;</span><span class="p">,</span><span class="n">attribs</span><span class="p">)</span>
+  <span class="n">coeff_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;coefficients&#39;</span><span class="p">,</span> <span class="n">attribs</span><span class="p">)</span>
   <span class="n">coeff_node</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">knots</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span>  <span class="c1"># 1D arr2text</span>
   <span class="k">return</span> <span class="n">coeff_node</span></div>
-<span class="c1"># end def build_coeff</span>
 
+<div class="viewcode-block" id="build_jr2"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.build_jr2">[docs]</a><span class="k">def</span> <span class="nf">build_jr2</span><span class="p">(</span><span class="n">uuc</span><span class="p">,</span> <span class="n">udc</span><span class="p">):</span>
+  <span class="n">uu_node</span> <span class="o">=</span> <span class="n">build_coeff</span><span class="p">(</span><span class="n">uuc</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;uu&#39;</span><span class="p">})</span>
+  <span class="n">cuu</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;correlation&#39;</span><span class="p">,</span>
+    <span class="p">{</span><span class="s1">&#39;speciesA&#39;</span><span class="p">:</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;speciesB&#39;</span><span class="p">:</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">uuc</span><span class="p">))}</span>
+  <span class="p">)</span>
+  <span class="n">cuu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">uu_node</span><span class="p">)</span>
+  <span class="n">ud_node</span> <span class="o">=</span> <span class="n">build_coeff</span><span class="p">(</span><span class="n">udc</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;ud&#39;</span><span class="p">})</span>
+  <span class="n">cud</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;correlation&#39;</span><span class="p">,</span>
+    <span class="p">{</span><span class="s1">&#39;speciesA&#39;</span><span class="p">:</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;speciesB&#39;</span><span class="p">:</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">udc</span><span class="p">))}</span>
+  <span class="p">)</span>
+  <span class="n">cud</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ud_node</span><span class="p">)</span>
+  <span class="n">j2_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;jastrow&#39;</span><span class="p">,</span>
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;J2&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Two-Body&#39;</span><span class="p">,</span> <span class="s1">&#39;function&#39;</span><span class="p">:</span> <span class="s1">&#39;Bspline&#39;</span><span class="p">}</span>
+  <span class="p">)</span>
+  <span class="n">j2_node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cuu</span><span class="p">)</span>
+  <span class="n">j2_node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cud</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">j2_node</span></div>
 
 <div class="viewcode-block" id="build_jk2_iso"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.build_jk2_iso">[docs]</a><span class="k">def</span> <span class="nf">build_jk2_iso</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">kc</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; construct isotropic e-e reciprocal space Jastrow node</span>
@@ -341,17 +361,15 @@
   <span class="p">})</span>
   <span class="n">corr_node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coeff_node</span><span class="p">)</span>
 
-  <span class="n">jk_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;jastrow&#39;</span><span class="p">,{</span>
-    <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;Jk&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;type&#39;</span><span class="p">:</span><span class="s1">&#39;kSpace&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;source&#39;</span><span class="p">:</span><span class="s1">&#39;e&#39;</span>
+  <span class="n">jk_node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;jastrow&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Jk&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;kSpace&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="s1">&#39;e&#39;</span>
   <span class="p">})</span>
   <span class="n">jk_node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">corr_node</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">jk_node</span></div>
 
-
 <span class="c1"># ================= level 4: QMCPACK specialized advanced =================</span>
-
 <div class="viewcode-block" id="turn_off_jas_opt"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.turn_off_jas_opt">[docs]</a><span class="k">def</span> <span class="nf">turn_off_jas_opt</span><span class="p">(</span><span class="n">wf_node</span><span class="p">):</span>
   <span class="n">mywf</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">wf_node</span><span class="p">)</span>
   <span class="n">all_jas</span> <span class="o">=</span> <span class="n">mywf</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//jastrow&#39;</span><span class="p">)</span>
@@ -359,7 +377,6 @@
     <span class="k">for</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="n">jas</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;.//coefficients&#39;</span><span class="p">):</span>
       <span class="n">coeff</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;optimize&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">mywf</span></div>
-
 
 <div class="viewcode-block" id="add_backflow"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.add_backflow">[docs]</a><span class="k">def</span> <span class="nf">add_backflow</span><span class="p">(</span><span class="n">wf_node</span><span class="p">,</span> <span class="n">bf_node</span><span class="p">):</span>
   <span class="c1"># make sure inputs are not scrambled</span>
@@ -371,7 +388,7 @@
 
   <span class="c1"># insert backflow block</span>
   <span class="n">dset</span> <span class="o">=</span> <span class="n">mywf</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//determinantset&#39;</span><span class="p">)</span>
-  <span class="n">dset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">bf_node</span><span class="p">)</span>
+  <span class="n">dset</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">bf_node</span><span class="p">)</span>
 
   <span class="c1"># use code path where &lt;backflow&gt; optimization still works</span>
   <span class="n">bb</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># find basis set builder</span>
@@ -383,27 +400,29 @@
     <span class="n">bb</span> <span class="o">=</span> <span class="n">dset</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="n">bb</span> <span class="o">=</span> <span class="n">spo</span>
-  <span class="c1"># end if</span>
   <span class="k">assert</span> <span class="n">bb</span><span class="o">.</span><span class="n">tag</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;sposet_builder&#39;</span><span class="p">,</span> <span class="s1">&#39;determinantset&#39;</span><span class="p">)</span>
-  <span class="n">bb</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;use_old_spline&#39;</span><span class="p">,</span><span class="s1">&#39;yes&#39;</span><span class="p">)</span>
-  <span class="n">bb</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;precision&#39;</span><span class="p">,</span><span class="s1">&#39;double&#39;</span><span class="p">)</span>
-  <span class="n">bb</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;truncate&#39;</span><span class="p">,</span><span class="s1">&#39;no&#39;</span><span class="p">)</span>
+  <span class="n">bb</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;use_old_spline&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">)</span>
+  <span class="n">bb</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;precision&#39;</span><span class="p">,</span> <span class="s1">&#39;double&#39;</span><span class="p">)</span>
+  <span class="n">bb</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;truncate&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">mywf</span></div>
 
+<div class="viewcode-block" id="dset2spo"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.dset2spo">[docs]</a><span class="k">def</span> <span class="nf">dset2spo</span><span class="p">(</span><span class="n">wf_node</span><span class="p">,</span> <span class="n">det_map</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; change &lt;wavefunction&gt; from old style, &lt;basis&gt; in &lt;determinantset&gt;,</span>
+<span class="sd">  to new style, &lt;basis&gt; in &lt;sposet_builder&gt;</span>
 
-<div class="viewcode-block" id="dset2spo"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.dset2spo">[docs]</a><span class="k">def</span> <span class="nf">dset2spo</span><span class="p">(</span><span class="n">wf_node</span><span class="p">,</span><span class="n">det_map</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; change &lt;wavefunction&gt; from old style, &lt;basis&gt; in &lt;determinantset&gt;, to new style, &lt;basis&gt; in &lt;sposet_builder&gt;</span>
 <span class="sd">  Args:</span>
 <span class="sd">    wf_node (etree.Element): &lt;wavefunction&gt; node</span>
-<span class="sd">    det_map (dict): determinant name -&gt; particle group name e.g. {&#39;updet&#39;:&#39;u&#39;,&#39;downdet&#39;:&#39;d&#39;}</span>
+<span class="sd">    det_map (dict): determinant name -&gt; particle group name</span>
+<span class="sd">      e.g. {&#39;updet&#39;:&#39;u&#39;,&#39;downdet&#39;:&#39;d&#39;}</span>
 <span class="sd">  Returns:</span>
 <span class="sd">    None</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="c1"># convert between sposet name and determinant id</span>
-  <span class="n">d2sname</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="s1">&#39;spo_&#39;</span><span class="o">+</span><span class="n">det_map</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+  <span class="k">def</span> <span class="nf">d2sname</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">&#39;spo_&#39;</span><span class="o">+</span><span class="n">det_map</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
   <span class="c1"># construct &lt;sposet_builder&gt; using nodes from &lt;determinantset&gt;</span>
   <span class="n">dset</span> <span class="o">=</span> <span class="n">wf_node</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//determinantset&#39;</span><span class="p">)</span>
-  <span class="n">bb</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;sposet_builder&#39;</span><span class="p">,</span><span class="n">dset</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
+  <span class="n">bb</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;sposet_builder&#39;</span><span class="p">,</span> <span class="n">dset</span><span class="o">.</span><span class="n">attrib</span><span class="p">)</span>
 
   <span class="c1"># add &lt;basisset&gt; to bb</span>
   <span class="n">bb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dset</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//basisset&#39;</span><span class="p">))</span>
@@ -416,17 +435,15 @@
     <span class="n">det_id</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">det_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">det_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
       <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> not in det_map&#39;</span> <span class="o">%</span> <span class="n">det_id</span><span class="p">)</span>
-    <span class="c1"># end if</span>
     <span class="n">spo_name</span> <span class="o">=</span> <span class="n">d2sname</span><span class="p">(</span><span class="n">det_id</span><span class="p">)</span>
     <span class="n">s2dname</span><span class="p">[</span><span class="n">spo_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">det_id</span>
-    <span class="n">det</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="n">spo_name</span><span class="p">)</span>
+    <span class="n">det</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">spo_name</span><span class="p">)</span>
     <span class="n">det</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
     <span class="n">bb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">det</span><span class="p">)</span>
-  <span class="c1"># end for det</span>
 
   <span class="c1"># replace &lt;determinantset&gt; with &lt;sposet_builder&gt;</span>
   <span class="n">idx</span> <span class="o">=</span> <span class="n">wf_node</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">dset</span><span class="p">)</span>
-  <span class="n">wf_node</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span><span class="n">bb</span><span class="p">)</span>
+  <span class="n">wf_node</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">bb</span><span class="p">)</span>
   <span class="n">wf_node</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">dset</span><span class="p">)</span>
 
   <span class="c1"># rewrite &lt;determinantset&gt;</span>
@@ -441,11 +458,9 @@
       <span class="s1">&#39;sposet&#39;</span><span class="p">:</span> <span class="n">spo_name</span>
     <span class="p">})</span>
     <span class="n">slater</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">det</span><span class="p">)</span>
-  <span class="c1"># end for spo_name</span>
   <span class="n">dset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slater</span><span class="p">)</span>
 
-  <span class="n">wf_node</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">dset</span><span class="p">)</span></div>
-<span class="c1"># end def dset2spo</span>
+  <span class="n">wf_node</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">dset</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -455,15 +470,17 @@
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
@@ -489,7 +506,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

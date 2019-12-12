@@ -1,11 +1,19 @@
-qharv\.trans package
-====================
+qharv.trans package
+===================
 
 Submodules
 ----------
 
-qharv\.trans\.nexus\_qmc module
--------------------------------
+qharv.trans.move module
+-----------------------
+
+.. automodule:: qharv.trans.move
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+qharv.trans.nexus\_qmc module
+-----------------------------
 
 .. automodule:: qharv.trans.nexus_qmc
     :members:

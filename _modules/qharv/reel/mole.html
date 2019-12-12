@@ -4,28 +4,21 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>qharv.reel.mole &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.0.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -52,7 +45,7 @@
 <span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
 
 
-<div class="viewcode-block" id="files_with_regex"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.files_with_regex">[docs]</a><span class="k">def</span> <span class="nf">files_with_regex</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">rundir</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="files_with_regex"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.files_with_regex">[docs]</a><span class="k">def</span> <span class="nf">files_with_regex</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">rundir</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; find files with the given suffix in folder rundir</span>
 <span class="sd">  rely on bash `find` command</span>
 
@@ -68,10 +61,30 @@
   <span class="n">popt</span> <span class="o">=</span> <span class="s1">&#39;-path&#39;</span>
   <span class="k">if</span> <span class="ow">not</span> <span class="n">case</span><span class="p">:</span>
     <span class="n">popt</span> <span class="o">=</span> <span class="s1">&#39;-ipath&#39;</span>  <span class="c1"># not case sensitive</span>
-  <span class="n">out</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;find&#39;</span><span class="p">,</span> <span class="n">rundir</span><span class="p">,</span> <span class="n">popt</span><span class="p">,</span> <span class="n">regex</span><span class="p">,</span> <span class="s1">&#39;-type&#39;</span><span class="p">,</span> <span class="n">ftype</span><span class="p">])</span>
+  <span class="n">options</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="o">+</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+  <span class="n">out</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;find&#39;</span><span class="p">,</span> <span class="n">rundir</span><span class="p">]</span> <span class="o">+</span> <span class="n">options</span> <span class="o">+</span> <span class="p">[</span><span class="n">popt</span><span class="p">,</span> <span class="n">regex</span><span class="p">,</span> <span class="s1">&#39;-type&#39;</span><span class="p">,</span> <span class="n">ftype</span><span class="p">])</span>
   <span class="n">flist</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
   <span class="k">return</span> <span class="n">flist</span></div>
 
+<div class="viewcode-block" id="findall"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.findall">[docs]</a><span class="k">def</span> <span class="nf">findall</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">rundir</span><span class="p">,</span> <span class="n">prepend_star</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; find all matching files with regular expression in rundir</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    regex (str):  regular expression for file names</span>
+<span class="sd">    rundir (str): directory containing the files to be found</span>
+<span class="sd">    prepend_star (bool, optional): add &#39;*&#39; to regex, default True</span>
+<span class="sd">  Return:</span>
+<span class="sd">    list: flist, list of all matching files</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="n">prepend_star</span><span class="p">:</span>
+    <span class="n">myregex</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span><span class="o">+</span><span class="n">regex</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">myregex</span> <span class="o">=</span> <span class="n">regex</span>
+  <span class="n">flist</span> <span class="o">=</span> <span class="n">files_with_regex</span><span class="p">(</span><span class="n">myregex</span><span class="p">,</span> <span class="n">rundir</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">flist</span></div>
 
 <div class="viewcode-block" id="find"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.find">[docs]</a><span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">rundir</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; find the first file that matches the given regular expression</span>
@@ -87,6 +100,20 @@
   <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flist</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;expect 1 but found </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">flist</span><span class="p">))</span>
   <span class="k">return</span> <span class="n">flist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="clean_path"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.clean_path">[docs]</a><span class="k">def</span> <span class="nf">clean_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; remove . and .. from path</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    path (str): file or folder path</span>
+<span class="sd">  Return:</span>
+<span class="sd">    str: clean path</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">segs</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+  <span class="n">segs1</span> <span class="o">=</span> <span class="p">[</span><span class="n">seg</span> <span class="k">for</span> <span class="n">seg</span> <span class="ow">in</span> <span class="n">segs</span> <span class="k">if</span> <span class="n">seg</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;..&#39;</span><span class="p">]]</span>
+  <span class="n">path1</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">segs1</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">path1</span></div>
 
 
 <div class="viewcode-block" id="interpret_qmcpack_fname"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.mole.interpret_qmcpack_fname">[docs]</a><span class="k">def</span> <span class="nf">interpret_qmcpack_fname</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
@@ -184,15 +211,17 @@
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
@@ -218,7 +247,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

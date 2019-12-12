@@ -4,28 +4,21 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>qharv.seed.wf_h5 &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.0.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -57,21 +50,19 @@
 
 <span class="c1"># ====================== level 0: basic io =======================</span>
 
-
 <div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; read h5 file and return a h5py File object</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    fname (str): hdf5 file</span>
 <span class="sd">    kwargs (dict): keyword arguments to pass on to h5py.File,</span>
-<span class="sd">      default is {&#39;mode&#39;:&#39;r&#39;}</span>
+<span class="sd">      default is {&#39;mode&#39;: &#39;r&#39;}</span>
 <span class="sd">  Return:</span>
 <span class="sd">    h5py.File: h5py File object</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;mode&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span>
   <span class="k">return</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="ls"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.ls">[docs]</a><span class="k">def</span> <span class="nf">ls</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;  &quot;</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; List directory structure</span>
@@ -88,10 +79,10 @@
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">mystr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
   <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="n">handle</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">handle</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
       <span class="n">mystr</span> <span class="o">+=</span> <span class="n">indent</span><span class="o">*</span><span class="n">level</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
       <span class="k">if</span> <span class="n">r</span><span class="p">:</span>
-        <span class="n">mystr</span> <span class="o">+=</span> <span class="n">ls</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span><span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span>
+        <span class="n">mystr</span> <span class="o">+=</span> <span class="n">ls</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span>
     <span class="c1"># end for</span>
   <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
     <span class="k">return</span> <span class="s1">&#39;&#39;</span>
@@ -100,11 +91,11 @@
   <span class="c1"># end if</span>
   <span class="k">return</span> <span class="n">mystr</span></div>
 
-
 <span class="c1"># ====== level 1: QMCPACK wavefunction hdf5 fixed locations ======</span>
 <span class="n">locations</span> <span class="o">=</span> <span class="p">{</span>
   <span class="s1">&#39;gvectors&#39;</span><span class="p">:</span> <span class="s1">&#39;electrons/kpoint_0/gvectors&#39;</span><span class="p">,</span>
   <span class="s1">&#39;nkpt&#39;</span><span class="p">:</span> <span class="s1">&#39;electrons/number_of_kpoints&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;nelecs&#39;</span><span class="p">:</span> <span class="s1">&#39;electrons/number_of_electrons&#39;</span><span class="p">,</span>
   <span class="s1">&#39;nspin&#39;</span><span class="p">:</span> <span class="s1">&#39;electrons/number_of_spins&#39;</span><span class="p">,</span>
   <span class="s1">&#39;nstate&#39;</span><span class="p">:</span> <span class="s1">&#39;electrons/kpoint_0/spin_0/number_of_states&#39;</span><span class="p">,</span>
   <span class="c1"># !!!! assume same number of states per kpt</span>
@@ -112,21 +103,21 @@
   <span class="s1">&#39;pos&#39;</span><span class="p">:</span> <span class="s1">&#39;atoms/positions&#39;</span>
 <span class="p">}</span>
 
-
-<div class="viewcode-block" id="get"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="get"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>  <span class="c1"># see more advanced get at level 3</span>
   <span class="sd">&quot;&quot;&quot; retrieve data from a known location in pwscf.h5</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    fp (h5py.File): hdf5 file object</span>
 <span class="sd">    name (str): a known name in locations</span>
 <span class="sd">  Return:</span>
-<span class="sd">    array_like: whatever fp[loc].value returns</span>
+<span class="sd">    array_like: whatever fp[loc][()] returns</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">locations</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;unknown attribute requested: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;unknown attribute requested: &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">name</span>
+    <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> known attributes:</span><span class="se">\n</span><span class="s1">  &#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">locations</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
   <span class="n">loc</span> <span class="o">=</span> <span class="n">locations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-  <span class="k">return</span> <span class="n">fp</span><span class="p">[</span><span class="n">loc</span><span class="p">]</span><span class="o">.</span><span class="n">value</span></div>
-
+  <span class="k">return</span> <span class="n">fp</span><span class="p">[</span><span class="n">loc</span><span class="p">][()]</span></div>
 
 <div class="viewcode-block" id="axes_elem_pos"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.axes_elem_pos">[docs]</a><span class="k">def</span> <span class="nf">axes_elem_pos</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; extract lattice vectors, atomic positions, and element names</span>
@@ -143,11 +134,11 @@
   <span class="n">pos</span>  <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;pos&#39;</span><span class="p">)</span>
 
   <span class="c1"># construct list of atomic labels</span>
-  <span class="n">elem_id</span>  <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="s1">&#39;atoms/species_ids&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+  <span class="n">elem_id</span>  <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="s1">&#39;atoms/species_ids&#39;</span><span class="p">][()]</span>
   <span class="n">elem_map</span> <span class="o">=</span> <span class="p">{}</span>
-  <span class="n">nelem</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="s1">&#39;atoms/number_of_species&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+  <span class="n">nelem</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="s1">&#39;atoms/number_of_species&#39;</span><span class="p">][()]</span>
   <span class="k">for</span> <span class="n">ielem</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nelem</span><span class="p">):</span>
-    <span class="n">elem_name</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="s1">&#39;atoms/species_</span><span class="si">%d</span><span class="s1">/name&#39;</span> <span class="o">%</span> <span class="n">ielem</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">elem_name</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="s1">&#39;atoms/species_</span><span class="si">%d</span><span class="s1">/name&#39;</span> <span class="o">%</span> <span class="n">ielem</span><span class="p">][()][</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">elem_map</span><span class="p">[</span><span class="n">ielem</span><span class="p">]</span> <span class="o">=</span> <span class="n">elem_name</span>
   <span class="c1"># end for ielem</span>
   <span class="n">elem</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem_map</span><span class="p">[</span><span class="n">eid</span><span class="p">]</span> <span class="k">for</span> <span class="n">eid</span> <span class="ow">in</span> <span class="n">elem_id</span><span class="p">]</span>
@@ -155,7 +146,6 @@
   <span class="k">return</span> <span class="n">axes</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">pos</span></div>
 
 <span class="c1"># ====== level 2: QMCPACK wavefunction hdf5 orbital locations ======</span>
-
 
 <div class="viewcode-block" id="kpoint_path"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.kpoint_path">[docs]</a><span class="k">def</span> <span class="nf">kpoint_path</span><span class="p">(</span><span class="n">ikpt</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; construct path to kpoint</span>
@@ -170,25 +160,381 @@
   <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;electrons/kpoint_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ikpt</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">path</span></div>
 
-
 <div class="viewcode-block" id="spin_path"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.spin_path">[docs]</a><span class="k">def</span> <span class="nf">spin_path</span><span class="p">(</span><span class="n">ikpt</span><span class="p">,</span> <span class="n">ispin</span><span class="p">):</span>
   <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;electrons/kpoint_</span><span class="si">%d</span><span class="s1">/spin_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ikpt</span><span class="p">,</span> <span class="n">ispin</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">path</span></div>
-
 
 <div class="viewcode-block" id="state_path"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.state_path">[docs]</a><span class="k">def</span> <span class="nf">state_path</span><span class="p">(</span><span class="n">ikpt</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">istate</span><span class="p">):</span>
   <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;electrons/kpoint_</span><span class="si">%d</span><span class="s1">/spin_</span><span class="si">%d</span><span class="s1">/state_</span><span class="si">%d</span><span class="s1">/&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ikpt</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">istate</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">path</span></div>
 
-
 <div class="viewcode-block" id="get_orb_in_pw"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.get_orb_in_pw">[docs]</a><span class="k">def</span> <span class="nf">get_orb_in_pw</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">ikpt</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">istate</span><span class="p">):</span>
-  <span class="n">orb_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">state_path</span><span class="p">(</span><span class="n">ikpt</span><span class="p">,</span><span class="n">ispin</span><span class="p">,</span><span class="n">istate</span><span class="p">),</span> <span class="s1">&#39;psi_g&#39;</span><span class="p">)</span>
-  <span class="n">psig_arr</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">orb_path</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>  <span class="c1"># stored in real view</span>
+  <span class="sd">&quot;&quot;&quot; get the plane wave coefficients of a single Kohn-Sham orbital</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): wf h5 file</span>
+<span class="sd">    ikpt (int): kpoint index</span>
+<span class="sd">    ispin (int): spin index</span>
+<span class="sd">    istate (int): band index</span>
+<span class="sd">  Return:</span>
+<span class="sd">    (np.array, np.array): (gvecs, cmat), PWs and coefficient matrix</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">orb_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">state_path</span><span class="p">(</span><span class="n">ikpt</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">istate</span><span class="p">),</span> <span class="s1">&#39;psi_g&#39;</span><span class="p">)</span>
+  <span class="n">psig_arr</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">orb_path</span><span class="p">][()]</span>  <span class="c1"># stored in real view</span>
   <span class="c1"># psig = psig_arr[:,0]+1j*psig_arr[:,1]  # convert to complex view</span>
-  <span class="n">psig</span> <span class="o">=</span> <span class="n">psig_arr</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="nb">complex</span><span class="p">)</span>  <span class="c1"># more elegant conversion</span>
+  <span class="n">psig</span> <span class="o">=</span> <span class="n">psig_arr</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="nb">complex</span><span class="p">)</span>  <span class="c1"># more elegant conversion</span>
   <span class="k">return</span> <span class="n">psig</span></div>
 
+<div class="viewcode-block" id="get_orb_on_grid"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.get_orb_on_grid">[docs]</a><span class="k">def</span> <span class="nf">get_orb_on_grid</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">ikpt</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">istate</span><span class="p">,</span> <span class="n">grid_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; get a single Kohn-Sham orbital on a real-space grid</span>
 
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): wf h5 file</span>
+<span class="sd">    ikpt (int): kpoint index</span>
+<span class="sd">    ispin (int): spin index</span>
+<span class="sd">    istate (int): band index</span>
+<span class="sd">    grid_shape (np.array): (3,) grid shape [nx, ny, nz]</span>
+<span class="sd">  Return:</span>
+<span class="sd">    np.array: orbital on grid with shape=grid_shape</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">qharv.cross.pqscf</span> <span class="k">import</span> <span class="n">check_grid_shape</span><span class="p">,</span> <span class="n">pw_to_r</span>
+  <span class="kn">from</span> <span class="nn">qharv.inspect</span> <span class="k">import</span> <span class="n">axes_pos</span>
+  <span class="c1"># define FFT grid</span>
+  <span class="n">gvecs</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;gvectors&#39;</span><span class="p">)</span>
+  <span class="n">gs</span> <span class="o">=</span> <span class="n">check_grid_shape</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">,</span> <span class="n">gvecs</span><span class="p">)</span>
+  <span class="c1"># FFT orbital</span>
+  <span class="n">psig</span> <span class="o">=</span> <span class="n">get_orb_in_pw</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">ikpt</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">istate</span><span class="p">)</span>
+  <span class="n">gs1</span><span class="p">,</span> <span class="n">rgrid</span> <span class="o">=</span> <span class="n">pw_to_r</span><span class="p">(</span><span class="n">gvecs</span><span class="p">,</span> <span class="n">psig</span><span class="p">,</span> <span class="n">grid_shape</span><span class="o">=</span><span class="n">gs</span><span class="p">)</span>
+  <span class="c1"># normalize FFT</span>
+  <span class="n">axes</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;axes&#39;</span><span class="p">)</span>
+  <span class="n">volume</span> <span class="o">=</span> <span class="n">axes_pos</span><span class="o">.</span><span class="n">volume</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+  <span class="n">npt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">gs</span><span class="p">)</span>
+  <span class="n">norm</span> <span class="o">=</span> <span class="n">volume</span><span class="o">**</span><span class="mf">0.5</span><span class="o">/</span><span class="n">npt</span>
+  <span class="k">return</span> <span class="n">rgrid</span><span class="o">/</span><span class="n">norm</span></div>
+
+<span class="c1"># ====== level 3: single particle orbitals ======</span>
+
+<div class="viewcode-block" id="get_cmat"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.get_cmat">[docs]</a><span class="k">def</span> <span class="nf">get_cmat</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">ikpt</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">norb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">npw</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; get Kohn-Sham orbital coefficients on a list of plane waves (PWs)</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): wf h5 file</span>
+<span class="sd">    ikpt (int): kpoint index</span>
+<span class="sd">    ispin (int): spin index</span>
+<span class="sd">    norb (int, optional): number of orbitals at this kpoint</span>
+<span class="sd">    npw (int, optional): number of PW for each orbital</span>
+<span class="sd">  Return:</span>
+<span class="sd">    np.array: cmat orbital coefficient matrix</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># decide how many orbitals to extract (norb)</span>
+  <span class="k">if</span> <span class="n">norb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">nelecs</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;nelecs&#39;</span><span class="p">)</span>  <span class="c1"># all spins</span>
+    <span class="n">norb</span> <span class="o">=</span> <span class="n">nelecs</span><span class="p">[</span><span class="n">ispin</span><span class="p">]</span>  <span class="c1"># get all occupied orbitals</span>
+  <span class="k">if</span> <span class="n">npw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># count the number of PWs (npw)</span>
+    <span class="n">gvecs</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;gvectors&#39;</span><span class="p">)</span>  <span class="c1"># integer vectors</span>
+    <span class="n">npw</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gvecs</span><span class="p">)</span>
+  <span class="c1"># construct coefficient matrix</span>
+  <span class="n">cmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">norb</span><span class="p">,</span> <span class="n">npw</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+  <span class="k">for</span> <span class="n">iorb</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">norb</span><span class="p">):</span>
+    <span class="n">ci</span> <span class="o">=</span> <span class="n">get_orb_in_pw</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">ikpt</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">iorb</span><span class="p">)</span>
+    <span class="n">cmat</span><span class="p">[</span><span class="n">iorb</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">ci</span>
+  <span class="k">return</span> <span class="n">cmat</span></div>
+
+<div class="viewcode-block" id="get_sc_cmat"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.get_sc_cmat">[docs]</a><span class="k">def</span> <span class="nf">get_sc_cmat</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">itwist</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">noccl</span><span class="p">,</span> <span class="n">sorted_orbs</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; get Kohn-Sham orbital coefficients at a supercell twist</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): wf h5 file</span>
+<span class="sd">    itwist (int): twist index</span>
+<span class="sd">    ispin (int): spin index</span>
+<span class="sd">    noccl (np.array): number of occupied orbitals at each kpoint</span>
+<span class="sd">  Return:</span>
+<span class="sd">    np.array: cmat orbital coefficient matrix</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">sorted_orbs</span><span class="p">:</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;I assume orbitals are sorted at each supercell twist.&#39;</span>
+    <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39; If orbitals are not sorted, then results will be WRONG!&#39;</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+  <span class="c1"># count PW</span>
+  <span class="n">gvecs0</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;gvectors&#39;</span><span class="p">)</span>
+  <span class="n">npw</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gvecs0</span><span class="p">)</span>
+  <span class="n">nprim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">noccl</span><span class="p">)</span>  <span class="c1"># number of primitive cells in the supercell</span>
+  <span class="c1"># sort orbitals</span>
+  <span class="n">istart</span> <span class="o">=</span> <span class="n">itwist</span><span class="o">*</span><span class="n">nprim</span>  <span class="c1"># !!!! assume orbitals are sorted</span>
+  <span class="c1"># construct supercell orbital coefficient matrix</span>
+  <span class="n">cmatl</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">ikpt</span><span class="p">,</span> <span class="n">nocc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">noccl</span><span class="p">):</span>
+    <span class="n">cmat1</span> <span class="o">=</span> <span class="n">get_cmat</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">istart</span><span class="o">+</span><span class="n">ikpt</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">norb</span><span class="o">=</span><span class="n">nocc</span><span class="p">,</span> <span class="n">npw</span><span class="o">=</span><span class="n">npw</span><span class="p">)</span>
+    <span class="n">cmatl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cmat1</span><span class="p">)</span>
+  <span class="n">cmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">cmatl</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">cmat</span></div>
+
+<div class="viewcode-block" id="normalize_cmat"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.normalize_cmat">[docs]</a><span class="k">def</span> <span class="nf">normalize_cmat</span><span class="p">(</span><span class="n">cmat</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; normalize PW orbital coefficients</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    cmat (np.array): coefficient matrix shape (norb, npw)</span>
+<span class="sd">  Effect:</span>
+<span class="sd">    each row of cmat will be normalized to |ci|^2=1</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">norb</span><span class="p">,</span> <span class="n">npw</span> <span class="o">=</span> <span class="n">cmat</span><span class="o">.</span><span class="n">shape</span>
+  <span class="k">for</span> <span class="n">iorb</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">norb</span><span class="p">):</span>
+    <span class="n">ci</span> <span class="o">=</span> <span class="n">cmat</span><span class="p">[</span><span class="n">iorb</span><span class="p">]</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ci</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span> <span class="n">ci</span><span class="p">)</span>
+    <span class="n">cmat</span><span class="p">[</span><span class="n">iorb</span><span class="p">]</span> <span class="o">/=</span> <span class="n">norm</span><span class="o">**</span><span class="mf">0.5</span></div>
+
+<div class="viewcode-block" id="get_twist"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.get_twist">[docs]</a><span class="k">def</span> <span class="nf">get_twist</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">itwist</span><span class="p">):</span>
+  <span class="n">kpath</span> <span class="o">=</span> <span class="n">kpoint_path</span><span class="p">(</span><span class="n">itwist</span><span class="p">)</span>
+  <span class="n">tpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kpath</span><span class="p">,</span> <span class="s1">&#39;reduced_k&#39;</span><span class="p">)</span>
+  <span class="n">ukvec</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">tpath</span><span class="p">][()]</span>
+  <span class="k">return</span> <span class="n">ukvec</span></div>
+
+<div class="viewcode-block" id="get_twists"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.get_twists">[docs]</a><span class="k">def</span> <span class="nf">get_twists</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; return the list of available twist vectors</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): wf h5 file</span>
+<span class="sd">    ndim (int, optional): number of spatial dimensions, default 3</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    np.array: tvecs, twist vectors in reciprocal lattice units (nk, ndim)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">nk</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;nkpt&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">ukvecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">nk</span><span class="p">,</span> <span class="n">ndim</span><span class="p">])</span>
+  <span class="k">for</span> <span class="n">ik</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nk</span><span class="p">):</span>
+    <span class="n">kpath</span> <span class="o">=</span> <span class="n">kpoint_path</span><span class="p">(</span><span class="n">ik</span><span class="p">)</span>
+    <span class="n">ukvec</span> <span class="o">=</span> <span class="n">get_twist</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">ik</span><span class="p">)</span>
+    <span class="n">ukvecs</span><span class="p">[</span><span class="n">ik</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">ukvec</span>
+  <span class="k">return</span> <span class="n">ukvecs</span></div>
+
+<div class="viewcode-block" id="get_bands"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.get_bands">[docs]</a><span class="k">def</span> <span class="nf">get_bands</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">ispin</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; return the list of available Kohn-Sham eigenvalues</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): wf h5 file</span>
+<span class="sd">    ispin (int, optional): spin index, default 0</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    np.array: tvecs, twist vectors in reciprocal lattice units (nk, nbnd)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">nk</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;nkpt&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">nbnd</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;nstate&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">bands</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">nk</span><span class="p">,</span> <span class="n">nbnd</span><span class="p">])</span>
+  <span class="k">for</span> <span class="n">ik</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nk</span><span class="p">):</span>
+    <span class="n">kpath</span> <span class="o">=</span> <span class="n">kpoint_path</span><span class="p">(</span><span class="n">ik</span><span class="p">)</span>
+    <span class="n">spath</span> <span class="o">=</span> <span class="n">spin_path</span><span class="p">(</span><span class="n">ik</span><span class="p">,</span> <span class="n">ispin</span><span class="p">)</span>
+    <span class="n">bpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">spath</span><span class="p">,</span> <span class="s1">&#39;eigenvalues&#39;</span><span class="p">)</span>
+    <span class="n">band</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">bpath</span><span class="p">][()]</span>
+    <span class="n">bands</span><span class="p">[</span><span class="n">ik</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">band</span>
+  <span class="k">return</span> <span class="n">bands</span></div>
+
+<div class="viewcode-block" id="get_orbs"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.get_orbs">[docs]</a><span class="k">def</span> <span class="nf">get_orbs</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">orbs</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; return the list of requested Kohn-Sham orbitals</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): wf h5 file</span>
+<span class="sd">    orbs (list): a list of 3-tuples, each tuple species the KS state</span>
+<span class="sd">     by (kpoint/twist, spin, band) i.e. (ik, ispin, ib)</span>
+<span class="sd">    truncate (bool, optional): remove PWs with ``small&#39;&#39; coefficient</span>
+<span class="sd">    tol (float, optional): define ``small&#39;&#39; as |ck|^2 &lt; tol</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">qharv.inspect</span> <span class="k">import</span> <span class="n">axes_pos</span>
+  <span class="n">gvecs</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;gvectors&#39;</span><span class="p">)</span>
+  <span class="n">qvecs</span> <span class="o">=</span> <span class="n">get_twists</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+  <span class="n">axes</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;axes&#39;</span><span class="p">)</span>
+  <span class="n">raxes</span> <span class="o">=</span> <span class="n">axes_pos</span><span class="o">.</span><span class="n">raxes</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+
+  <span class="n">kvecsl</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">psigl</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">orbs</span><span class="p">:</span>
+    <span class="n">ik</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">ib</span> <span class="o">=</span> <span class="n">orb</span>
+    <span class="c1"># PW basis</span>
+    <span class="n">kvecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">gvecs</span><span class="o">+</span><span class="n">qvecs</span><span class="p">[</span><span class="n">ik</span><span class="p">],</span> <span class="n">raxes</span><span class="p">)</span>
+    <span class="n">npw</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kvecs</span><span class="p">)</span>
+    <span class="c1"># PW coefficients</span>
+    <span class="n">psig</span> <span class="o">=</span> <span class="n">get_orb_in_pw</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">ik</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">ib</span><span class="p">)</span>
+    <span class="n">sel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">npw</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">truncate</span><span class="p">:</span>  <span class="c1"># cut down on the # of PWs</span>
+      <span class="n">pg2</span> <span class="o">=</span> <span class="p">(</span><span class="n">psig</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">*</span><span class="n">psig</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+      <span class="n">sel</span> <span class="o">=</span> <span class="n">pg2</span> <span class="o">&gt;</span> <span class="n">tol</span>
+    <span class="n">kvecsl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kvecs</span><span class="p">[</span><span class="n">sel</span><span class="p">])</span>
+    <span class="n">psigl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">psig</span><span class="p">[</span><span class="n">sel</span><span class="p">])</span>
+  <span class="k">return</span> <span class="n">kvecsl</span><span class="p">,</span> <span class="n">psigl</span></div>
+
+<span class="c1"># ====== level 4: write wf h5 file from scratch ======</span>
+
+<div class="viewcode-block" id="write_misc"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.write_misc">[docs]</a><span class="k">def</span> <span class="nf">write_misc</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">nup_ndn</span><span class="p">,</span> <span class="n">nkpt</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; fill /electrons/number_of_* and /format</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): hdf5 file object</span>
+<span class="sd">    nup_ndn (tuple/list): number of up and down electrons (nup, ndn)</span>
+<span class="sd">    nkpt (int): number of kpoints/twists</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">nup</span><span class="p">,</span> <span class="n">ndn</span> <span class="o">=</span> <span class="n">nup_ndn</span>
+  <span class="n">nspin</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># !!!! hard-code restricted orbitals</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">require_group</span><span class="p">(</span><span class="s1">&#39;/electrons&#39;</span><span class="p">)</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;/electrons/number_of_electrons&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">nup</span><span class="p">,</span> <span class="n">ndn</span><span class="p">])</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;/electrons/number_of_kpoints&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">nkpt</span><span class="p">])</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;/electrons/number_of_spins&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">nspin</span><span class="p">])</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;/format&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ES-HDF&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="write_gvecs"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.write_gvecs">[docs]</a><span class="k">def</span> <span class="nf">write_gvecs</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">gvecs</span><span class="p">,</span> <span class="n">kpath</span><span class="o">=</span><span class="s1">&#39;/electrons/kpoint_0&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; fill the electrons/kpoint_0/gvectors group in wf h5 file</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): hdf5 file object</span>
+<span class="sd">    gvecs (np.array): PW basis as integer vectors</span>
+<span class="sd">    kpath (str, optional): kpoint group to contain gvecs, default is</span>
+<span class="sd">     &#39;/electrons/kpoint_0&#39;</span>
+
+<span class="sd">  Example:</span>
+<span class="sd">    &gt;&gt;&gt; fp = h5py.File(&#39;pwscf.pwscf.h5&#39;, &#39;w&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; write_gvecs(fp, gvecs)</span>
+<span class="sd">    &gt;&gt;&gt; fp.close()</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">require_group</span><span class="p">(</span><span class="n">kpath</span><span class="p">)</span>
+  <span class="n">kgrp</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">kpath</span><span class="p">]</span>
+  <span class="n">kgrp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;gvectors&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">gvecs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="write_kpoint"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.write_kpoint">[docs]</a><span class="k">def</span> <span class="nf">write_kpoint</span><span class="p">(</span><span class="n">kgrp</span><span class="p">,</span> <span class="n">ikpt</span><span class="p">,</span> <span class="n">utvec</span><span class="p">,</span> <span class="n">evals</span><span class="p">,</span> <span class="n">cmats</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; fill the electrons/kpoint_$ikpt group in wf h5 file</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    kgrp (h5py.Group): kpoint group</span>
+<span class="sd">    ikpt (int): twist index</span>
+<span class="sd">    utvec (np.array): twist vector in reduced units</span>
+<span class="sd">    evals (list): list of Kohn-Sham eigenvalues to sort orbitals;</span>
+<span class="sd">      one real np.array of shape (norb) for each spin</span>
+<span class="sd">    cmats (list): list of Kohn-Sham orbitals in PW basis;</span>
+<span class="sd">      one complex np.array of shape (norb, npw) for each spin</span>
+
+<span class="sd">  Example:</span>
+<span class="sd">    &gt;&gt;&gt; fp = h5py.File(&#39;pwscf.pwscf.h5&#39;, &#39;w&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; kgrp = fp.require_group(&#39;/electrons/kpoint_0&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; evals = [ np.array([0]) ]  # 1 spin, 1 state</span>
+<span class="sd">    &gt;&gt;&gt; cmats = [ np.array([[0]], dtype=complex) ]</span>
+<span class="sd">    &gt;&gt;&gt; write_kpoint(kgrp, 0, [0, 0, 0], evals, cmats)</span>
+<span class="sd">    &gt;&gt;&gt; fp.close()</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># write twist</span>
+  <span class="n">kgrp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;reduced_k&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">utvec</span><span class="p">)</span>
+  <span class="c1"># write Kohn-Sham system</span>
+  <span class="n">nspin</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmats</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">evals</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nspin</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> evals </span><span class="si">%d</span><span class="s1"> cmats&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">evals</span><span class="p">),</span> <span class="n">nspin</span><span class="p">))</span>
+  <span class="k">for</span> <span class="n">ispin</span><span class="p">,</span> <span class="p">(</span><span class="n">evs</span><span class="p">,</span> <span class="n">cmat</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">evals</span><span class="p">,</span> <span class="n">cmats</span><span class="p">)):</span>
+    <span class="n">spath</span> <span class="o">=</span> <span class="s1">&#39;spin_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">ispin</span>
+    <span class="n">sgrp</span> <span class="o">=</span> <span class="n">kgrp</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">spath</span><span class="p">)</span>
+    <span class="c1"># write eigenvalues</span>
+    <span class="n">nstate</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmat</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">evs</span><span class="p">)</span> <span class="o">!=</span> <span class="n">nstate</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> evs for </span><span class="si">%d</span><span class="s1"> states&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">evs</span><span class="p">),</span> <span class="n">nstate</span><span class="p">))</span>
+    <span class="n">sgrp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;number_of_states&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">nstate</span><span class="p">])</span>
+    <span class="n">sgrp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;eigenvalues&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">evs</span><span class="p">)</span>
+    <span class="c1"># write eigenvectors</span>
+    <span class="k">for</span> <span class="n">istate</span><span class="p">,</span> <span class="n">evec</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cmat</span><span class="p">):</span>
+      <span class="n">psi_g_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/state_</span><span class="si">%d</span><span class="s1">/psi_g&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spath</span><span class="p">,</span> <span class="n">istate</span><span class="p">)</span>
+      <span class="n">real_emat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">evec</span><span class="p">),</span> <span class="mi">2</span><span class="p">])</span>
+      <span class="n">real_emat</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">evec</span><span class="o">.</span><span class="n">real</span>
+      <span class="n">real_emat</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">evec</span><span class="o">.</span><span class="n">imag</span>
+      <span class="n">pgrp</span> <span class="o">=</span> <span class="n">kgrp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">psi_g_path</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">real_emat</span><span class="p">)</span>
+  <span class="c1"># no symmetry infomation</span>
+  <span class="n">kgrp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;numsym&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+  <span class="n">kgrp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;symgroup&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+  <span class="n">kgrp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="write_wf"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.write_wf">[docs]</a><span class="k">def</span> <span class="nf">write_wf</span><span class="p">(</span><span class="n">egrp</span><span class="p">,</span> <span class="n">utvecs</span><span class="p">,</span> <span class="n">gvecs</span><span class="p">,</span> <span class="n">evalsl</span><span class="p">,</span> <span class="n">cmatsl</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; fill the wf portion of the electrons group in wf h5 file</span>
+<span class="sd">  !!!! WARNING: this function may require too much memory;</span>
+<span class="sd">  if so, use write_kpoint directly</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    egrp (h5py.Group): electrons group</span>
+<span class="sd">    utvecs (np.array): all twist vectors in reduced units</span>
+<span class="sd">    evalsl (list): list of Kohn-Sham eigenvalues to sort orbitals;</span>
+<span class="sd">      one real np.array of shape (norb) for each spin and twist</span>
+<span class="sd">    cmatsl (list): list of Kohn-Sham orbitals in PW basis;</span>
+<span class="sd">      one complex np.array of shape (norb, npw) for each spin and twist</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">npw0</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gvecs</span><span class="p">)</span>  <span class="c1"># number of PWs</span>
+  <span class="c1"># create kpoints</span>
+  <span class="n">kp_fmt</span> <span class="o">=</span> <span class="s1">&#39;kpoint_</span><span class="si">%d</span><span class="s1">&#39;</span>
+  <span class="k">for</span> <span class="n">ik</span><span class="p">,</span> <span class="p">(</span><span class="n">utvec</span><span class="p">,</span> <span class="n">evals</span><span class="p">,</span> <span class="n">cmats</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+      <span class="nb">zip</span><span class="p">(</span><span class="n">utvecs</span><span class="p">,</span> <span class="n">evalsl</span><span class="p">,</span> <span class="n">cmatsl</span><span class="p">)</span>
+  <span class="p">):</span>
+    <span class="c1"># check PW count</span>
+    <span class="k">for</span> <span class="n">ispin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cmats</span><span class="p">)):</span>
+      <span class="n">npw</span> <span class="o">=</span> <span class="n">cmats</span><span class="p">[</span><span class="n">ispin</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+      <span class="k">if</span> <span class="n">npw</span> <span class="o">!=</span> <span class="n">npw0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;k</span><span class="si">%d</span><span class="s1"> has </span><span class="si">%d</span><span class="s1"> PW, not </span><span class="si">%d</span><span class="s1"> gvecs&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ik</span><span class="p">,</span> <span class="n">npw</span><span class="p">,</span> <span class="n">npw0</span><span class="p">))</span>
+    <span class="c1"># create and fill kpoint group</span>
+    <span class="n">kpath</span> <span class="o">=</span> <span class="n">kp_fmt</span> <span class="o">%</span> <span class="n">ik</span>
+    <span class="n">kgrp</span> <span class="o">=</span> <span class="n">egrp</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">kpath</span><span class="p">)</span>
+    <span class="n">write_kpoint</span><span class="p">(</span><span class="n">kgrp</span><span class="p">,</span> <span class="n">ik</span><span class="p">,</span> <span class="n">utvec</span><span class="p">,</span> <span class="n">evals</span><span class="p">,</span> <span class="n">cmats</span><span class="p">)</span>
+  <span class="c1"># add gvectors to kpoint0</span>
+  <span class="n">kpath0</span> <span class="o">=</span> <span class="n">kp_fmt</span> <span class="o">%</span> <span class="mi">0</span>
+  <span class="n">kgrp0</span> <span class="o">=</span> <span class="n">egrp</span><span class="p">[</span><span class="n">kpath0</span><span class="p">]</span>
+  <span class="n">kgrp0</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;gvectors&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">gvecs</span><span class="p">)</span>
+  <span class="n">kgrp0</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;number_of_gvectors&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">gvecs</span><span class="p">)])</span></div>
+
+<div class="viewcode-block" id="write_supercell"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.write_supercell">[docs]</a><span class="k">def</span> <span class="nf">write_supercell</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; create and fill the /supercell group</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): hdf5 file object</span>
+<span class="sd">    axes (np.array): lattice vectors in Bohr</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;supercell/primitive_vectors&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="write_atoms"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.wf_h5.write_atoms">[docs]</a><span class="k">def</span> <span class="nf">write_atoms</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">pseudized_charge</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; create and fill the /atoms group</span>
+<span class="sd">  !!!! QMCPACK does NOT check valence_charge, pseudized_charge matters?</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): hdf5 file object</span>
+<span class="sd">    elem (np.array): array of atom names</span>
+<span class="sd">    pos (np.array): array of atomic coordinates in Bohr</span>
+<span class="sd">    pseudized_charge (dict): number of pseudized electrons for each species</span>
+<span class="sd">  Return:</span>
+<span class="sd">    list: species_id, a list of atomic numbers for each atom</span>
+<span class="sd">  Effect:</span>
+<span class="sd">    fill /atoms group in &#39;fp&#39;</span>
+<span class="sd">  Example:</span>
+<span class="sd">    &gt;&gt;&gt; fp = h5py.File(&#39;pwscf.pwscf.h5&#39;, &#39;a&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; wf_h5.write_atoms(fp, [&#39;Li&#39;],</span>
+<span class="sd">    &gt;&gt;&gt;                   np.array([[0, 0, 0]]),</span>
+<span class="sd">    &gt;&gt;&gt;                   pseudized_charge={&#39;Li&#39;: 2})</span>
+<span class="sd">    &gt;&gt;&gt; fp.close()</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;atoms/number_of_atoms&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">elem</span><span class="p">)])</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;atoms/positions&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">pos</span><span class="p">)</span>
+  <span class="c1"># write species info</span>
+  <span class="n">species</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;atoms/number_of_species&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">species</span><span class="p">)])</span>
+  <span class="n">atomic_number</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;H&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Li&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">}</span>
+  <span class="n">number_of_electrons</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="n">species_map</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">for</span> <span class="n">ispec</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">species</span><span class="p">):</span>
+    <span class="n">species_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ispec</span>
+    <span class="n">spec_grp</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s1">&#39;atoms/species_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">ispec</span><span class="p">)</span>
+    <span class="c1"># write name</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">species_map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+      <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;unknown element </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+    <span class="n">spec_grp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+    <span class="c1"># write atomic number and valence</span>
+    <span class="n">Zn</span>   <span class="o">=</span> <span class="n">atomic_number</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="n">spec_grp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;atomic_number&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">Zn</span><span class="p">])</span>
+    <span class="n">Zps</span>  <span class="o">=</span> <span class="n">Zn</span>
+    <span class="k">if</span> <span class="n">pseudized_charge</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># no pseudopotential, use bare charge</span>
+      <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">Zps</span> <span class="o">-=</span> <span class="n">pseudized_charge</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="n">number_of_electrons</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Zps</span>
+    <span class="n">spec_grp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;valence_charge&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="n">Zps</span><span class="p">])</span>
+  <span class="c1"># end for ispec</span>
+  <span class="n">species_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">species_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">elem</span><span class="p">]</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;atoms/species_ids&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">species_ids</span><span class="p">)</span>
+  <span class="n">nelec_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">number_of_electrons</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">elem</span><span class="p">]</span>
+  <span class="k">return</span> <span class="n">nelec_list</span>  <span class="c1"># return the number of valence electrons for each atom</span></div>
 <span class="c1"># =======================================================================</span>
 </pre></div>
 
@@ -199,15 +545,17 @@
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
@@ -233,7 +581,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

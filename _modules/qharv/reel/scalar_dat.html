@@ -4,28 +4,21 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>qharv.reel.scalar_dat &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.0.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -53,108 +46,174 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; read the scalar.dat file, should be table format readable by numpy.loadtxt.</span>
+<div class="viewcode-block" id="parse"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.parse">[docs]</a><span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; Parse text of a scalar.dat file, should be table format.</span>
 
+<span class="sd">  Args:</span>
+<span class="sd">    text (str): content of scalar.dat file</span>
+<span class="sd">  Return:</span>
+<span class="sd">    pd.DataFrame: table data</span>
+<span class="sd">  Example:</span>
+<span class="sd">    &gt;&gt;&gt; with open(&#39;vmc.s001.scalar.dat&#39;, &#39;r&#39;) as f:</span>
+<span class="sd">    &gt;&gt;&gt;   text = f.read()</span>
+<span class="sd">    &gt;&gt;&gt;   df = parse(text)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">import</span> <span class="nn">sys</span>
+  <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">StringIO</span> <span class="k">import</span> <span class="n">StringIO</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">StringIO</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="n">fp</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+    <span class="k">except</span><span class="p">:</span>
+      <span class="n">fp</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+  <span class="c1"># try to read header line</span>
+  <span class="n">header</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+  <span class="c1"># read data</span>
+  <span class="n">sep</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\s+&#39;</span>
+  <span class="k">if</span> <span class="n">header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">)</span>
+    <span class="c1"># remove first column name &#39;#&#39;</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="c1"># calculate local energy variance if possible (QMCPACK specific)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;LocalEnergy&#39;</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;LocalEnergy_sq&#39;</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">):</span>
+      <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Variance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;LocalEnergy_sq&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LocalEnergy&#39;</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+  <span class="c1"># column labels should be strings</span>
+  <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">df</span></div>
+
+<div class="viewcode-block" id="read"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.read">[docs]</a><span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; Read the scalar.dat file, should be table format.</span>
 <span class="sd">   The header line should start with &#39;#&#39; and contain column labels.</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    dat_fname (str): name of input file</span>
-<span class="sd">  Returns:</span>
+<span class="sd">  Return:</span>
 <span class="sd">    pd.DataFrame: df containing the table of data</span>
+<span class="sd">  Example:</span>
+<span class="sd">    &gt;&gt;&gt; df = read(&#39;vmc.s001.scalar.dat&#39;)</span>
 <span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
-  <span class="c1"># check if a header line exists, if it does not, then set header=None</span>
-  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-    <span class="n">header</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-  <span class="c1"># end with</span>
-  
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span> <span class="c1"># there is no header</span>
-    <span class="c1"># pandas&#39;s equivalent of numpy.loadtxt</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;\s+&#39;</span><span class="p">,</span><span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-  <span class="k">else</span><span class="p">:</span> <span class="c1"># do some extra parsing of the header</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;\s+&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="read_to_list"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.read_to_list">[docs]</a><span class="k">def</span> <span class="nf">read_to_list</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; read scalar.dat file into a list of pandas DataFrames</span>
 
-    <span class="c1"># remove first column name &#39;#&#39;</span>
-    <span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
-    <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+<span class="sd">  Header lines should start with &#39;#&#39;, assumed to contain column labels.</span>
+<span class="sd">  Many scalar.dat files can be concatenated. A list will be returned.</span>
 
-    <span class="c1"># calculate local energy variance if possible</span>
-    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;LocalEnergy&#39;</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;LocalEnergy_sq&#39;</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">):</span>
-      <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Variance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;LocalEnergy_sq&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;LocalEnergy&#39;</span><span class="p">]</span><span class="o">**</span><span class="mf">2.</span>
-    <span class="c1"># end if</span>
-  <span class="c1"># end if</span>
+<span class="sd">  Args:</span>
+<span class="sd">    dat_fname (str): name of input file</span>
+<span class="sd">  Return:</span>
+<span class="sd">    list: list of df(s) containing the table(s) of data</span>
+<span class="sd">  Example:</span>
+<span class="sd">    &gt;&gt;&gt; dfl = read_to_list(&#39;gctas.dat&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; df = pd.concat(dfl).reset_index(drop=True)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># first separate out the header lines and parse them</span>
+  <span class="kn">from</span> <span class="nn">qharv.reel</span> <span class="k">import</span> <span class="n">ascii_out</span>
+  <span class="n">mm</span> <span class="o">=</span> <span class="n">ascii_out</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">)</span>
+  <span class="n">idxl</span> <span class="o">=</span> <span class="n">ascii_out</span><span class="o">.</span><span class="n">all_lines_with_tag</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">)</span>
+  <span class="n">bidxl</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">headerl</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">idxl</span><span class="p">:</span>
+    <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="n">bidxl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mm</span><span class="o">.</span><span class="n">tell</span><span class="p">())</span>
+    <span class="n">headerl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+  <span class="n">idxl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+  <span class="c1"># now read data and use headers to label columns</span>
+  <span class="n">dfl</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">bidx</span><span class="p">,</span> <span class="n">eidx</span><span class="p">,</span> <span class="n">header</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bidxl</span><span class="p">,</span> <span class="n">idxl</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">headerl</span><span class="p">):</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">text1</span> <span class="o">=</span> <span class="n">mm</span><span class="p">[</span><span class="n">bidx</span><span class="p">:</span><span class="n">eidx</span><span class="p">]</span>
+    <span class="n">df1</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">text1</span><span class="p">)</span>
+    <span class="n">df1</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">columns</span>
+    <span class="n">dfl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df1</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">dfl</span></div>
 
-  <span class="c1"># column labels should be strings</span>
-  <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<div class="viewcode-block" id="write"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.write">[docs]</a><span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">header_pad</span><span class="o">=</span><span class="s1">&#39;# &#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; write dataframe to plain text scalar table format</span>
 
-  <span class="k">return</span> <span class="n">df</span></div>
-<span class="c1"># end def parse</span>
+<span class="sd">  Lightly wrap around pandas.to_string with defaults to index and float_format</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    dat_fname (str): output data file name</span>
+<span class="sd">    df (pd.DataFrame): data</span>
+<span class="sd">    header_pad (str, optional): pad beginning of header with comment</span>
+<span class="sd">     string, default &#39;# &#39;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">default_kws</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;float_format&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%8.6f</span><span class="s1">&#39;</span>
+  <span class="p">}</span>
+  <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">default_kws</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+      <span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dat_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header_pad</span> <span class="o">+</span> <span class="n">text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="corr"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.corr">[docs]</a><span class="k">def</span> <span class="nf">corr</span><span class="p">(</span><span class="n">trace</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; calculate the autocorrelation of a trace of scalar data</span>
 
-<span class="sd">  correlation time is defined as the integral of the auto-correlation function from t=0 to when the function first reaches 0.</span>
+<span class="sd">  correlation time is defined as the integral of the auto-correlation</span>
+<span class="sd">   function from t=0 to when the function first reaches 0.</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    trace (list): should be a 1D iterable array of floating point numbers</span>
-<span class="sd">  Returns:</span>
+<span class="sd">  Return:</span>
 <span class="sd">    float: correlation_time, the autocorrelation time of this trace of scalars</span>
 <span class="sd">  &quot;&quot;&quot;</span>
- 
-  <span class="n">mu</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
-  <span class="n">stddev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-  <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">stddev</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span> <span class="c1"># easy case</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span> <span class="c1"># infinite correlation for constant trace</span>
-  <span class="c1"># end if</span>
 
+  <span class="n">mu</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+  <span class="n">stddev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">stddev</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>  <span class="c1"># easy case</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>  <span class="c1"># infinite correlation for constant trace</span>
   <span class="n">correlation_time</span> <span class="o">=</span> <span class="mf">0.</span>
-  <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)):</span>
+  <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)):</span>
     <span class="c1"># calculate auto_correlation</span>
     <span class="n">auto_correlation</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span><span class="o">-</span><span class="n">k</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
-      <span class="n">auto_correlation</span> <span class="o">+=</span> <span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">trace</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">k</span><span class="p">]</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span>
-    <span class="c1"># end for i</span>
+    <span class="n">auto_correlation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">trace</span><span class="p">[:</span><span class="n">num</span><span class="p">]</span><span class="o">-</span><span class="n">mu</span><span class="p">,</span> <span class="n">trace</span><span class="p">[</span><span class="n">k</span><span class="p">:]</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span>
     <span class="n">auto_correlation</span> <span class="o">*=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">num</span><span class="o">*</span><span class="n">stddev</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">auto_correlation</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
       <span class="n">correlation_time</span> <span class="o">+=</span> <span class="n">auto_correlation</span>
     <span class="k">else</span><span class="p">:</span>
       <span class="k">break</span>
-    <span class="c1"># end if</span>
-  <span class="c1"># end for k</span>
- 
   <span class="n">correlation_time</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">correlation_time</span>
   <span class="k">return</span> <span class="n">correlation_time</span></div>
-<span class="c1"># end def corr</span>
-<div class="viewcode-block" id="error"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.error">[docs]</a><span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span><span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="error"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.error">[docs]</a><span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; calculate the error of a trace of scalar data</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    trace (list): should be a 1D iterable array of floating point numbers</span>
-<span class="sd">    kappa (float,optional): auto-correlation time, default is to re-calculate </span>
-<span class="sd">  Returns:</span>
+<span class="sd">    kappa (float,optional): auto-correlation time, default is to re-calculate</span>
+<span class="sd">  Return:</span>
 <span class="sd">    float: stderr, the error of the mean of this trace of scalars</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">stddev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-  <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">stddev</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span> <span class="c1"># easy case</span>
-    <span class="k">return</span> <span class="mf">0.0</span> <span class="c1"># no error for constant trace</span>
-  <span class="c1"># end if</span>
-
-  <span class="k">if</span> <span class="n">kappa</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># no call to corr </span>
+  <span class="n">stddev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">stddev</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>  <span class="c1"># easy case</span>
+    <span class="k">return</span> <span class="mf">0.0</span>  <span class="c1"># no error for constant trace</span>
+  <span class="k">if</span> <span class="n">kappa</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># no call to corr</span>
     <span class="n">kappa</span> <span class="o">=</span> <span class="n">corr</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
-  <span class="c1"># end if</span>
   <span class="n">neffective</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span><span class="o">/</span><span class="n">kappa</span><span class="p">)</span>
   <span class="n">err</span> <span class="o">=</span> <span class="n">stddev</span><span class="o">/</span><span class="n">neffective</span>
   <span class="k">return</span> <span class="n">err</span></div>
-<span class="c1"># end def error</span>
 
-<div class="viewcode-block" id="single_column"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.single_column">[docs]</a><span class="k">def</span> <span class="nf">single_column</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">column</span><span class="p">,</span><span class="n">nequil</span><span class="p">):</span>
+<div class="viewcode-block" id="single_column"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.scalar_dat.single_column">[docs]</a><span class="k">def</span> <span class="nf">single_column</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">nequil</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; calculate mean and error of a column</span>
 
-<span class="sd">    nequil blocks of data are thrown out; autocorrelation time is taken into </span>
-<span class="sd">  account when calculating error. The equilibrated data is assumed to have </span>
+<span class="sd">    nequil blocks of data are thrown out; autocorrelation time is taken into</span>
+<span class="sd">  account when calculating error. The equilibrated data is assumed to have</span>
 <span class="sd">  Gaussian distribution. Error is calculated for one standard deviation</span>
 <span class="sd">  (1-sigma error).</span>
 
@@ -162,7 +221,7 @@
 <span class="sd">    df (pd.DataFrame): table of data (e.g. from scalar_dat.parse)</span>
 <span class="sd">    column (str): name of column</span>
 <span class="sd">    nequil (int): number of equilibration blocks</span>
-<span class="sd">  Returns:</span>
+<span class="sd">  Return:</span>
 <span class="sd">    (float,float,float): (ymean,yerr,ycorr), where ymean is the mean of column</span>
 <span class="sd">     , yerr is the 1-sigma error of column, and ycorr is the autocorrelation</span>
 <span class="sd">  &quot;&quot;&quot;</span>
@@ -171,10 +230,8 @@
 
   <span class="n">ymean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">myy</span><span class="p">)</span>
   <span class="n">ycorr</span> <span class="o">=</span> <span class="n">corr</span><span class="p">(</span><span class="n">myy</span><span class="p">)</span>
-  <span class="n">yerr</span>  <span class="o">=</span> <span class="n">error</span><span class="p">(</span><span class="n">myy</span><span class="p">,</span><span class="n">ycorr</span><span class="p">)</span>
-
-  <span class="k">return</span> <span class="n">ymean</span><span class="p">,</span><span class="n">yerr</span><span class="p">,</span><span class="n">ycorr</span></div>
-<span class="c1"># end def</span>
+  <span class="n">yerr</span>  <span class="o">=</span> <span class="n">error</span><span class="p">(</span><span class="n">myy</span><span class="p">,</span> <span class="n">ycorr</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">ymean</span><span class="p">,</span> <span class="n">yerr</span><span class="p">,</span> <span class="n">ycorr</span></div>
 </pre></div>
 
           </div>
@@ -184,15 +241,17 @@
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
@@ -218,7 +277,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

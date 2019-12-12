@@ -4,28 +4,21 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>qharv.cross.pqscf &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.0.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -51,12 +44,12 @@
 <span class="c1"># Routines to manipulate pyscf results for use in QMCPACK</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<div class="viewcode-block" id="atom_text"><a class="viewcode-back" href="../../../qharv.cross.html#qharv.cross.pqscf.atom_text">[docs]</a><span class="k">def</span> <span class="nf">atom_text</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span><span class="n">pos</span><span class="p">):</span>
+<div class="viewcode-block" id="atom_text"><a class="viewcode-back" href="../../../qharv.cross.html#qharv.cross.pqscf.atom_text">[docs]</a><span class="k">def</span> <span class="nf">atom_text</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;convert elem,pos to text representation</span>
-<span class="sd">  </span>
-<span class="sd">  for example, elem = [&#39;C&#39;,&#39;C&#39;], pos = [[0,0,0],[0.5,0.5,0.5]] will be </span>
+
+<span class="sd">  for example, elem = [&#39;C&#39;,&#39;C&#39;], pos = [[0,0,0],[0.5,0.5,0.5]] will be</span>
 <span class="sd">  converted to &#39;C 0 0 0;C 0.5 0.5 0.5&#39;</span>
-<span class="sd">  </span>
+
 <span class="sd">  Args:</span>
 <span class="sd">   elem (list): a list of atomic symbols such as &#39;H&#39;,&#39;C&#39;,&#39;O&#39;</span>
 <span class="sd">   pos  (list): a list of atomic positions, assume in 3D</span>
@@ -67,28 +60,75 @@
   <span class="k">for</span> <span class="n">iatom</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">elem</span><span class="p">)):</span>
       <span class="n">mypos</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="n">iatom</span><span class="p">]</span>
       <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">mypos</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
-      <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%5s</span><span class="s1">  </span><span class="si">%10.6f</span><span class="s1">  </span><span class="si">%10.6f</span><span class="s1">  </span><span class="si">%10.6f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">elem</span><span class="p">[</span><span class="n">iatom</span><span class="p">],</span><span class="n">mypos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">mypos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">mypos</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+      <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%5s</span><span class="s1">  </span><span class="si">%10.6f</span><span class="s1">  </span><span class="si">%10.6f</span><span class="s1">  </span><span class="si">%10.6f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="n">elem</span><span class="p">[</span><span class="n">iatom</span><span class="p">],</span> <span class="n">mypos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mypos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mypos</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
       <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
   <span class="n">atext</span> <span class="o">=</span> <span class="s1">&#39;;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">atext</span></div>
 <span class="c1"># end def</span>
 
-<div class="viewcode-block" id="mf_from_chkfile"><a class="viewcode-back" href="../../../qharv.cross.html#qharv.cross.pqscf.mf_from_chkfile">[docs]</a><span class="k">def</span> <span class="nf">mf_from_chkfile</span><span class="p">(</span><span class="n">chkfile</span><span class="p">,</span><span class="n">scf_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-  <span class="kn">from</span> <span class="nn">pyscf.pbc</span> <span class="k">import</span> <span class="n">scf</span>
+<div class="viewcode-block" id="mf_from_chkfile"><a class="viewcode-back" href="../../../qharv.cross.html#qharv.cross.pqscf.mf_from_chkfile">[docs]</a><span class="k">def</span> <span class="nf">mf_from_chkfile</span><span class="p">(</span><span class="n">chkfile</span><span class="p">,</span> <span class="n">scf_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pyscf.pbc</span> <span class="k">import</span> <span class="n">scf</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pyscf</span> <span class="k">import</span> <span class="n">scf</span>
   <span class="k">if</span> <span class="n">scf_class</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">scf_class</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">RHF</span>
-
-  <span class="n">cell</span><span class="p">,</span><span class="n">scf_rec</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">chkfile</span><span class="o">.</span><span class="n">load_scf</span><span class="p">(</span><span class="n">chkfile</span><span class="p">)</span>
-  <span class="n">mf</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">RHF</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
-  <span class="n">mf</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">scf_rec</span><span class="p">)</span>
+  <span class="n">cell</span><span class="p">,</span> <span class="n">scf_rec</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">chkfile</span><span class="o">.</span><span class="n">load_scf</span><span class="p">(</span><span class="n">chkfile</span><span class="p">)</span>
+  <span class="n">mf</span> <span class="o">=</span> <span class="n">scf_class</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+  <span class="n">mf</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">scf_rec</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">mf</span></div>
-<span class="c1"># end def</span>
 
-<div class="viewcode-block" id="pw_to_r"><a class="viewcode-back" href="../../../qharv.cross.html#qharv.cross.pqscf.pw_to_r">[docs]</a><span class="k">def</span> <span class="nf">pw_to_r</span><span class="p">(</span><span class="n">gvecs</span><span class="p">,</span><span class="n">psig</span><span class="p">,</span><span class="n">grid_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ase_tile"><a class="viewcode-back" href="../../../qharv.cross.html#qharv.cross.pqscf.ase_tile">[docs]</a><span class="k">def</span> <span class="nf">ase_tile</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">tmat</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Create supercell from primitive cell and tiling matrix</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    cell (pyscf.Cell): cell object</span>
+<span class="sd">    tmat (np.array): 3x3 tiling matrix e.g. 2*np.eye(3)</span>
+<span class="sd">  Return:</span>
+<span class="sd">    pyscf.Cell: supercell</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">qharv.inspect.axes_elem_pos</span> <span class="k">import</span> <span class="n">ase_tile</span> <span class="k">as</span> <span class="n">atile</span>
+  <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;tiling with non-diagonal matrix require the &quot;ase&quot; package&#39;</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+  <span class="c1"># get crystal from cell object</span>
+  <span class="n">axes</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">lattice_vectors</span><span class="p">()</span>
+  <span class="n">elem</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">_atom</span><span class="p">]</span>
+  <span class="n">pos</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">atom_coords</span><span class="p">()</span>
+  <span class="n">axes1</span><span class="p">,</span> <span class="n">elem1</span><span class="p">,</span> <span class="n">pos1</span> <span class="o">=</span> <span class="n">atile</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">tmat</span><span class="p">)</span>
+  <span class="c1"># re-make cell object</span>
+  <span class="n">cell1</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+  <span class="n">cell1</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">elem1</span><span class="p">,</span> <span class="n">pos1</span><span class="p">))</span>
+  <span class="n">cell1</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">axes1</span>
+  <span class="c1"># !!!! how to change mesh ????</span>
+  <span class="n">ncopy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">tmat</span><span class="p">)</span>
+  <span class="n">cell1</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ncopy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">cell</span><span class="o">.</span><span class="n">mesh</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                         <span class="n">ncopy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">cell</span><span class="o">.</span><span class="n">mesh</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                         <span class="n">ncopy</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">cell</span><span class="o">.</span><span class="n">mesh</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+  <span class="n">cell1</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+  <span class="n">cell1</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">verbose</span>
+  <span class="k">return</span> <span class="n">cell1</span></div>
+
+<div class="viewcode-block" id="check_grid_shape"><a class="viewcode-back" href="../../../qharv.cross.html#qharv.cross.pqscf.check_grid_shape">[docs]</a><span class="k">def</span> <span class="nf">check_grid_shape</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">,</span> <span class="n">gvecs</span><span class="p">):</span>
+  <span class="c1"># Nyquist-Shannon sampling grid</span>
+  <span class="n">ns_shape</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">gvecs</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">-</span><span class="n">gvecs</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">+</span><span class="mi">1</span>
+  <span class="k">if</span> <span class="n">grid_shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># deduce minimum real-space basis to retain all information</span>
+    <span class="n">grid_shape</span> <span class="o">=</span> <span class="n">ns_shape</span>
+  <span class="k">else</span><span class="p">:</span>  <span class="c1"># make sure no information is lost from pw representation</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">grid_shape</span> <span class="o">&gt;=</span> <span class="n">ns_shape</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;grid shape </span><span class="si">%s</span><span class="s1"> is too small to preserve PW rep.&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">)</span>
+      <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;Please increase to at least </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">ns_shape</span><span class="p">)</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">grid_shape</span></div>
+
+<div class="viewcode-block" id="pw_to_r"><a class="viewcode-back" href="../../../qharv.cross.html#qharv.cross.pqscf.pw_to_r">[docs]</a><span class="k">def</span> <span class="nf">pw_to_r</span><span class="p">(</span><span class="n">gvecs</span><span class="p">,</span> <span class="n">psig</span><span class="p">,</span> <span class="n">grid_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; convert a 3D function from plane-wave to real-space basis</span>
-<span class="sd">  </span>
-<span class="sd">  plane wave basis is assumed to be in reciprocal lattice units</span>
-<span class="sd">  real space basis will be in grid units</span>
+
+<span class="sd">  plane wave basis is assumed to be in reciprocal-lattice units</span>
+<span class="sd">  real-space basis will be in grid units axes/grid_shape</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    gvecs (np.array):  dtype=int &amp; shape = (npw,ndim), npw is the number of plane waves, and ndim is the number of spatial dimensions. ndim is expected to be 3. Each entry in gvecs should be a 3D vector of integers.  Each gvec specify a plane wave basis element exp(i*gvec*rvec).</span>
@@ -97,30 +137,20 @@
 <span class="sd">  Returns:</span>
 <span class="sd">    (np.array,np.array): (grid_shape,moR), grid_shape is input if given. Otherwise constructed in function to hold all information from the plane-wave representation. moR has dtype=complex &amp; shape = grid_shape. moR is the 3D function in real-space basis. Typically a molecular orbital.</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  
-  <span class="n">pw_grid_shape</span> <span class="o">=</span> <span class="n">gvecs</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">gvecs</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-  <span class="k">if</span> <span class="n">grid_shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># deduce minimum real-space basis to retain all information</span>
-    <span class="n">grid_shape</span> <span class="o">=</span> <span class="n">pw_grid_shape</span>
-  <span class="k">else</span><span class="p">:</span> <span class="c1"># make sure no information is lost from pw representation</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">grid_shape</span> <span class="o">&gt;=</span> <span class="n">pw_grid_shape</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Please increase grid_shape beyond (</span><span class="si">%s</span><span class="s1">) to preserve all information from the plane-wave representation.&#39;</span> <span class="o">%</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pw_grid_shape</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span> <span class="p">)</span>
-    <span class="c1"># end if</span>
-  <span class="c1"># end if</span>
-
+  <span class="c1"># verify user input</span>
+  <span class="n">gs</span> <span class="o">=</span> <span class="n">check_grid_shape</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">,</span> <span class="n">gvecs</span><span class="p">)</span>
   <span class="c1"># perform Fourier transform</span>
-  <span class="n">npw</span><span class="p">,</span><span class="n">ndim</span> <span class="o">=</span> <span class="n">gvecs</span><span class="o">.</span><span class="n">shape</span>
+  <span class="n">npw</span><span class="p">,</span> <span class="n">ndim</span> <span class="o">=</span> <span class="n">gvecs</span><span class="o">.</span><span class="n">shape</span>
   <span class="k">assert</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span>
-  <span class="n">fftbox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+  <span class="n">fftbox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
   <span class="k">for</span> <span class="n">ig</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npw</span><span class="p">):</span>
     <span class="n">fftbox</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">gvecs</span><span class="p">[</span><span class="n">ig</span><span class="p">])]</span> <span class="o">=</span> <span class="n">psig</span><span class="p">[</span><span class="n">ig</span><span class="p">]</span>
-  <span class="c1"># end for ig</span>
-  <span class="n">rgrid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifftn</span><span class="p">(</span><span class="n">fftbox</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">grid_shape</span><span class="p">,</span><span class="n">rgrid</span></div>
-<span class="c1"># end def pw_to_r</span>
+  <span class="n">rgrid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifftn</span><span class="p">(</span><span class="n">fftbox</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">gs</span><span class="p">,</span> <span class="n">rgrid</span></div>
 
-<div class="viewcode-block" id="r_to_pw"><a class="viewcode-back" href="../../../qharv.cross.html#qharv.cross.pqscf.r_to_pw">[docs]</a><span class="k">def</span> <span class="nf">r_to_pw</span><span class="p">(</span><span class="n">moR0</span><span class="p">,</span><span class="n">grid_shape</span><span class="p">,</span><span class="n">gvecs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="r_to_pw"><a class="viewcode-back" href="../../../qharv.cross.html#qharv.cross.pqscf.r_to_pw">[docs]</a><span class="k">def</span> <span class="nf">r_to_pw</span><span class="p">(</span><span class="n">moR0</span><span class="p">,</span> <span class="n">grid_shape</span><span class="p">,</span> <span class="n">gvecs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; convert a 3D function from real-space to plane-wave basis</span>
-<span class="sd">  </span>
+
 <span class="sd">  This function is essentially the inverse of pw_to_r, but assumes that the real space grid is built around (0,0,0)</span>
 
 <span class="sd">  Args:</span>
@@ -131,36 +161,36 @@
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">moR0</span><span class="p">)</span>
   <span class="n">cell_gs</span> <span class="o">=</span> <span class="p">(</span><span class="n">grid_shape</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
-  
-  <span class="k">if</span> <span class="n">gvecs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># deduce minimum plane-wave basis to retain all information</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">cell_gs</span><span class="o">+</span><span class="mi">1</span><span class="o">==</span><span class="n">grid_shape</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Please provide grid_shape. I cannot deduce minimum plane-wave basis for even grid_shape </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">grid_shape</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)))</span>
-    <span class="c1"># end if</span>
 
-    <span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span> <span class="o">=</span> <span class="n">cell_gs</span>
+  <span class="k">if</span> <span class="n">gvecs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># deduce minimum plane-wave basis to retain all information</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">cell_gs</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="n">grid_shape</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Please provide grid_shape. I cannot deduce minimum PW basis&#39;</span>
+      <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39; for even grid_shape </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">)</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span> <span class="o">=</span> <span class="n">cell_gs</span>
     <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>
     <span class="n">gvecs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">gvec</span> <span class="k">for</span> <span class="n">gvec</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span>
-      <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">nx</span><span class="p">,</span><span class="n">nx</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">ny</span><span class="p">,</span><span class="n">ny</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">nz</span><span class="p">,</span><span class="n">nz</span><span class="o">+</span><span class="mi">1</span><span class="p">))],</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-  <span class="k">else</span><span class="p">:</span> <span class="c1"># make sure information is not missing from real-space representation</span>
-    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">gvecs</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)</span>
-    <span class="n">valid</span> <span class="o">=</span> <span class="p">(</span><span class="n">gvecs</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">cell_gs</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="o">-</span><span class="n">gvecs</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">cell_gs</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+      <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">nx</span><span class="p">,</span> <span class="n">nx</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">ny</span><span class="p">,</span> <span class="n">ny</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">nz</span><span class="p">,</span> <span class="n">nz</span><span class="o">+</span><span class="mi">1</span><span class="p">))],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>  <span class="c1"># make sure information is not missing from real-space representation</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">gvecs</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)</span>
+    <span class="n">valid</span> <span class="o">=</span> <span class="p">(</span><span class="n">gvecs</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">cell_gs</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> \
+            <span class="p">(</span><span class="o">-</span><span class="n">gvecs</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">cell_gs</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">:</span>
-      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Please remove gvectors outside of cell_gs: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cell_gs</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span> <span class="p">)</span>
-    <span class="c1"># end if</span>
-  <span class="c1"># end if</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Please remove gvectors outside of cell_gs: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">cell_gs</span><span class="p">)</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-  <span class="n">npw</span><span class="p">,</span><span class="n">ndim</span> <span class="o">=</span> <span class="n">gvecs</span><span class="o">.</span><span class="n">shape</span>
-    
+  <span class="n">npw</span><span class="p">,</span> <span class="n">ndim</span> <span class="o">=</span> <span class="n">gvecs</span><span class="o">.</span><span class="n">shape</span>
+  <span class="k">assert</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span>
+
   <span class="n">orb</span> <span class="o">=</span> <span class="n">moR0</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">)</span>
   <span class="n">moG</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fftn</span><span class="p">(</span><span class="n">orb</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">)</span>
 
-  <span class="n">psig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">npw</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+  <span class="n">psig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">npw</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
   <span class="k">for</span> <span class="n">ipw</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npw</span><span class="p">):</span>
     <span class="n">psig</span><span class="p">[</span><span class="n">ipw</span><span class="p">]</span> <span class="o">=</span> <span class="n">moG</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">gvecs</span><span class="p">[</span><span class="n">ipw</span><span class="p">])]</span>
-  <span class="c1"># end for ipw</span>
-
-  <span class="k">return</span> <span class="n">gvecs</span><span class="p">,</span><span class="n">psig</span></div>
-<span class="c1"># end def r_to_pw</span>
+  <span class="k">return</span> <span class="n">gvecs</span><span class="p">,</span> <span class="n">psig</span></div>
 </pre></div>
 
           </div>
@@ -170,15 +200,17 @@
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
@@ -204,7 +236,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

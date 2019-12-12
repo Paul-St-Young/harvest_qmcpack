@@ -1,0 +1,237 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.reel.config_h5 &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.reel.config_h5</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Routines to parse hdf5 walker data output. Mostly built around PyTables.</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">tables</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="extract_checkpoint_walkers"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.config_h5.extract_checkpoint_walkers">[docs]</a><span class="k">def</span> <span class="nf">extract_checkpoint_walkers</span><span class="p">(</span><span class="n">fconfig</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; extract the checkpoint walkers from config.h5 file</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fconfig (str): path to config.h5 file</span>
+<span class="sd">  Return:</span>
+<span class="sd">    np.array: a list of walkers of shape (nconf, nptcl, ndim)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">h5file</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">fconfig</span><span class="p">)</span>
+  <span class="n">walkers</span> <span class="o">=</span> <span class="n">h5file</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">state_0</span><span class="o">.</span><span class="n">walkers</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+  <span class="n">h5file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">walkers</span></div>
+
+
+<div class="viewcode-block" id="save_mat"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.config_h5.save_mat">[docs]</a><span class="k">def</span> <span class="nf">save_mat</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">h5file</span><span class="p">,</span> <span class="n">slab</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; save matrix in h5file.slab.name</span>
+
+<span class="sd">  for /name, use slab = h5file.root</span>
+<span class="sd">  see example usage in saveh5</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    mat (np.array): 2D numpy array of floats</span>
+<span class="sd">    h5file (tables.File): get from tables.open_file(fname, &#39;w&#39;)</span>
+<span class="sd">    slab (tables.Group): HDF5 slab, could be root slab</span>
+<span class="sd">    name (str): name of CArray to create</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">atom</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">Atom</span><span class="o">.</span><span class="n">from_dtype</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+  <span class="n">ca</span> <span class="o">=</span> <span class="n">h5file</span><span class="o">.</span><span class="n">create_carray</span><span class="p">(</span><span class="n">slab</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">atom</span><span class="p">,</span> <span class="n">mat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+  <span class="n">ca</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">mat</span></div>
+
+
+<div class="viewcode-block" id="save_vec"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.config_h5.save_vec">[docs]</a><span class="k">def</span> <span class="nf">save_vec</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">h5file</span><span class="p">,</span> <span class="n">slab</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; save numpy array into an h5 slab under name</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    vec (np.array): numpy ndarray of arbitrary dimension and type</span>
+<span class="sd">    h5file (tables.file.File): pytables File</span>
+<span class="sd">    slab (tables.Group): HDF5 slab</span>
+<span class="sd">    name (str): name of CArray to create</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">vec</span><span class="o">.</span><span class="n">dtype</span>
+  <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+    <span class="n">vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">vec</span><span class="p">])</span>
+  <span class="n">atom</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">Atom</span><span class="o">.</span><span class="n">from_dtype</span><span class="p">(</span><span class="n">vec</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+  <span class="n">ca</span> <span class="o">=</span> <span class="n">h5file</span><span class="o">.</span><span class="n">create_carray</span><span class="p">(</span><span class="n">slab</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">atom</span><span class="p">,</span> <span class="n">vec</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+  <span class="n">ca</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">vec</span></div>
+
+
+<div class="viewcode-block" id="save_dict"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.config_h5.save_dict">[docs]</a><span class="k">def</span> <span class="nf">save_dict</span><span class="p">(</span><span class="n">arr_dict</span><span class="p">,</span> <span class="n">h5file</span><span class="p">,</span> <span class="n">slab</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; save a dictionary of numpy arrays into h5file</span>
+<span class="sd">   each entry will create its own sub-slab using key as name</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    arr_dict (dict): dictionary of numpy arrays</span>
+<span class="sd">    h5file (tables.file.File): pytables File</span>
+<span class="sd">    slab (tables.Group, optional): HDF5 slab, if None, then use root</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="n">slab</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">slab</span> <span class="o">=</span> <span class="n">h5file</span><span class="o">.</span><span class="n">root</span>
+  <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">arr_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">save_vec</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">h5file</span><span class="p">,</span> <span class="n">slab</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+  <span class="n">h5file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="load_dict"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.config_h5.load_dict">[docs]</a><span class="k">def</span> <span class="nf">load_dict</span><span class="p">(</span><span class="n">fh5</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>
+  <span class="kn">import</span> <span class="nn">h5py</span>
+  <span class="n">fp</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fh5</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">[</span><span class="n">path</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">key</span><span class="p">)]</span><span class="o">.</span><span class="n">value</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="saveh5"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.config_h5.saveh5">[docs]</a><span class="k">def</span> <span class="nf">saveh5</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">mat</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; save matrix at root of h5 file, mimic call signature of np.savetxt</span>
+
+<span class="sd">  e.g. mat = np.eye(3)</span>
+<span class="sd">  saveh5(&#39;mat.h5&#39;, mat)</span>
+<span class="sd">  $ h5ls mat.h5</span>
+<span class="sd">  data               Dataset {3/2730, 3}</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fname (str): name of hdf5 file to write</span>
+<span class="sd">    mat (np.array): 2D numpy array of floats</span>
+<span class="sd">    name (str, optional): CArray name at the root of the hdf5 file</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">fp</span> <span class="o">=</span> <span class="n">open_write</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+  <span class="n">save_vec</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">fp</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="loadh5"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.config_h5.loadh5">[docs]</a><span class="k">def</span> <span class="nf">loadh5</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/data&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; load matrix from h5 file, mimic np.loadtxt</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fname (str): name of hdf5 to read</span>
+<span class="sd">  Return:</span>
+<span class="sd">    np.array: matrix of data</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">fp</span> <span class="o">=</span> <span class="n">open_read</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+  <span class="n">slab</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+  <span class="n">mat</span> <span class="o">=</span> <span class="n">slab</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">mat</span></div>
+
+
+<div class="viewcode-block" id="open_write"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.config_h5.open_write">[docs]</a><span class="k">def</span> <span class="nf">open_write</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+  <span class="n">filters</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">Filters</span><span class="p">(</span><span class="n">complevel</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">complib</span><span class="o">=</span><span class="s1">&#39;zlib&#39;</span><span class="p">)</span>
+  <span class="n">fp</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">fp</span></div>
+
+
+<div class="viewcode-block" id="open_read"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.config_h5.open_read">[docs]</a><span class="k">def</span> <span class="nf">open_read</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+  <span class="n">fp</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">fp</span></div>
+
+<div class="viewcode-block" id="save_arr_dict"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.config_h5.save_arr_dict">[docs]</a><span class="k">def</span> <span class="nf">save_arr_dict</span><span class="p">(</span><span class="n">fh5</span><span class="p">,</span> <span class="n">arr_dict</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; save a dictory of numpy arrays into an h5 file</span>
+
+<span class="sd">  !!!! too many decisions made in this funciton, use save_dict</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fh5 (str): hdf5 file name</span>
+<span class="sd">    arr_dict (dict): a dictionary of numpy arrays to save to file</span>
+<span class="sd">    group (tables.group.Group, optional): h5 group slab</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">need_to_close</span> <span class="o">=</span> <span class="kc">False</span>
+  <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">fh5</span><span class="p">)</span> <span class="ow">is</span> <span class="n">tables</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">File</span><span class="p">:</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">fh5</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="n">open_write</span><span class="p">(</span><span class="n">fh5</span><span class="p">)</span>
+    <span class="n">need_to_close</span> <span class="o">=</span> <span class="kc">True</span>
+  <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">root</span>
+  <span class="n">save_dict</span><span class="p">(</span><span class="n">arr_dict</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">need_to_close</span><span class="p">:</span>
+    <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">qharv</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

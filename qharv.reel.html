@@ -4,30 +4,23 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>qharv.reel package &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.0.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="qharv.seed package" href="qharv.seed.html" />
+    <link rel="next" title="qharv.reel.forlib package" href="qharv.reel.forlib.html" />
     <link rel="prev" title="qharv.plantation package" href="qharv.plantation.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -38,7 +31,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="qharv.seed.html" title="qharv.seed package"
+          <a href="qharv.reel.forlib.html" title="qharv.reel.forlib package"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="qharv.plantation.html" title="qharv.plantation package"
@@ -55,6 +48,17 @@
             
   <div class="section" id="qharv-reel-package">
 <h1>qharv.reel package<a class="headerlink" href="#qharv-reel-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="qharv.reel.forlib.html">qharv.reel.forlib package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="qharv.reel.forlib.html#module-qharv.reel.forlib">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -70,7 +74,7 @@ reads ‘’’
 Atom 0 0 0 0
 Atom 1 1 1 1
 Atom 2 2 2 2
-‘’‘</p>
+‘’’</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -132,12 +136,12 @@ begin important data
 4 5 6
 7 8 9
 end important data
-‘’‘</p>
+‘’’</p>
 <p>mm.block_text(mm, ‘begin’, ‘end’) returns
-‘’‘1 2 3
+‘’’1 2 3
 4 5 6
 7 8 9
-‘’‘</p>
+‘’’</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -249,14 +253,14 @@ name_sep_val(mm, ‘natom’, dtype=int): ‘new:name’</p>
 <code class="descclassname">qharv.reel.ascii_out.</code><code class="descname">name_val_table</code><span class="sig-paren">(</span><em>text</em>, <em>dtype=&lt;type 'float'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/ascii_out.html#name_val_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.ascii_out.name_val_table" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>designed to parse optVariables text block</dt>
-<dd>e.g. ‘’‘uu_0 1.0770e+00 1 1  ON 0</dd>
+<dd>e.g. ‘’’uu_0 1.0770e+00 1 1  ON 0</dd>
 </dl>
 <p>uu_1 6.7940e-01 1 1  ON 1
 uu_2 4.3156e-01 1 1  ON 2
 ud_0 1.6913e+00 1 1  ON 5
 ud_1 1.0443e+00 1 1  ON 6
 ud_2 6.1912e-01 1 1  ON 7
-‘’‘</p>
+‘’’</p>
 <blockquote>
 <div><p>return variable-value map, only the first two columns are parsed.</p>
 <dl class="docutils">
@@ -282,6 +286,167 @@ dtype (type): data type of value, default is float</dd>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">memory map to file</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">mmap.mmap</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-qharv.reel.config_h5">
+<span id="qharv-reel-config-h5-module"></span><h2>qharv.reel.config_h5 module<a class="headerlink" href="#module-qharv.reel.config_h5" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="qharv.reel.config_h5.extract_checkpoint_walkers">
+<code class="descclassname">qharv.reel.config_h5.</code><code class="descname">extract_checkpoint_walkers</code><span class="sig-paren">(</span><em>fconfig</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/config_h5.html#extract_checkpoint_walkers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.config_h5.extract_checkpoint_walkers" title="Permalink to this definition">¶</a></dt>
+<dd><p>extract the checkpoint walkers from config.h5 file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fconfig</strong> (<em>str</em>) – path to config.h5 file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a list of walkers of shape (nconf, nptcl, ndim)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.config_h5.load_dict">
+<code class="descclassname">qharv.reel.config_h5.</code><code class="descname">load_dict</code><span class="sig-paren">(</span><em>fh5</em>, <em>path='/'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/config_h5.html#load_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.config_h5.load_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.config_h5.loadh5">
+<code class="descclassname">qharv.reel.config_h5.</code><code class="descname">loadh5</code><span class="sig-paren">(</span><em>fname</em>, <em>path='/data'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/config_h5.html#loadh5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.config_h5.loadh5" title="Permalink to this definition">¶</a></dt>
+<dd><p>load matrix from h5 file, mimic np.loadtxt</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<em>str</em>) – name of hdf5 to read</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">matrix of data</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.config_h5.open_read">
+<code class="descclassname">qharv.reel.config_h5.</code><code class="descname">open_read</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/config_h5.html#open_read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.config_h5.open_read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.config_h5.open_write">
+<code class="descclassname">qharv.reel.config_h5.</code><code class="descname">open_write</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/config_h5.html#open_write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.config_h5.open_write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.config_h5.save_arr_dict">
+<code class="descclassname">qharv.reel.config_h5.</code><code class="descname">save_arr_dict</code><span class="sig-paren">(</span><em>fh5</em>, <em>arr_dict</em>, <em>group=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/config_h5.html#save_arr_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.config_h5.save_arr_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>save a dictory of numpy arrays into an h5 file</p>
+<p>!!!! too many decisions made in this funciton, use save_dict</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fh5</strong> (<em>str</em>) – hdf5 file name</li>
+<li><strong>arr_dict</strong> (<em>dict</em>) – a dictionary of numpy arrays to save to file</li>
+<li><strong>group</strong> (<em>tables.group.Group</em><em>, </em><em>optional</em>) – h5 group slab</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.config_h5.save_dict">
+<code class="descclassname">qharv.reel.config_h5.</code><code class="descname">save_dict</code><span class="sig-paren">(</span><em>arr_dict</em>, <em>h5file</em>, <em>slab=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/config_h5.html#save_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.config_h5.save_dict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>save a dictionary of numpy arrays into h5file</dt>
+<dd>each entry will create its own sub-slab using key as name</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>arr_dict</strong> (<em>dict</em>) – dictionary of numpy arrays</li>
+<li><strong>h5file</strong> (<em>tables.file.File</em>) – pytables File</li>
+<li><strong>slab</strong> (<em>tables.Group</em><em>, </em><em>optional</em>) – HDF5 slab, if None, then use root</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.config_h5.save_mat">
+<code class="descclassname">qharv.reel.config_h5.</code><code class="descname">save_mat</code><span class="sig-paren">(</span><em>mat</em>, <em>h5file</em>, <em>slab</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/config_h5.html#save_mat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.config_h5.save_mat" title="Permalink to this definition">¶</a></dt>
+<dd><p>save matrix in h5file.slab.name</p>
+<p>for /name, use slab = h5file.root
+see example usage in saveh5</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mat</strong> (<em>np.array</em>) – 2D numpy array of floats</li>
+<li><strong>h5file</strong> (<em>tables.File</em>) – get from tables.open_file(fname, ‘w’)</li>
+<li><strong>slab</strong> (<em>tables.Group</em>) – HDF5 slab, could be root slab</li>
+<li><strong>name</strong> (<em>str</em>) – name of CArray to create</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.config_h5.save_vec">
+<code class="descclassname">qharv.reel.config_h5.</code><code class="descname">save_vec</code><span class="sig-paren">(</span><em>vec</em>, <em>h5file</em>, <em>slab</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/config_h5.html#save_vec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.config_h5.save_vec" title="Permalink to this definition">¶</a></dt>
+<dd><p>save numpy array into an h5 slab under name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vec</strong> (<em>np.array</em>) – numpy ndarray of arbitrary dimension and type</li>
+<li><strong>h5file</strong> (<em>tables.file.File</em>) – pytables File</li>
+<li><strong>slab</strong> (<em>tables.Group</em>) – HDF5 slab</li>
+<li><strong>name</strong> (<em>str</em>) – name of CArray to create</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.config_h5.saveh5">
+<code class="descclassname">qharv.reel.config_h5.</code><code class="descname">saveh5</code><span class="sig-paren">(</span><em>fname</em>, <em>mat</em>, <em>name='data'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/config_h5.html#saveh5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.config_h5.saveh5" title="Permalink to this definition">¶</a></dt>
+<dd><p>save matrix at root of h5 file, mimic call signature of np.savetxt</p>
+<p>e.g. mat = np.eye(3)
+saveh5(‘mat.h5’, mat)
+$ h5ls mat.h5
+data               Dataset {3/2730, 3}</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fname</strong> (<em>str</em>) – name of hdf5 file to write</li>
+<li><strong>mat</strong> (<em>np.array</em>) – 2D numpy array of floats</li>
+<li><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – CArray name at the root of the hdf5 file</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -315,8 +480,26 @@ dtype (type): data type of value, default is float</dd>
 </dd></dl>
 
 <dl class="function">
+<dt id="qharv.reel.mole.clean_path">
+<code class="descclassname">qharv.reel.mole.</code><code class="descname">clean_path</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#clean_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.clean_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove . and .. from path</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>str</em>) – file or folder path</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">clean path</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="qharv.reel.mole.files_with_regex">
-<code class="descclassname">qharv.reel.mole.</code><code class="descname">files_with_regex</code><span class="sig-paren">(</span><em>regex</em>, <em>rundir</em>, <em>case=True</em>, <em>ftype='f'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#files_with_regex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.files_with_regex" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">qharv.reel.mole.</code><code class="descname">files_with_regex</code><span class="sig-paren">(</span><em>regex</em>, <em>rundir</em>, <em>case=True</em>, <em>ftype='f'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#files_with_regex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.files_with_regex" title="Permalink to this definition">¶</a></dt>
 <dd><p>find files with the given suffix in folder rundir
 rely on bash <cite>find</cite> command</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -368,6 +551,31 @@ RuntimeError will be raised unless exactly one file is found</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="qharv.reel.mole.findall">
+<code class="descclassname">qharv.reel.mole.</code><code class="descname">findall</code><span class="sig-paren">(</span><em>regex</em>, <em>rundir</em>, <em>prepend_star=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#findall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.findall" title="Permalink to this definition">¶</a></dt>
+<dd><p>find all matching files with regular expression in rundir</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>regex</strong> (<em>str</em>) – regular expression for file names</li>
+<li><strong>rundir</strong> (<em>str</em>) – directory containing the files to be found</li>
+<li><strong>prepend_star</strong> (<em>bool</em><em>, </em><em>optional</em>) – add ‘*’ to regex, default True</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">flist, list of all matching files</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="qharv.reel.mole.interpret_qmcpack_fname">
 <code class="descclassname">qharv.reel.mole.</code><code class="descname">interpret_qmcpack_fname</code><span class="sig-paren">(</span><em>fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/mole.html#interpret_qmcpack_fname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.mole.interpret_qmcpack_fname" title="Permalink to this definition">¶</a></dt>
 <dd><p>extract metadata regarding the contents of a file based on its filename.
@@ -395,13 +603,86 @@ qmc.g005.s001.cont.xml</dd>
 </dd></dl>
 
 </div>
+<div class="section" id="module-qharv.reel.qmcpack_out">
+<span id="qharv-reel-qmcpack-out-module"></span><h2>qharv.reel.qmcpack_out module<a class="headerlink" href="#module-qharv.reel.qmcpack_out" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="qharv.reel.qmcpack_out.opt_vars">
+<code class="descclassname">qharv.reel.qmcpack_out.</code><code class="descname">opt_vars</code><span class="sig-paren">(</span><em>fout</em>, <em>begin_tag='&lt;optVariables'</em>, <em>end_tag='&lt;/optVariables'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/qmcpack_out.html#opt_vars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.qmcpack_out.opt_vars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse optimizable variables</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fout</strong> (<em>str</em>) – optimization output</li>
+<li><strong>begin_tag</strong> (<em>str</em><em>, </em><em>optional</em>) – default ‘&lt;optVariables’</li>
+<li><strong>end_tag</strong> (<em>str</em><em>, </em><em>optional</em>) – default ‘&lt;/optVariables’</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a list of dictionary, each a key-value map of opt. var.s</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.qmcpack_out.orb_rot_meta">
+<code class="descclassname">qharv.reel.qmcpack_out.</code><code class="descname">orb_rot_meta</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/qmcpack_out.html#orb_rot_meta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.qmcpack_out.orb_rot_meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse metadata from orbital rotation variable name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>str</em>) – optimizable variable name</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">metadata</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;spo-up_orb_rot_0000_0002&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">orb_rot_meta</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="s1">&#39;prefix&#39;</span><span class="p">:</span> <span class="s1">&#39;spo-up&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.qmcpack_out.orb_rot_opt_vars">
+<code class="descclassname">qharv.reel.qmcpack_out.</code><code class="descname">orb_rot_opt_vars</code><span class="sig-paren">(</span><em>fout</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/qmcpack_out.html#orb_rot_opt_vars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.qmcpack_out.orb_rot_opt_vars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a database of orbital rotation parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fout</strong> (<em>str</em>) – optimization output</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">database of orbital rotation parameters</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">pd.DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-qharv.reel.scalar_dat">
 <span id="qharv-reel-scalar-dat-module"></span><h2>qharv.reel.scalar_dat module<a class="headerlink" href="#module-qharv.reel.scalar_dat" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="qharv.reel.scalar_dat.corr">
 <code class="descclassname">qharv.reel.scalar_dat.</code><code class="descname">corr</code><span class="sig-paren">(</span><em>trace</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/scalar_dat.html#corr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.scalar_dat.corr" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculate the autocorrelation of a trace of scalar data</p>
-<p>correlation time is defined as the integral of the auto-correlation function from t=0 to when the function first reaches 0.</p>
+<dl class="docutils">
+<dt>correlation time is defined as the integral of the auto-correlation</dt>
+<dd>function from t=0 to when the function first reaches 0.</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -442,10 +723,35 @@ qmc.g005.s001.cont.xml</dd>
 
 <dl class="function">
 <dt id="qharv.reel.scalar_dat.parse">
-<code class="descclassname">qharv.reel.scalar_dat.</code><code class="descname">parse</code><span class="sig-paren">(</span><em>dat_fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/scalar_dat.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.scalar_dat.parse" title="Permalink to this definition">¶</a></dt>
-<dd><p>read the scalar.dat file, should be table format readable by numpy.loadtxt.</p>
-<blockquote>
-<div>The header line should start with ‘#’ and contain column labels.</div></blockquote>
+<code class="descclassname">qharv.reel.scalar_dat.</code><code class="descname">parse</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/scalar_dat.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.scalar_dat.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse text of a scalar.dat file, should be table format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>text</strong> (<em>str</em>) – content of scalar.dat file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">table data</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">pd.DataFrame</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;vmc.s001.scalar.dat&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span>  <span class="n">df</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.scalar_dat.read">
+<code class="descclassname">qharv.reel.scalar_dat.</code><code class="descname">read</code><span class="sig-paren">(</span><em>dat_fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/scalar_dat.html#read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.scalar_dat.read" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Read the scalar.dat file, should be table format.</dt>
+<dd>The header line should start with ‘#’ and contain column labels.</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -458,6 +764,35 @@ qmc.g005.s001.cont.xml</dd>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="s1">&#39;vmc.s001.scalar.dat&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.scalar_dat.read_to_list">
+<code class="descclassname">qharv.reel.scalar_dat.</code><code class="descname">read_to_list</code><span class="sig-paren">(</span><em>dat_fname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/scalar_dat.html#read_to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.scalar_dat.read_to_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>read scalar.dat file into a list of pandas DataFrames</p>
+<p>Header lines should start with ‘#’, assumed to contain column labels.
+Many scalar.dat files can be concatenated. A list will be returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dat_fname</strong> (<em>str</em>) – name of input file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of df(s) containing the table(s) of data</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dfl</span> <span class="o">=</span> <span class="n">read_to_list</span><span class="p">(</span><span class="s1">&#39;gctas.dat&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dfl</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -495,30 +830,52 @@ Gaussian distribution. Error is calculated for one standard deviation
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="qharv.reel.scalar_dat.write">
+<code class="descclassname">qharv.reel.scalar_dat.</code><code class="descname">write</code><span class="sig-paren">(</span><em>dat_fname</em>, <em>df</em>, <em>header_pad='# '</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/scalar_dat.html#write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.scalar_dat.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>write dataframe to plain text scalar table format</p>
+<p>Lightly wrap around pandas.to_string with defaults to index and float_format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dat_fname</strong> (<em>str</em>) – output data file name</li>
+<li><strong>df</strong> (<em>pd.DataFrame</em>) – data</li>
+<li><strong>header_pad</strong> (<em>str</em><em>, </em><em>optional</em>) – pad beginning of header with comment
+string, default ‘# ‘</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="module-qharv.reel.stat_h5">
 <span id="qharv-reel-stat-h5-module"></span><h2>qharv.reel.stat_h5 module<a class="headerlink" href="#module-qharv.reel.stat_h5" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="qharv.reel.stat_h5.absolute_magnetization">
-<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">absolute_magnetization</code><span class="sig-paren">(</span><em>handle</em>, <em>nequil</em>, <em>obs_name='SpinDensity'</em>, <em>up_name='u'</em>, <em>dn_name='d'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#absolute_magnetization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.absolute_magnetization" title="Permalink to this definition">¶</a></dt>
-<dd><p>calculate up-down spin density and the integral of its absolute value; first check that /SpinDensity/u and /SpinDensity/d both exist in the .stat.h5 file, then extract both densities, subtract and integrate</p>
+<dt id="qharv.reel.stat_h5.dsk_from_csk">
+<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">dsk_from_csk</code><span class="sig-paren">(</span><em>fp</em>, <em>csk_name</em>, <em>nequil</em>, <em>kappa=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#dsk_from_csk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.dsk_from_csk" title="Permalink to this definition">¶</a></dt>
+<dd><p>extract fluctuating structure factor dS(k) from charged structure factor</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>handle</strong> (<em>h5py.Group</em>) – or h5py.File or h5py.Dataset</li>
-<li><strong>nequil</strong> (<em>int</em>) – number of equilibration blocks to throw out</li>
-<li><strong>obs_name</strong> (<em>str</em>) – name of spindensity observable, default=SpinDensity</li>
-<li><strong>up_name</strong> (<em>str</em>) – default=u</li>
-<li><strong>dn_name</strong> (<em>str</em>) – default=d</li>
+<li><strong>fp</strong> (<em>h5py.File</em>) – stat.h5 handle</li>
+<li><strong>csk_name</strong> (<em>str</em>) – name the charged S(k) estimator, likely ‘csk’</li>
+<li><strong>nequil</strong> (<em>int</em>) – equilibration length</li>
+<li><strong>kappa</strong> (<em>float</em><em>, </em><em>optional</em>) – autocorrelation length, default is to calcaulte
+on-the-fly</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(rho,rhoe,mabs_mean,mabs_error), rho and rhoe have shape (ngrid,), where ngrid is the total number of real-space grid points i.e. for grid=(nx,ny,nz), ngrid=nx*ny*nz. mabs = int <a href="#id1"><span class="problematic" id="id2">|rho_up-rho_dn|</span></a></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(kvecs, dskm, dske), kvectors and S(k)
+mean and error</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array,np.array,float,float)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array, np.array, np.array)</p>
 </td>
 </tr>
 </tbody>
@@ -526,25 +883,36 @@ Gaussian distribution. Error is calculated for one standard deviation
 </dd></dl>
 
 <dl class="function">
-<dt id="qharv.reel.stat_h5.dsk_from_csk">
-<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">dsk_from_csk</code><span class="sig-paren">(</span><em>fp</em>, <em>csk_name</em>, <em>nequil</em>, <em>kappa</em>, <em>nsig=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#dsk_from_csk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.dsk_from_csk" title="Permalink to this definition">¶</a></dt>
-<dd><p>extract fluctuating structure factor dS(k) from charged structure factor S_c(k)
-:param fp: stat.h5 handle
-:type fp: h5py.File
-:param csk_name: name the charged S(k) estimator, likely ‘csk’
-:type csk_name: str
-:param nequil: equilibration length
-:type nequil: int
-:param kappa: autocorrelation length
-:type kappa: float
-:param nsig: noise suppression level in units of standard error, default nsig=3, all entries below nsig are considered zero.
-:type nsig: int,optional</p>
-<p>Returns:</p>
+<dt id="qharv.reel.stat_h5.dsk_from_skall">
+<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">dsk_from_skall</code><span class="sig-paren">(</span><em>fp</em>, <em>nequil</em>, <em>ska_name='skall'</em>, <em>kappa=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#dsk_from_skall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.dsk_from_skall" title="Permalink to this definition">¶</a></dt>
+<dd><p>extract fluctuating structure factor dS(k) from skall</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fp</strong> (<em>h5py.File</em>) – stat.h5 handle</li>
+<li><strong>nequil</strong> (<em>int</em>) – equilibration length</li>
+<li><strong>ska_name</strong> (<em>str</em><em>, </em><em>optional</em>) – name the “skall” estimator, default “skall”</li>
+<li><strong>kappa</strong> (<em>float</em><em>, </em><em>optional</em>) – autocorrelation length, default is to calcaulte
+on-the-fly</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(kvecs, dskm, dske), kvectors and S(k)
+mean and error</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array, np.array, np.array)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.reel.stat_h5.gofr">
-<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">gofr</code><span class="sig-paren">(</span><em>fp</em>, <em>obs_name</em>, <em>nequil</em>, <em>kappa</em>, <em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#gofr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.gofr" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">gofr</code><span class="sig-paren">(</span><em>fp</em>, <em>obs_name</em>, <em>nequil</em>, <em>kappa=None</em>, <em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#gofr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.gofr" title="Permalink to this definition">¶</a></dt>
 <dd><p>extract pair correlation function g(r) from stat.h5 file
 :param fp: h5py handle of stat.h5 file
 :type fp: h5py.File
@@ -552,17 +920,44 @@ Gaussian distribution. Error is calculated for one standard deviation
 :type obs_name: str
 :param nequil: number of equilibration blocks to remove
 :type nequil: int
-:param kappa: correlation length
-:type kappa: float
-:param force: force execution, i.e. skip all checks
-:type force: bool,optional</p>
+:param kappa: autocorrelation length, default is to calcaulte</p>
+<blockquote>
+<div>on-the-fly</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(myr,grm,gre): bin locations, g(r) mean, g(r) error</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>force</strong> (<em>bool</em><em>,</em><em>optional</em>) – force execution, i.e. skip all checks</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(myr,grm,gre): bin locations, g(r) mean, g(r) error</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.stat_h5.me2d">
+<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">me2d</code><span class="sig-paren">(</span><em>edata</em>, <em>kappa=None</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#me2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.me2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate mean and error of a table of columns</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>edata</strong> (<em>np.array</em>) – 2D array of equilibrated time series data</li>
+<li><strong>kappa</strong> (<em>float</em><em>, </em><em>optional</em>) – pre-calculate auto-correlation, default is to
+re-calculate on-the-fly</li>
+<li><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – axis to average over, default 0 i.e. columns</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(mean, error) of each column</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array, np.array)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -586,10 +981,10 @@ auto-correlation</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(val_mean,val_err), the mean and error of the observable, assuming no autocorrelation. For correlated data, error is underestimated by a factor of sqrt(autocorrelation).</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(mean, err), the mean and error of observable</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array,np.array)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array, np.array)</p>
 </td>
 </tr>
 </tbody>
@@ -598,25 +993,31 @@ auto-correlation</li>
 
 <dl class="function">
 <dt id="qharv.reel.stat_h5.nofk">
-<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">nofk</code><span class="sig-paren">(</span><em>fp</em>, <em>obs_name</em>, <em>nequil</em>, <em>kappa</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#nofk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.nofk" title="Permalink to this definition">¶</a></dt>
-<dd><p>extract momentum estimator output n(k) from stat.h5 file
-:param fp: h5py handle of stat.h5 file
-:type fp: h5py.File
-:param obs_name: observable name, probably ‘nofk’
-:type obs_name: str
-:param nequil: number of equilibration blocks to remove
-:type nequil: int
-:param kappa: correlation length
-:type kappa: float
-:param force: force execution, i.e. skip all checks
-:type force: bool,optional</p>
+<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">nofk</code><span class="sig-paren">(</span><em>fp</em>, <em>obs_name</em>, <em>nequil</em>, <em>kappa=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#nofk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.nofk" title="Permalink to this definition">¶</a></dt>
+<dd><p>extract momentum estimator output n(k) from stat.h5 file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(kvecs,nkm,nke): k-vectors, n(k) mean, n(k) error</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fp</strong> (<em>h5py.File</em>) – h5py handle of stat.h5 file</li>
+<li><strong>obs_name</strong> (<em>str</em>) – observable name, probably ‘nofk’</li>
+<li><strong>nequil</strong> (<em>int</em>) – number of equilibration blocks to remove</li>
+<li><strong>kappa</strong> (<em>float</em><em>, </em><em>optional</em>) – autocorrelation, default is to calculate
+on-the-fly</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>(kvecs,nkm,nke) k-vectors, n(k) mean and</dt>
+<dd><p class="first last">error</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array, np.array, np.array)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -626,6 +1027,72 @@ auto-correlation</li>
 <dt id="qharv.reel.stat_h5.path_loc">
 <code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">path_loc</code><span class="sig-paren">(</span><em>handle</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#path_loc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.path_loc" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.stat_h5.rhok">
+<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">rhok</code><span class="sig-paren">(</span><em>fp</em>, <em>obs_name</em>, <em>nequil</em>, <em>kappa=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#rhok"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.rhok" title="Permalink to this definition">¶</a></dt>
+<dd><p>extract electronic density rho(k) from stat.h5 file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fp</strong> (<em>h5py.File</em>) – h5py handle of stat.h5 file</li>
+<li><strong>obs_name</strong> (<em>str</em>) – observable name, probably ‘csk’</li>
+<li><strong>nequil</strong> (<em>int</em>) – number of equilibration blocks to remove</li>
+<li><strong>kappa</strong> (<em>float</em><em>, </em><em>optional</em>) – autocorrelation, default is to calculate
+on-the-fly</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>(kvecs, rhokm, rhoke)</dt>
+<dd><p class="first last">k-vectors, rho(k) mean and error
+notice rhokm has two rows for real and imag components (2, nk)</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array, np.array, np.array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.reel.stat_h5.rhok_from_skall">
+<code class="descclassname">qharv.reel.stat_h5.</code><code class="descname">rhok_from_skall</code><span class="sig-paren">(</span><em>fp</em>, <em>nequil</em>, <em>ska_name='skall'</em>, <em>kappa=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/reel/stat_h5.html#rhok_from_skall"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.reel.stat_h5.rhok_from_skall" title="Permalink to this definition">¶</a></dt>
+<dd><p>extract electronic density rho(k) from stat.h5 file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fp</strong> (<em>h5py.File</em>) – h5py handle of stat.h5 file</li>
+<li><strong>nequil</strong> (<em>int</em>) – number of equilibration blocks to remove</li>
+<li><strong>ska_name</strong> (<em>str</em><em>, </em><em>optional</em>) – name the “skall” estimator, default “skall”</li>
+<li><strong>kappa</strong> (<em>float</em><em>, </em><em>optional</em>) – autocorrelation, default is to calculate
+on-the-fly</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>(kvecs, rhokm, rhoke)</dt>
+<dd><p class="first last">k-vectors, rho(k) mean and error, shape (nk, ndim)
+notice rhok is the real-view of a complex vector, shape (2*nk,)</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(np.array, np.array, np.array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 <div class="section" id="module-qharv.reel">
@@ -641,20 +1108,22 @@ auto-correlation</li>
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-<h3><a href="index.html">Table Of Contents</a></h3>
+<h3><a href="index.html">Table of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="qharv.html">qharv package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="qharv.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="qharv.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qharv.html#module-qharv">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">qharv</a><ul class="current">
@@ -667,8 +1136,8 @@ auto-correlation</li>
   <p class="topless"><a href="qharv.plantation.html"
                         title="previous chapter">qharv.plantation package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="qharv.seed.html"
-                        title="next chapter">qharv.seed package</a></p>
+  <p class="topless"><a href="qharv.reel.forlib.html"
+                        title="next chapter">qharv.reel.forlib package</a></p>
         </div>
       </div>
       <div class="clearer"></div>
@@ -683,7 +1152,7 @@ auto-correlation</li>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="qharv.seed.html" title="qharv.seed package"
+          <a href="qharv.reel.forlib.html" title="qharv.reel.forlib package"
              >next</a> |</li>
         <li class="right" >
           <a href="qharv.plantation.html" title="qharv.plantation package"
@@ -694,7 +1163,7 @@ auto-correlation</li>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

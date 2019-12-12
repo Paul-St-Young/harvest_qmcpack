@@ -4,28 +4,21 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>qharv.reel.stat_h5 &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.0.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -48,16 +41,44 @@
   <h1>Source code for qharv.reel.stat_h5</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
 <span class="c1"># Email: yubo.paul.yang@gmail.com</span>
-<span class="c1"># Routines to parse hdf5 spectral and volumetric data output. Mostly built around h5py&#39;s API.</span>
+<span class="c1"># Routines to parse hdf5 spectral and volumetric data output.</span>
+<span class="c1">#  Mostly built around h5py&#39;s API.</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">qharv.seed.wf_h5</span> <span class="k">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">ls</span>
-<div class="viewcode-block" id="path_loc"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.path_loc">[docs]</a><span class="k">def</span> <span class="nf">path_loc</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
-  <span class="k">return</span> <span class="n">handle</span><span class="p">[</span><span class="n">path</span><span class="p">]</span><span class="o">.</span><span class="n">value</span></div>
 
-<div class="viewcode-block" id="mean_and_err"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.mean_and_err">[docs]</a><span class="k">def</span> <span class="nf">mean_and_err</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="n">obs_path</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="path_loc"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.path_loc">[docs]</a><span class="k">def</span> <span class="nf">path_loc</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">handle</span><span class="p">[</span><span class="n">path</span><span class="p">][()]</span></div>
+
+<div class="viewcode-block" id="me2d"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.me2d">[docs]</a><span class="k">def</span> <span class="nf">me2d</span><span class="p">(</span><span class="n">edata</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; Calculate mean and error of a table of columns</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    edata (np.array): 2D array of equilibrated time series data</span>
+<span class="sd">    kappa (float, optional): pre-calculate auto-correlation, default is to</span>
+<span class="sd">     re-calculate on-the-fly</span>
+<span class="sd">    axis (int, optional): axis to average over, default 0 i.e. columns</span>
+<span class="sd">  Return:</span>
+<span class="sd">    (np.array, np.array): (mean, error) of each column</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># get autocorrelation</span>
+  <span class="k">if</span> <span class="n">kappa</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="kn">from</span> <span class="nn">qharv.reel.forlib.stats</span> <span class="k">import</span> <span class="n">corr</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;please compile qharv.reel.forlib&#39;</span><span class="p">)</span>
+      <span class="c1"># from qharv.reel.scalar_dat import corr  # slow Python implementation</span>
+    <span class="n">kappa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">corr</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">edata</span><span class="p">)</span>
+  <span class="n">neffective</span> <span class="o">=</span> <span class="n">edata</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span><span class="o">/</span><span class="n">kappa</span>
+  <span class="c1"># calculate mean and error</span>
+  <span class="n">val_mean</span> <span class="o">=</span> <span class="n">edata</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+  <span class="n">val_std</span>  <span class="o">=</span> <span class="n">edata</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+  <span class="n">val_err</span>  <span class="o">=</span> <span class="n">val_std</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">neffective</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">val_mean</span><span class="p">,</span> <span class="n">val_err</span></div>
+
+<div class="viewcode-block" id="mean_and_err"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.mean_and_err">[docs]</a><span class="k">def</span> <span class="nf">mean_and_err</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">obs_path</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; calculate mean and variance of an observable from QMCPACK stat.h5 file</span>
 
 <span class="sd">  assume autocorrelation = 1 by default</span>
@@ -69,155 +90,175 @@
 <span class="sd">    kappa (float,optional): auto-correlation of the data, default=1.0 i.e. no</span>
 <span class="sd">     auto-correlation</span>
 <span class="sd">  Returns:</span>
-<span class="sd">    (np.array,np.array): (val_mean,val_err), the mean and error of the observable, assuming no autocorrelation. For correlated data, error is underestimated by a factor of sqrt(autocorrelation).</span>
+<span class="sd">    (np.array, np.array): (mean, err), the mean and error of observable</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">obs_path</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">:</span>
+  <span class="c1"># look for hdf5 group corresponding to the requested observable</span>
+  <span class="k">if</span> <span class="n">obs_path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">:</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;group </span><span class="si">%s</span><span class="s1"> not found&#39;</span> <span class="o">%</span> <span class="n">obs_path</span><span class="p">)</span>
-  <span class="c1"># end if</span>
-  <span class="k">if</span> <span class="n">kappa</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;need an automatic way to calculate auto-correlation&#39;</span><span class="p">)</span>
-  <span class="c1"># end if</span>
-
-  <span class="n">val_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">obs_path</span><span class="p">,</span><span class="s1">&#39;value&#39;</span><span class="p">)</span>
+  <span class="n">val_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">obs_path</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)</span>
   <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">val_path</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">):</span>
-    <span class="n">val_path</span> <span class="o">=</span> <span class="n">obs_path</span> <span class="c1"># !!!! assuming obs_path includes value already</span>
+    <span class="n">val_path</span> <span class="o">=</span> <span class="n">obs_path</span>  <span class="c1"># !!!! assuming obs_path includes value already</span>
     <span class="c1"># `handle[val_path]` will fail if this assumption is not correct</span>
-  <span class="c1"># end if</span>
 
-  <span class="n">val_data</span> <span class="o">=</span> <span class="n">handle</span><span class="p">[</span><span class="n">val_path</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+  <span class="c1"># get equilibrated data</span>
+  <span class="n">val_data</span> <span class="o">=</span> <span class="n">handle</span><span class="p">[</span><span class="n">val_path</span><span class="p">][()]</span>
   <span class="n">nblock</span>   <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">val_data</span><span class="p">)</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">nequil</span><span class="o">&gt;=</span><span class="n">nblock</span><span class="p">):</span>
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;cannot throw out </span><span class="si">%d</span><span class="s1"> blocks from </span><span class="si">%d</span><span class="s1"> blocks&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">nequil</span><span class="p">,</span><span class="n">nblock</span><span class="p">))</span>
-  <span class="c1"># end if</span>
-  <span class="n">edata</span>      <span class="o">=</span> <span class="n">val_data</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]</span> <span class="c1"># equilibrated data</span>
-  <span class="n">neffective</span> <span class="o">=</span> <span class="p">(</span><span class="n">nblock</span><span class="o">-</span><span class="n">nequil</span><span class="p">)</span><span class="o">/</span><span class="n">kappa</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">nequil</span> <span class="o">&gt;=</span> <span class="n">nblock</span><span class="p">):</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;cannot throw out </span><span class="si">%d</span><span class="s1"> blocks from </span><span class="si">%d</span><span class="s1"> blocks&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nequil</span><span class="p">,</span> <span class="n">nblock</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+  <span class="n">edata</span> <span class="o">=</span> <span class="n">val_data</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]</span>
 
-  <span class="c1"># calculate mean and error</span>
-  <span class="n">val_mean</span> <span class="o">=</span> <span class="n">edata</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-  <span class="n">val_std</span>  <span class="o">=</span> <span class="n">edata</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-  <span class="n">val_err</span>  <span class="o">=</span> <span class="n">val_std</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">neffective</span><span class="p">)</span>
-  
-  <span class="k">return</span> <span class="n">val_mean</span><span class="p">,</span><span class="n">val_err</span></div>
-<span class="c1"># end def mean_and_err</span>
+  <span class="c1"># get statistics</span>
+  <span class="n">val_mean</span><span class="p">,</span> <span class="n">val_err</span> <span class="o">=</span> <span class="n">me2d</span><span class="p">(</span><span class="n">edata</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">val_mean</span><span class="p">,</span> <span class="n">val_err</span></div>
 
-<div class="viewcode-block" id="absolute_magnetization"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.absolute_magnetization">[docs]</a><span class="k">def</span> <span class="nf">absolute_magnetization</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">obs_name</span><span class="o">=</span><span class="s1">&#39;SpinDensity&#39;</span><span class="p">,</span><span class="n">up_name</span><span class="o">=</span><span class="s1">&#39;u&#39;</span><span class="p">,</span><span class="n">dn_name</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; calculate up-down spin density and the integral of its absolute value; first check that /SpinDensity/u and /SpinDensity/d both exist in the .stat.h5 file, then extract both densities, subtract and integrate</span>
+<div class="viewcode-block" id="dsk_from_skall"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.dsk_from_skall">[docs]</a><span class="k">def</span> <span class="nf">dsk_from_skall</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">ska_name</span><span class="o">=</span><span class="s1">&#39;skall&#39;</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; extract fluctuating structure factor dS(k) from skall</span>
 
-<span class="sd">  Args:</span>
-<span class="sd">    handle (h5py.Group): or h5py.File or h5py.Dataset</span>
-<span class="sd">    nequil (int): number of equilibration blocks to throw out</span>
-<span class="sd">    obs_name (str): name of spindensity observable, default=SpinDensity</span>
-<span class="sd">    up_name (str): default=u</span>
-<span class="sd">    dn_name (str): default=d</span>
-<span class="sd">  Returns:</span>
-<span class="sd">    (np.array,np.array,float,float): (rho,rhoe,mabs_mean,mabs_error), rho and rhoe have shape (ngrid,), where ngrid is the total number of real-space grid points i.e. for grid=(nx,ny,nz), ngrid=nx*ny*nz. mabs = \int |rho_up-rho_dn|</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-
-  <span class="c1">#print( ls(handle,r=True) ) # see what&#39;s in the file</span>
-
-  <span class="c1"># make sure observable is in file</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="n">obs_name</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;observable </span><span class="si">%s</span><span class="s1"> not found in </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">obs_name</span><span class="p">,</span><span class="n">stat_fname</span><span class="p">))</span>
-  <span class="c1"># end if</span>
-
-  <span class="c1"># make sure up and down components are in spin density</span>
-  <span class="n">up_loc</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">obs_name</span><span class="p">,</span><span class="n">up_name</span><span class="p">)</span>
-  <span class="n">dn_loc</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">obs_name</span><span class="p">,</span><span class="n">dn_name</span><span class="p">)</span>
-  <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">up_loc</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">dn_loc</span> <span class="ow">in</span> <span class="n">handle</span><span class="p">)):</span>
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> must have up and down components (</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">obs_name</span><span class="p">,</span><span class="n">up_name</span><span class="p">,</span><span class="n">dn_name</span><span class="p">))</span>
-  <span class="c1"># end if</span>
-
-  <span class="c1"># get up density</span>
-  <span class="n">val</span><span class="p">,</span><span class="n">err</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">,</span><span class="n">up_loc</span><span class="p">,</span><span class="n">nequil</span><span class="p">)</span>
-  <span class="n">rho_up</span>  <span class="o">=</span> <span class="n">val</span>
-  <span class="n">rho_up_err</span> <span class="o">=</span> <span class="n">err</span>
-
-  <span class="c1"># get down density</span>
-  <span class="n">val</span><span class="p">,</span><span class="n">err</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">stat_fname</span><span class="p">,</span><span class="n">dn_loc</span><span class="p">,</span><span class="n">nequil</span><span class="p">)</span>
-  <span class="n">rho_dn</span>  <span class="o">=</span> <span class="n">val</span>
-  <span class="n">rho_dn_err</span> <span class="o">=</span> <span class="n">err</span>
-
-  <span class="c1"># get absolute difference</span>
-  <span class="n">rho</span>  <span class="o">=</span> <span class="n">rho_up</span><span class="o">-</span><span class="n">rho_dn</span>
-  <span class="n">rhoe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">rho_dn_err</span><span class="o">**</span><span class="mf">2.</span><span class="o">+</span><span class="n">rho_up_err</span><span class="o">**</span><span class="mf">2.</span> <span class="p">)</span>
-  <span class="n">mabs_mean</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-  <span class="n">mabs_error</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="p">(</span><span class="n">rhoe</span><span class="o">**</span><span class="mf">2.</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="p">)</span>
-  <span class="k">return</span> <span class="n">rho</span><span class="p">,</span><span class="n">rhoe</span><span class="p">,</span><span class="n">mabs_mean</span><span class="p">,</span><span class="n">mabs_error</span></div>
-<span class="c1"># end def absolute_magnetization</span>
-
-<div class="viewcode-block" id="dsk_from_csk"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.dsk_from_csk">[docs]</a><span class="k">def</span> <span class="nf">dsk_from_csk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="n">csk_name</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">kappa</span><span class="p">,</span><span class="n">nsig</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; extract fluctuating structure factor dS(k) from charged structure factor S_c(k)</span>
 <span class="sd">  Args:</span>
 <span class="sd">    fp (h5py.File): stat.h5 handle</span>
-<span class="sd">    csk_name (str): name the charged S(k) estimator, likely &#39;csk&#39;</span>
 <span class="sd">    nequil (int): equilibration length</span>
-<span class="sd">    kappa (float): autocorrelation length</span>
-<span class="sd">    nsig (int,optional): noise suppression level in units of standard error, default nsig=3, all entries below nsig are considered zero.</span>
-<span class="sd">  Returns:</span>
+<span class="sd">    ska_name (str, optional): name the &quot;skall&quot; estimator, default &quot;skall&quot;</span>
+<span class="sd">    kappa (float, optional): autocorrelation length, default is to calcaulte</span>
+<span class="sd">     on-the-fly</span>
+<span class="sd">  Return:</span>
+<span class="sd">    (np.array, np.array, np.array): (kvecs, dskm, dske), kvectors and S(k)</span>
+<span class="sd">    mean and error</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  
-  <span class="c1"># extract raw S(k) data</span>
-  <span class="n">kvecs</span> <span class="o">=</span> <span class="n">path_loc</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/kpoints/value&#39;</span><span class="o">%</span><span class="n">csk_name</span><span class="p">)</span>
-  <span class="n">cskm0</span><span class="p">,</span><span class="n">cske0</span>   <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/csk&#39;</span><span class="o">%</span><span class="n">csk_name</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">kappa</span><span class="p">)</span>
-  <span class="n">crhom0</span><span class="p">,</span><span class="n">crhoe0</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/crhok&#39;</span><span class="o">%</span><span class="n">csk_name</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">kappa</span><span class="p">)</span>
+  <span class="c1"># get data</span>
+  <span class="n">kpt_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/kpoints/value&#39;</span> <span class="o">%</span> <span class="n">ska_name</span>
+  <span class="n">sk_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_e/value&#39;</span> <span class="o">%</span> <span class="n">ska_name</span>
+  <span class="n">rhoki_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_i/value&#39;</span> <span class="o">%</span> <span class="n">ska_name</span>
+  <span class="n">rhokr_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_r/value&#39;</span> <span class="o">%</span> <span class="n">ska_name</span>
+  <span class="n">kvecs</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">kpt_path</span><span class="p">][()]</span>
+  <span class="n">ska</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">sk_path</span><span class="p">][()]</span>
+  <span class="n">rkra</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">rhokr_path</span><span class="p">][()]</span>
+  <span class="n">rkia</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">rhoki_path</span><span class="p">][()]</span>
+  <span class="n">nblock</span><span class="p">,</span> <span class="n">nk</span> <span class="o">=</span> <span class="n">ska</span><span class="o">.</span><span class="n">shape</span>
+  <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">kvecs</span><span class="p">)</span> <span class="o">==</span> <span class="n">nk</span>
+  <span class="n">dska</span> <span class="o">=</span> <span class="n">ska</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]</span><span class="o">-</span><span class="p">(</span><span class="n">rkra</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">rkia</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+  <span class="n">dskm</span><span class="p">,</span> <span class="n">dske</span> <span class="o">=</span> <span class="n">me2d</span><span class="p">(</span><span class="n">dska</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">kvecs</span><span class="p">,</span> <span class="n">dskm</span><span class="p">,</span> <span class="n">dske</span></div>
 
-  <span class="c1"># get &lt;rho(k)&gt;^2 and set noise to zero</span>
-  <span class="n">sel</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">crhom0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">nsig</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">crhoe0</span><span class="p">)</span>
-  <span class="n">crhom0</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">crhoe0</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-  <span class="n">crhom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">crhom0</span><span class="o">**</span><span class="mf">2.</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="viewcode-block" id="rhok_from_skall"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.rhok_from_skall">[docs]</a><span class="k">def</span> <span class="nf">rhok_from_skall</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">ska_name</span><span class="o">=</span><span class="s1">&#39;skall&#39;</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; extract electronic density rho(k) from stat.h5 file</span>
 
-  <span class="c1"># get &lt;S(k)&gt;</span>
-  <span class="n">cskm</span> <span class="o">=</span> <span class="n">cskm0</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-  <span class="n">cske</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="p">(</span><span class="n">cske0</span><span class="o">**</span><span class="mf">2.</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="p">)</span>
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): h5py handle of stat.h5 file</span>
+<span class="sd">    nequil (int): number of equilibration blocks to remove</span>
+<span class="sd">    ska_name (str, optional): name the &quot;skall&quot; estimator, default &quot;skall&quot;</span>
+<span class="sd">    kappa (float, optional): autocorrelation, default is to calculate</span>
+<span class="sd">     on-the-fly</span>
+<span class="sd">  Return:</span>
+<span class="sd">    (np.array, np.array, np.array): (kvecs, rhokm, rhoke)</span>
+<span class="sd">      k-vectors, rho(k) mean and error, shape (nk, ndim)</span>
+<span class="sd">      notice rhok is the real-view of a complex vector, shape (2*nk,)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># get data</span>
+  <span class="n">kpt_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/kpoints/value&#39;</span> <span class="o">%</span> <span class="n">ska_name</span>
+  <span class="n">rhokr_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_r/value&#39;</span> <span class="o">%</span> <span class="n">ska_name</span>
+  <span class="n">rhoki_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_i/value&#39;</span> <span class="o">%</span> <span class="n">ska_name</span>
+  <span class="n">kvecs</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">kpt_path</span><span class="p">][()]</span>
+  <span class="n">rkrm</span><span class="p">,</span> <span class="n">rkre</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">rhokr_path</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="p">)</span>
+  <span class="n">rkim</span><span class="p">,</span> <span class="n">rkie</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">rhoki_path</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="p">)</span>
+  <span class="n">rhokm</span> <span class="o">=</span> <span class="n">rkrm</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">rkim</span>
+  <span class="n">rhoke</span> <span class="o">=</span> <span class="n">rkre</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">rkie</span>
+  <span class="k">return</span> <span class="n">kvecs</span><span class="p">,</span> <span class="n">rhokm</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span> <span class="n">rhoke</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span></div>
 
-  <span class="c1"># return &lt;dS(k)&gt;</span>
-  <span class="n">dskm</span> <span class="o">=</span> <span class="n">cskm</span> <span class="o">-</span> <span class="n">crhom</span>
-  <span class="n">dske</span> <span class="o">=</span> <span class="n">cske</span> <span class="c1"># !!!! assume errors in csk &amp; crho are perfectly correlated</span>
-  <span class="k">return</span> <span class="n">kvecs</span><span class="p">,</span><span class="n">dskm</span><span class="p">,</span><span class="n">dske</span></div>
-<span class="c1"># end def dsk_from_csk</span>
-
-<div class="viewcode-block" id="gofr"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.gofr">[docs]</a><span class="k">def</span> <span class="nf">gofr</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="n">obs_name</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">kappa</span><span class="p">,</span><span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="gofr"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.gofr">[docs]</a><span class="k">def</span> <span class="nf">gofr</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; extract pair correlation function g(r) from stat.h5 file</span>
 <span class="sd">  Args:</span>
 <span class="sd">    fp (h5py.File): h5py handle of stat.h5 file</span>
 <span class="sd">    obs_name (str): observable name, should start with &#39;gofr&#39;, e.g. gofr_e_0_1</span>
 <span class="sd">    nequil (int): number of equilibration blocks to remove</span>
-<span class="sd">    kappa (float): correlation length</span>
+<span class="sd">    kappa (float, optional): autocorrelation length, default is to calcaulte</span>
+<span class="sd">     on-the-fly</span>
 <span class="sd">    force (bool,optional): force execution, i.e. skip all checks</span>
 <span class="sd">  Returns:</span>
 <span class="sd">    tuple: (myr,grm,gre): bin locations, g(r) mean, g(r) error</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">obs_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;gofr&#39;</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">force</span><span class="p">):</span>
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> does not start with &quot;gofr&quot;; set force=True to bypass&#39;</span><span class="o">%</span><span class="n">obs_name</span><span class="p">)</span>
-  <span class="c1"># end if</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> does not start with &quot;gofr&quot;; set force=True to bypass&#39;</span> <span class="o">%</span> <span class="n">obs_name</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-  <span class="n">grm</span><span class="p">,</span><span class="n">gre</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/value&#39;</span><span class="o">%</span><span class="n">obs_name</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">kappa</span><span class="p">)</span>
-  <span class="n">rmax</span> <span class="o">=</span> <span class="n">path_loc</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/cutoff&#39;</span><span class="o">%</span><span class="n">obs_name</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-  <span class="n">dr</span>   <span class="o">=</span> <span class="n">path_loc</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/delta&#39;</span><span class="o">%</span><span class="n">obs_name</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">grm</span><span class="p">,</span> <span class="n">gre</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/value&#39;</span> <span class="o">%</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="p">)</span>
+  <span class="n">rmax</span> <span class="o">=</span> <span class="n">path_loc</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/cutoff&#39;</span> <span class="o">%</span> <span class="n">obs_name</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">dr</span>   <span class="o">=</span> <span class="n">path_loc</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/delta&#39;</span> <span class="o">%</span> <span class="n">obs_name</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
   <span class="c1"># guess bin locations</span>
-  <span class="n">myr</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">rmax</span><span class="p">,</span><span class="n">dr</span><span class="p">)</span>
-  <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">myr</span><span class="p">)</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="n">grm</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">force</span><span class="p">):</span>
+  <span class="n">myr</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">dr</span><span class="p">)</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">myr</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">grm</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">force</span><span class="p">):</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;num_bin mismatch; try read from input?&#39;</span><span class="p">)</span>
-  <span class="c1"># end if</span>
-  <span class="k">return</span> <span class="n">myr</span><span class="p">,</span><span class="n">grm</span><span class="p">,</span><span class="n">gre</span></div>
-<span class="c1"># end def gofr</span>
+  <span class="k">return</span> <span class="n">myr</span><span class="p">,</span> <span class="n">grm</span><span class="p">,</span> <span class="n">gre</span></div>
 
-<div class="viewcode-block" id="nofk"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.nofk">[docs]</a><span class="k">def</span> <span class="nf">nofk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="n">obs_name</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">kappa</span><span class="p">):</span>
+<div class="viewcode-block" id="nofk"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.nofk">[docs]</a><span class="k">def</span> <span class="nf">nofk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; extract momentum estimator output n(k) from stat.h5 file</span>
+
 <span class="sd">  Args:</span>
 <span class="sd">    fp (h5py.File): h5py handle of stat.h5 file</span>
 <span class="sd">    obs_name (str): observable name, probably &#39;nofk&#39;</span>
 <span class="sd">    nequil (int): number of equilibration blocks to remove</span>
-<span class="sd">    kappa (float): correlation length</span>
-<span class="sd">    force (bool,optional): force execution, i.e. skip all checks</span>
-<span class="sd">  Returns:</span>
-<span class="sd">    tuple: (kvecs,nkm,nke): k-vectors, n(k) mean, n(k) error</span>
+<span class="sd">    kappa (float, optional): autocorrelation, default is to calculate</span>
+<span class="sd">     on-the-fly</span>
+<span class="sd">  Return:</span>
+<span class="sd">    (np.array, np.array, np.array): (kvecs,nkm,nke) k-vectors, n(k) mean and</span>
+<span class="sd">     error</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">kvecs</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">obs_name</span><span class="p">][</span><span class="s1">&#39;kpoints&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
-  <span class="n">nofkm</span><span class="p">,</span><span class="n">nofke</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/value&#39;</span><span class="o">%</span><span class="n">obs_name</span><span class="p">,</span><span class="n">nequil</span><span class="p">,</span><span class="n">kappa</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">kvecs</span><span class="p">,</span><span class="n">nofkm</span><span class="p">,</span><span class="n">nofke</span></div>
-<span class="c1"># end def nofk</span>
+  <span class="n">kvecs</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">obs_name</span><span class="p">][</span><span class="s1">&#39;kpoints&#39;</span><span class="p">][()]</span>
+  <span class="n">nkm</span><span class="p">,</span> <span class="n">nke</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/value&#39;</span> <span class="o">%</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">kvecs</span><span class="p">,</span> <span class="n">nkm</span><span class="p">,</span> <span class="n">nke</span></div>
+
+<span class="c1"># ---------------- begin charged structure factor ----------------</span>
+<span class="c1"># note: charged S(k), rho(k) were added for multi-component simulation,</span>
+<span class="c1">#  e.g. electrons &amp; protons. Nobody does mc sim. so deprecate?</span>
+<div class="viewcode-block" id="dsk_from_csk"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.dsk_from_csk">[docs]</a><span class="k">def</span> <span class="nf">dsk_from_csk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">csk_name</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; extract fluctuating structure factor dS(k) from charged structure factor</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): stat.h5 handle</span>
+<span class="sd">    csk_name (str): name the charged S(k) estimator, likely &#39;csk&#39;</span>
+<span class="sd">    nequil (int): equilibration length</span>
+<span class="sd">    kappa (float, optional): autocorrelation length, default is to calcaulte</span>
+<span class="sd">     on-the-fly</span>
+<span class="sd">  Return:</span>
+<span class="sd">    (np.array, np.array, np.array): (kvecs, dskm, dske), kvectors and S(k)</span>
+<span class="sd">    mean and error</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># get data</span>
+  <span class="n">kpt_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/kpoints/value&#39;</span> <span class="o">%</span> <span class="n">csk_name</span>
+  <span class="n">csk_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/csk/value&#39;</span> <span class="o">%</span> <span class="n">csk_name</span>
+  <span class="n">crho_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/crhok/value&#39;</span> <span class="o">%</span> <span class="n">csk_name</span>
+  <span class="n">kvecs</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">kpt_path</span><span class="p">][()]</span>
+  <span class="n">cska</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">csk_path</span><span class="p">][()]</span>
+  <span class="n">crhoa</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">crho_path</span><span class="p">][()]</span>
+  <span class="n">nblock</span><span class="p">,</span> <span class="n">nspin</span><span class="p">,</span> <span class="n">nk</span> <span class="o">=</span> <span class="n">cska</span><span class="o">.</span><span class="n">shape</span>
+
+  <span class="c1"># get dsk using equilibrated data</span>
+  <span class="n">dska</span> <span class="o">=</span> <span class="n">cska</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]</span> <span class="o">-</span> <span class="n">crhoa</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]</span><span class="o">**</span><span class="mi">2</span>
+  <span class="n">dskm</span><span class="p">,</span> <span class="n">dske</span> <span class="o">=</span> <span class="n">me2d</span><span class="p">(</span><span class="n">dska</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">kvecs</span><span class="p">,</span> <span class="n">dskm</span><span class="p">,</span> <span class="n">dske</span></div>
+
+<div class="viewcode-block" id="rhok"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.rhok">[docs]</a><span class="k">def</span> <span class="nf">rhok</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; extract electronic density rho(k) from stat.h5 file</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): h5py handle of stat.h5 file</span>
+<span class="sd">    obs_name (str): observable name, probably &#39;csk&#39;</span>
+<span class="sd">    nequil (int): number of equilibration blocks to remove</span>
+<span class="sd">    kappa (float, optional): autocorrelation, default is to calculate</span>
+<span class="sd">     on-the-fly</span>
+<span class="sd">  Return:</span>
+<span class="sd">    (np.array, np.array, np.array): (kvecs, rhokm, rhoke)</span>
+<span class="sd">      k-vectors, rho(k) mean and error</span>
+<span class="sd">      notice rhokm has two rows for real and imag components (2, nk)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># get data</span>
+  <span class="n">kpt_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/kpoints/value&#39;</span> <span class="o">%</span> <span class="n">obs_name</span>
+  <span class="n">crho_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/crhok/value&#39;</span> <span class="o">%</span> <span class="n">obs_name</span>
+  <span class="n">kvecs</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">kpt_path</span><span class="p">][()]</span>
+  <span class="n">rhokm</span><span class="p">,</span> <span class="n">rhoke</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">crho_path</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">kvecs</span><span class="p">,</span> <span class="n">rhokm</span><span class="p">,</span> <span class="n">rhoke</span></div>
+<span class="c1"># ---------------- charged structure factor end ----------------</span>
 </pre></div>
 
           </div>
@@ -227,15 +268,17 @@
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
@@ -261,7 +304,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

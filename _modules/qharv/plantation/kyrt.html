@@ -4,28 +4,21 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>qharv.plantation.kyrt &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.0.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -62,20 +55,108 @@
 <span class="kn">from</span> <span class="nn">matplotlib.cm</span> <span class="k">import</span> <span class="n">get_cmap</span>
 <span class="n">cmap</span>   <span class="o">=</span> <span class="n">get_cmap</span><span class="p">(</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
 <span class="n">colors</span> <span class="o">=</span> <span class="n">cmap</span><span class="o">.</span><span class="n">colors</span>  <span class="c1"># 256 default colors</span>
+<span class="n">dark8</span> <span class="o">=</span> <span class="p">[</span>  <span class="c1"># Colors from www.ColorBrewer.org by Cynthia A. Brewer, Geography, Pennsylvania State University.</span>
+  <span class="s1">&#39;#1b9e77&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;#d95f02&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;#7570b3&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;#e7298a&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;#66a61e&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;#e6ab02&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;#a6761d&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;#666666&#39;</span>
+<span class="p">]</span>
 <span class="n">errorbar_style</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s1">&#39;cyq&#39;</span><span class="p">:{</span>
-    <span class="s1">&#39;linestyle&#39;</span><span class="p">:</span><span class="s1">&#39;none&#39;</span><span class="p">,</span>         <span class="c1"># do 1 thing</span>
-    <span class="s1">&#39;markersize&#39;</span><span class="p">:</span><span class="mf">3.5</span><span class="p">,</span>           <span class="c1"># readable</span>
-    <span class="s1">&#39;markeredgecolor&#39;</span><span class="p">:</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>  <span class="c1"># accentuate</span>
-    <span class="s1">&#39;markeredgewidth&#39;</span><span class="p">:</span><span class="mf">0.3</span><span class="p">,</span>
-    <span class="s1">&#39;capsize&#39;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span>
-    <span class="s1">&#39;elinewidth&#39;</span><span class="p">:</span><span class="mf">0.5</span>
+  <span class="s1">&#39;cyq&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;linestyle&#39;</span><span class="p">:</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>         <span class="c1"># do 1 thing</span>
+    <span class="s1">&#39;markersize&#39;</span><span class="p">:</span> <span class="mf">3.5</span><span class="p">,</span>           <span class="c1"># readable</span>
+    <span class="s1">&#39;markeredgecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span>  <span class="c1"># accentuate</span>
+    <span class="s1">&#39;markeredgewidth&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span>
+    <span class="s1">&#39;capsize&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s1">&#39;elinewidth&#39;</span><span class="p">:</span> <span class="mf">0.5</span>
    <span class="p">}</span>
 <span class="p">}</span>
 
+<span class="c1"># ======================== level 0: basic color =========================</span>
+<div class="viewcode-block" id="get_cmap"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.get_cmap">[docs]</a><span class="k">def</span> <span class="nf">get_cmap</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; return color map by name</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    name (str, optional): name of color map, default &#39;viridis&#39;</span>
+<span class="sd">  Return:</span>
+<span class="sd">    matplotlib.colors.ListedColormap: requested colormap</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">cm</span>
+  <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">cmap</span></div>
+
+<div class="viewcode-block" id="get_norm"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.get_norm">[docs]</a><span class="k">def</span> <span class="nf">get_norm</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; return norm function for scalar in range (vmin, vmax)</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    vmin (float): value minimum</span>
+<span class="sd">    vmax (float): value maximum</span>
+<span class="sd">  Return:</span>
+<span class="sd">    matplotlib.colors.Normalize: color normalization function</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">norm</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">norm</span></div>
+
+<div class="viewcode-block" id="scalar_colormap"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.scalar_colormap">[docs]</a><span class="k">def</span> <span class="nf">scalar_colormap</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; return a function that maps a number to a color</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    vmin (float): minimum scalar value</span>
+<span class="sd">    vmax (float): maximum scalar value</span>
+<span class="sd">    name (str, optional): color map name, default is &#39;viridis&#39;</span>
+<span class="sd">  Return:</span>
+<span class="sd">    function: float -&gt; (float,)*4 RGBA color space</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">cmap</span> <span class="o">=</span> <span class="n">get_cmap</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+  <span class="n">norm</span> <span class="o">=</span> <span class="n">get_norm</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">v2c</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>  <span class="c1"># function mapping value to color</span>
+    <span class="k">return</span> <span class="n">cmap</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">v2c</span></div>
+
+<div class="viewcode-block" id="scalar_colorbar"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.scalar_colorbar">[docs]</a><span class="k">def</span> <span class="nf">scalar_colorbar</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; return a colorbar for scalar_color_map()</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    vmin (float): minimum scalar value</span>
+<span class="sd">    vmax (float): maximum scalar value</span>
+<span class="sd">    name (str, optional): color map name, default is &#39;viridis&#39;</span>
+<span class="sd">  Return:</span>
+<span class="sd">    matplotlib.colorbar.Colorbar: colorbar</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">cmap</span> <span class="o">=</span> <span class="n">get_cmap</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+  <span class="n">norm</span> <span class="o">=</span> <span class="n">get_norm</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+  <span class="c1"># issue 3644</span>
+  <span class="n">sm</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">ScalarMappable</span><span class="p">(</span><span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">)</span>
+  <span class="n">sm</span><span class="o">.</span><span class="n">set_array</span><span class="p">([])</span>
+  <span class="n">cbar</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">sm</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">cbar</span></div>
 
 <span class="c1"># ======================== level 0: basic ax edits =========================</span>
+<div class="viewcode-block" id="figaxad"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.figaxad">[docs]</a><span class="k">def</span> <span class="nf">figaxad</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; construct a absolute/difference (ad) figure</span>
+<span class="sd">   top 3/4 of the plot will be comparison at an absolute scale</span>
+<span class="sd">   bottom 1/4 of the plot will be comparison at a relative scale</span>
 
+<span class="sd">  Args:</span>
+<span class="sd">    labelsize (int, optional): tick label size</span>
+<span class="sd">  Return:</span>
+<span class="sd">    (fig, axa, axd): figure and axes for absolute and difference plots</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">matplotlib.gridspec</span> <span class="k">import</span> <span class="n">GridSpec</span>
+  <span class="n">gs</span> <span class="o">=</span> <span class="n">GridSpec</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+  <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+  <span class="n">axa</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:])</span>
+  <span class="n">axd</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="p">:],</span> <span class="n">sharex</span><span class="o">=</span><span class="n">axa</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">axa</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">(),</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+  <span class="n">axa</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">labelsize</span><span class="p">)</span>
+  <span class="n">axd</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="n">labelsize</span><span class="p">)</span>
+  <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">axa</span><span class="p">,</span> <span class="n">axd</span></div>
 
 <div class="viewcode-block" id="set_xy_format"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.set_xy_format">[docs]</a><span class="k">def</span> <span class="nf">set_xy_format</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xfmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%3.2f</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">yfmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%3.2f</span><span class="s1">&#39;</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; change x,y tick formats e.g. number of digits</span>
@@ -85,13 +166,11 @@
 <span class="sd">    xfmt (int,optional): xtick format, default is &#39;%3.2f&#39;</span>
 <span class="sd">    yfmt (int,optional): ytick format, default is &#39;%3.2f&#39;</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">ax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span> <span class="n">FormatStrFormatter</span><span class="p">(</span><span class="n">xfmt</span><span class="p">)</span> <span class="p">)</span>
-  <span class="n">ax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span> <span class="n">FormatStrFormatter</span><span class="p">(</span><span class="n">yfmt</span><span class="p">)</span> <span class="p">)</span></div>
-<span class="c1"># end def</span>
+  <span class="n">ax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">FormatStrFormatter</span><span class="p">(</span><span class="n">xfmt</span><span class="p">))</span>
+  <span class="n">ax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">FormatStrFormatter</span><span class="p">(</span><span class="n">yfmt</span><span class="p">))</span></div>
 
-
-<div class="viewcode-block" id="set_tick_font"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.set_tick_font">[docs]</a><span class="k">def</span> <span class="nf">set_tick_font</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">ysize</span><span class="o">=</span><span class="mi">14</span>
-  <span class="p">,</span><span class="n">xweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">yweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="set_tick_font"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.set_tick_font">[docs]</a><span class="k">def</span> <span class="nf">set_tick_font</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">ysize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
+  <span class="n">xweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">yweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; change x,y tick fonts</span>
 
 <span class="sd">  Args:</span>
@@ -102,15 +181,13 @@
 <span class="sd">    yweight (str,optional): ytick fontweight, default is &#39;bold&#39;</span>
 <span class="sd">    kwargs (dict): other tick-related properties</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">(),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">xsize</span>
-    <span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="n">xweight</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">(),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">ysize</span>
-    <span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="n">yweight</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-<span class="c1"># end def</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">(),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">xsize</span><span class="p">,</span>
+    <span class="n">fontweight</span><span class="o">=</span><span class="n">xweight</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">(),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">ysize</span><span class="p">,</span>
+    <span class="n">fontweight</span><span class="o">=</span><span class="n">yweight</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="set_label_font"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.set_label_font">[docs]</a><span class="k">def</span> <span class="nf">set_label_font</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">ysize</span><span class="o">=</span><span class="mi">14</span>
-  <span class="p">,</span> <span class="n">xweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">yweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="set_label_font"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.set_label_font">[docs]</a><span class="k">def</span> <span class="nf">set_label_font</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">ysize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
+  <span class="n">xweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">yweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; change x,y label fonts</span>
 
 <span class="sd">  Args:</span>
@@ -121,49 +198,180 @@
 <span class="sd">    yweight (str,optional): ylabel fontweight, default is &#39;bold&#39;</span>
 <span class="sd">    kwargs (dict): other label-related properties</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">xsize</span>
-    <span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="n">xweight</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">ysize</span>
-    <span class="p">,</span><span class="n">fontweight</span><span class="o">=</span><span class="n">yweight</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-<span class="c1"># end def</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">xsize</span><span class="p">,</span>
+    <span class="n">fontweight</span><span class="o">=</span><span class="n">xweight</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">ysize</span><span class="p">,</span>
+    <span class="n">fontweight</span><span class="o">=</span><span class="n">yweight</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="scalar_color_map"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.scalar_color_map">[docs]</a><span class="k">def</span> <span class="nf">scalar_color_map</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; return a function that maps a number to a color</span>
+<div class="viewcode-block" id="xtop"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.xtop">[docs]</a><span class="k">def</span> <span class="nf">xtop</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; move xaxis label and ticks to the top</span>
 
 <span class="sd">  Args:</span>
-<span class="sd">    vmin (float): minimum scalar value</span>
-<span class="sd">    vmax (float): maximum scalar value</span>
-<span class="sd">    name (str, optional): color map name, default is &#39;viridis&#39;</span>
+<span class="sd">    ax (plt.Axes): matplotlib axes</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="kn">from</span> <span class="nn">matplotlib.cm</span> <span class="k">import</span> <span class="n">get_cmap</span>
-  <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
-  <span class="n">cmap</span> <span class="o">=</span> <span class="n">get_cmap</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-  <span class="n">norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
-  <span class="n">v2c</span>  <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span><span class="n">cmap</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>  <span class="c1"># function mapping value to color</span>
-  <span class="k">return</span> <span class="n">v2c</span></div>
-<span class="c1"># end def scalar_color_map</span>
+  <span class="n">xaxis</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span>
+  <span class="n">xaxis</span><span class="o">.</span><span class="n">tick_top</span><span class="p">()</span>
+  <span class="n">xaxis</span><span class="o">.</span><span class="n">set_label_position</span><span class="p">(</span><span class="s1">&#39;top&#39;</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="yright"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.yright">[docs]</a><span class="k">def</span> <span class="nf">yright</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; move yaxis label and ticks to the right</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    ax (plt.Axes): matplotlib axes</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">yaxis</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span>
+  <span class="n">yaxis</span><span class="o">.</span><span class="n">tick_right</span><span class="p">()</span>
+  <span class="n">yaxis</span><span class="o">.</span><span class="n">set_label_position</span><span class="p">(</span><span class="s1">&#39;right&#39;</span><span class="p">)</span></div>
 
 <span class="c1"># ====================== level 0: basic legend edits =======================</span>
-
-
 <div class="viewcode-block" id="set_legend_marker_size"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.set_legend_marker_size">[docs]</a><span class="k">def</span> <span class="nf">set_legend_marker_size</span><span class="p">(</span><span class="n">leg</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
   <span class="n">handl</span> <span class="o">=</span> <span class="n">leg</span><span class="o">.</span><span class="n">legendHandles</span>
   <span class="n">msl</span>   <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">handl</span><span class="p">)</span>  <span class="c1"># override marker sizes here</span>
-  <span class="k">for</span> <span class="n">hand</span><span class="p">,</span><span class="n">ms</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">handl</span><span class="p">,</span> <span class="n">msl</span><span class="p">):</span>
+  <span class="k">for</span> <span class="n">hand</span><span class="p">,</span> <span class="n">ms</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">handl</span><span class="p">,</span> <span class="n">msl</span><span class="p">):</span>
     <span class="n">hand</span><span class="o">.</span><span class="n">_legmarker</span><span class="o">.</span><span class="n">set_markersize</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span></div>
-  <span class="c1"># end for</span>
-<span class="c1"># end def set_label_font</span>
 
+<div class="viewcode-block" id="create_legend"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.create_legend">[docs]</a><span class="k">def</span> <span class="nf">create_legend</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">styles</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; create custom legend</span>
+
+<span class="sd">  learned from &quot;Composing Custom Legends&quot;</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    ax (plt.Axes): matplotlib axes</span>
+<span class="sd">  Return:</span>
+<span class="sd">    plt.legend.Legend: legend artist</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">matplotlib.lines</span> <span class="k">import</span> <span class="n">Line2D</span>
+  <span class="n">custom_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="o">**</span><span class="n">style</span><span class="p">)</span> <span class="k">for</span> <span class="n">style</span> <span class="ow">in</span> <span class="n">styles</span><span class="p">]</span>
+  <span class="n">leg</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">custom_lines</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">leg</span></div>
+
+<span class="c1"># ====================== level 0: basic Line2D edits =======================</span>
+<div class="viewcode-block" id="get_style"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.get_style">[docs]</a><span class="k">def</span> <span class="nf">get_style</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; get plot styles from Line2D object</span>
+
+<span class="sd">  mostly copied from &quot;Line2D.update_from&quot;</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    line (Line2D): source of style</span>
+<span class="sd">  Return:</span>
+<span class="sd">    dict: line styles readily usable for another plot</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">styles</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;linestyle&#39;</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">get_linestyle</span><span class="p">(),</span>
+    <span class="s1">&#39;linewidth&#39;</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">get_linewidth</span><span class="p">(),</span>
+    <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">get_color</span><span class="p">(),</span>
+    <span class="s1">&#39;markersize&#39;</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">get_markersize</span><span class="p">(),</span>
+    <span class="s1">&#39;linestyle&#39;</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">get_linestyle</span><span class="p">(),</span>
+    <span class="s1">&#39;marker&#39;</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">get_marker</span><span class="p">()</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">styles</span></div>
+
+<span class="c1"># ====================== level 0: basic Line2D =======================</span>
+<div class="viewcode-block" id="errorshade"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.errorshade">[docs]</a><span class="k">def</span> <span class="nf">errorshade</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ym</span><span class="p">,</span> <span class="n">ye</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="n">line</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ym</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.4</span>
+  <span class="n">myc</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
+  <span class="n">eline</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ym</span><span class="o">-</span><span class="n">ye</span><span class="p">,</span> <span class="n">ym</span><span class="o">+</span><span class="n">ye</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">myc</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">line</span><span class="p">,</span> <span class="n">eline</span></div>
+
+<span class="c1"># ===================== level 1: fit line ======================</span>
+<div class="viewcode-block" id="show_fit"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.show_fit">[docs]</a><span class="k">def</span> <span class="nf">show_fit</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; fit a segment of (x, y) data and show fit</span>
+
+<span class="sd">  get x, y data from line; use sel to make selection</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    ax (Axes): matplotlib axes</span>
+<span class="sd">    line (Line2D): line with data</span>
+<span class="sd">    model (callable): model function</span>
+<span class="sd">    sel (np.array, optional): boolean selector array</span>
+<span class="sd">    nx (int, optional): grid size, default 64</span>
+<span class="sd">    xmin (float, optional): grid min</span>
+<span class="sd">    xmax (float, optional): grid max</span>
+<span class="sd">  Return:</span>
+<span class="sd">    (np.array, np.array, list): (popt, perr, lines)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+  <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">curve_fit</span>
+  <span class="c1"># get and select data to fit</span>
+  <span class="n">myx</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">get_xdata</span><span class="p">()</span>
+  <span class="n">myy</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span>
+  <span class="c1"># show selected data</span>
+  <span class="k">if</span> <span class="n">sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">sel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">myx</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+  <span class="n">myx1</span> <span class="o">=</span> <span class="n">myx</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span>
+  <span class="n">myy1</span> <span class="o">=</span> <span class="n">myy</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span>
+  <span class="k">if</span> <span class="n">xmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">xmin</span> <span class="o">=</span> <span class="n">myx1</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">xmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">xmax</span> <span class="o">=</span> <span class="n">myx1</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+  <span class="n">styles</span> <span class="o">=</span> <span class="n">get_style</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+  <span class="n">styles</span><span class="p">[</span><span class="s1">&#39;ls&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="n">styles</span><span class="p">[</span><span class="s1">&#39;marker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span>
+  <span class="n">styles</span><span class="p">[</span><span class="s1">&#39;fillstyle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>
+  <span class="n">line1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">myx</span><span class="p">[</span><span class="n">sel</span><span class="p">],</span> <span class="n">myy</span><span class="p">[</span><span class="n">sel</span><span class="p">],</span> <span class="o">**</span><span class="n">styles</span><span class="p">)</span>
+  <span class="c1"># perform fit</span>
+  <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">myx1</span><span class="p">,</span> <span class="n">myy1</span><span class="p">)</span>
+  <span class="n">perr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">pcov</span><span class="p">))</span>
+  <span class="c1"># show fit</span>
+  <span class="n">finex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+  <span class="n">line2</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">finex</span><span class="p">,</span> <span class="n">model</span><span class="p">(</span><span class="n">finex</span><span class="p">,</span> <span class="o">*</span><span class="n">popt</span><span class="p">),</span>
+    <span class="n">c</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">get_color</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line2</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+  <span class="k">return</span> <span class="n">popt</span><span class="p">,</span> <span class="n">perr</span><span class="p">,</span> <span class="n">lines</span></div>
+
+<div class="viewcode-block" id="show_spline"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.show_spline">[docs]</a><span class="k">def</span> <span class="nf">show_spline</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">spl_kws</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; show a smooth spline through given line x y</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    ax (plt.Axes): matplotlib axes</span>
+<span class="sd">    line (Line1D): matplotlib line object</span>
+<span class="sd">    spl_kws (dict, optional): keyword arguments to splrep, default is empty</span>
+<span class="sd">    nx (int, optional): number of points to allocate to 1D grid</span>
+<span class="sd">  Return:</span>
+<span class="sd">    Line1D: interpolating line</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+  <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">splrep</span><span class="p">,</span> <span class="n">splev</span>
+  <span class="n">myx</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">get_xdata</span><span class="p">()</span>
+  <span class="n">myy</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span>
+  <span class="n">color</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
+  <span class="n">finex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">myx</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">myx</span><span class="p">),</span> <span class="n">nx</span><span class="p">)</span>
+  <span class="n">tck</span> <span class="o">=</span> <span class="n">splrep</span><span class="p">(</span><span class="n">myx</span><span class="p">,</span> <span class="n">myy</span><span class="p">,</span> <span class="o">**</span><span class="n">spl_kws</span><span class="p">)</span>
+  <span class="n">line1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">finex</span><span class="p">,</span> <span class="n">splev</span><span class="p">(</span><span class="n">finex</span><span class="p">,</span> <span class="n">tck</span><span class="p">),</span> <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">line1</span></div>
+
+<span class="c1"># ===================== level 2: insets ======================</span>
+<div class="viewcode-block" id="inset_zoom"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.inset_zoom">[docs]</a><span class="k">def</span> <span class="nf">inset_zoom</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax_box</span><span class="p">,</span> <span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span><span class="p">,</span> <span class="n">draw_func</span><span class="p">,</span> <span class="n">xy_label</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; show an inset that zooms into a given part of the figure</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fig (plt.Figure): figure</span>
+<span class="sd">    ax_box (tuple): inset location and size (x0, y0, dx, dy) in figure ratio</span>
+<span class="sd">    xlim (tuple): (xmin, xmax)</span>
+<span class="sd">    ylim (tuple): (ymin, ymax)</span>
+<span class="sd">    draw_func (callable): draw_func(ax) should recreate the figure</span>
+<span class="sd">    xy_label (bool, optional): label inset axes, default is False</span>
+<span class="sd">  Return:</span>
+<span class="sd">    plt.Axes: inset axes</span>
+<span class="sd">  Example:</span>
+<span class="sd">    &gt;&gt;&gt; ax1 = inset_zoom(fig, [0.15, 0.15, 0.3, 0.3], [0.1, 0.5], [-0.02, 0.01],</span>
+<span class="sd">    &gt;&gt;&gt;                  lambda ax: ax.plot(x, y))</span>
+<span class="sd">    &gt;&gt;&gt; ax.indicate_inset_zoom(axins)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">(</span><span class="n">ax_box</span><span class="p">)</span>
+  <span class="n">ax1</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">*</span><span class="n">xlim</span><span class="p">)</span>
+  <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">*</span><span class="n">ylim</span><span class="p">)</span>
+  <span class="n">draw_func</span><span class="p">(</span><span class="n">ax1</span><span class="p">)</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">xy_label</span><span class="p">:</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+  <span class="k">return</span> <span class="n">ax1</span></div>
 
 <span class="c1"># ======================== composition =========================</span>
-
-
 <div class="viewcode-block" id="pretty_up"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.pretty_up">[docs]</a><span class="k">def</span> <span class="nf">pretty_up</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
   <span class="n">set_tick_font</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
   <span class="n">set_label_font</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span></div>
-<span class="c1"># end def pretty_up</span>
 </pre></div>
 
           </div>
@@ -173,15 +381,17 @@
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
@@ -207,7 +417,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

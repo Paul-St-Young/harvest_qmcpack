@@ -1,0 +1,10 @@
+qharv.reel.forlib package
+=========================
+
+Module contents
+---------------
+
+.. automodule:: qharv.reel.forlib
+    :members:
+    :undoc-members:
+    :show-inheritance:

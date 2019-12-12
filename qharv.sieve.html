@@ -4,30 +4,23 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>qharv.sieve package &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.0.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="qharv.trans package" href="qharv.trans.html" />
     <link rel="prev" title="qharv.seed package" href="qharv.seed.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -61,23 +54,95 @@
 <div class="section" id="module-qharv.sieve.mean_df">
 <span id="qharv-sieve-mean-df-module"></span><h2>qharv.sieve.mean_df module<a class="headerlink" href="#module-qharv.sieve.mean_df" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="qharv.sieve.mean_df.twist_average_mean_df">
-<code class="descclassname">qharv.sieve.mean_df.</code><code class="descname">twist_average_mean_df</code><span class="sig-paren">(</span><em>df0</em>, <em>drop_null=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#twist_average_mean_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.twist_average_mean_df" title="Permalink to this definition">¶</a></dt>
-<dd><p>average scalar quantities over a set of calculations. The intented application is to average over a uniform grid of twist calculations.
-:param df0: a mean dataframe containing [‘path’,’fdat’,’*_mean’,’*_error’] columns. fdat is the scalar.dat filename. It will be used to extract ‘series’ and ‘group’ indices.
-:type df0: pd.DataFrame
-:param drop_null: drop rows that contain any nan. These rows should be processed at a higher level (e.g. catach the RuntimeError).
-:type drop_null: bool, optional</p>
+<dt id="qharv.sieve.mean_df.categorize_columns">
+<code class="descclassname">qharv.sieve.mean_df.</code><code class="descname">categorize_columns</code><span class="sig-paren">(</span><em>mdf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#categorize_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.categorize_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Categorize the column names of a mean dataframe.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">df1, a mean dataframe containing one entry for each series. df1 is structually identical to a mean dataframe of a single twist.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mdf</strong> (<em>pd.DataFrame</em>) – mean dataframe</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pd.DataFrame</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>(excol, mcol, ecol)</dt>
+<dd>excol are columns of exact values with no errorbar (possibly labels)
+mcols are mean columns
+ecols are error columns</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(list, list, list)</td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rcol</span><span class="p">,</span> <span class="n">mcol</span><span class="p">,</span> <span class="n">ecol</span> <span class="o">=</span> <span class="n">categorize_columns</span><span class="p">(</span><span class="n">mdf</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xyye</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Pressure&#39;</span><span class="p">,</span> <span class="s1">&#39;LocalEnergy&#39;</span><span class="p">,</span> <span class="n">xerr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.sieve.mean_df.dfme">
+<code class="descclassname">qharv.sieve.mean_df.</code><code class="descname">dfme</code><span class="sig-paren">(</span><em>df</em>, <em>cols</em>, <em>no_error=False</em>, <em>weight_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#dfme"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.dfme" title="Permalink to this definition">¶</a></dt>
+<dd><p>Average scalar quantities over a set of calculations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>pd.DataFrame</em>) – a mean dataframe containing labels+col_mean+col_error</li>
+<li><strong>cols</strong> (<em>list</em>) – a list of column names, e.g. [‘E_tot’, ‘KE_tot’]</li>
+<li><strong>weight_name</strong> (<em>str</em><em>, </em><em>optional</em>) – name of weight column, default None, i.e.
+every entry has the same weight</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">averaged database</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pd.DataFrame</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.sieve.mean_df.taw">
+<code class="descclassname">qharv.sieve.mean_df.</code><code class="descname">taw</code><span class="sig-paren">(</span><em>ym</em>, <em>ye</em>, <em>weights</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#taw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.taw" title="Permalink to this definition">¶</a></dt>
+<dd><p>twist average with weights</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.sieve.mean_df.xyye">
+<code class="descclassname">qharv.sieve.mean_df.</code><code class="descname">xyye</code><span class="sig-paren">(</span><em>df</em>, <em>xname</em>, <em>yname</em>, <em>sel=None</em>, <em>xerr=False</em>, <em>yerr=True</em>, <em>sort=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#xyye"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.xyye" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get x vs. y data from a mean data frame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>df</strong> (<em>pd.DataFrame</em>) – mean dataframe</li>
+<li><strong>xname</strong> (<em>str</em>) – name of x variable</li>
+<li><strong>yname</strong> (<em>str</em>) – name of y variable</li>
+<li><strong>sel</strong> (<em>np.array</em><em>, </em><em>optional</em>) – boolean selector for subset, default is all</li>
+<li><strong>xerr</strong> (<em>bool</em><em>, </em><em>optional</em>) – x variable has statistical error, default False</li>
+<li><strong>yerr</strong> (<em>bool</em><em>, </em><em>optional</em>) – y variable has statistical error, default True</li>
+<li><strong>sort</strong> (<em>bool</em><em>, </em><em>optional</em>) – sort x</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(x, ym, ye) OR (xm, xe, ym, ye) if xerr=True</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xyye</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;rs&#39;</span><span class="p">,</span> <span class="s1">&#39;LocalEnergy&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xyye</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Pressure&#39;</span><span class="p">,</span> <span class="s1">&#39;LocalEnergy&#39;</span><span class="p">,</span> <span class="n">xerr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -102,6 +167,30 @@ the different runs.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">mean_error dataframe</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pd.DataFrame</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.sieve.scalar_df.merge_list">
+<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">merge_list</code><span class="sig-paren">(</span><em>dfl</em>, <em>labels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#merge_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.merge_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merge a list of DataFrames sharing common labels</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dfl</strong> (<em>list</em>) – a list of pd.DataFrame objects</li>
+<li><strong>labels</strong> (<em>list</em>) – a list of column labels</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">merged df</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pd.DataFrame</p>
@@ -141,7 +230,7 @@ the different runs.</li>
 
 <dl class="function">
 <dt id="qharv.sieve.scalar_df.poly_extrap_to_x0">
-<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">poly_extrap_to_x0</code><span class="sig-paren">(</span><em>myx</em>, <em>myym</em>, <em>myye</em>, <em>order</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#poly_extrap_to_x0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.poly_extrap_to_x0" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">poly_extrap_to_x0</code><span class="sig-paren">(</span><em>myx</em>, <em>myym</em>, <em>myye</em>, <em>order</em>, <em>return_fit=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#poly_extrap_to_x0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.poly_extrap_to_x0" title="Permalink to this definition">¶</a></dt>
 <dd><p>fit 1D data to 1D polynomial and extrpolate to x=0</p>
 <p>The fit proceeds in two steps. The first polyfit does not take error into
 account. It estimates the extrapolated value, which is then used to setup
@@ -156,6 +245,7 @@ estimate the error of the extrapolation.</p>
 <li><strong>myym</strong> (<em>np.array</em>) – y values</li>
 <li><strong>myye</strong> (<em>np.array</em>) – y errors (1 sigma)</li>
 <li><strong>order</strong> (<em>int</em>) – order of 1D polynomial</li>
+<li><strong>return_fit</strong> (<em>bool</em><em>, </em><em>optional</em>) – if true, then return fit paramters</li>
 </ul>
 </td>
 </tr>
@@ -253,6 +343,94 @@ then edited with extrapolated energy and corresponding info
 </dd></dl>
 
 </div>
+<div class="section" id="module-qharv.sieve.scalar_h5">
+<span id="qharv-sieve-scalar-h5-module"></span><h2>qharv.sieve.scalar_h5 module<a class="headerlink" href="#module-qharv.sieve.scalar_h5" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="qharv.sieve.scalar_h5.get_ymean_yerror">
+<code class="descclassname">qharv.sieve.scalar_h5.</code><code class="descname">get_ymean_yerror</code><span class="sig-paren">(</span><em>fp</em>, <em>twist0</em>, <em>msuffix='_mean'</em>, <em>esuffix='_error'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_h5.html#get_ymean_yerror"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_h5.get_ymean_yerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.sieve.scalar_h5.twist_average_h5">
+<code class="descclassname">qharv.sieve.scalar_h5.</code><code class="descname">twist_average_h5</code><span class="sig-paren">(</span><em>fh5</em>, <em>weights=None</em>, <em>**suffix_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_h5.html#twist_average_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_h5.twist_average_h5" title="Permalink to this definition">¶</a></dt>
+<dd><p>twist average data in an HDF5 archive</p>
+<p>each twist should be a group in at root</p>
+<p class="rubric">Example</p>
+<dl class="docutils">
+<dt>twist000</dt>
+<dd>myr
+gr_mean
+gr_error</dd>
+<dt>twist001</dt>
+<dd>myr
+gr_mean
+gr_error</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fh5</strong> (<em>str</em>) – h5 file location</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(meta data, mean, error)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dict, np.array, np.array)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.sieve.scalar_h5.twist_concat_h5">
+<code class="descclassname">qharv.sieve.scalar_h5.</code><code class="descname">twist_concat_h5</code><span class="sig-paren">(</span><em>fh5</em>, <em>name</em>, <em>twists=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_h5.html#twist_concat_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_h5.twist_concat_h5" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-qharv.sieve.stat_df">
+<span id="qharv-sieve-stat-df-module"></span><h2>qharv.sieve.stat_df module<a class="headerlink" href="#module-qharv.sieve.stat_df" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="qharv.sieve.stat_df.mix_extrap_gofr">
+<code class="descclassname">qharv.sieve.stat_df.</code><code class="descname">mix_extrap_gofr</code><span class="sig-paren">(</span><em>y0m</em>, <em>y0e</em>, <em>y1m</em>, <em>y1e</em>, <em>ythres=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/stat_df.html#mix_extrap_gofr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.stat_df.mix_extrap_gofr" title="Permalink to this definition">¶</a></dt>
+<dd><p>use VMC g(r) to correct mixed-estimator DMC g(r)
+:param y0m: mean  of VMC g(r)
+:type y0m: np.array
+:param y0e: error of VMC g(r)
+:type y0e: np.array
+:param y1m: mean  of DMC g(r)
+:type y1m: np.array
+:param y1e: error of DMC g(r)
+:type y1e: np.array
+:param ythres: VMC g(r) &lt; ythres will not be used</p>
+<blockquote>
+<div>to avoid numerical instability, default 0.01</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(y2m,y2e) extrapolated g(r) mean and error</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.sieve.stat_df.mix_extrap_two_steps_linear">
+<code class="descclassname">qharv.sieve.stat_df.</code><code class="descname">mix_extrap_two_steps_linear</code><span class="sig-paren">(</span><em>entry</em>, <em>iss0</em>, <em>iss1</em>, <em>yname</em>, <em>series_name='series'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/stat_df.html#mix_extrap_two_steps_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.stat_df.mix_extrap_two_steps_linear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.sieve.stat_df.mix_extrap_two_steps_log">
+<code class="descclassname">qharv.sieve.stat_df.</code><code class="descname">mix_extrap_two_steps_log</code><span class="sig-paren">(</span><em>entry</em>, <em>iss0</em>, <em>iss1</em>, <em>yname</em>, <em>series_name='series'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/stat_df.html#mix_extrap_two_steps_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.stat_df.mix_extrap_two_steps_log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="qharv.sieve.stat_df.ts_extrap_two_steps_linear">
+<code class="descclassname">qharv.sieve.stat_df.</code><code class="descname">ts_extrap_two_steps_linear</code><span class="sig-paren">(</span><em>entry</em>, <em>iss0</em>, <em>iss1</em>, <em>yname</em>, <em>series_name='series'</em>, <em>ts_name='timestep'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/stat_df.html#ts_extrap_two_steps_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.stat_df.ts_extrap_two_steps_linear" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
 <div class="section" id="module-qharv.sieve">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-qharv.sieve" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -266,20 +444,22 @@ then edited with extrapolated energy and corresponding info
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-<h3><a href="index.html">Table Of Contents</a></h3>
+<h3><a href="index.html">Table of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="qharv.html">qharv package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="qharv.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="qharv.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qharv.html#module-qharv">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">qharv</a><ul class="current">
@@ -319,7 +499,7 @@ then edited with extrapolated energy and corresponding info
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

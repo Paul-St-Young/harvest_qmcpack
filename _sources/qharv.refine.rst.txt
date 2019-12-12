@@ -1,11 +1,11 @@
-qharv\.refine package
-=====================
+qharv.refine package
+====================
 
 Submodules
 ----------
 
-qharv\.refine\.scalar module
-----------------------------
+qharv.refine.scalar module
+--------------------------
 
 .. automodule:: qharv.refine.scalar
     :members:

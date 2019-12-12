@@ -4,30 +4,23 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>qharv.trans package &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.0.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="qharv" href="modules.html" />
     <link rel="prev" title="qharv.sieve package" href="qharv.sieve.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -57,6 +50,97 @@
 <h1>qharv.trans package<a class="headerlink" href="#qharv-trans-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-qharv.trans.move">
+<span id="qharv-trans-move-module"></span><h2>qharv.trans.move module<a class="headerlink" href="#module-qharv.trans.move" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="qharv.trans.move.clean_path">
+<code class="descclassname">qharv.trans.move.</code><code class="descname">clean_path</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/move.html#clean_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.move.clean_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove any ‘.’ or ‘..’ in the path expression
+:param path: any path string e.g. ‘../run/./opt’
+:type path: str</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">clean path e.g. ‘run/opt’</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.trans.move.inverse_st_map">
+<code class="descclassname">qharv.trans.move.</code><code class="descname">inverse_st_map</code><span class="sig-paren">(</span><em>flist</em>, <em>new_dir</em>, <em>old_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/move.html#inverse_st_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.move.inverse_st_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>fix common screw up: moved all source files without saving st_map</p>
+<dl class="docutils">
+<dt>e.g.</dt>
+<dd><dl class="first last docutils">
+<dt>inverse_st_map([‘./opt_backup/opt0’, ‘./opt_backup/opt1’],</dt>
+<dd>‘./opt_backup’,
+‘./run’)</dd>
+</dl>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>flist</strong> (<em>list</em>) – a list of backedup file locations</li>
+<li><strong>new_dir</strong> (<em>str</em>) – directory holding the backups</li>
+<li><strong>old_dir</strong> (<em>str</em>) – directory to restore backups to</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.trans.move.move_by_st_map">
+<code class="descclassname">qharv.trans.move.</code><code class="descname">move_by_st_map</code><span class="sig-paren">(</span><em>st_map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/move.html#move_by_st_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.move.move_by_st_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>move files according to source-target map</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>st_map</strong> (<em>dict</em>) – source-target map</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.trans.move.source_target_map">
+<code class="descclassname">qharv.trans.move.</code><code class="descname">source_target_map</code><span class="sig-paren">(</span><em>flist</em>, <em>new_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/move.html#source_target_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.move.source_target_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>for each file in flist, provide its new location in new_dir</p>
+<dl class="docutils">
+<dt>e.g.</dt>
+<dd>source_target_map([‘./run/opt0’, ‘./run/opt1’], ‘./opt_backup’)</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>flist</strong> (<em>list</em>) – a list of file locations</li>
+<li><strong>new_dir</strong> (<em>str</em>) – location of new directory</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">st_map, source-target map for files operations such as copy or move.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="module-qharv.trans.nexus_qmc">
 <span id="qharv-trans-nexus-qmc-module"></span><h2>qharv.trans.nexus_qmc module<a class="headerlink" href="#module-qharv.trans.nexus_qmc" title="Permalink to this headline">¶</a></h2>
@@ -121,20 +205,22 @@ problem: nexus keeps a run folder and a result folder in parallel. A full backup
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-<h3><a href="index.html">Table Of Contents</a></h3>
+<h3><a href="index.html">Table of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="qharv.html">qharv package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="qharv.html#subpackages">Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="qharv.html#module-contents">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qharv.html#module-qharv">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">qharv</a><ul class="current">
@@ -174,7 +260,7 @@ problem: nexus keeps a run folder and a result folder in parallel. A full backup
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>

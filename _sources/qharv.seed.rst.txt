@@ -1,43 +1,51 @@
-qharv\.seed package
-===================
+qharv.seed package
+==================
 
 Submodules
 ----------
 
-qharv\.seed\.pset module
-------------------------
+qharv.seed.lcao\_h5 module
+--------------------------
+
+.. automodule:: qharv.seed.lcao_h5
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+qharv.seed.pset module
+----------------------
 
 .. automodule:: qharv.seed.pset
     :members:
     :undoc-members:
     :show-inheritance:
 
-qharv\.seed\.qmcpack\_in module
--------------------------------
+qharv.seed.qmcpack\_in module
+-----------------------------
 
 .. automodule:: qharv.seed.qmcpack_in
     :members:
     :undoc-members:
     :show-inheritance:
 
-qharv\.seed\.wf\_h5 module
---------------------------
+qharv.seed.wf\_h5 module
+------------------------
 
 .. automodule:: qharv.seed.wf_h5
     :members:
     :undoc-members:
     :show-inheritance:
 
-qharv\.seed\.xml module
------------------------
+qharv.seed.xml module
+---------------------
 
 .. automodule:: qharv.seed.xml
     :members:
     :undoc-members:
     :show-inheritance:
 
-qharv\.seed\.xml\_examples module
----------------------------------
+qharv.seed.xml\_examples module
+-------------------------------
 
 .. automodule:: qharv.seed.xml_examples
     :members:

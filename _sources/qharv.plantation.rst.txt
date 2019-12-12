@@ -1,19 +1,19 @@
-qharv\.plantation package
-=========================
+qharv.plantation package
+========================
 
 Submodules
 ----------
 
-qharv\.plantation\.kyrt module
-------------------------------
+qharv.plantation.kyrt module
+----------------------------
 
 .. automodule:: qharv.plantation.kyrt
     :members:
     :undoc-members:
     :show-inheritance:
 
-qharv\.plantation\.sugar module
--------------------------------
+qharv.plantation.sugar module
+-----------------------------
 
 .. automodule:: qharv.plantation.sugar
     :members:

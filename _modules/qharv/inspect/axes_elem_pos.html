@@ -1,0 +1,157 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>qharv.inspect.axes_elem_pos &#8212; qharv 0.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for qharv.inspect.axes_elem_pos</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
+<span class="c1"># Email: yubo.paul.yang@gmail.com</span>
+<span class="c1"># Routines to process crystal structure specified by axes, elem, pos</span>
+<span class="c1">#  extend axes_pos to handle more than 1 species of atoms</span>
+<span class="c1">#  heavily borrow from the atomic simulation environment (ase) package</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="ase_atoms"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_elem_pos.ase_atoms">[docs]</a><span class="k">def</span> <span class="nf">ase_atoms</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; create ase Atoms object</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): lattice vectors in row-major</span>
+<span class="sd">    elem (np.array): chemical symbols</span>
+<span class="sd">    pos (np.array): atomic positions</span>
+<span class="sd">  Return:</span>
+<span class="sd">    ase.Atoms: object</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">ase</span> <span class="k">import</span> <span class="n">Atoms</span>
+  <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;pbc&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">pbc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+    <span class="n">pbc</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span><span class="o">*</span><span class="n">ndim</span>
+  <span class="n">s0</span> <span class="o">=</span> <span class="n">Atoms</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">elem</span><span class="p">),</span> <span class="n">cell</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">positions</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">s0</span></div>
+
+<div class="viewcode-block" id="ase_read"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_elem_pos.ase_read">[docs]</a><span class="k">def</span> <span class="nf">ase_read</span><span class="p">(</span><span class="n">floc</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; use atomic simulation environment (ase) package to read file</span>
+<span class="sd">  can read any format ase.read supports</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    floc (str): file location of structure file (e.g. struct.xsf)</span>
+<span class="sd">  Return:</span>
+<span class="sd">    dict: with [&#39;axes&#39;, &#39;elem&#39;, &#39;pos&#39;] entries</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">ase.io</span> <span class="k">import</span> <span class="n">read</span>
+
+  <span class="n">s1</span> <span class="o">=</span> <span class="n">read</span><span class="p">(</span><span class="n">floc</span><span class="p">)</span>
+  <span class="n">axes</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">get_cell</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+  <span class="n">elem</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">get_chemical_symbols</span><span class="p">()</span>
+  <span class="n">pos</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">get_positions</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;axes&#39;</span><span class="p">:</span> <span class="n">axes</span><span class="p">,</span>
+    <span class="s1">&#39;elem&#39;</span><span class="p">:</span> <span class="n">elem</span><span class="p">,</span>
+    <span class="s1">&#39;pos&#39;</span><span class="p">:</span> <span class="n">pos</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="ase_tile"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_elem_pos.ase_tile">[docs]</a><span class="k">def</span> <span class="nf">ase_tile</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">tmat</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; use ase to tile supercell</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): lattice vectors in row-major</span>
+<span class="sd">    elem (np.array): chemical symbols</span>
+<span class="sd">    pos (np.array): atomic positions</span>
+<span class="sd">    tmat (np.array): tiling matrix (a.k.a. supercell matrix)</span>
+<span class="sd">  Return:</span>
+<span class="sd">    (np.array, np.array, np.array): supercell (&#39;axes&#39;, &#39;elem&#39;, &#39;pos&#39;)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">ase</span> <span class="k">import</span> <span class="n">Atoms</span>
+  <span class="kn">from</span> <span class="nn">ase.build</span> <span class="k">import</span> <span class="n">make_supercell</span>
+  <span class="n">pbc</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span><span class="o">*</span><span class="mi">3</span>  <span class="c1"># assume PBC if tiling</span>
+  <span class="n">s0</span> <span class="o">=</span> <span class="n">Atoms</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">elem</span><span class="p">),</span> <span class="n">cell</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">positions</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">)</span>
+  <span class="n">s1</span> <span class="o">=</span> <span class="n">make_supercell</span><span class="p">(</span><span class="n">s0</span><span class="p">,</span> <span class="n">tmat</span><span class="p">)</span>
+  <span class="n">axes1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">get_cell</span><span class="p">()</span>
+  <span class="n">elem1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">get_chemical_symbols</span><span class="p">()</span>
+  <span class="n">pos1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">get_positions</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">axes1</span><span class="p">,</span> <span class="n">elem1</span><span class="p">,</span> <span class="n">pos1</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">qharv</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">qharv 0.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

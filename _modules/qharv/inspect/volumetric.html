@@ -4,28 +4,21 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>qharv.inspect.volumetric &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../../',
-        VERSION:     '0.0.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -51,7 +44,6 @@
 <span class="c1"># Routines to visualize volumetric data</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-
 <div class="viewcode-block" id="figax3d"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.figax3d">[docs]</a><span class="k">def</span> <span class="nf">figax3d</span><span class="p">():</span>
   <span class="sd">&quot;&quot;&quot; get a pair of fig and Axes3D</span>
 <span class="sd">  similar to subplots() but for a single 3D figure</span>
@@ -65,8 +57,7 @@
   <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
 
-
-<div class="viewcode-block" id="isosurf"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.isosurf">[docs]</a><span class="k">def</span> <span class="nf">isosurf</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="n">vol</span><span class="p">,</span><span class="n">level_frac</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
+<div class="viewcode-block" id="isosurf"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.isosurf">[docs]</a><span class="k">def</span> <span class="nf">isosurf</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">vol</span><span class="p">,</span> <span class="n">level_frac</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; draw iso surface of volumetric data on matplotlib axis at given level</span>
 
 <span class="sd">    Example usage:</span>
@@ -76,10 +67,10 @@
 <span class="sd">      ax  = fig.add_subplot(1,1,1,projection=&#39;3d&#39;)</span>
 <span class="sd">      isosurf(ax,vol)</span>
 <span class="sd">      plt.show()</span>
-<span class="sd">    </span>
+
 <span class="sd">    Args:</span>
 <span class="sd">      ax (plt.Axes3D): ax = fig.add_subplot(1,1,1,projection=&quot;3d&quot;)</span>
-<span class="sd">      vol (np.array): 3D volumetric data having shape (nx,ny,nz) </span>
+<span class="sd">      vol (np.array): 3D volumetric data having shape (nx,ny,nz)</span>
 <span class="sd">      level_frac (float): 0.0-&gt;1.0, isosurface value as a fraction between min and max</span>
 <span class="sd">    Returns:</span>
 <span class="sd">      Poly3DCollection: mesh</span>
@@ -87,56 +78,52 @@
 <span class="sd">      draw on ax &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">skimage</span> <span class="k">import</span> <span class="n">measure</span>
     <span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d.art3d</span> <span class="k">import</span> <span class="n">Poly3DCollection</span>
-    <span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span> <span class="o">=</span> <span class="n">vol</span><span class="o">.</span><span class="n">shape</span>
-    <span class="n">lmin</span><span class="p">,</span><span class="n">lmax</span> <span class="o">=</span> <span class="n">vol</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span><span class="n">vol</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-
+    <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span> <span class="o">=</span> <span class="n">vol</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">lmin</span><span class="p">,</span> <span class="n">lmax</span> <span class="o">=</span> <span class="n">vol</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">vol</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="c1"># select isosurface level</span>
     <span class="n">level</span> <span class="o">=</span> <span class="n">lmin</span> <span class="o">+</span> <span class="n">level_frac</span><span class="o">*</span><span class="p">(</span><span class="n">lmax</span><span class="o">-</span><span class="n">lmin</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">level</span><span class="o">&lt;</span><span class="n">lmin</span> <span class="ow">or</span> <span class="n">level</span><span class="o">&gt;</span><span class="n">lmax</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;level must be &gt;</span><span class="si">%f</span><span class="s1"> and &lt; </span><span class="si">%f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">lmin</span><span class="p">,</span><span class="n">lmax</span><span class="p">))</span>
-    <span class="c1"># end if</span>
-
+    <span class="k">if</span> <span class="n">level</span> <span class="o">&lt;</span> <span class="n">lmin</span> <span class="ow">or</span> <span class="n">level</span> <span class="o">&gt;</span> <span class="n">lmax</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;level must be &gt;</span><span class="si">%f</span><span class="s1"> and &lt; </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lmin</span><span class="p">,</span> <span class="n">lmax</span><span class="p">))</span>
     <span class="c1"># make marching cubes</span>
     <span class="n">verts</span><span class="p">,</span> <span class="n">faces</span><span class="p">,</span> <span class="n">normals</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">measure</span><span class="o">.</span><span class="n">marching_cubes_lewiner</span><span class="p">(</span>
         <span class="n">vol</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
-
     <span class="c1"># plot surface</span>
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">Poly3DCollection</span><span class="p">(</span><span class="n">verts</span><span class="p">[</span><span class="n">faces</span><span class="p">])</span>
     <span class="n">mesh</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">add_collection3d</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">nx</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">ny</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">nz</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">nz</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">mesh</span></div>
-<span class="c1"># end def isosurf</span>
 
-<div class="viewcode-block" id="color_scatter"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.color_scatter">[docs]</a><span class="k">def</span> <span class="nf">color_scatter</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">cmap_name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="color_scatter"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.color_scatter">[docs]</a><span class="k">def</span> <span class="nf">color_scatter</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">vals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap_name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; view sampled 3D scalar function using value as color</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    ax (plt.Axes3D): ax = fig.add_subplot(1,1,1,projection=&quot;3d&quot;)</span>
 <span class="sd">    xyz  (np.array): a list of 3D vectors [(x1,y1,z1), (x2,y2,z2), ...]</span>
-<span class="sd">    vals (np.array): f(x,y,z) one for each xyz vector</span>
+<span class="sd">    vals (np.array, optional): f(x,y,z) one for each xyz vector,</span>
+<span class="sd">      default is all ones</span>
 <span class="sd">    cmap_name (str, optional): color map name, default is &#39;viridis&#39;</span>
 <span class="sd">    kwargs (dict, optional): keyword arguments to be passed to ax.scatter</span>
 <span class="sd">  Returns:</span>
 <span class="sd">    mpl_toolkits.mplot3d.art3d.Path3DCollection: scatter plot</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">xyz</span><span class="o">.</span><span class="n">T</span>
-
+  <span class="c1"># choose vals if None given</span>
+  <span class="k">if</span> <span class="n">vals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
   <span class="c1"># design color scheme, if none given</span>
-  <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="s1">&#39;c&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="s1">&#39;color&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+  <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;color&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
     <span class="kn">from</span> <span class="nn">qharv.plantation</span> <span class="k">import</span> <span class="n">kyrt</span>
-    <span class="n">v2c</span> <span class="o">=</span> <span class="n">kyrt</span><span class="o">.</span><span class="n">scalar_color_map</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span><span class="nb">max</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span><span class="n">cmap_name</span><span class="p">)</span>
+    <span class="n">v2c</span> <span class="o">=</span> <span class="n">kyrt</span><span class="o">.</span><span class="n">scalar_colormap</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span> <span class="n">cmap_name</span><span class="p">)</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">v2c</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
-  <span class="c1"># end if</span>
-
   <span class="c1"># scatter</span>
   <span class="n">s</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">s</span></div>
-<span class="c1"># end def color_scatter</span>
 
 <div class="viewcode-block" id="spline_volumetric"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.spline_volumetric">[docs]</a><span class="k">def</span> <span class="nf">spline_volumetric</span><span class="p">(</span><span class="n">val3d</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; spline 3D volumetric data onto a unit cube</span>
@@ -147,56 +134,50 @@
 <span class="sd">    RegularGridInterpolator: 3D function defined on the unit cube</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">RegularGridInterpolator</span>
-  <span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span> <span class="o">=</span> <span class="n">val3d</span><span class="o">.</span><span class="n">shape</span>
-  <span class="n">myx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">nx</span><span class="p">)</span>
-  <span class="n">myy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">ny</span><span class="p">)</span>
-  <span class="n">myz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">nz</span><span class="p">)</span>
-  <span class="n">fval3d</span> <span class="o">=</span> <span class="n">RegularGridInterpolator</span><span class="p">((</span><span class="n">myx</span><span class="p">,</span><span class="n">myy</span><span class="p">,</span><span class="n">myz</span><span class="p">),</span><span class="n">val3d</span><span class="p">)</span>
+  <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span> <span class="o">=</span> <span class="n">val3d</span><span class="o">.</span><span class="n">shape</span>
+  <span class="n">myx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+  <span class="n">myy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+  <span class="n">myz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nz</span><span class="p">)</span>
+  <span class="n">fval3d</span> <span class="o">=</span> <span class="n">RegularGridInterpolator</span><span class="p">((</span><span class="n">myx</span><span class="p">,</span> <span class="n">myy</span><span class="p">,</span> <span class="n">myz</span><span class="p">),</span> <span class="n">val3d</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">fval3d</span></div>
-<span class="c1"># end def spline_volumetric</span>
 
-<div class="viewcode-block" id="axes_func_on_grid3d"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.axes_func_on_grid3d">[docs]</a><span class="k">def</span> <span class="nf">axes_func_on_grid3d</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span><span class="n">func</span><span class="p">,</span><span class="n">grid_shape</span><span class="p">):</span>
+<div class="viewcode-block" id="axes_func_on_grid3d"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.axes_func_on_grid3d">[docs]</a><span class="k">def</span> <span class="nf">axes_func_on_grid3d</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">grid_shape</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; put a function define in axes units on a 3D grid</span>
 <span class="sd">  Args:</span>
-<span class="sd">    axes (np.array): dtype=float, shape=(3,3); 3D lattice vectors in row major (i.e. a1 = axes[0])</span>
+<span class="sd">    axes (np.array): dtype=float, shape=(3,3);</span>
+<span class="sd">      3D lattice vectors in row major (i.e. a1 = axes[0])</span>
 <span class="sd">    func (RegularGridInterpolator): 3D function defined on the unit cube</span>
 <span class="sd">    grid_shape (np.array): dtype=int, shape=(3,); shape of real space grid</span>
 <span class="sd">  Returns:</span>
 <span class="sd">    grid (np.array): dtype=float, shape=grid_shape; volumetric data</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span> <span class="c1"># iterate through grid points fast</span>
-
+  <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">product</span>  <span class="c1"># iterate through grid points fast</span>
   <span class="c1"># make a cubic grid that contains the simulation cell</span>
   <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">)</span>
   <span class="n">farthest_vec</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
   <span class="n">dxdydz</span> <span class="o">=</span> <span class="n">farthest_vec</span><span class="o">/</span><span class="n">grid_shape</span>
-
   <span class="c1"># fill cubic grid</span>
   <span class="n">inv_axes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
-  <span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span> <span class="o">=</span> <span class="n">grid_shape</span>
-  <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nx</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="n">ny</span><span class="p">),</span><span class="nb">range</span><span class="p">(</span><span class="n">nz</span><span class="p">)):</span>
-    <span class="n">rvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">])</span><span class="o">*</span><span class="n">dxdydz</span>
-    <span class="n">uvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">rvec</span><span class="p">,</span><span class="n">inv_axes</span><span class="p">)</span>
-
+  <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span> <span class="o">=</span> <span class="n">grid_shape</span>
+  <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">nx</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">ny</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">nz</span><span class="p">)):</span>
+    <span class="n">rvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">])</span><span class="o">*</span><span class="n">dxdydz</span>
+    <span class="n">uvec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">rvec</span><span class="p">,</span> <span class="n">inv_axes</span><span class="p">)</span>
     <span class="c1"># skip points without data</span>
-    <span class="n">sel</span> <span class="o">=</span> <span class="p">(</span><span class="n">uvec</span><span class="o">&gt;</span><span class="mf">1.</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">uvec</span><span class="o">&lt;</span><span class="mf">0.</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uvec</span><span class="p">[</span><span class="n">sel</span><span class="p">])</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+    <span class="n">sel</span> <span class="o">=</span> <span class="p">(</span><span class="n">uvec</span> <span class="o">&gt;</span> <span class="mf">1.</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">uvec</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uvec</span><span class="p">[</span><span class="n">sel</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
       <span class="k">continue</span>
-    <span class="c1"># end if</span>
-
-    <span class="n">grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">uvec</span><span class="p">)</span>
-  <span class="c1"># end for i,j,k</span>
+    <span class="n">grid</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">uvec</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">grid</span></div>
-<span class="c1"># end def axes_func_on_grid3d</span>
 
-<div class="viewcode-block" id="xsf_datagrid_3d_density"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.xsf_datagrid_3d_density">[docs]</a><span class="k">def</span> <span class="nf">xsf_datagrid_3d_density</span><span class="p">(</span><span class="n">fname</span>
-  <span class="p">,</span><span class="n">header</span><span class="o">=</span><span class="s1">&#39;BEGIN_DATAGRID_3D_density&#39;</span>
-  <span class="p">,</span><span class="n">trailer</span><span class="o">=</span><span class="s1">&#39;END_DATAGRID_3D_density&#39;</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; </span>
+<div class="viewcode-block" id="read_xsf_datagrid_3d_density"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.read_xsf_datagrid_3d_density">[docs]</a><span class="k">def</span> <span class="nf">read_xsf_datagrid_3d_density</span><span class="p">(</span>
+  <span class="n">fname</span><span class="p">,</span>
+  <span class="n">header</span><span class="o">=</span><span class="s1">&#39;BEGIN_DATAGRID_3D_density&#39;</span><span class="p">,</span>
+  <span class="n">trailer</span><span class="o">=</span><span class="s1">&#39;END_DATAGRID_3D_density&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">  parse DATAGRID_3D block in xsf file</span>
 
 <span class="sd">  Args:</span>
-<span class="sd">    fname (str): xsf file name </span>
+<span class="sd">    fname (str): xsf file name</span>
 <span class="sd">    header (str): tag marking the beginning of grid</span>
 <span class="sd">    trailer (str): tag marking the end of grid</span>
 <span class="sd">  Return:</span>
@@ -204,66 +185,54 @@
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="kn">from</span> <span class="nn">qharv.reel</span> <span class="k">import</span> <span class="n">ascii_out</span>
   <span class="n">mm</span>   <span class="o">=</span> <span class="n">ascii_out</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-  <span class="n">text</span> <span class="o">=</span> <span class="n">ascii_out</span><span class="o">.</span><span class="n">block_text</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span><span class="n">header</span><span class="p">,</span><span class="n">trailer</span><span class="p">)</span>
-
+  <span class="n">text</span> <span class="o">=</span> <span class="n">ascii_out</span><span class="o">.</span><span class="n">block_text</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">trailer</span><span class="p">)</span>
   <span class="n">lines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-
   <span class="c1"># first advance iline past particle coordinates (!!!! hacky)</span>
   <span class="n">iline</span> <span class="o">=</span> <span class="mi">0</span>
   <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">iline</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-      <span class="n">grid_shape</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+      <span class="n">grid_shape</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
       <span class="n">iline</span> <span class="o">+=</span> <span class="mi">1</span>
       <span class="k">continue</span>
-    <span class="c1"># end if</span>
-
     <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c1"># atom coordinate</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># atom coordinate</span>
       <span class="k">pass</span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">:</span> <span class="c1"># density data</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">:</span>  <span class="c1"># density data</span>
       <span class="k">break</span>
-    <span class="c1"># end if</span>
     <span class="n">iline</span> <span class="o">+=</span> <span class="mi">1</span>
-  <span class="c1"># end for line</span>
-
   <span class="c1"># then convert data to density grid, which may be of unequal lengths</span>
   <span class="n">all_numbers</span> <span class="o">=</span> <span class="p">[</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">iline</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-
   <span class="c1"># flatten before converting to np.array</span>
-  <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">numbers</span> <span class="ow">in</span> <span class="n">all_numbers</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">numbers</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">numbers</span> <span class="ow">in</span> <span class="n">all_numbers</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">numbers</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">grid_shape</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span></div>
-<span class="c1"># end def xsf_datagrid_3d_density</span>
 
-
-<div class="viewcode-block" id="gaussian_cube"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.gaussian_cube">[docs]</a><span class="k">def</span> <span class="nf">gaussian_cube</span><span class="p">(</span><span class="n">fcub</span><span class="p">,</span> <span class="n">nskip</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; </span>
-<span class="sd">  parse Gaussian Cube file</span>
+<div class="viewcode-block" id="read_gaussian_cube"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.read_gaussian_cube">[docs]</a><span class="k">def</span> <span class="nf">read_gaussian_cube</span><span class="p">(</span><span class="n">fcub</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Read Gaussian cube file</span>
 
 <span class="sd">  example:</span>
-<span class="sd">    entry = gaussian_cube(&#39;density.cub&#39;)</span>
+<span class="sd">    entry = read_gaussian_cube(&#39;density.cub&#39;)</span>
 <span class="sd">    data  = np.array(entry[&#39;data&#39;])</span>
-<span class="sd">    assert np.allclose(data.shape,entry[&#39;nxyz&#39;])</span>
+<span class="sd">    assert np.allclose(data.shape, entry[&#39;nxyz&#39;])</span>
 
 <span class="sd">  Args:</span>
-<span class="sd">    fcub (str): cube file name </span>
-<span class="sd">    nskip (int, optional): skip the top two title lines</span>
+<span class="sd">    fcub (str): cube file name</span>
 <span class="sd">  Return:</span>
-<span class="sd">    dict: dictionary of useful info </span>
+<span class="sd">    dict: dictionary of useful info</span>
 <span class="sd">     [axes, elem, pos, nxyz, data]</span>
 <span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">nskip</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># skip 2 comment lines</span>
   <span class="n">ndim</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># 3 spatial dimensions</span>
-
   <span class="c1"># hold entire file in memory</span>
-  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fcub</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fcub</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-  
   <span class="c1"># split into lines</span>
   <span class="n">lines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-  
   <span class="c1"># read the number of atoms</span>
   <span class="n">natom_line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">nskip</span><span class="p">]</span>
-  <span class="n">natom</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">natom_line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
-
+  <span class="n">tokens</span> <span class="o">=</span> <span class="n">natom_line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+  <span class="n">natom</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+  <span class="n">origin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
   <span class="c1"># read lattice vectors</span>
   <span class="n">axes</span> <span class="o">=</span> <span class="p">[]</span>
   <span class="n">nxyz</span> <span class="o">=</span> <span class="p">[]</span>
@@ -272,46 +241,110 @@
     <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
     <span class="n">nx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">nxyz</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nx</span><span class="p">)</span>
-    <span class="n">avec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">*</span> <span class="n">nx</span>
+    <span class="n">avec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
     <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">avec</span><span class="p">)</span>
-  <span class="c1"># end for</span>
-
   <span class="c1"># read atomic positions</span>
   <span class="n">elem</span> <span class="o">=</span> <span class="p">[]</span>
   <span class="n">pos</span>  <span class="o">=</span> <span class="p">[]</span>
   <span class="k">for</span> <span class="n">iatom</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">natom</span><span class="p">):</span>
     <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">nskip</span><span class="o">+</span><span class="n">ndim</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="n">iatom</span><span class="p">]</span>
     <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-    <span class="n">atom_number</span>   <span class="o">=</span> <span class="nb">int</span><span class="p">(</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="p">)</span>
+    <span class="n">atom_number</span>   <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
     <span class="n">atom_position</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">2</span><span class="o">+</span><span class="n">ndim</span><span class="p">])</span>
     <span class="n">elem</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom_number</span><span class="p">)</span>
     <span class="n">pos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom_position</span><span class="p">)</span>
-  <span class="c1"># end for</span>
-
   <span class="c1"># density grid</span>
-  <span class="n">data</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">nskip</span><span class="o">+</span><span class="n">ndim</span><span class="o">+</span><span class="n">natom</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">nskip</span><span class="o">+</span><span class="n">ndim</span><span class="o">+</span><span class="n">natom</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
   <span class="n">data_text</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
   <span class="n">data_vals</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">data_text</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
 
   <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span> <span class="o">=</span> <span class="n">nxyz</span>
-  <span class="n">rgrid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data_vals</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="p">,</span><span class="n">nz</span><span class="p">],</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+  <span class="n">rgrid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data_vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nz</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
 
   <span class="c1"># turn file into dictionary</span>
-  <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;axes&#39;</span><span class="p">:</span><span class="n">axes</span><span class="p">,</span> <span class="s1">&#39;elem&#39;</span><span class="p">:</span> <span class="n">elem</span><span class="p">,</span> <span class="s1">&#39;pos&#39;</span><span class="p">:</span><span class="n">pos</span>
-         <span class="p">,</span> <span class="s1">&#39;nxyz&#39;</span><span class="p">:</span><span class="n">nxyz</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span><span class="n">rgrid</span><span class="o">.</span><span class="n">tolist</span><span class="p">()}</span>
+  <span class="n">entry</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;origin&#39;</span><span class="p">:</span> <span class="n">origin</span><span class="p">,</span> <span class="s1">&#39;axes&#39;</span><span class="p">:</span> <span class="n">axes</span><span class="p">,</span>
+           <span class="s1">&#39;elem&#39;</span><span class="p">:</span> <span class="n">elem</span><span class="p">,</span> <span class="s1">&#39;pos&#39;</span><span class="p">:</span> <span class="n">pos</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">rgrid</span><span class="p">}</span>
   <span class="k">return</span> <span class="n">entry</span></div>
-<span class="c1"># end def gaussian_cube</span>
 
+<div class="viewcode-block" id="write_gaussian_cube"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.write_gaussian_cube">[docs]</a><span class="k">def</span> <span class="nf">write_gaussian_cube</span><span class="p">(</span><span class="n">fcub</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="kn">import</span> <span class="nn">os</span>
+  <span class="n">keys</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fcub</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> exists&#39;</span> <span class="o">%</span> <span class="n">fcub</span><span class="p">)</span>
+  <span class="c1"># required inputs: grid axes (3, 3) matrix and volumetric data</span>
+  <span class="k">if</span> <span class="s1">&#39;axes&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;grid axes is required&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="s1">&#39;data&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;data grid is required&#39;</span><span class="p">)</span>
+  <span class="c1"># optional inputs</span>
+  <span class="k">if</span> <span class="s1">&#39;elem&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+    <span class="n">elem</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;elem&#39;</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">elem</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span>
+  <span class="k">if</span> <span class="s1">&#39;pos&#39;</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;pos&#39;</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),)</span>
+  <span class="k">if</span> <span class="s1">&#39;origin&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">origin</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;origin&#39;</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">origin</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="n">write_gaussian_cube_text</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;axes&#39;</span><span class="p">],</span>
+    <span class="n">elem</span><span class="o">=</span><span class="n">elem</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fcub</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="wavefront_obj"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.wavefront_obj">[docs]</a><span class="k">def</span> <span class="nf">wavefront_obj</span><span class="p">(</span><span class="n">verts</span><span class="p">,</span><span class="n">faces</span><span class="p">,</span><span class="n">normals</span><span class="p">):</span>
+<div class="viewcode-block" id="write_gaussian_cube_text"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.write_gaussian_cube_text">[docs]</a><span class="k">def</span> <span class="nf">write_gaussian_cube_text</span><span class="p">(</span>
+  <span class="n">vol</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span>
+  <span class="n">elem</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,),</span> <span class="n">pos</span><span class="o">=</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),),</span> <span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+  <span class="n">two_line_comment</span><span class="o">=</span><span class="s1">&#39;cube</span><span class="se">\n</span><span class="s1">file</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Write Gaussian cube file using volumetric data</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    vol (np.array): volumetric data, shape (nx, ny, nz)</span>
+<span class="sd">    axes (np.array): grid basis, e.g. np.diag((dx, dy, dz))</span>
+<span class="sd">    elem (array-like, optional): list of atomic numbers, default (1,)</span>
+<span class="sd">    pos (array-like, optional): list of atomic positions</span>
+<span class="sd">    origin (array-like, optional): coordinates of the origin</span>
+<span class="sd">    two_line_comment (str, optional): comments at file head</span>
+<span class="sd">  Return:</span>
+<span class="sd">    str: Gaussian file content</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">text</span> <span class="o">=</span> <span class="n">two_line_comment</span>
+  <span class="c1"># natom, origin</span>
+  <span class="n">natom</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+  <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">origin</span>
+  <span class="n">line1</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%4d</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">natom</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+  <span class="c1"># grid, axes</span>
+  <span class="n">line2</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">vec</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">vec</span>
+    <span class="n">line2</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">%4d</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+  <span class="c1"># atoms</span>
+  <span class="n">line3</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="k">for</span> <span class="n">num</span><span class="p">,</span> <span class="n">vec</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">vec</span>
+    <span class="n">line3</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">%4d</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="s1"> </span><span class="si">%8.6f</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+  <span class="c1"># volumetric data (not human-readable format)</span>
+  <span class="n">dline</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vol</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">text</span> <span class="o">+</span> <span class="n">line1</span> <span class="o">+</span> <span class="n">line2</span> <span class="o">+</span> <span class="n">line3</span> <span class="o">+</span> <span class="n">dline</span></div>
+
+<div class="viewcode-block" id="write_wavefront_obj"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.write_wavefront_obj">[docs]</a><span class="k">def</span> <span class="nf">write_wavefront_obj</span><span class="p">(</span><span class="n">verts</span><span class="p">,</span> <span class="n">faces</span><span class="p">,</span> <span class="n">normals</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; save polygons in obj format</span>
 
 <span class="sd">  obj format is more commonly used than ply</span>
 
 <span class="sd">  Args:</span>
-<span class="sd">    verts (np.array): shape=(nvert,3) dtype=float, vertices in cartesian coordinates.</span>
-<span class="sd">    faces (np.array): shape=(nface,nside) dtype=int, polygons each specified as a list of vertices (in vertex coordinates defined by verts).</span>
-<span class="sd">    normals (np.array): shape=(nvert,3) dtype=float, normal vectors used for smooth lighting. There is one normal vector per vertex. </span>
+<span class="sd">    verts (np.array): shape=(nvert,3) dtype=float,</span>
+<span class="sd">      vertices in cartesian coordinates.</span>
+<span class="sd">    faces (np.array): shape=(nface,nside) dtype=int,</span>
+<span class="sd">      polygons each specified as a list of vertices</span>
+<span class="sd">      (in vertex coordinates defined by verts).</span>
+<span class="sd">    normals (np.array): shape=(nvert,3) dtype=float,</span>
+<span class="sd">      normal vectors used for smooth lighting.</span>
+<span class="sd">      There is one normal vector per vertex.</span>
 <span class="sd">  Returns:</span>
 <span class="sd">    str: content of the obj file</span>
 <span class="sd">  &quot;&quot;&quot;</span>
@@ -320,38 +353,37 @@
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: faces should be integers. Converting now.&#39;</span><span class="p">)</span>
     <span class="n">faces</span> <span class="o">=</span> <span class="n">faces</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
-  <span class="n">vert_fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{name:s}</span><span class="s1"> </span><span class="si">{x:7.6f}</span><span class="s1"> </span><span class="si">{y:7.6f}</span><span class="s1"> </span><span class="si">{z:7.6f}</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="c1"># weights not supported</span>
+  <span class="n">vert_fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{name:s}</span><span class="s1"> </span><span class="si">{x:7.6f}</span><span class="s1"> </span><span class="si">{y:7.6f}</span><span class="s1"> </span><span class="si">{z:7.6f}</span><span class="se">\n</span><span class="s1">&#39;</span>  <span class="c1"># weights not supported</span>
+  <span class="c1"># write vertices</span>
   <span class="k">for</span> <span class="n">ivert</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">verts</span><span class="p">)):</span>
     <span class="n">vert</span>  <span class="o">=</span> <span class="n">verts</span><span class="p">[</span><span class="n">ivert</span><span class="p">]</span>
-    <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="o">=</span> <span class="n">vert</span>
-    <span class="n">text</span> <span class="o">+=</span> <span class="n">vert_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;v&#39;</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
-  <span class="c1"># end for</span>
-
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">vert</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="n">vert_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+  <span class="c1"># write normals</span>
   <span class="k">for</span> <span class="n">inorm</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">normals</span><span class="p">)):</span>
     <span class="n">norm</span>  <span class="o">=</span> <span class="n">normals</span><span class="p">[</span><span class="n">inorm</span><span class="p">]</span>
-    <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="o">=</span> <span class="n">norm</span>
-    <span class="n">text</span> <span class="o">+=</span> <span class="n">vert_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;vn&#39;</span><span class="p">,</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
-  <span class="c1"># end for inorm</span>
-
-  <span class="n">face_fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{name:s}</span><span class="s1"> </span><span class="si">{polyx:d}</span><span class="s1">//</span><span class="si">{normalx:d}</span><span class="s1"> </span><span class="si">{polyy:d}</span><span class="s1">//</span><span class="si">{normaly:d}</span><span class="s1"> </span><span class="si">{polyz:d}</span><span class="s1">//</span><span class="si">{normalz:d}</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="c1"># texture not supported</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">norm</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="n">vert_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;vn&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+  <span class="c1"># write faces</span>
+  <span class="n">face_fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{name:s}</span><span class="s1"> </span><span class="si">{polyx:d}</span><span class="s1">//</span><span class="si">{normalx:d}</span><span class="s1"> </span><span class="si">{polyy:d}</span><span class="s1">//</span><span class="si">{normaly:d}</span><span class="s1"> </span><span class="si">{polyz:d}</span><span class="s1">//</span><span class="si">{normalz:d}</span><span class="se">\n</span><span class="s1">&#39;</span>  <span class="c1"># texture not supported</span>
   <span class="k">for</span> <span class="n">iface</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">faces</span><span class="p">)):</span>
     <span class="n">face</span>  <span class="o">=</span> <span class="n">faces</span><span class="p">[</span><span class="n">iface</span><span class="p">]</span>
-    <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="o">=</span> <span class="n">face</span><span class="o">+</span><span class="mi">1</span>
-    <span class="n">text</span> <span class="o">+=</span> <span class="n">face_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="n">polyx</span><span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="n">polyy</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="n">polyz</span><span class="o">=</span><span class="n">z</span><span class="p">,</span>
-      <span class="n">normalx</span><span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="n">normaly</span><span class="o">=</span><span class="n">y</span><span class="p">,</span><span class="n">normalz</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
-  <span class="c1"># end for iface</span>
-
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">face</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">text</span> <span class="o">+=</span> <span class="n">face_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">polyx</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">polyy</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">polyz</span><span class="o">=</span><span class="n">z</span><span class="p">,</span>
+      <span class="n">normalx</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">normaly</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">normalz</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">text</span></div>
-<span class="c1"># end def wavefront_obj</span>
 
-<div class="viewcode-block" id="stanford_ply"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.stanford_ply">[docs]</a><span class="k">def</span> <span class="nf">stanford_ply</span><span class="p">(</span><span class="n">verts</span><span class="p">,</span><span class="n">faces</span><span class="p">):</span>
+<div class="viewcode-block" id="write_stanford_ply"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.volumetric.write_stanford_ply">[docs]</a><span class="k">def</span> <span class="nf">write_stanford_ply</span><span class="p">(</span><span class="n">verts</span><span class="p">,</span> <span class="n">faces</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; save polygons in ply format</span>
 
 <span class="sd">  ply is simpler than obj, but older and less used</span>
 
 <span class="sd">  Args:</span>
-<span class="sd">    verts (np.array): shape=(nvert,3) dtype=float, vertices in cartesian coordinates.</span>
-<span class="sd">    faces (np.array): shape=(nface,nside) dtype=int, polygons each specified as a list of vertices (in vertex coordinates defined by verts).</span>
+<span class="sd">    verts (np.array): shape=(nvert,3) dtype=float,</span>
+<span class="sd">      vertices in cartesian coordinates.</span>
+<span class="sd">    faces (np.array): shape=(nface,nside) dtype=int,</span>
+<span class="sd">      polygons each specified as a list of vertices</span>
+<span class="sd">      (in vertex coordinates defined by verts).</span>
 <span class="sd">  Returns:</span>
 <span class="sd">    str: content of the ply file</span>
 <span class="sd">  &quot;&quot;&quot;</span>
@@ -368,16 +400,15 @@
 
   <span class="c1"># !!!! assuming triangles in 3D</span>
   <span class="n">ndim</span> <span class="o">=</span> <span class="mi">3</span>
-  <span class="n">nface</span><span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">faces</span><span class="p">)</span>
-  <span class="n">new_faces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">nface</span><span class="p">,</span><span class="n">ndim</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-  <span class="n">new_faces</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
-  <span class="n">new_faces</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span><span class="o">=</span> <span class="n">faces</span>
+  <span class="n">nface</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">faces</span><span class="p">)</span>
+  <span class="n">new_faces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">nface</span><span class="p">,</span> <span class="n">ndim</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+  <span class="n">new_faces</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+  <span class="n">new_faces</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">faces</span>
 
-  <span class="n">text</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nvert</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">verts</span><span class="p">),</span><span class="n">nface</span><span class="o">=</span><span class="n">nface</span><span class="p">)</span> <span class="o">+</span> \
+  <span class="n">text</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nvert</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">verts</span><span class="p">),</span> <span class="n">nface</span><span class="o">=</span><span class="n">nface</span><span class="p">)</span> <span class="o">+</span> \
     <span class="n">arr2text</span><span class="p">(</span><span class="n">verts</span><span class="p">)</span> <span class="o">+</span> <span class="n">arr2text</span><span class="p">(</span><span class="n">new_faces</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
   <span class="k">return</span> <span class="n">text</span></div>
-<span class="c1"># end def stanford_ply</span>
 </pre></div>
 
           </div>
@@ -387,15 +418,17 @@
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
-<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<h3><a href="../../../index.html">Table of Contents</a></h3>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../qharv.html">qharv package</a></li>
@@ -421,7 +454,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>
