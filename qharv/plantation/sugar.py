@@ -30,10 +30,20 @@ def cache(write_file):
     return skip_exist_file(write_file)(fout, *args, **kwargs)
   return wrapper
 
+def get_progress_bar(maxval):
+  from progressbar import ProgressBar
+  bar = ProgressBar(maxval=maxval)
+  import sys
+  if sys.version_info >= (3, 0):
+    from progressbar import Bar, ETA
+    widgets = [Bar('>'), ETA()]
+    bar.widgets = widgets
+    bar.start()
+  return bar
+
 def show_h5progress(collect_h5file):
   def wrapper(h5file, flist, *args, **kwargs):
-    from progressbar import ProgressBar
-    bar = ProgressBar(maxval=len(flist))
+    bar = get_progress_bar(len(flist))
     ifile = 0
     for ifile, floc in enumerate(flist):
       collect_h5file(h5file, floc, *args, **kwargs)
@@ -52,8 +62,7 @@ def concat_return(show_progress=True, fault_tolerant=False):
     """
     def wrapper(flist, *args, **kwargs):
       if show_progress:
-        from progressbar import ProgressBar
-        bar = ProgressBar(maxval=len(flist))
+        bar = get_progress_bar(len(flist))
       ifile = 0
       data = []
       for ifile, floc in enumerate(flist):
