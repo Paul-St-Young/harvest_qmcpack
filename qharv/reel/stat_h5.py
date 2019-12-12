@@ -99,6 +99,31 @@ def dsk_from_skall(fp, nequil, ska_name='skall', kappa=None):
   dskm, dske = me2d(dska)
   return kvecs, dskm, dske
 
+def rhok_from_skall(fp, nequil, ska_name='skall', kappa=None):
+  """ extract electronic density rho(k) from stat.h5 file
+
+  Args:
+    fp (h5py.File): h5py handle of stat.h5 file
+    nequil (int): number of equilibration blocks to remove
+    ska_name (str, optional): name the "skall" estimator, default "skall"
+    kappa (float, optional): autocorrelation, default is to calculate
+     on-the-fly
+  Return:
+    (np.array, np.array, np.array): (kvecs, rhokm, rhoke)
+      k-vectors, rho(k) mean and error, shape (nk, ndim)
+      notice rhok is the real-view of a complex vector, shape (2*nk,)
+  """
+  # get data
+  kpt_path = '%s/kpoints/value' % ska_name
+  rhokr_path = '%s/rhok_e_r/value' % ska_name
+  rhoki_path = '%s/rhok_e_i/value' % ska_name
+  kvecs = fp[kpt_path][()]
+  rkrm, rkre = mean_and_err(fp, rhokr_path, nequil, kappa)
+  rkim, rkie = mean_and_err(fp, rhoki_path, nequil, kappa)
+  rhokm = rkrm + 1j*rkim
+  rhoke = rkre + 1j*rkie
+  return kvecs, rhokm.view(float), rhoke.view(float)
+
 def dsk_from_csk(fp, csk_name, nequil, kappa=None):
   """ extract fluctuating structure factor dS(k) from charged structure factor
 
