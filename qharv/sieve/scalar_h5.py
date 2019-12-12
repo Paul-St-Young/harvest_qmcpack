@@ -22,9 +22,10 @@ def twist_average_h5(fh5, weights=None, **suffix_kwargs):
   Return:
     (dict, np.array, np.array): (meta data, mean, error)
   """
+  from qharv.sieve.mean_df import taw
   fp = h5py.File(fh5)
   # determine ymean, yerror from first twist
-  twist0 = fp.keys()[0]
+  twist0 = list(fp.keys())[0]
   ymean, yerror = get_ymean_yerror(fp, twist0, **suffix_kwargs)
   # treat all other entries as metadata
   meta = {}
@@ -39,27 +40,23 @@ def twist_average_h5(fh5, weights=None, **suffix_kwargs):
   itwists = [int(t.replace('twist', '')) for t in twists]
   assert sorted(itwists)
   ntwist = len(twists)
+  for twist in twists:
+    mpath = os.path.join(twist, ymean)
+    ym1 = fp[mpath][()]
+    epath = os.path.join(twist, yerror)
+    ye1 = fp[epath][()]
+    yml.append(ym1)
+    yel.append(ye1)
+  fp.close()
+  yma = np.array(yml)
+  yea = np.array(yel)
+  # twist average with weights
   if weights is None:
     weights = np.ones(ntwist)
   else:
     if len(weights) != ntwist:
       raise RuntimeError('%d weights for %d twists' % (len(weights), ntwist))
-  wtot = weights.sum()
-  for twist in twists:
-    mpath = os.path.join(twist, ymean)
-    epath = os.path.join(twist, yerror)
-    yml.append(fp[mpath][()])
-    yel.append(fp[epath][()])
-  fp.close()
-  yma = np.array(yml)
-  yea = np.array(yel)
-  # twist average with weights
-  try:
-    ym = np.sum(weights[:, np.newaxis]*yma, axis=0)/wtot
-    ye = np.sum(weights[:, np.newaxis]**2*yea**2, axis=0)**0.5/wtot
-  except:
-    ym = np.sum(weights[:, np.newaxis, np.newaxis]*yma, axis=0)/wtot
-    ye = np.sum(weights[:, np.newaxis, np.newaxis]**2*yea**2, axis=0)**0.5/wtot
+  ym, ye = taw(yma, yea, weights)
   return meta, ym, ye
 
 def get_ymean_yerror(fp, twist0, msuffix='_mean', esuffix='_error'):
