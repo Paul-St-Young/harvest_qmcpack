@@ -124,33 +124,6 @@ def rhok_from_skall(fp, nequil, ska_name='skall', kappa=None):
   rhoke = rkre + 1j*rkie
   return kvecs, rhokm.view(float), rhoke.view(float)
 
-def dsk_from_csk(fp, csk_name, nequil, kappa=None):
-  """ extract fluctuating structure factor dS(k) from charged structure factor
-
-  Args:
-    fp (h5py.File): stat.h5 handle
-    csk_name (str): name the charged S(k) estimator, likely 'csk'
-    nequil (int): equilibration length
-    kappa (float, optional): autocorrelation length, default is to calcaulte
-     on-the-fly
-  Return:
-    (np.array, np.array, np.array): (kvecs, dskm, dske), kvectors and S(k)
-    mean and error
-  """
-  # get data
-  kpt_path = '%s/kpoints/value' % csk_name
-  csk_path = '%s/csk/value' % csk_name
-  crho_path = '%s/crhok/value' % csk_name
-  kvecs = fp[kpt_path][()]
-  cska = fp[csk_path][()]
-  crhoa = fp[crho_path][()]
-  nblock, nspin, nk = cska.shape
-
-  # get dsk using equilibrated data
-  dska = cska[nequil:] - crhoa[nequil:]**2
-  dskm, dske = me2d(dska)
-  return kvecs, dskm, dske
-
 def gofr(fp, obs_name, nequil, kappa=None, force=False):
   """ extract pair correlation function g(r) from stat.h5 file
   Args:
@@ -194,6 +167,36 @@ def nofk(fp, obs_name, nequil, kappa=None):
   nkm, nke = mean_and_err(fp, '%s/value' % obs_name, nequil, kappa)
   return kvecs, nkm, nke
 
+# ---------------- begin charged structure factor ----------------
+# note: charged S(k), rho(k) were added for multi-component simulation,
+#  e.g. electrons & protons. Nobody does mc sim. so deprecate?
+def dsk_from_csk(fp, csk_name, nequil, kappa=None):
+  """ extract fluctuating structure factor dS(k) from charged structure factor
+
+  Args:
+    fp (h5py.File): stat.h5 handle
+    csk_name (str): name the charged S(k) estimator, likely 'csk'
+    nequil (int): equilibration length
+    kappa (float, optional): autocorrelation length, default is to calcaulte
+     on-the-fly
+  Return:
+    (np.array, np.array, np.array): (kvecs, dskm, dske), kvectors and S(k)
+    mean and error
+  """
+  # get data
+  kpt_path = '%s/kpoints/value' % csk_name
+  csk_path = '%s/csk/value' % csk_name
+  crho_path = '%s/crhok/value' % csk_name
+  kvecs = fp[kpt_path][()]
+  cska = fp[csk_path][()]
+  crhoa = fp[crho_path][()]
+  nblock, nspin, nk = cska.shape
+
+  # get dsk using equilibrated data
+  dska = cska[nequil:] - crhoa[nequil:]**2
+  dskm, dske = me2d(dska)
+  return kvecs, dskm, dske
+
 def rhok(fp, obs_name, nequil, kappa=None):
   """ extract electronic density rho(k) from stat.h5 file
 
@@ -206,7 +209,7 @@ def rhok(fp, obs_name, nequil, kappa=None):
   Return:
     (np.array, np.array, np.array): (kvecs, rhokm, rhoke)
       k-vectors, rho(k) mean and error
-      notice rhom has two rows for real and imag components (2, nk)
+      notice rhokm has two rows for real and imag components (2, nk)
   """
   # get data
   kpt_path = '%s/kpoints/value' % obs_name
@@ -214,3 +217,4 @@ def rhok(fp, obs_name, nequil, kappa=None):
   kvecs = fp[kpt_path][()]
   rhokm, rhoke = mean_and_err(fp, crho_path, nequil, kappa)
   return kvecs, rhokm, rhoke
+# ---------------- charged structure factor end ----------------
