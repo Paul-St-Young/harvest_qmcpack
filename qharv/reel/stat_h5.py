@@ -71,13 +71,13 @@ def mean_and_err(handle, obs_path, nequil, kappa=None):
   val_mean, val_err = me2d(edata)
   return val_mean, val_err
 
-def dsk_from_skall(fp, nequil, ska_name='skall', kappa=None):
+def dsk_from_skall(fp, obs_name, nequil, kappa=None):
   """ extract fluctuating structure factor dS(k) from skall
 
   Args:
     fp (h5py.File): stat.h5 handle
+    obs_name (str, optional): name the "skall" estimator, likely "skall"
     nequil (int): equilibration length
-    ska_name (str, optional): name the "skall" estimator, default "skall"
     kappa (float, optional): autocorrelation length, default is to calcaulte
      on-the-fly
   Return:
@@ -85,10 +85,10 @@ def dsk_from_skall(fp, nequil, ska_name='skall', kappa=None):
     mean and error
   """
   # get data
-  kpt_path = '%s/kpoints/value' % ska_name
-  sk_path = '%s/rhok_e_e/value' % ska_name
-  rhoki_path = '%s/rhok_e_i/value' % ska_name
-  rhokr_path = '%s/rhok_e_r/value' % ska_name
+  kpt_path = '%s/kpoints/value' % obs_name
+  sk_path = '%s/rhok_e_e/value' % obs_name
+  rhoki_path = '%s/rhok_e_i/value' % obs_name
+  rhokr_path = '%s/rhok_e_r/value' % obs_name
   kvecs = fp[kpt_path][()]
   ska = fp[sk_path][()]
   rkra = fp[rhokr_path][()]
@@ -99,13 +99,13 @@ def dsk_from_skall(fp, nequil, ska_name='skall', kappa=None):
   dskm, dske = me2d(dska)
   return kvecs, dskm, dske
 
-def rhok_from_skall(fp, nequil, ska_name='skall', kappa=None):
+def rhok_from_skall(fp, obs_name, nequil, kappa=None):
   """ extract electronic density rho(k) from stat.h5 file
 
   Args:
     fp (h5py.File): h5py handle of stat.h5 file
+    obs_name (str, optional): name the "skall" estimator, likely "skall"
     nequil (int): number of equilibration blocks to remove
-    ska_name (str, optional): name the "skall" estimator, default "skall"
     kappa (float, optional): autocorrelation, default is to calculate
      on-the-fly
   Return:
@@ -114,9 +114,9 @@ def rhok_from_skall(fp, nequil, ska_name='skall', kappa=None):
       notice rhok is the real-view of a complex vector, shape (2*nk,)
   """
   # get data
-  kpt_path = '%s/kpoints/value' % ska_name
-  rhokr_path = '%s/rhok_e_r/value' % ska_name
-  rhoki_path = '%s/rhok_e_i/value' % ska_name
+  kpt_path = '%s/kpoints/value' % obs_name
+  rhokr_path = '%s/rhok_e_r/value' % obs_name
+  rhoki_path = '%s/rhok_e_i/value' % obs_name
   kvecs = fp[kpt_path][()]
   rkrm, rkre = mean_and_err(fp, rhokr_path, nequil, kappa)
   rkim, rkie = mean_and_err(fp, rhoki_path, nequil, kappa)
