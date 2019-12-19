@@ -8,21 +8,20 @@
 import numpy as np
 import pandas as pd
 
-def categorize_columns(mdf):
+def categorize_columns(cols):
   """Categorize the column names of a mean dataframe.
 
   Args:
-    mdf (pd.DataFrame): mean dataframe
+    cols (list): a list of column names
   Return:
     (list, list, list): (excol, mcol, ecol)
       excol are columns of exact values with no errorbar (possibly labels)
       mcols are mean columns
       ecols are error columns
   Examples:
-    >>> rcol, mcol, ecol = categorize_columns(mdf)
+    >>> rcol, mcol, ecol = categorize_columns(mdf.columns)
     >>> xyye(df, 'Pressure', 'LocalEnergy', xerr=True)
   """
-  cols = mdf.columns
   mcol = [col for col in cols if col.endswith('_mean')]
   ecol = [col for col in cols if col.endswith('_error')]
   rcol = [col for col in cols if

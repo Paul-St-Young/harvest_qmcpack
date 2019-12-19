@@ -45,7 +45,7 @@ def get_test_results():
 def test_categorize_columns():
   from qharv.sieve.mean_df import categorize_columns
   df = read_test_data()
-  ret = categorize_columns(df)
+  ret = categorize_columns(df.columns)
   # check exact columns
   names = ret[0]
   ref_names = ['series', 'group', 'nelec', 'weights', 'timestep', 'acc']
