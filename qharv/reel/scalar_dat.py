@@ -120,6 +120,44 @@ def write(dat_fname, df, header_pad='# ', **kwargs):
   with open(dat_fname, 'w') as f:
     f.write(header_pad + text)
 
+def next_pow_two(n):
+  """Returns the next power of two greater than or equal to `n`
+  stolen from dfm/emcee autocorr.py
+
+  Args:
+    n (int): lower bound
+  Return:
+    n2 (int): next power of two
+  Example:
+    >>> next_pow_two(1000)
+    >>> 1024
+  """
+  i = 1
+  while i < n:
+    i = i << 1
+  return i
+
+def acf1d(x):
+  """Estimate the normalized autocorrelation function of a 1-D series
+  stolen from dfm/emcee autocorr.py
+
+  Args:
+    x (np.array): The series as a 1-D numpy array.
+  Returns:
+    np.array: The autocorrelation function of the time series.
+  """
+  x = np.atleast_1d(x)
+  if len(x.shape) != 1:
+    msg = "invalid dimensions for 1D autocorrelation function"
+    raise ValueError(msg)
+  n = next_pow_two(len(x))
+
+  # Compute the FFT and then (from that) the auto-correlation function
+  f = np.fft.fft(x - np.mean(x), n=2*n)
+  acf = np.fft.ifft(f * np.conjugate(f))[: len(x)].real
+  acf /= acf[0]
+  return acf
+
 def corr(trace):
   """ calculate the autocorrelation of a trace of scalar data
 
@@ -131,23 +169,11 @@ def corr(trace):
   Return:
     float: correlation_time, the autocorrelation time of this trace of scalars
   """
-
-  mu     = np.mean(trace)
-  stddev = np.std(trace, ddof=1)
-  if np.isclose(stddev, 0):  # easy case
-    return np.inf  # infinite correlation for constant trace
-  correlation_time = 0.
-  for k in range(1, len(trace)):
-    # calculate auto_correlation
-    auto_correlation = 0.0
-    num = len(trace)-k
-    auto_correlation = np.dot(trace[:num]-mu, trace[k:]-mu)
-    auto_correlation *= 1.0/(num*stddev**2)
-    if auto_correlation > 0:
-      correlation_time += auto_correlation
-    else:
-      break
-  correlation_time = 1.0 + 2.0*correlation_time
+  acf = acf1d(trace)
+  # find first zero crossing
+  sel = acf < 0
+  itau = np.arange(len(acf))[sel][0]
+  correlation_time = 1.0 + 2.0*np.sum(acf[:itau])
   return correlation_time
 
 def error(trace, kappa=None):
