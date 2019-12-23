@@ -19,6 +19,7 @@ def me2d(edata, kappa=None, axis=0):
     kappa (float, optional): pre-calculate auto-correlation, default is to
      re-calculate on-the-fly
     axis (int, optional): axis to average over, default 0 i.e. columns
+
   Return:
     (np.array, np.array): (mean, error) of each column
   """
@@ -44,15 +45,13 @@ def me2d(edata, kappa=None, axis=0):
 def mean_and_err(handle, obs_path, nequil, kappa=None):
   """ calculate mean and variance of an observable from QMCPACK stat.h5 file
 
-  assume autocorrelation = 1 by default
-
   Args:
     handle (h5py.Group): or h5py.File or h5py.Dataset
     obs_path (str): path to observable, e.g. 'gofr_e_1_1'
     nequil (int): number of equilibration blocks to throw out
-    kappa (float,optional): auto-correlation of the data, default=1.0 i.e. no
-     auto-correlation
-  Returns:
+    kappa (float, optional): auto-correlation, default recalculate
+
+  Return:
     (np.array, np.array): (mean, err), the mean and error of observable
   """
   # look for hdf5 group corresponding to the requested observable
@@ -82,11 +81,11 @@ def dsk_from_skall(fp, obs_name, nequil, kappa=None):
     fp (h5py.File): stat.h5 handle
     obs_name (str, optional): name the "skall" estimator, likely "skall"
     nequil (int): equilibration length
-    kappa (float, optional): autocorrelation length, default is to calcaulte
-     on-the-fly
+    kappa (float, optional): auto-correlation, default recalculate
+
   Return:
-    (np.array, np.array, np.array): (kvecs, dskm, dske), kvectors and S(k)
-    mean and error
+    (np.array, np.array, np.array): (kvecs, dskm, dske),
+     kvectors and S(k) mean and error
   """
   # get data
   kpt_path = '%s/kpoints/value' % obs_name
@@ -110,8 +109,8 @@ def rhok_from_skall(fp, obs_name, nequil, kappa=None):
     fp (h5py.File): h5py handle of stat.h5 file
     obs_name (str, optional): name the "skall" estimator, likely "skall"
     nequil (int): number of equilibration blocks to remove
-    kappa (float, optional): autocorrelation, default is to calculate
-     on-the-fly
+    kappa (float, optional): auto-correlation, default recalculate
+
   Return:
     (np.array, np.array, np.array): (kvecs, rhokm, rhoke)
       k-vectors, rho(k) mean and error, shape (nk, ndim)
@@ -134,9 +133,9 @@ def gofr(fp, obs_name, nequil, kappa=None, force=False):
     fp (h5py.File): h5py handle of stat.h5 file
     obs_name (str): observable name, should start with 'gofr', e.g. gofr_e_0_1
     nequil (int): number of equilibration blocks to remove
-    kappa (float, optional): autocorrelation length, default is to calcaulte
-     on-the-fly
+    kappa (float, optional): auto-correlation, default recalculate
     force (bool,optional): force execution, i.e. skip all checks
+
   Returns:
     tuple: (myr,grm,gre): bin locations, g(r) mean, g(r) error
   """
@@ -161,11 +160,11 @@ def nofk(fp, obs_name, nequil, kappa=None):
     fp (h5py.File): h5py handle of stat.h5 file
     obs_name (str): observable name, probably 'nofk'
     nequil (int): number of equilibration blocks to remove
-    kappa (float, optional): autocorrelation, default is to calculate
-     on-the-fly
+    kappa (float, optional): auto-correlation, default recalculate
+
   Return:
-    (np.array, np.array, np.array): (kvecs,nkm,nke) k-vectors, n(k) mean and
-     error
+    (np.array, np.array, np.array): (kvecs,nkm,nke),
+     k-vectors, n(k) mean and error
   """
   kvecs = fp[obs_name]['kpoints'][()]
   nkm, nke = mean_and_err(fp, '%s/value' % obs_name, nequil, kappa)
@@ -181,11 +180,11 @@ def dsk_from_csk(fp, csk_name, nequil, kappa=None):
     fp (h5py.File): stat.h5 handle
     csk_name (str): name the charged S(k) estimator, likely 'csk'
     nequil (int): equilibration length
-    kappa (float, optional): autocorrelation length, default is to calcaulte
-     on-the-fly
+    kappa (float, optional): auto-correlation, default recalculate
+
   Return:
-    (np.array, np.array, np.array): (kvecs, dskm, dske), kvectors and S(k)
-    mean and error
+    (np.array, np.array, np.array): (kvecs, dskm, dske),
+     kvectors and S(k) mean and error
   """
   # get data
   kpt_path = '%s/kpoints/value' % csk_name
@@ -208,8 +207,8 @@ def rhok(fp, obs_name, nequil, kappa=None):
     fp (h5py.File): h5py handle of stat.h5 file
     obs_name (str): observable name, probably 'csk'
     nequil (int): number of equilibration blocks to remove
-    kappa (float, optional): autocorrelation, default is to calculate
-     on-the-fly
+    kappa (float, optional): auto-correlation, default recalculate
+
   Return:
     (np.array, np.array, np.array): (kvecs, rhokm, rhoke)
       k-vectors, rho(k) mean and error
