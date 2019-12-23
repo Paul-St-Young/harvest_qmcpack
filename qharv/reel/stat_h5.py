@@ -23,14 +23,18 @@ def me2d(edata, kappa=None, axis=0):
     (np.array, np.array): (mean, error) of each column
   """
   # get autocorrelation
+  ntrace = edata.shape[axis]
   if kappa is None:
-    try:
+    try:  # fortran implementation is faster for len(trace)<1000
       from qharv.reel.forlib.stats import corr
-    except ImportError:
-      raise ImportError('please compile qharv.reel.forlib')
-      # from qharv.reel.scalar_dat import corr  # slow Python implementation
+    except ImportError:  # numpy FFT scales better to long traces
+      if ntrace < 1024:
+        msg = 'using slow Python implementation'
+        msg += ' please compile qharv.reel.forlib'
+        print(msg)
+      from qharv.reel.scalar_dat import corr
     kappa = np.apply_along_axis(corr, axis, edata)
-  neffective = edata.shape[axis]/kappa
+  neffective = ntrace/kappa
   # calculate mean and error
   val_mean = edata.mean(axis=axis)
   val_std  = edata.std(ddof=1, axis=axis)
