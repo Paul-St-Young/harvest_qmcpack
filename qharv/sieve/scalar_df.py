@@ -20,6 +20,9 @@ def merge_list(dfl, labels):
   Return:
     pd.DataFrame: merged df
   """
+  import sys
+  if sys.version[0] != "2":
+    from functools import reduce
   df = reduce(lambda df1, df2: pd.merge(df1, df2, on=labels), dfl)
   return df
 
