@@ -116,3 +116,32 @@ def dfme(df, cols, no_error=False, weight_name=None):
   for col, y1 in zip(mcols, ym):
     entry[col] = y1
   return pd.Series(entry)
+
+def linex(mydf, vseries, dseries, names):
+  """ Linearly extrapolate to 2*DMC-VMC
+  hint: can also do time-step extrapolation if tau1 = 2*tau2
+
+  Args:
+    mydf (pd.DataFrame): database, must contain ['series'] +
+     name_mean, name_error for name in names
+    vseries (int): VMC series index
+    dseries (int): DMC series index
+    names (list): a list of observable names to be extrpolated
+  Return:
+    pd.DataFrame: extrapolated entry
+  """
+  # extract data
+  mcols = ['%s_mean' % col for col in names]
+  ecols = ['%s_error' % col for col in names]
+  vsel = mydf.series == vseries
+  vmarr = mydf.loc[vsel, mcols].values.astype(float)
+  vearr = mydf.loc[vsel, ecols].values.astype(float)
+  dsel = mydf.series == dseries
+  dmarr = mydf.loc[dsel, mcols].values.astype(float)
+  dearr = mydf.loc[dsel, ecols].values.astype(float)
+  # linearly extrapolate
+  pmarr = 2*dmarr-vmarr
+  pearr = (4*dearr**2+vearr**2)**0.5
+  data = np.concatenate([pmarr, pearr], axis=1)
+  pdf = pd.DataFrame(data, columns=mcols+ecols)
+  return pdf
