@@ -2,8 +2,8 @@ import os
 import h5py
 import numpy as np
 
-def twist_average_h5(fh5, weights=None, **suffix_kwargs):
-  """ twist average data in an HDF5 archive
+def extract_twists(fh5, **suffix_kwargs):
+  """Extract an observable at all twists from an HDF5 archive
 
   each twist should be a group in at root
 
@@ -22,7 +22,6 @@ def twist_average_h5(fh5, weights=None, **suffix_kwargs):
   Return:
     (dict, np.array, np.array): (meta data, mean, error)
   """
-  from qharv.sieve.mean_df import taw
   fp = h5py.File(fh5)
   # determine ymean, yerror from first twist
   twist0 = list(fp.keys())[0]
@@ -48,8 +47,23 @@ def twist_average_h5(fh5, weights=None, **suffix_kwargs):
     yml.append(ym1)
     yel.append(ye1)
   fp.close()
-  yma = np.array(yml)
-  yea = np.array(yel)
+  yma = np.array(yml)  # mean
+  yea = np.array(yel)  # error
+  return meta, yma, yea
+
+def twist_average_h5(fh5, weights=None, **suffix_kwargs):
+  """ twist average data in an HDF5 archive
+
+  see extract_twists for h5 file format
+
+  Args:
+    fh5 (str): h5 file location
+  Return:
+    (dict, np.array, np.array): (meta data, mean, error)
+  """
+  from qharv.sieve.mean_df import taw
+  meta, yma, yea = extract_twists(fh5, **suffix_kwargs)
+  ntwist = len(yma)
   # twist average with weights
   if weights is None:
     weights = np.ones(ntwist)
