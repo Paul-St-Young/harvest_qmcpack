@@ -279,7 +279,7 @@ def show_fit(ax, line, model, sel=None, nx=64, xmin=None, xmax=None, **kwargs):
   lines = [line1[0], line2[0]]
   return popt, perr, lines
 
-def show_spline(ax, line, spl_kws=dict(), nx=1024, **kwargs):
+def show_spline(ax, line, spl_kws=dict(), nx=1024, sel=None, **kwargs):
   """ show a smooth spline through given line x y
 
   Args:
@@ -294,6 +294,10 @@ def show_spline(ax, line, spl_kws=dict(), nx=1024, **kwargs):
   from scipy.interpolate import splrep, splev
   myx = line.get_xdata()
   myy = line.get_ydata()
+  if sel is None:
+    sel = np.ones(len(myx), dtype=bool)
+  myx = myx[sel]
+  myy = myy[sel]
   color = line.get_color()
   finex = np.linspace(min(myx), max(myx), nx)
   tck = splrep(myx, myy, **spl_kws)
