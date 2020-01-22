@@ -110,15 +110,22 @@ def draw_cell(ax, axes, corner=None, enclose=True, **kwargs):
   see example in draw_crystal
 
   Args:
-   ax (plt.Axes): matplotlib Axes object, must have projection='3d'
-   axes (np.array): lattice vectors in row-major 3x3 array
-   corner (np.array,optional): lower left corner of the lattice
-     ,use (0,0,0) by default
-   enclose (bool): enclose the cell with lattice vectors
-     ,default is True. If False, then draw lattice vectors only
-   kwargs (dict,optional): keyword arguments passed to plt.plot
+    ax (plt.Axes): matplotlib Axes object, must have projection='3d'
+    axes (np.array): lattice vectors in row-major 3x3 array
+    corner (np.array,optional): lower left corner of the lattice
+      ,use (0,0,0) by default
+    enclose (bool): enclose the cell with lattice vectors
+      ,default is True. If False, then draw lattice vectors only
+    kwargs (dict,optional): keyword arguments passed to plt.plot
   Returns:
-   list: a list of plt.Line3D, one for each lattice vector
+    list: a list of plt.Line3D or Line, one for each lattice vector
+  Example:
+    >>> # draw 2D rectangular box, centered around (0, 0)
+    >>> box = np.array([3.0, 1.5])
+    >>> axes = np.diag(box)
+    >>> fig, ax = plt.subplots(1, 1)
+    >>> lines = draw_cell(ax, axes, corner=-box/2)
+    >>> plt.show()
   """
   ndim = len(axes)
   if ndim not in [2, 3]:
@@ -228,9 +235,9 @@ def draw_crystal(ax, axes, pos, draw_super=False):
    axes (np.array): lattice vectors in row-major 3x3 array
    pos (np.array): array of atomic positions
    draw_super (bool): draw 2x2x2 supercell
-  Returns:
-   list,list: (cell, atoms) cell is a list of plt.Line3D for the cell,
-   atoms is a list of plt.Line3D for the atoms.
+  Return:
+   (list, list): (cell, atoms) cell is a list of plt.Line3D for the cell,
+    atoms is a list of plt.Line3D for the atoms.
   """
   # draw primitive cell
   cell = draw_cell(ax, axes)
