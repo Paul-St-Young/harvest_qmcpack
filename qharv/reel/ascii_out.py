@@ -16,6 +16,28 @@ def read(fname):
     mm = mmap(f.fileno(), 0)
   return mm
 
+def get_key_value_pairs(mm, sep='='):
+  """ read all key value pairs using separator
+
+  Args:
+    mm (mmap.mmap): memory map
+  Return:
+    dict: string->string key-value pairs
+  """
+  idxl = all_lines_with_tag(mm, sep)
+  entry = {}
+  for idx in idxl:
+    mm.seek(idx)
+    ibegin = mm.rfind('\n', 0, idx)
+    mm.seek(ibegin)
+    line = mm.readline()  # skip \n
+    line = mm.readline()
+    tokens = line.split(sep)
+    name = tokens[0].strip()  # strip whitespace
+    val = tokens[1].strip()
+    entry[name] = val
+  return entry
+
 def name_sep_val(mm, name, sep='=', dtype=float, pos=1):
   """ read key-value pair such as "name = value"
   e.g.
@@ -62,7 +84,7 @@ def all_lines_with_tag(mm, tag, nline_max=1024*1024):
   """
   all_idx = []
   for iline in range(nline_max):
-    idx = mm.find(tag)
+    idx = mm.find(tag.encode())
     if idx == -1:
       break
     mm.seek(idx)
