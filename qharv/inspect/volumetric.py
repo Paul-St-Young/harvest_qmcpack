@@ -3,10 +3,12 @@
 # Routines to visualize volumetric data
 import numpy as np
 
-def figax3d():
+def figax3d(show_axis=True):
   """ get a pair of fig and Axes3D
   similar to subplots() but for a single 3D figure
 
+  Args:
+    show_axis (bool, optional): show x, y, z axes and ticks, default True
   Return:
     tuple: matplotlib.figure.Figure, matplotlib.axes._subplots.Axes3DSubplot
   """
@@ -14,6 +16,8 @@ def figax3d():
   from mpl_toolkits.mplot3d import Axes3D
   fig = plt.figure()
   ax = fig.add_subplot(1, 1, 1, projection='3d')
+  if not show_axis:
+    ax._axis3don = False
   return fig, ax
 
 def isosurf(ax, vol, level_frac=0.25):
