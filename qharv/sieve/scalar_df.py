@@ -63,7 +63,7 @@ def mean_error_scalar_df(df, nequil, kappa=None):
   return jdf
 
 
-def reblock(trace,block_size,min_nblock=4):
+def reblock(trace,block_size,min_nblock=4,with_sigma=False):
   """ block scalar trace to remove autocorrelation; see usage example in reblock_scalar_df
   Args:
     trace (np.array): a trace of scalars, may have multiple columns !!!! assuming leading dimension is the number of current blocks.
@@ -78,7 +78,10 @@ def reblock(trace,block_size,min_nblock=4):
     raise RuntimeError('only %d blocks left after reblock'%nblock)
   # end if
   blocked_trace = trace[:nkeep].reshape(nblock,block_size,*trace.shape[1:])
-  return np.mean(blocked_trace,axis=1)
+  ret = np.mean(blocked_trace,axis=1)
+  if with_sigma:
+    ret = (ret, np.std(blocked_trace, ddof=1, axis=1))
+  return ret
 
 
 def reblock_scalar_df(df,block_size,min_nblock=4):
