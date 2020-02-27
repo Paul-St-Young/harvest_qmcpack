@@ -5,6 +5,48 @@
 import numpy as np
 import pandas as pd
 
+def get_string_io(text):
+  """Obtain StringIO object from text
+   compatible with Python 2 and 3
+
+  Args:
+    text (str): text to parse
+  Return:
+    StringIO: file-like object
+  """
+  import sys
+  if sys.version_info[0] < 3:
+    from StringIO import StringIO
+    fp = StringIO(text)
+  else:
+    from io import StringIO
+    try:
+      fp = StringIO(text.decode())
+    except:
+      fp = StringIO(text)
+  return fp
+
+def find_header_lines(text):
+  """Find line numbers of all headers
+
+  Args:
+    text (str): text to parse
+  Return:
+    list: a list of integer line numbers
+  """
+  def is_float(s):
+    try:
+      float(s)
+      return True
+    except ValueError:
+      return False
+  fp = get_string_io(text)
+  first_str = np.array(
+    [is_float(line.split()[0]) for line in fp], dtype=bool)
+  fp.close()
+  idxl = np.where(~first_str)[0]
+  return idxl.tolist()
+
 def parse(text):
   """ Parse text of a scalar.dat file, should be table format.
 
@@ -17,16 +59,7 @@ def parse(text):
     >>>   text = f.read()
     >>>   df = parse(text)
   """
-  import sys
-  if sys.version_info[0] < 3:
-    from StringIO import StringIO
-    fp = StringIO(text)
-  else:
-    from io import StringIO
-    try:
-      fp = StringIO(text.decode())
-    except:
-      fp = StringIO(text)
+  fp = get_string_io(text)
   # try to read header line
   header = fp.readline()
   fp.seek(0)
@@ -43,6 +76,7 @@ def parse(text):
       df['Variance'] = df['LocalEnergy_sq']-df['LocalEnergy']**2.
   else:
     df = pd.read_csv(fp, sep=sep, header=None)
+  fp.close()
   # column labels should be strings
   df.columns = map(str, df.columns)
   return df
@@ -65,7 +99,7 @@ def read(dat_fname):
 def read_to_list(dat_fname):
   """ read scalar.dat file into a list of pandas DataFrames
 
-  Header lines should start with '#', assumed to contain column labels.
+  A line is a header if its first column cannot be converted to a float.
   Many scalar.dat files can be concatenated. A list will be returned.
 
   Args:
@@ -77,22 +111,20 @@ def read_to_list(dat_fname):
     >>> df = pd.concat(dfl).reset_index(drop=True)
   """
   # first separate out the header lines and parse them
-  from qharv.reel import ascii_out
-  mm = ascii_out.read(dat_fname)
-  idxl = ascii_out.all_lines_with_tag(mm, '#')
-  bidxl = []
-  headerl = []
-  for idx in idxl:
-    mm.seek(idx)
-    header = mm.readline()
-    bidxl.append(mm.tell())
-    headerl.append(header)
+  with open(dat_fname, 'r') as f:
+    text = f.read()
+  idxl = find_header_lines(text)
   idxl.append(-1)
   # now read data and use headers to label columns
+  from qharv.reel import ascii_out
+  mm = ascii_out.read(dat_fname)
   dfl = []
-  for bidx, eidx, header in zip(bidxl, idxl[1:], headerl):
+  for bidx, eidx in zip(idxl[:-1], idxl[1:]):
+    mm.seek(bidx)
+    header = mm.readline()
     columns = header.replace('#', '').split()
-    text1 = mm[bidx:eidx]
+    # read content
+    text1 = mm[mm.tell():eidx]
     df1 = parse(text1)
     df1.columns = columns
     dfl.append(df1)
