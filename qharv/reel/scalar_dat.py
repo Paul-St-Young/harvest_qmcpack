@@ -187,7 +187,10 @@ def acf1d(x):
   # Compute the FFT and then (from that) the auto-correlation function
   f = np.fft.fft(x - np.mean(x), n=2*n)
   acf = np.fft.ifft(f * np.conjugate(f))[: len(x)].real
-  acf /= acf[0]
+  # normalize
+  acf0 = acf[0]
+  if not np.isclose(acf0, 0):
+    acf /= acf[0]
   return acf
 
 def corr(trace):
@@ -204,7 +207,10 @@ def corr(trace):
   acf = acf1d(trace)
   # find first zero crossing
   sel = acf < 0
-  itau = np.arange(len(acf))[sel][0]
+  neg_itau = np.arange(len(acf))[sel]
+  if len(neg_itau) == 0:
+    return np.inf
+  itau = neg_itau[0]
   correlation_time = 1.0 + 2.0*np.sum(acf[:itau])
   return correlation_time
 
