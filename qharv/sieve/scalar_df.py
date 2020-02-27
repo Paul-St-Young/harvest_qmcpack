@@ -46,7 +46,7 @@ def mean_error_scalar_df(df, nequil, kappa=None):
 
   # create pd.Series of error
   if kappa is not None:
-    efunc = lambda x:error(x, kappa=kappa)
+    efunc = lambda x: error(x, kappa=kappa)
   else:
     try:  # use fortran library to recalculate kappa if compiled
       from qharv.reel.forlib.stats import error
@@ -54,45 +54,47 @@ def mean_error_scalar_df(df, nequil, kappa=None):
       print('failed to import fortran stats library')
     efunc = error
   esr = df.loc[sel].apply(  # error cannot be directly applied to matrix yet
-    lambda x:float( np.apply_along_axis(efunc,0,x) )
+    lambda x: float(np.apply_along_axis(efunc, 0, x))
   ).drop('index')
 
   df1 = msr.to_frame().T
   df2 = esr.to_frame().T
-  jdf = df1.join(df2,lsuffix='_mean',rsuffix='_error')
+  jdf = df1.join(df2, lsuffix='_mean', rsuffix='_error')
   return jdf
 
 
-def reblock(trace,block_size,min_nblock=4,with_sigma=False):
-  """ block scalar trace to remove autocorrelation; see usage example in reblock_scalar_df
+def reblock(trace, block_size, min_nblock=4, with_sigma=False):
+  """ block scalar trace to remove autocorrelation;
+  see usage example in reblock_scalar_df
+
   Args:
-    trace (np.array): a trace of scalars, may have multiple columns !!!! assuming leading dimension is the number of current blocks.
+    trace (np.array): a trace of scalars, may have multiple columns
+      !!!! assuming leading dimension is the number of current blocks.
     block_size (int): size of block in units of current block.
-    min_nblock (int,optional): minimum number of blocks needed for meaningful statistics, default is 4.
+    min_nblock (int,optional): minimum number of blocks needed for
+      meaningful statistics, default is 4.
   Returns:
     np.array: re-blocked trace.
   """
   nblock= len(trace)//block_size
   nkeep = nblock*block_size
-  if (nblock<min_nblock):
-    raise RuntimeError('only %d blocks left after reblock'%nblock)
+  if (nblock < min_nblock):
+    raise RuntimeError('only %d blocks left after reblock' % nblock)
   # end if
-  blocked_trace = trace[:nkeep].reshape(nblock,block_size,*trace.shape[1:])
-  ret = np.mean(blocked_trace,axis=1)
+  blocked_trace = trace[:nkeep].reshape(nblock, block_size, *trace.shape[1:])
+  ret = np.mean(blocked_trace, axis=1)
   if with_sigma:
     ret = (ret, np.std(blocked_trace, ddof=1, axis=1))
   return ret
 
-
-def reblock_scalar_df(df,block_size,min_nblock=4):
+def reblock_scalar_df(df, block_size, min_nblock=4):
   """ create a re-blocked scalar dataframe from a current scalar dataframe
    see reblock for details
   """
   return pd.DataFrame(
-    reblock(df.values,block_size,min_nblock=min_nblock)
-    ,columns=df.columns
+    reblock(df.values, block_size, min_nblock=min_nblock),
+    columns=df.columns
   )
-
 
 def poly_extrap_to_x0(myx, myym, myye, order, return_fit=False):
   """ fit 1D data to 1D polynomial and extrpolate to x=0
@@ -114,9 +116,9 @@ def poly_extrap_to_x0(myx, myym, myye, order, return_fit=False):
   import scipy.optimize as op
 
   if order != 1:
-    raise NotImplementedError('order=%d not supported'%order)
+    raise NotImplementedError('order=%d not supported' % order)
   # keep target as zeroth parameter
-  model = lambda x, a, b:a+b*x
+  model = lambda x, a, b: a+b*x
 
   # setup trust region using 10*sigma around naive extrapolation
 
@@ -134,8 +136,8 @@ def poly_extrap_to_x0(myx, myym, myye, order, return_fit=False):
   bounds = (lbounds, ubounds)
 
   # finally fit using error and trust region
-  popt, pcov = op.curve_fit(model, myx, myym
-    , sigma=myye, absolute_sigma=True, bounds=bounds, method='trf')
+  popt, pcov = op.curve_fit(model, myx, myym,
+    sigma=myye, absolute_sigma=True, bounds=bounds, method='trf')
   perr = np.sqrt(np.diag(pcov))
   # return popt,perr to check fit
 
@@ -145,7 +147,6 @@ def poly_extrap_to_x0(myx, myym, myye, order, return_fit=False):
   if return_fit:
     ret = (y0m, y0e, popt, pcov)
   return ret
-
 
 def ts_extrap_obs(calc_df, sel, tname, obs, order=1):
   """ extrapolate a single dmc observable to zero time-step limit
@@ -169,9 +170,8 @@ def ts_extrap_obs(calc_df, sel, tname, obs, order=1):
 
   return myx, y0m, y0e
 
-
-def ts_extrap(calc_df, issl, obsl
-  , tname='timestep', series_name='series', **kwargs):
+def ts_extrap(calc_df, issl, obsl,
+  tname='timestep', series_name='series', **kwargs):
   """ extrapolate all dmc observables to zero time-step limit
 
   Args:
@@ -184,30 +184,29 @@ def ts_extrap(calc_df, issl, obsl
     !!!! series number is unchanged
   """
 
-  sel  = calc_df[series_name].apply(lambda x:x in issl)
+  sel  = calc_df[series_name].apply(lambda x: x in issl)
   nfound = len(calc_df.loc[sel])
   if nfound != len(issl):
-    raise RuntimeError('found %d series, when %d are requested' % (nfound, len(issl)) )
-  # end if
+    msg = 'found %d series, when %d are requested' % (nfound, len(issl))
+    raise RuntimeError(msg)
 
   # copy smallest timestep DMC entry
   myx  = calc_df.loc[sel, tname]
-  entry = calc_df.loc[calc_df[tname]==min(myx)].copy()
+  entry = calc_df.loc[calc_df[tname] == min(myx)].copy()
 
   # fill entry with new data
   entry[tname] = 0
 
   for obs in obsl:
-    myx0, y0m, y0e = ts_extrap_obs(calc_df, sel
-      , tname, obs, **kwargs)
-    entry['%s_mean'%obs]  = y0m
-    entry['%s_error'%obs] = y0e
+    myx0, y0m, y0e = ts_extrap_obs(calc_df, sel,
+      tname, obs, **kwargs)
+    entry['%s_mean' % obs]  = y0m
+    entry['%s_error' % obs] = y0e
   return entry
 
-
-def mix_est_correction(mydf, vseries, dseries, names
-  , series_name='series', group_name='group', kind='linear'
-  , drop_missing_twists=False):
+def mix_est_correction(mydf, vseries, dseries, namesm,
+  series_name='series', group_name='group', kind='linear',
+  drop_missing_twists=False):
   """ extrapolate dmc energy to zero time-step limit
   Args:
     mydf (pd.DataFrame): dataframe of VMC and DMC mixed estimators
@@ -217,22 +216,26 @@ def mix_est_correction(mydf, vseries, dseries, names
     series_name (str,optional): column name identifying the series
     kind (str,optinoal): extrapolation kind, must be either 'linear' or 'log'
   Returns:
-    pd.Series: an entry copied from the smallest time-step DMC entry, then edited with extrapolated pure estimators. !!!! Series index is not changed!
+    pd.Series: an entry copied from the smallest time-step DMC entry,
+      then edited with extrapolated pure estimators.
+      !!!! Series index is not changed!
   """
-  vsel = mydf[series_name]==vseries # vmc
-  msel = mydf[series_name]==dseries # mixed estimator
+  vsel = mydf[series_name] == vseries  # vmc
+  msel = mydf[series_name] == dseries  # mixed estimator
 
   # make sure the groups (twists) are aligned!!!!
-  vgroup = set(mydf.loc[vsel,group_name].values)
-  dgroup = set(mydf.loc[msel,group_name].values)
+  vgroup = set(mydf.loc[vsel, group_name].values)
+  dgroup = set(mydf.loc[msel, group_name].values)
 
   missing_twists = (dgroup-vgroup).union(vgroup-dgroup)
   nmiss = len(missing_twists)
-  if (nmiss>0):
+  if (nmiss > 0):
     if (not drop_missing_twists):
-      raise RuntimeError('twists %s incomplete, set drop_missing_twists to ignore'%' '.join([str(t) for t in missing_twists]))
-    else: # drop missing twists
-      good_twist = mydf.group.apply(lambda x:x not in missing_twists)
+      msg = 'twists ' + ' '.join([str(t) for t in missing_twists])
+      msg += ' incomplete, set drop_missing_twists to ignore'
+      raise RuntimeError(msg)
+    else:  # drop missing twists
+      good_twist = mydf.group.apply(lambda x: x not in missing_twists)
       vsel = vsel & good_twist
       msel = msel & good_twist
     # end if
@@ -241,10 +244,10 @@ def mix_est_correction(mydf, vseries, dseries, names
   # get values and errors
   mnames = [name+'_mean' for name in names]
   enames = [name+'_error' for name in names]
-  vym = mydf.loc[vsel,mnames].values
-  vye = mydf.loc[vsel,enames].values
-  mym = mydf.loc[msel,mnames].values
-  mye = mydf.loc[msel,enames].values
+  vym = mydf.loc[vsel, mnames].values
+  vye = mydf.loc[vsel, enames].values
+  mym = mydf.loc[msel, mnames].values
+  mye = mydf.loc[msel, enames].values
 
   # perform extrapolation
   if kind == 'linear':
@@ -263,7 +266,8 @@ def mix_est_correction(mydf, vseries, dseries, names
     lndye = np.sqrt(4.*lnmye**2.+lnvye**2.)
     dye = dym*lndye
   else:
-    raise RuntimeError('unknown mixed estimator extrapolation kind = %s'%kind)
+    msg = 'unknown mixed estimator extrapolation kind = %s' % kind
+    raise RuntimeError(msg)
   # end if
 
   # store in new data frame
