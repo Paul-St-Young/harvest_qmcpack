@@ -114,6 +114,8 @@ def read_to_list(dat_fname):
   with open(dat_fname, 'r') as f:
     text = f.read()
   idxl = find_header_lines(text)
+  if len(idxl) == 0:  # no header
+    return [parse(text)]
   idxl.append(-1)
   # now read data and use headers to label columns
   from qharv.reel import ascii_out
