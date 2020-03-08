@@ -33,11 +33,9 @@ if __name__ == '__main__':
   if args.append is not None:
     dlist = [df]
     for fname in args.append:
-      df0 = scalar_dat.parse(fname)
-      dlist.append(df0)
-    # end for
-    df = pd.concat(dlist).reset_index()
-  # end if
+      for df0 in scalar_dat.read_to_list(fname):
+        dlist.append(df0)
+    df = pd.concat(dlist, sort=False).reset_index()
 
   # check or override "df" here
 
