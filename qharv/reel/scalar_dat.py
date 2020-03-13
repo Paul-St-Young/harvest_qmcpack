@@ -61,7 +61,7 @@ def parse(text):
   """
   fp = get_string_io(text)
   # try to read header line
-  header = fp.readline()
+  header = fp.readline().strip()
   fp.seek(0)
   # read data
   sep = r'\s+'
