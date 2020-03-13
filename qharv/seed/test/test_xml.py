@@ -54,3 +54,17 @@ def test_get_nelec():
   </particleset></root>'''
   node = xml.parse(text)
   assert xml.get_nelec(node) == 12
+
+def test_make_node():
+  from qharv.seed.xml import make_node, str_rep
+  text = str_rep(make_node('simulation'))
+  assert text == '<simulation/>\n'
+  text = str_rep(make_node('particleset', {'name': 'e'}))
+  assert text == '<particleset name="e"/>\n'
+  text = str_rep(make_node('parameter', {'name': 'LR_dim_cutoff'}, str(20)))
+  assert text == '<parameter name="LR_dim_cutoff"> 20 </parameter>\n'
+  text = str_rep(make_node('parameter', {'name': 'bconds'}, 'p p p', pad='\n'))
+  assert text == '<parameter name="bconds">\n' +\
+    'p p p\n</parameter>\n'
+  text = str_rep(make_node('seed', text='31415'))
+  assert text == '<seed> 31415 </seed>\n'
