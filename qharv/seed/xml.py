@@ -59,7 +59,7 @@ def str_rep(node):
   Return:
     str: string representation of node
   """
-  return etree.tostring(node, pretty_print=True)
+  return etree.tostring(node, pretty_print=True).decode()
 
 def show(node):
   print(str_rep(node))
@@ -106,6 +106,30 @@ def append(root, nodes):
 # ========================= level 1: node content io =========================
 #  node.get & node.set are sufficient for attribute manipulation
 # level 1 routines are needed for node.text and node.children manipulation
+
+def make_node(tag, attribs=None, text=None, pad=' '):
+  """ create etree.Element
+  <tag **attribs> text </tag>
+
+  Args:
+    tag (str): tag node
+    attribs (dict, optional): attributes, default None
+    text (str, optional): text content, default None
+    pad (str, optional): padding for text, default ' '
+  Return:
+    etree.Element: node
+  Examples:
+    >>> sim = make_node('simulation')
+    >>> epset = make_node('particleset', {'name': 'e'})
+    >>> lrnode = make_node('parameter', {'name': 'LR_dim_cutoff'}, str(20))
+    >>> bconds = make_node('parameter', {'name': 'bconds'}, 'p p p', pad='\n')
+    >>> seed = make_node('seed', text=str(31415))
+  """
+  node = etree.Element(tag, attribs)
+  if text is not None:
+    node.text = pad + text + pad
+  return node
+
 def arr2text(arr):
   """ format a numpy array into a text string """
   text = ''
