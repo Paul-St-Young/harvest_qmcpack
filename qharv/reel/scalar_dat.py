@@ -117,7 +117,7 @@ def read_to_list(dat_fname):
   lines = text.split('\n')
   if len(idxl) == 0:  # no header
     return [parse(text)]
-  idxl.append(-1)
+  idxl.append(None)
   # now read data and use headers to label columns
   lines = text.split('\n')
   dfl = []
