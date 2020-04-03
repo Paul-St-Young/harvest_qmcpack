@@ -114,21 +114,16 @@ def read_to_list(dat_fname):
   with open(dat_fname, 'r') as f:
     text = f.read()
   idxl = find_header_lines(text)
+  lines = text.split('\n')
   if len(idxl) == 0:  # no header
     return [parse(text)]
   idxl.append(-1)
   # now read data and use headers to label columns
-  from qharv.reel import ascii_out
-  mm = ascii_out.read(dat_fname)
+  lines = text.split('\n')
   dfl = []
   for bidx, eidx in zip(idxl[:-1], idxl[1:]):
-    mm.seek(bidx)
-    header = mm.readline()
-    columns = header.replace('#', '').split()
-    # read content
-    text1 = mm[mm.tell():eidx]
+    text1 = '\n'.join(lines[bidx:eidx])
     df1 = parse(text1)
-    df1.columns = columns
     dfl.append(df1)
   return dfl
 

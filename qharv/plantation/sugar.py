@@ -72,7 +72,7 @@ def concat_return(show_progress=True, fault_tolerant=False):
         except Exception as err:
           if fault_tolerant:
             msg = str(err) + ' at:\n' + floc
-            print(err)
+            print(msg)
           else:
             raise err
         if show_progress:
