@@ -1,5 +1,16 @@
 import numpy as np
 
+def check_values(df):
+  # compare parse data with reference
+  ref   = np.arange(9).reshape(3, 3) + 1
+  assert np.allclose(df.values, ref)
+
+def check_columns(df):
+  cols = df.columns.values
+  expected_cols = ['x', 'y', 'z']
+  for icol in range(3):
+    assert cols[icol] == expected_cols[icol]
+
 def test_no_header_read():
   # write test data to file
   fname = 'tmp.dat'
@@ -10,10 +21,7 @@ def test_no_header_read():
   # parse ascii file
   from qharv.reel import scalar_dat
   df = scalar_dat.read(fname)
-
-  # compare parse data with reference
-  ref   = np.arange(9).reshape(3, 3) + 1
-  assert np.allclose(df.values, ref)
+  check_values(df)
 
 def test_header_read():
   # write test data to file
@@ -25,14 +33,8 @@ def test_header_read():
   # parse ascii file
   from qharv.reel import scalar_dat
   df   = scalar_dat.read(fname)
-  cols = df.columns.values
-  expected_cols = ['x', 'y', 'z']
-  for icol in range(3):
-    assert cols[icol] == expected_cols[icol]
-
-  # compare parse data with reference
-  ref   = np.arange(9).reshape(3, 3) + 1
-  assert np.allclose(df.values, ref)
+  check_columns(df)
+  check_values(df)
 
 def test_read_to_list():
   # write test data to file
@@ -47,9 +49,5 @@ def test_read_to_list():
   from qharv.reel import scalar_dat
   dfl  = scalar_dat.read_to_list(fname)
   for df in dfl:
-    cols = df.columns.values
-    expected_cols = ['x', 'y', 'z']
-    for icol in range(3):
-      assert cols[icol] == expected_cols[icol]
-    # compare parse data with reference
-    assert np.allclose(df.values, ref)
+    check_columns(df)
+    check_values(df)
