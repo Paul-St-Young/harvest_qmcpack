@@ -26,7 +26,7 @@ def merge_list(dfl, labels):
   df = reduce(lambda df1, df2: pd.merge(df1, df2, on=labels), dfl)
   return df
 
-def mean_error_scalar_df(df, nequil, kappa=None):
+def mean_error_scalar_df(df, nequil=0, kappa=None):
   """ get mean and average from a dataframe of raw scalar data (per-block)
    take dataframe having columns ['LocalEnergy','Variance',...] to a
    dataframe having columns ['LocalEnergy_mean','LocalEnergy_error',...]
@@ -35,14 +35,25 @@ def mean_error_scalar_df(df, nequil, kappa=None):
     df (pd.DataFrame): raw scalar dataframe, presumable generated using
      qharv.scalar_dat.parse with extra labels columns added to identify
      the different runs.
-    nequil (int): number of equilibration blocks to throw out for each run.
+    nequil (int, optional): number of equilibration blocks to throw out
+     for each run, default 0 (keep all data).
    Returns:
     pd.DataFrame: mean_error dataframe
   """
-  sel = df['index'] >= nequil  # zero indexing
+  if nequil > 0:
+    if 'index' not in df.columns:
+      msg = 'time series must be indexed to drop equilibration,'
+      msg += ' please add "index" to DataFrame column.'
+      raise RuntimeError(msg)
+    sel = df['index'] >= nequil  # zero indexing
+    mydf = df.loc[sel]
+  else:  # allow equilibration to be dropped outside of this function
+    mydf = df
 
   # create pd.Series of mean
-  msr = df.loc[sel].apply(np.mean).drop('index')
+  msr = mydf.apply(np.mean)
+  if 'index' in msr:
+    msr.drop('index', inplace=True)
 
   # create pd.Series of error
   if kappa is not None:
@@ -53,9 +64,11 @@ def mean_error_scalar_df(df, nequil, kappa=None):
     except:
       print('failed to import fortran stats library')
     efunc = error
-  esr = df.loc[sel].apply(  # error cannot be directly applied to matrix yet
+  esr = mydf.apply(  # error cannot be directly applied to matrix yet
     lambda x: float(np.apply_along_axis(efunc, 0, x))
-  ).drop('index')
+  )
+  if 'index' in esr:
+    esr.drop('index', inplace=True)
 
   df1 = msr.to_frame().T
   df2 = esr.to_frame().T
