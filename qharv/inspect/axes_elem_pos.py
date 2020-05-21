@@ -65,3 +65,13 @@ def ase_tile(axes, elem, pos, tmat):
   elem1 = s1.get_chemical_symbols()
   pos1 = s1.get_positions()
   return axes1, elem1, pos1
+
+def ase_drij(atoms, mic=True):
+  if mic:
+    assert np.allclose(atoms.get_pbc(), 1)
+  return atoms.get_distances(mic=mic, vector=True)
+
+def ase_rij(atoms, mic=True):
+  if mic:
+    assert np.allclose(atoms.get_pbc(), 1)
+  return atoms.get_distances(mic=mic)
