@@ -69,9 +69,9 @@ def ase_tile(axes, elem, pos, tmat):
 def ase_drij(atoms, mic=True):
   if mic:
     assert np.allclose(atoms.get_pbc(), 1)
-  return atoms.get_distances(mic=mic, vector=True)
+  return atoms.get_all_distances(mic=mic, vector=True)
 
 def ase_rij(atoms, mic=True):
   if mic:
     assert np.allclose(atoms.get_pbc(), 1)
-  return atoms.get_distances(mic=mic)
+  return atoms.get_all_distances(mic=mic)
