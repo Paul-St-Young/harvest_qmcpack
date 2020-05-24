@@ -304,6 +304,40 @@ def show_spline(ax, line, spl_kws=dict(), nx=1024, sel=None, **kwargs):
   line1 = ax.plot(finex, splev(finex, tck), c=color, **kwargs)
   return line1
 
+def krig(finex, x0, y0, length_scale, noise_level):
+  from sklearn.gaussian_process.gpr import GaussianProcessRegressor
+  from sklearn.gaussian_process.kernels import DotProduct, RBF
+  from sklearn.gaussian_process.kernels import WhiteKernel
+  kernel = DotProduct() + RBF(length_scale=length_scale)
+  kernel += WhiteKernel(noise_level=noise_level)
+  gpr = GaussianProcessRegressor(kernel=kernel)
+  gpr.fit(x0[:, None], y0)
+  ym, ye = gpr.predict(finex[:, None], return_std=True)
+  return ym, ye
+
+def gpr_errorshade(ax, x, ym, ye,
+  length_scale, noise_level,
+  **kwargs):
+  """WARNING: length_scale and noise_level are VERY DIFFICULT to tune """
+  # make errorbar plot and extract color
+  if ('ls' not in kwargs) and ('linestyle' not in kwargs):
+    kwargs['ls'] = ''
+  line = ax.errorbar(x, ym, ye, **kwargs)
+  myc = line[0].get_color()
+  # smoothly fit data
+  import numpy as np
+  dx = abs(x[1]-x[0])
+  xmin = x.min(); xmax = x.max()
+  finex = np.arange(xmin, xmax, dx/10.)
+  ylm, yle = krig(finex, x, ym-ye,
+    length_scale=length_scale, noise_level=noise_level)
+  yhm, yhe = krig(finex, x, ym+ye,
+    length_scale=length_scale, noise_level=noise_level)
+  # plot fit
+  fb_kwargs = {'color': myc, 'alpha': 0.4}
+  eline = ax.fill_between(finex, ylm-yle, yhm+yhe, **fb_kwargs)
+  return line[0], eline
+
 # ===================== level 2: insets ======================
 def inset_zoom(fig, ax_box, xlim, ylim, draw_func, xy_label=False):
   """ show an inset that zooms into a given part of the figure
