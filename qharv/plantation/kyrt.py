@@ -279,7 +279,17 @@ def show_fit(ax, line, model, sel=None, nx=64, xmin=None, xmax=None, **kwargs):
   lines = [line1[0], line2[0]]
   return popt, perr, lines
 
-def show_spline(ax, line, spl_kws=dict(), nx=1024, sel=None, **kwargs):
+def smooth_bspline(myx, myy, nxmult=10, **spl_kws):
+  import numpy as np
+  from scipy.interpolate import splrep, splev
+  nx = len(myx)*nxmult
+  idx = np.argsort(myx)
+  tck = splrep(myx[idx], myy[idx], **spl_kws)
+  finex = np.linspace(myx.min(), myx.max(), nx)
+  finey = splev(finex, tck)
+  return finex, finey
+
+def show_spline(ax, line, spl_kws=dict(), sel=None, **kwargs):
   """ show a smooth spline through given line x y
 
   Args:
@@ -291,17 +301,15 @@ def show_spline(ax, line, spl_kws=dict(), nx=1024, sel=None, **kwargs):
     Line1D: interpolating line
   """
   import numpy as np
-  from scipy.interpolate import splrep, splev
   myx = line.get_xdata()
   myy = line.get_ydata()
   if sel is None:
     sel = np.ones(len(myx), dtype=bool)
   myx = myx[sel]
   myy = myy[sel]
+  finex, finey = smooth_bspline(myx, myy, **spl_kws)
   color = line.get_color()
-  finex = np.linspace(min(myx), max(myx), nx)
-  tck = splrep(myx, myy, **spl_kws)
-  line1 = ax.plot(finex, splev(finex, tck), c=color, **kwargs)
+  line1 = ax.plot(finex, finey, c=color, **kwargs)
   return line1
 
 def krig(finex, x0, y0, length_scale, noise_level):
