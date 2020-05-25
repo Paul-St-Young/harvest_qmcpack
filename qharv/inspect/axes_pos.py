@@ -250,6 +250,25 @@ def find_dimers(rij, rmax, rmin=0):
   np.fill_diagonal(rij, mydiag)  # restore diagonal values
   return np.array(pairs).reshape(-1, 2)
 
+def dimer_rep(atoms, rmax):
+  """Find dimer representation of atoms
+
+  Args:
+    atoms (ase.Atoms): one-component system
+    rmax (float): maximum dimer separation
+  Return:
+    (np.array, np.array): (com, avecs), center of mass and
+     half-bond vector, one for each dimer
+  """
+  assert len(np.unique(atoms.get_chemical_symbols())) == 1
+  drij = atoms.get_all_distances(mic=True, vector=True)
+  rij = np.linalg.norm(drij, axis=-1)
+  pairs = find_dimers(rij, rmax)
+  # a vector points from particle 0 towards 1
+  avecs = 0.5*drij[pairs[:, 0], pairs[:, 1]]
+  com = pos[pairs[:, 0]] + avecs
+  return com, avecs
+
 def dimer_pairs_and_dists(axes, pos, rmax, rmin=0):
   """ find all dimers within a separtion of (rmin,rmax)
 
