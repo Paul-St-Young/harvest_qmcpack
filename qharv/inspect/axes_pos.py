@@ -266,6 +266,7 @@ def dimer_rep(atoms, rmax):
   pairs = find_dimers(rij, rmax)
   # a vector points from particle 0 towards 1
   avecs = 0.5*drij[pairs[:, 0], pairs[:, 1]]
+  pos = atoms.get_positions()
   com = pos[pairs[:, 0]] + avecs
   return com, avecs
 
