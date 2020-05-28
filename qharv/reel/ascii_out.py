@@ -228,3 +228,13 @@ ud_2 6.1912e-01 1 1  ON 7
     val  = dtype(tokens[1])
     var_dict[name] = val
   return var_dict
+
+def change_line(text, t0, t1):
+  text1 = ''
+  for line in text.split('\n'):
+    if t0 in line:
+      text1 += t1
+    else:
+      text1 += line
+    text1 += '\n'
+  return text1.strip('\n')
