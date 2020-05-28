@@ -3,7 +3,7 @@
 # Routines to visualize volumetric data
 import numpy as np
 
-def figax3d(show_axis=True):
+def figax3d(show_axis=True, **kwargs):
   """ get a pair of fig and Axes3D
   similar to subplots() but for a single 3D figure
 
@@ -15,7 +15,7 @@ def figax3d(show_axis=True):
   import matplotlib.pyplot as plt
   from mpl_toolkits.mplot3d import Axes3D
   fig = plt.figure()
-  ax = fig.add_subplot(1, 1, 1, projection='3d')
+  ax = fig.add_subplot(1, 1, 1, projection='3d', **kwargs)
   if not show_axis:
     ax._axis3don = False
   return fig, ax
