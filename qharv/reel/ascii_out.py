@@ -183,7 +183,7 @@ def block_text(mm, header, trailer, **kwargs):
     trailer (str): string indicating the end of block
   """
   bidx, eidx = locate_block(mm, header, trailer, **kwargs)
-  return mm[bidx:eidx]
+  return mm[bidx:eidx].decode()
 
 def lr_mark(line, lmark, rmark):
   """ read a string segment from line, which is enclosed between l&rmark
