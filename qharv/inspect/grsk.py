@@ -18,13 +18,13 @@ def sk2gr(myr, myk, skm, rho):
 def get_bin_edges(axes, rmin=0., rmax=None, nr=32):
   # create linear grid
   if rmax is None:
-    from qharv.inspect import axes_pos
-    rmax = axes_pos.rwsc(axes)
+    from qharv.inspect.axes_pos import rwsc
+    rmax = rwsc(axes)
   bin_edges = np.linspace(rmin, rmax, nr)
   return bin_edges
 
 def get_gofr_norm(axes, bin_edges, n1, n2=None):
-  from qharv.inspect import axes_pos
+  from qharv.inspect.axes_pos import volume
   ndim, ndim = axes.shape
   assert ndim == 3  # assume 3 dimensions
   # calculate volume of bins
@@ -34,13 +34,34 @@ def get_gofr_norm(axes, bin_edges, n1, n2=None):
     npair = n1*(n1-1)/2
   else:
     npair = n1*n2
-  volume = axes_pos.volume(axes)
-  rho = npair/volume
+  rho = npair/volume(axes)
   # assemble the norm vector
   gr_norm = 1./(rho*vnorm)
   return gr_norm
 
 def ase_gofr(atoms, bin_edges, gr_norm):
+  """Calculate the real-space pair correlation function g(r) among
+   all pairs of atom types. Histogram distances along the radial
+   direction, i.e. spherically averaged.
+
+  Args:
+    atoms (ase.Atoms): atoms
+    bin_edges (np.array): histogram bin edges
+    gr_norm (np.array): normalization of each bin
+  Return:
+    dict: gr1_map, one g(r) for each pair of atom types.
+  Example:
+    >>> axes = np.eye(3)
+    >>> pos = np.array([[0, 0, 0], [0.5, 0.5, 0.5]])
+    >>> atoms = Atoms('H2', cell=axes, positions=pos, pbc=1)
+    >>> bin_edges = get_bin_edges(axes)
+    >>> gr_norm = get_gofr_norm(axes, bin_edges, len(pos))
+    >>> gr1_map = ase_gofr(atoms, bin_edges, gr_norm)
+    >>> gr1 = gr1_map[(0, 0)]
+    >>> r = 0.5*(bin_edges[1:]+bin_edges[:-1])
+    >>> plt.plot(r, gr1)
+    >>> plt.show()
+  """
   from ase.geometry import get_distances
   ias = np.unique(atoms.get_atomic_numbers())
   gr1_map = {}  # snapshot g(r) between all pairs of particle types
@@ -53,7 +74,6 @@ def ase_gofr(atoms, bin_edges, gr_norm):
       idx2 = [atom.index for atom in atoms if atom.number == ja]
       ni = len(idx1)
       nj = len(idx2)
-
       # calculate distances
       drij, rij = get_distances(
         atoms[idx1].get_positions(),
@@ -61,11 +81,13 @@ def ase_gofr(atoms, bin_edges, gr_norm):
         cell=atoms.get_cell(),
         pbc=1
       )
+      # extract unique distances
       offset = 0
       if ia == ja:
         offset = 1
       idx = np.triu_indices_from(rij, offset)
       dists = rij[idx]
+      # histogram
       hist, be = np.histogram(dists, bin_edges)
       gr1 = hist*gr_norm
       gr1_map[(ia, ja)] = gr1
