@@ -19,7 +19,7 @@ def get_bin_edges(axes, rmin=0., rmax=None, nr=32):
   # create linear grid
   if rmax is None:
     from qharv.inspect import axes_pos
-    rmax = axes_pos.rwsc(axes)/2.
+    rmax = axes_pos.rwsc(axes)
   bin_edges = np.linspace(rmin, rmax, nr)
   return bin_edges
 
