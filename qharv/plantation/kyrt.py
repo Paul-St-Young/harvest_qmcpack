@@ -204,6 +204,12 @@ def create_legend(ax, styles, labels, **kwargs):
   leg = ax.legend(custom_lines, labels, **kwargs)
   return leg
 
+# ====================== level 0: global edits =======================
+def set_style():
+  import seaborn as sns
+  sns.set_style('ticks')
+  sns.set_context('talk', font_scale=0.7)
+
 # ====================== level 0: basic Line2D edits =======================
 def get_style(line):
   """ get plot styles from Line2D object
