@@ -5,6 +5,15 @@
 #  heavily borrow from the atomic simulation environment (ase) package
 import numpy as np
 
+# ======================== level 0: construct atoms =========================
+
+def default_pbc(axes, kwargs):
+  pbc = kwargs.pop('pbc', None)
+  if pbc is None:
+    ndim = len(axes)
+    pbc = [True]*ndim
+  return pbc
+
 def ase_atoms(axes, elem, pos, **kwargs):
   """ create ase Atoms object
 
@@ -13,13 +22,32 @@ def ase_atoms(axes, elem, pos, **kwargs):
     elem (np.array): chemical symbols
     pos (np.array): atomic positions
   Return:
-    ase.Atoms: object
+    ase.Atoms: Atoms object
   """
   from ase import Atoms
-  pbc = kwargs.pop('pbc', None)
-  if pbc is None:
-    ndim = len(axes)
-    pbc = [True]*ndim
+  pbc = default_pbc(axes, kwargs)
+  s0 = Atoms(''.join(elem), cell=axes, positions=pos, pbc=pbc, **kwargs)
+  return s0
+
+def make_atoms(axes, posl, eleml=None, **kwargs):
+  """ create ase Atoms object using arbitrary element names
+
+  Args:
+    axes (np.array): lattice vectors in row-major
+    posl (list): a list of atomic positions, each a np.array
+    eleml (list, optional): a list of chemical symbols
+  Return:
+    ase.Atoms: Atoms object
+  """
+  from ase import Atoms
+  pbc = default_pbc(axes, kwargs)
+  if eleml is None:
+    eleml = ['H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne']
+  pos = []
+  elem = []
+  for e1, p1 in zip(eleml, posl):
+    elem += [e1]*len(p1)
+    pos += p1.tolist()
   s0 = Atoms(''.join(elem), cell=axes, positions=pos, pbc=pbc, **kwargs)
   return s0
 
@@ -44,6 +72,8 @@ def ase_read(floc):
     'pos': pos
   }
   return data
+
+# ======================== level 0: use methods =========================
 
 def ase_tile(axes, elem, pos, tmat):
   """ use ase to tile supercell
