@@ -240,7 +240,8 @@ def errorshade(ax, x, ym, ye, **kwargs):
   return line, eline
 
 # ===================== level 1: fit line ======================
-def show_fit(ax, line, model, sel=None, nx=64, xmin=None, xmax=None, **kwargs):
+def show_fit(ax, line, model, sel=None, nx=64,
+  xmin=None, xmax=None, circle=True, **kwargs):
   """ fit a segment of (x, y) data and show fit
 
   get x, y data from line; use sel to make selection
@@ -253,6 +254,7 @@ def show_fit(ax, line, model, sel=None, nx=64, xmin=None, xmax=None, **kwargs):
     nx (int, optional): grid size, default 64
     xmin (float, optional): grid min
     xmax (float, optional): grid max
+    circle (bool, optional): circle selected points, default True
   Return:
     (np.array, np.array, list): (popt, perr, lines)
   """
@@ -270,11 +272,12 @@ def show_fit(ax, line, model, sel=None, nx=64, xmin=None, xmax=None, **kwargs):
     xmin = myx1.min()
   if xmax is None:
     xmax = myx1.max()
-  styles = get_style(line)
-  styles['ls'] = ''
-  styles['marker'] = 'o'
-  styles['fillstyle'] = 'none'
-  line1 = ax.plot(myx[sel], myy[sel], **styles)
+  if circle:
+    styles = get_style(line)
+    styles['ls'] = ''
+    styles['marker'] = 'o'
+    styles['fillstyle'] = 'none'
+    line1 = ax.plot(myx[sel], myy[sel], **styles)
   # perform fit
   popt, pcov = curve_fit(model, myx1, myy1)
   perr = np.sqrt(np.diag(pcov))
