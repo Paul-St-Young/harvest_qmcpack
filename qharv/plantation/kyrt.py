@@ -272,12 +272,14 @@ def show_fit(ax, line, model, sel=None, nx=64,
     xmin = myx1.min()
   if xmax is None:
     xmax = myx1.max()
+  lines = []
   if circle:
     styles = get_style(line)
     styles['ls'] = ''
     styles['marker'] = 'o'
     styles['fillstyle'] = 'none'
     line1 = ax.plot(myx[sel], myy[sel], **styles)
+    lines.append(line1[0])
   # perform fit
   popt, pcov = curve_fit(model, myx1, myy1)
   perr = np.sqrt(np.diag(pcov))
@@ -285,7 +287,7 @@ def show_fit(ax, line, model, sel=None, nx=64,
   finex = np.linspace(xmin, xmax, nx)
   line2 = ax.plot(finex, model(finex, *popt),
     c=line.get_color(), **kwargs)
-  lines = [line1[0], line2[0]]
+  lines.append(line2[0])
   return popt, perr, lines
 
 def smooth_bspline(myx, myy, nxmult=10, **spl_kws):
