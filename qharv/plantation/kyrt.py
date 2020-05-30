@@ -182,6 +182,24 @@ def yright(ax):
   yaxis.tick_right()
   yaxis.set_label_position('right')
 
+# ======================= level 1: advanced ax edits ========================
+
+def cox(ax, x, xtlabels):
+  """Add co-xticklabels at top of the plot, e.g., with a different unit
+
+  Args:
+    ax (plt.Axes): matplotlib axes
+    x (list): xtick locations
+    xtlabels (list): xtick labels
+  """
+  ax1 = ax.twiny()
+  ax1.set_xlim(ax.get_xlim())
+  ax.set_xticks(x)
+  ax1.set_xticks(x)
+  ax1.set_xticklabels(xtlabels)
+  xtop(ax1)
+  return ax1
+
 # ====================== level 0: basic legend edits =======================
 def set_legend_marker_size(leg, ms=10):
   handl = leg.legendHandles
