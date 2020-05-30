@@ -240,8 +240,8 @@ def errorshade(ax, x, ym, ye, **kwargs):
   return line, eline
 
 # ===================== level 1: fit line ======================
-def show_fit(ax, line, model, sel=None, nx=64,
-  xmin=None, xmax=None, circle=True, **kwargs):
+def show_fit(ax, line, model, sel=None, nx=64, popt=None,
+  xmin=None, xmax=None, circle=True, circle_style=None, **kwargs):
   """ fit a segment of (x, y) data and show fit
 
   get x, y data from line; use sel to make selection
@@ -275,14 +275,18 @@ def show_fit(ax, line, model, sel=None, nx=64,
   lines = []
   if circle:
     styles = get_style(line)
-    styles['ls'] = ''
+    styles['linestyle'] = ''
     styles['marker'] = 'o'
     styles['fillstyle'] = 'none'
+    if circle_style is not None:
+      styles.update(circle_style)
     line1 = ax.plot(myx[sel], myy[sel], **styles)
     lines.append(line1[0])
-  # perform fit
-  popt, pcov = curve_fit(model, myx1, myy1)
-  perr = np.sqrt(np.diag(pcov))
+  if popt is None:  # perform fit
+    popt, pcov = curve_fit(model, myx1, myy1)
+    perr = np.sqrt(np.diag(pcov))
+  else:
+    perr = None
   # show fit
   finex = np.linspace(xmin, xmax, nx)
   line2 = ax.plot(finex, model(finex, *popt),
