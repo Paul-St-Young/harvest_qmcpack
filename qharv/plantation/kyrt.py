@@ -357,7 +357,7 @@ def krig(finex, x0, y0, length_scale, noise_level):
   return ym, ye
 
 def gpr_errorshade(ax, x, ym, ye,
-  length_scale, noise_level,
+  length_scale, noise_level, fb_kwargs=None,
   **kwargs):
   """WARNING: length_scale and noise_level are VERY DIFFICULT to tune """
   # make errorbar plot and extract color
@@ -375,7 +375,8 @@ def gpr_errorshade(ax, x, ym, ye,
   yhm, yhe = krig(finex, x, ym+ye,
     length_scale=length_scale, noise_level=noise_level)
   # plot fit
-  fb_kwargs = {'color': myc, 'alpha': 0.4}
+  if fb_kwargs is None:
+    fb_kwargs = {'color': myc, 'alpha': 0.4}
   eline = ax.fill_between(finex, ylm-yle, yhm+yhe, **fb_kwargs)
   return line[0], eline
 
