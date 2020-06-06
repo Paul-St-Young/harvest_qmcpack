@@ -259,7 +259,8 @@ def errorshade(ax, x, ym, ye, **kwargs):
 
 # ===================== level 1: fit line ======================
 def show_fit(ax, line, model, sel=None, nx=64, popt=None,
-  xmin=None, xmax=None, circle=True, circle_style=None, **kwargs):
+  xmin=None, xmax=None, circle=True, circle_style=None,
+  cross=False, cross_style=None, **kwargs):
   """ fit a segment of (x, y) data and show fit
 
   get x, y data from line; use sel to make selection
@@ -273,6 +274,7 @@ def show_fit(ax, line, model, sel=None, nx=64, popt=None,
     xmin (float, optional): grid min
     xmax (float, optional): grid max
     circle (bool, optional): circle selected points, default True
+    cross (bool, optional): cross out deselected points, default False
   Return:
     (np.array, np.array, list): (popt, perr, lines)
   """
@@ -286,6 +288,8 @@ def show_fit(ax, line, model, sel=None, nx=64, popt=None,
     sel = np.ones(len(myx), dtype=bool)
   myx1 = myx[sel]
   myy1 = myy[sel]
+  myx11 = myx[~sel]
+  myy11 = myy[~sel]
   if xmin is None:
     xmin = myx1.min()
   if xmax is None:
@@ -300,6 +304,14 @@ def show_fit(ax, line, model, sel=None, nx=64, popt=None,
       styles.update(circle_style)
     line1 = ax.plot(myx[sel], myy[sel], **styles)
     lines.append(line1[0])
+  if cross:
+    styles = get_style(line)
+    styles['linestyle'] = ''
+    styles['marker'] = 'x'
+    if cross_style is not None:
+      styles.update(cross_style)
+    line11 = ax.plot(myx11, myy11, **styles)
+    lines.append(line11[0])
   if popt is None:  # perform fit
     popt, pcov = curve_fit(model, myx1, myy1)
     perr = np.sqrt(np.diag(pcov))
