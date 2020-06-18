@@ -223,10 +223,12 @@ def create_legend(ax, styles, labels, **kwargs):
   return leg
 
 # ====================== level 0: global edits =======================
-def set_style():
+def set_style(style='ticks', context='talk', **kwargs):
   import seaborn as sns
-  sns.set_style('ticks')
-  sns.set_context('talk', font_scale=0.7)
+  if (context=='talk') and ('font_scale' not in kwargs):
+    kwargs['font_scale'] = 0.7
+  sns.set_style(style)
+  sns.set_context(context, **kwargs)
 
 # ====================== level 0: basic Line2D edits =======================
 def get_style(line):
