@@ -114,6 +114,23 @@ def ud_electrons(nup, ndown):
 
   return epset
 
+def all_electron_hamiltonian(elec_name='e', ion_name='ion0'):
+  ee = xml.make_node('pairpot', {
+    'type': 'coulomb',  'name': 'ElecElec',
+    'source': elec_name, 'target': elec_name
+  })
+  ei = xml.make_node('pairpot', {
+    'type': 'coulomb',  'name': 'ElecIon',
+    'source': ion_name, 'target': elec_name
+  })
+  ii = xml.make_node('pairpot', {
+    'type': 'coulomb',  'name': 'IonIon',
+    'source': ion_name, 'target': ion_name
+  })
+  ham = xml.make_node('hamiltonian')
+  xml.append(ham, [ee, ei, ii])
+  return ham
+
 # ================== level 1: use existing input ===================
 def expand_twists(example_in_xml, twist_list, calc_dir, force=False):
   """ expand example input xml to all twists in twist_list
