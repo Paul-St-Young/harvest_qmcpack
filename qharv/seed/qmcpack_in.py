@@ -131,6 +131,83 @@ def all_electron_hamiltonian(elec_name='e', ion_name='ion0'):
   xml.append(ham, [ee, ei, ii])
   return ham
 
+def bspline_qmcsystem(fh5):
+  import numpy as np
+  from qharv.seed import wf_h5
+  ndim0 = 3  # !!!! hard-code for three dimensions
+  fp = wf_h5.read(fh5)
+  axes, elem, pos = wf_h5.axes_elem_pos(fp)
+  nelecs = wf_h5.get(fp, 'nelecs')
+  fp.close()
+  natom, ndim = pos.shape
+  assert ndim == ndim0
+  nup, ndn = nelecs
+  if nup != ndn:  # hard-code for unpolarized for now
+    raise RuntimeError('nup != ndn')
+  spoup = spodn = 'spo_ud'
+  psi_name = 'psi0'
+  ion_name = 'ion0'
+  nodes = []
+
+  # simulationcell
+  sc_node = simulationcell_from_axes(axes)
+  nodes.append(sc_node)
+
+  # particlesets
+  pset = xml.make_node('particleset', {'name': ion_name})
+  for name in np.unique(elem):
+    sel = elem == name
+    grp = particle_group_from_pos(pos[sel], name.decode())
+    pset.append(grp)
+  nodes.append(pset)
+  epset = ud_electrons(*nelecs)
+  nodes.append(epset)
+
+  # sposet and builder
+  tmat_str = ('%d ' * 9) % tuple(np.eye(3, dtype=int).ravel())
+  sb = xml.make_node('sposet_builder', {
+      'type': 'bspline',
+      'href': fh5,
+      'tilematrix': tmat_str,
+      'twistnum': '0',
+      'source': ion_name,  # "Einspline needs the source particleset"
+  })
+  spo = xml.make_node('sposet', {
+    'type': 'bspline',
+    'name': spoup,
+    'size': str(nup),
+    'spindataset': '0'}
+  )
+  sb.append(spo)
+
+  # determinantset
+  updet = xml.make_node('determinant', {
+    'id': 'updet',
+    'size': str(nup),
+    'sposet': spoup
+  })
+  dndet = xml.make_node('determinant', {
+    'id': 'dndet',
+    'size': str(ndn),
+    'sposet': spodn
+  })
+  sdet = xml.make_node('slaterdeterminant')
+  xml.append(sdet, [updet, dndet])
+  dset = xml.make_node('determinantset')
+  dset.append(sdet)
+
+  # wave function
+  wf = xml.make_node('wavefunction', {'name': psi_name, 'target': 'e'})
+  xml.append(wf, [sb, dset])
+  nodes.append(wf)
+
+  # hailtonian
+  ham = all_electron_hamiltonian()
+  nodes.append(ham)
+  qsys = xml.make_node('qmcsystem')
+  xml.append(qsys, nodes)
+  return qsys
+
 # ================== level 1: use existing input ===================
 def expand_twists(example_in_xml, twist_list, calc_dir, force=False):
   """ expand example input xml to all twists in twist_list
