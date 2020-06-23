@@ -94,7 +94,7 @@ def ase_tile(axes, elem, pos, tmat):
   axes1 = s1.get_cell()
   elem1 = s1.get_chemical_symbols()
   pos1 = s1.get_positions()
-  return axes1, elem1, pos1
+  return axes1.array, np.array(elem1), pos1
 
 def ase_drij(atoms, mic=True):
   if mic:
