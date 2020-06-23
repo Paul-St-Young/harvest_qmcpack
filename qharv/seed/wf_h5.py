@@ -78,7 +78,7 @@ def get(fp, name):  # see more advanced get at level 3
   loc = locations[name]
   return fp[loc][()]
 
-def axes_elem_pos(fp):
+def axes_elem_charges_pos(fp):
   """ extract lattice vectors, atomic positions, and element names
   The main difficulty is constructing the element names of each
   atomic species. If elem is not needed, use get(fp,'axes') and
@@ -87,22 +87,25 @@ def axes_elem_pos(fp):
   Args:
     fp (h5py.File): hdf5 file object
   Returns:
-    (np.array, np.array, np.array): (axes, elem, pos)
+    (np.array, np.array, dict, np.array): (axes, elem, vchg_map, pos)
   """
   axes = get(fp, 'axes')
   pos  = get(fp, 'pos')
 
-  # construct list of atomic labels
+  # construct list of ion labels and charges
   elem_id  = fp['atoms/species_ids'][()]
-  elem_map = {}
+  elem_map = {}  # atom label
+  vchg_map = {}  # valence charge
   nelem = fp['atoms/number_of_species'][()][0]
   for ielem in range(nelem):
-    elem_name = fp['atoms/species_%d/name' % ielem][()][0]
+    path = 'atoms/species_%d' % ielem
+    elem_name = fp['%s/name' % path][()][0].decode()
     elem_map[ielem] = elem_name
-  # end for ielem
-  elem = [elem_map[eid] for eid in elem_id]
+    vcharge = float(fp['%s/valence_charge' % path][()][0])
+    vchg_map[elem_name] = vcharge
+  elem = [elem_map[ie] for ie in elem_id]
   assert len(elem) == len(pos)
-  return axes, np.array(elem), pos
+  return axes, np.array(elem), vchg_map, pos
 
 # ====== level 2: QMCPACK wavefunction hdf5 orbital locations ======
 
