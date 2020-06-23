@@ -135,6 +135,8 @@ def expand_twists(example_in_xml, twist_list, calc_dir, force=False):
   prefix = doc.find('.//project').get('id')
 
   fname_fmt = '{prefix:s}.{gt:s}.twistnum_{itwist:d}.in.xml'
+  bundle_text = ''
+  bundle_in = os.path.join(calc_dir, '%s.in' % prefix)
   for itwist in twist_list:
     # change twist number
     bb = doc.find('.//sposet_builder[@type="bspline"]')
@@ -150,11 +152,14 @@ def expand_twists(example_in_xml, twist_list, calc_dir, force=False):
       itwist = itwist
     )
     floc = os.path.join(calc_dir, fname)
+    bundle_text += '%s\n' % fname
 
     if not force:  # check if file exists
       if os.path.isfile(floc):
         raise RuntimeError('force to overwrite %s' % floc)
     xml.write(floc, doc)
+  with open(bundle_in, 'w') as f:
+    f.write(bundle_text)
 
 def bundle_twists(calc_dir, fregex='*twistnum_*.in.xml'):
   """ bundle all twist inputs
