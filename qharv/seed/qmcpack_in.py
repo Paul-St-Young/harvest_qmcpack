@@ -136,7 +136,15 @@ def all_electron_hamiltonian(elec_name='e', ion_name='ion0'):
   xml.append(ham, [ee, ei, ii])
   return ham
 
-def bspline_qmcsystem(fh5):
+def bspline_qmcsystem(fh5, tmat=None):
+  """Create Slater-Jastrow system input from pw2qmcpack.x h5 file
+
+  Args:
+    fh5 (str): path to wf h5 file
+    tmat (np.array): tile matrix
+  Return:
+    qsys (etree.Element): <qmcsystem>
+  """
   import numpy as np
   from qharv.seed import wf_h5
   ndim0 = 3  # !!!! hard-code for three dimensions
@@ -149,6 +157,11 @@ def bspline_qmcsystem(fh5):
   nup, ndn = nelecs
   if nup != ndn:  # hard-code for unpolarized for now
     raise RuntimeError('nup != ndn')
+  if tmat is None:  # use primitive cell by default
+    tmat = np.eye(3, dtype=int)
+  else:  # tile supercell
+    from qharv.inspect.axes_elem_pos import ase_tile
+    axes, elem, pos = ase_tile(axes, elem, pos, tmat)
   spoup = spodn = 'spo_ud'
   psi_name = 'psi0'
   ion_name = 'ion0'
@@ -170,7 +183,7 @@ def bspline_qmcsystem(fh5):
   nodes.append(epset)
 
   # sposet and builder
-  tmat_str = ('%d ' * 9) % tuple(np.eye(3, dtype=int).ravel())
+  tmat_str = ('%d ' * 9) % tuple(tmat.ravel())
   sb = xml.make_node('sposet_builder', {
       'type': 'bspline',
       'href': fh5,
