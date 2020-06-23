@@ -87,7 +87,7 @@ def axes_elem_pos(fp):
   Args:
     fp (h5py.File): hdf5 file object
   Returns:
-    (np.array,list[str],np.array): (axes,elem,pos)
+    (np.array, np.array, np.array): (axes, elem, pos)
   """
   axes = get(fp, 'axes')
   pos  = get(fp, 'pos')
@@ -95,14 +95,14 @@ def axes_elem_pos(fp):
   # construct list of atomic labels
   elem_id  = fp['atoms/species_ids'][()]
   elem_map = {}
-  nelem = fp['atoms/number_of_species'][()]
+  nelem = fp['atoms/number_of_species'][()][0]
   for ielem in range(nelem):
     elem_name = fp['atoms/species_%d/name' % ielem][()][0]
     elem_map[ielem] = elem_name
   # end for ielem
   elem = [elem_map[eid] for eid in elem_id]
   assert len(elem) == len(pos)
-  return axes, elem, pos
+  return axes, np.array(elem), pos
 
 # ====== level 2: QMCPACK wavefunction hdf5 orbital locations ======
 
