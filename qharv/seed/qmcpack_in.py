@@ -61,16 +61,21 @@ def simulationcell_from_axes(axes, bconds='p p p', rckc=15.):
   sc_node.append(lr_node)
   return sc_node
 
-def particle_group_from_pos(pos, name, **kwargs):
+def particle_group_from_pos(pos, name, charge, **kwargs):
   """ construct a <group> in the <particleset> xml element
 
    Args:
      pos (np.array): positions, shape (nptcl, ndim)
      name (str): name of particle group
+     charge (float): the amount of charge of this particle species
    Return:
      etree.Element: <group> including <attrib name="positions">
   """
-
+  if 'charge' in kwargs:
+    msg = 'keyword charge %f will be overwriten'
+    msg += ' by %f' % (kwargs['charge'], charge)
+    raise RuntimeError(msg)
+  kwargs['charge'] = charge
   group = xml.etree.Element('group', dict(
     name = name,
     size = str(len(pos)),
@@ -136,7 +141,7 @@ def bspline_qmcsystem(fh5):
   from qharv.seed import wf_h5
   ndim0 = 3  # !!!! hard-code for three dimensions
   fp = wf_h5.read(fh5)
-  axes, elem, pos = wf_h5.axes_elem_pos(fp)
+  axes, elem, charge_map, pos = wf_h5.axes_elem_charges_pos(fp)
   nelecs = wf_h5.get(fp, 'nelecs')
   fp.close()
   natom, ndim = pos.shape
@@ -157,7 +162,8 @@ def bspline_qmcsystem(fh5):
   pset = xml.make_node('particleset', {'name': ion_name})
   for name in np.unique(elem):
     sel = elem == name
-    grp = particle_group_from_pos(pos[sel], name.decode())
+    charge = charge_map[name]
+    grp = particle_group_from_pos(pos[sel], name, charge)
     pset.append(grp)
   nodes.append(pset)
   epset = ud_electrons(*nelecs)
