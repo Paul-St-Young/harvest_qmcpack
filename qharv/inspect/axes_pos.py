@@ -160,33 +160,6 @@ def get_nvecs(axes, pos, atol=1e-10):
     raise RuntimeError('problem in get_nvecs')
   return nvecs
 
-def auto_distance_table(axes, pos, dn=1):
-  """ calculate distance table of a set of particles among themselves
-  keep this function simple! use this to test distance_table(axes,pos1,pos2)
-
-  Args:
-    axes (np.array): lattice vectors in row-major
-    pos  (np.array): particle positions in row-major
-    dn (int,optional): number of neighboring cells to search in each direction
-  Returns:
-    np.array: dtable shape=(natom,natom), where natom=len(pos)
-  """
-  natom, ndim = pos.shape
-  dtable = np.zeros([natom, natom], float)
-  from itertools import combinations, product
-  # loop through all unique pairs of atoms
-  for (i, j) in combinations(range(natom), 2):  # 2 for pairs
-    dists = []
-    # loop through all neighboring periodic images of atom j
-    #  should be 27 images for a 3D box (dn=1)
-    for ushift in product(range(-dn, dn+1), repeat=ndim):
-      shift = np.dot(ushift, axes)
-      disp  = pos[i] - (pos[j]+shift)
-      dist  = np.linalg.norm(disp)
-      dists.append(dist)
-    dtable[i, j] = dtable[j, i] = min(dists)
-  return dtable
-
 # ======================== level 2: advanced =========================
 def displacement(axes, spos1, spos2, dn=1):
   """ single particle displacement spos1-spos2 under minimum image convention
@@ -217,6 +190,27 @@ def displacement(axes, spos1, spos2, dn=1):
       min_disp = disp.copy()
   return min_disp
 
+def auto_distance_table(axes, pos, dn=1):
+  """ calculate distance table of a set of particles among themselves
+  keep this function simple! use this to test distance_table(axes,pos1,pos2)
+
+  Args:
+    axes (np.array): lattice vectors in row-major
+    pos  (np.array): particle positions in row-major
+    dn (int,optional): number of neighboring cells to search in each direction
+  Returns:
+    np.array: dtable shape=(natom,natom), where natom=len(pos)
+  """
+  natom, ndim = pos.shape
+  dtable = np.zeros([natom, natom], float)
+  from itertools import combinations, product
+  # loop through all unique pairs of atoms
+  for (i, j) in combinations(range(natom), 2):  # 2 for pairs
+    disp = displacement(axes, pos[i], pos[j])
+    dist  = np.linalg.norm(disp)
+    dtable[i, j] = dtable[j, i] = dist
+  return dtable
+
 def find_dimers(rij, rmax, rmin=0):
   """ find all dimers within a separtion of (rmin, rmax)
 
@@ -238,15 +232,22 @@ def find_dimers(rij, rmax, rmin=0):
       break
     if found[iatom]:
       continue
-    # look for nearest neibhor, which is not already assigned
-    j = np.argmin(rij[iatom, ~found])
-    jatom = idx[~found][j]
-    drij = rij[iatom, jatom]
-    if (rmin < drij) & (drij < rmax):
-      pair = [iatom, jatom] if (iatom < jatom) else [jatom, iatom]
-      found[iatom] = True
-      found[jatom] = True
-      pairs.append(pair)
+    # look for nearest neighbor, which is not already assigned
+    for j in np.argsort(rij[iatom, ~found]):
+      jatom = idx[~found][j]
+      drij = rij[iatom, jatom]
+      if (rmin < drij) & (drij < rmax):
+        # make sure this neighbor has no better partner
+        has_better = drij > np.min(rij[jatom, ~found])
+        if has_better:
+          continue
+        pair = [iatom, jatom] if (iatom < jatom) else [jatom, iatom]
+        found[iatom] = True
+        found[jatom] = True
+        pairs.append(pair)
+        break
+      else:
+        break
   np.fill_diagonal(rij, mydiag)  # restore diagonal values
   return np.array(pairs).reshape(-1, 2)
 
@@ -260,6 +261,7 @@ def dimer_rep(atoms, rmax):
     (np.array, np.array): (com, avecs), center of mass and
      half-bond vector, one for each dimer
   """
+  assert np.allclose(atoms.get_pbc(), 1)
   assert len(np.unique(atoms.get_chemical_symbols())) == 1
   drij = atoms.get_all_distances(mic=True, vector=True)
   rij = np.linalg.norm(drij, axis=-1)
