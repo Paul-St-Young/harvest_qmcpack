@@ -28,14 +28,14 @@ def get_key_value_pairs(mm, sep='='):
   entry = {}
   for idx in idxl:
     mm.seek(idx)
-    ibegin = mm.rfind('\n', 0, idx)
+    ibegin = mm.rfind(b'\n', 0, idx)
     mm.seek(ibegin)
     line = mm.readline()  # skip \n
     line = mm.readline()
-    tokens = line.split(sep)
+    tokens = line.split(sep.encode())
     name = tokens[0].strip()  # strip whitespace
     val = tokens[1].strip()
-    entry[name] = val
+    entry[name.decode()] = val.decode()
   return entry
 
 def name_sep_val(mm, name, sep='=', dtype=float, pos=1):
@@ -57,11 +57,11 @@ def name_sep_val(mm, name, sep='=', dtype=float, pos=1):
     dtype: value of requested variable
   """
   cur_idx = mm.tell()
-  idx = mm.find(name)
+  idx = mm.find(name.encode())
   if idx == -1:
     raise RuntimeError(name+' not found')
   mm.seek(idx)
-  line = mm.readline()
+  line = mm.readline().decode()
   tokens = line.split(sep)
 
   # assume the text immediately next to the separator is the desired value
