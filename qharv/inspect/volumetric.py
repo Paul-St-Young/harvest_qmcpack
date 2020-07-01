@@ -3,7 +3,7 @@
 # Routines to visualize volumetric data
 import numpy as np
 
-def figax3d(show_axis=True, **kwargs):
+def figax3d(show_axis=True, label_axis=True, **kwargs):
   """ get a pair of fig and Axes3D
   similar to subplots() but for a single 3D figure
 
@@ -18,6 +18,10 @@ def figax3d(show_axis=True, **kwargs):
   ax = fig.add_subplot(1, 1, 1, projection='3d', **kwargs)
   if not show_axis:
     ax._axis3don = False
+  if label_axis:
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
   return fig, ax
 
 def isosurf(ax, vol, level_frac=0.25):
