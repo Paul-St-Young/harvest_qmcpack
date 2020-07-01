@@ -217,7 +217,7 @@ def find_dimers(rij, rmax, rmin=0):
   Args:
     rij  (np.array): distance table
     rmax (float): maximum dimer separation
-    rmin (float,optional): minimum dimer separation
+    rmin (float, optional): minimum dimer separation, default 0
   Return:
     np.array: unique pairs, a list of (int, int) particle id pairs
   """
@@ -261,7 +261,6 @@ def dimer_rep(atoms, rmax):
     (np.array, np.array): (com, avecs), center of mass and
      half-bond vector, one for each dimer
   """
-  assert np.allclose(atoms.get_pbc(), 1)
   assert len(np.unique(atoms.get_chemical_symbols())) == 1
   drij = atoms.get_all_distances(mic=True, vector=True)
   rij = np.linalg.norm(drij, axis=-1)
