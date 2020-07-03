@@ -211,45 +211,46 @@ def auto_distance_table(axes, pos, dn=1):
     dtable[i, j] = dtable[j, i] = dist
   return dtable
 
-def find_dimers(rij, rmax, rmin=0):
+def find_dimers(rij, rmax=np.inf, rmin=0, sort=True):
   """ find all dimers within a separtion of (rmin, rmax)
 
   Args:
     rij  (np.array): distance table
-    rmax (float): maximum dimer separation
+    rmax (float, optional): maximum dimer separation, default np.inf
     rmin (float, optional): minimum dimer separation, default 0
+    sort (bool, optional): sort pair indices
   Return:
     np.array: unique pairs, a list of (int, int) particle id pairs
   """
-  natom = len(rij)
+  natom, natom1 = rij.shape
+  assert natom1 == natom
   found = np.zeros(natom, dtype=bool)
-  idx = np.arange(natom)
-  mydiag = np.diag(rij)  # save diagonal values before overwrite
-  np.fill_diagonal(rij, np.inf)  # diagonal probably all zeros
   pairs = []
-  for iatom in range(natom):
+  # loop through pair distances from small to large
+  idx = np.triu_indices(natom, 1)
+  dists = rij[idx]
+  ij = np.array(idx).T
+  for idist in np.argsort(dists):
+    i, j = ij[idist]  # pair indices
+    if found[i] or found[j]:
+      continue
+    rb = dists[idist]  # bond length
+    if (rb < rmin) or (rb > rmax):
+      continue
+    pair = (i, j) if i < j else (j, i)
+    pairs.append(pair)
+    found[i] = True
+    found[j] = True
     if np.all(found):
       break
-    if found[iatom]:
-      continue
-    # look for nearest neighbor, which is not already assigned
-    for j in np.argsort(rij[iatom, ~found]):
-      jatom = idx[~found][j]
-      drij = rij[iatom, jatom]
-      if (rmin < drij) & (drij < rmax):
-        # make sure this neighbor has no better partner
-        has_better = drij > np.min(rij[jatom, ~found])
-        if has_better:
-          continue
-        pair = [iatom, jatom] if (iatom < jatom) else [jatom, iatom]
-        found[iatom] = True
-        found[jatom] = True
-        pairs.append(pair)
-        break
-      else:
-        break
-  np.fill_diagonal(rij, mydiag)  # restore diagonal values
-  return np.array(pairs).reshape(-1, 2)
+  pa = np.array(pairs)
+  if sort:
+    # sort pairs
+    i1 = np.argsort(pa[:, 0])
+    sorted_pairs = pa[i1]
+  else:
+    sorted_pairs = pa
+  return sorted_pairs
 
 def dimer_rep(atoms, rmax):
   """Find dimer representation of atoms
