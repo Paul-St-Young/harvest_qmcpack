@@ -25,6 +25,9 @@ if __name__ == '__main__':
   parser.add_argument('--trace','-t',action='store_true'
     ,help='plot the trace of column')
   parser.add_argument('--append','-a',action='append',help='additional Scalar TABle (stab) file to be appended')
+  parser.add_argument('--save', action='store_true', help='save figure to file')
+  parser.add_argument('--save_fig_name', type=str, default='trace.png')
+  parser.add_argument('--save_fig_dpi', type=int, default=320)
   args = parser.parse_args()
 
   dfl = scalar_dat.read_to_list(args.fname)
@@ -98,7 +101,10 @@ if __name__ == '__main__':
     ax_arr[0].legend(loc='best')
 
     fig.tight_layout()
-    plt.show()
+    if args.save:
+      fig.savefig(args.save_fig_name, dpi=args.save_fig_dpi)
+    else:
+      plt.show()
   # end if
 
 # end __main__
