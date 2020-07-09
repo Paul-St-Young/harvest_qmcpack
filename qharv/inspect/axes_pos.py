@@ -211,14 +211,14 @@ def auto_distance_table(axes, pos, dn=1):
     dtable[i, j] = dtable[j, i] = dist
   return dtable
 
-def find_dimers(rij, rmax=np.inf, rmin=0, sort=True):
+def find_dimers(rij, rmax=np.inf, rmin=0, sort_id=False):
   """ find all dimers within a separtion of (rmin, rmax)
 
   Args:
     rij  (np.array): distance table
     rmax (float, optional): maximum dimer separation, default np.inf
     rmin (float, optional): minimum dimer separation, default 0
-    sort (bool, optional): sort pair indices
+    sort_id (bool, optional): sort pair by first atom id, default false
   Return:
     np.array: unique pairs, a list of (int, int) particle id pairs
   """
@@ -244,8 +244,7 @@ def find_dimers(rij, rmax=np.inf, rmin=0, sort=True):
     if np.all(found):
       break
   pa = np.array(pairs)
-  if sort:
-    # sort pairs
+  if sort_id:  # sort pairs by first atom id
     i1 = np.argsort(pa[:, 0])
     sorted_pairs = pa[i1]
   else:
@@ -265,7 +264,7 @@ def dimer_rep(atoms, rmax):
   assert len(np.unique(atoms.get_chemical_symbols())) == 1
   drij = atoms.get_all_distances(mic=True, vector=True)
   rij = np.linalg.norm(drij, axis=-1)
-  pairs = find_dimers(rij, rmax)
+  pairs = find_dimers(rij, rmax=rmax)
   # a vector points from particle 0 towards 1
   avecs = 0.5*drij[pairs[:, 0], pairs[:, 1]]
   pos = atoms.get_positions()
