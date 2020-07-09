@@ -312,7 +312,7 @@ def test_find_dimers():
   ])
   rmax = 1.0
   rij = axes_pos.auto_distance_table(axes, pos)
-  pairs = axes_pos.find_dimers(rij, rmax)
+  pairs = axes_pos.find_dimers(rij, rmax=rmax, sort_id=True)
   assert np.allclose(pairs, pairs_ref)
 
 #if __name__ == '__main__':
