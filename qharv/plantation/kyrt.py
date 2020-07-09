@@ -200,6 +200,22 @@ def cox(ax, x, xtlabels):
   xtop(ax1)
   return ax1
 
+def coy(ax, y, ytlabels):
+  """Add co-yticklabels on the right of the plot, e.g., with a different unit
+
+  Args:
+    ax (plt.Axes): matplotlib axes
+    y (list): ytick locations
+    ytlabels (list): ytick labels
+  """
+  ax1 = ax.twinx()
+  ax1.set_ylim(ax.get_ylim())
+  ax.set_yticks(y)
+  ax1.set_yticks(y)
+  ax1.set_yticklabels(ytlabels)
+  yright(ax1)
+  return ax1
+
 # ====================== level 0: basic legend edits =======================
 def set_legend_marker_size(leg, ms=10):
   handl = leg.legendHandles
