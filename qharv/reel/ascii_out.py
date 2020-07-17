@@ -126,7 +126,7 @@ def all_lines_at_idx(mm, idx_list):
     lines.append(line)
   return lines
 
-def locate_block(mm, header, trailer,
+def locate_block(mm, header, trailer, force_head=False, force_tail=False,
                  skip_header=True, skip_trailer=True):
   """ find the memory locations bounding a block of text
   in between header and trailer; header and trailer are
@@ -144,13 +144,16 @@ def locate_block(mm, header, trailer,
   """
   begin_idx = mm.find(header.encode())
   if begin_idx == -1:
-    raise RuntimeError('failed to find "%s"' % header)
+    if force_head:
+      begin_idx = 0
+    else:
+      raise RuntimeError('failed to find "%s"' % header)
   if skip_header:
     mm.seek(begin_idx)
     mm.readline()
     begin_idx = mm.tell()
   end_idx = mm.find(trailer.encode())
-  if end_idx == -1:
+  if (end_idx == -1) and (not force_tail):
     raise RuntimeError('failed to find "%s"' % trailer)
   if not skip_trailer:
     mm.seek(end_idx)
