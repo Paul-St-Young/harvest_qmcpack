@@ -14,7 +14,7 @@ if __name__ == '__main__':
   from qharv.reel import scalar_dat
   parser = argparse.ArgumentParser()
   parser.add_argument('fname',type=str,help='Scalar TABle (stab) file name')
-  parser.add_argument('--xaxis','-x',type=str,default='index')
+  parser.add_argument('--xaxis','-x',type=str,default=None)
   parser.add_argument('--nequil','-e',type=int,default=0
     ,help='number of equilibration blocks to throw out')
   parser.add_argument('--column','-c',type=str,default='LocalEnergy'
@@ -71,7 +71,10 @@ if __name__ == '__main__':
   print(output)
 
   if (args.trace):
-    myx = df[args.xaxis]
+    if args.xaxis is None:
+      myx = df.index
+    else:
+      myx = df[args.xaxis]
     myy0= df[args.column].values
     myy = myy0[args.nequil:]
     
