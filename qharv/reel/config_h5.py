@@ -67,7 +67,11 @@ def save_dict(arr_dict, h5file, slab=None):
   if slab is None:
     slab = h5file.root
   for key, arr in arr_dict.items():
-    save_vec(arr, h5file, slab, key)
+    if type(arr) is dict:
+      slab1 = h5file.create_group(slab, key)
+      save_dict(arr, h5file, slab=slab1)
+    else:
+      save_vec(arr, h5file, slab, key)
   h5file.flush()
 
 
