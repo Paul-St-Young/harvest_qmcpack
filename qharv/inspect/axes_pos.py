@@ -251,7 +251,7 @@ def find_dimers(rij, rmax=np.inf, rmin=0, sort_id=False):
     sorted_pairs = pa
   return sorted_pairs
 
-def dimer_rep(atoms, rmax):
+def dimer_rep(atoms, rmax, return_pairs=False):
   """Find dimer representation of atoms
 
   Args:
@@ -269,7 +269,11 @@ def dimer_rep(atoms, rmax):
   avecs = 0.5*drij[pairs[:, 0], pairs[:, 1]]
   pos = atoms.get_positions()
   com = pos[pairs[:, 0]] + avecs
-  return com, avecs
+  if return_pairs:
+    ret = (com, avecs, pairs)
+  else:
+    ret = (com, avecs)
+  return ret
 
 def dimer_pairs_and_dists(axes, pos, rmax, rmin=0):
   """ find all dimers within a separtion of (rmin,rmax)
