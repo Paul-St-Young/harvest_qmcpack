@@ -45,7 +45,8 @@ add '-y' to proceed with removal""" % msg)
   # perform
   if args.remove:
     if args.verbose:
-      pbar = progressbar.ProgressBar(max_value=len(files2rm))
+      from qharv.plantation.sugar import get_progress_bar
+      pbar = get_progress_bar(len(files2rm))
     ifile = 0
     for floc in files2rm:
       sp.check_call(['rm', '-r', floc])
