@@ -251,12 +251,14 @@ def find_dimers(rij, rmax=np.inf, rmin=0, sort_id=False):
     sorted_pairs = pa
   return sorted_pairs
 
-def dimer_rep(atoms, rmax, return_pairs=False):
+def dimer_rep(atoms, return_pairs=False,
+  rmax=np.inf, rmin=0.0, sort_id=False):
   """Find dimer representation of atoms
 
   Args:
     atoms (ase.Atoms): one-component system
-    rmax (float): maximum dimer separation
+    rmax (float, optional): maximum dimer separation, default np.inf
+    return_pairs (bool, optional): return indices of dimers, default False
   Return:
     (np.array, np.array): (com, avecs), center of mass and
      half-bond vector, one for each dimer
@@ -264,7 +266,7 @@ def dimer_rep(atoms, rmax, return_pairs=False):
   assert len(np.unique(atoms.get_chemical_symbols())) == 1
   drij = atoms.get_all_distances(mic=True, vector=True)
   rij = np.linalg.norm(drij, axis=-1)
-  pairs = find_dimers(rij, rmax=rmax)
+  pairs = find_dimers(rij, rmax=rmax, rmin=rmin, sort_id=sort_id)
   # a vector points from particle 0 towards 1
   avecs = 0.5*drij[pairs[:, 0], pairs[:, 1]]
   pos = atoms.get_positions()
