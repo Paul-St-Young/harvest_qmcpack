@@ -251,8 +251,8 @@ def find_dimers(rij, rmax=np.inf, rmin=0, sort_id=False):
     sorted_pairs = pa
   return sorted_pairs
 
-def dimer_rep(atoms, return_pairs=False,
-  rmax=np.inf, rmin=0.0, sort_id=False):
+def dimer_rep(atoms, rmax=np.inf, rmin=0.0,
+  sort_id=False, return_pairs=False):
   """Find dimer representation of atoms
 
   Args:
