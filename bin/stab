@@ -26,6 +26,8 @@ if __name__ == '__main__':
   parser.add_argument('--trace','-t',action='store_true'
     ,help='plot the trace of column')
   parser.add_argument('--append','-a',action='append',help='additional Scalar TABle (stab) file to be appended')
+  parser.add_argument('--dump', action='store_true', help='dump column to file')
+  parser.add_argument('--dump_fname', type=str, default='trace.dat')
   parser.add_argument('--save', action='store_true', help='save figure to file')
   parser.add_argument('--save_fig_name', type=str, default='trace.png')
   parser.add_argument('--save_fig_dpi', type=int, default=320)
@@ -58,6 +60,8 @@ if __name__ == '__main__':
     from qharv.sieve.scalar_df import reblock_scalar_df
     df = reblock_scalar_df(df,args.reblock)
   # end if
+  if args.dump:
+    scalar_dat.write(args.dump_fname, df[[args.column]])
    
   ymean,yerr,ycorr = scalar_dat.single_column(df,args.column,args.nequil)
   
