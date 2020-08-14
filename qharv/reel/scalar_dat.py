@@ -149,68 +149,6 @@ def write(dat_fname, df, header_pad='# ', **kwargs):
   with open(dat_fname, 'w') as f:
     f.write(header_pad + text)
 
-def next_pow_two(n):
-  """Returns the next power of two greater than or equal to `n`
-  stolen from dfm/emcee autocorr.py
-
-  Args:
-    n (int): lower bound
-  Return:
-    n2 (int): next power of two
-  Example:
-    >>> next_pow_two(1000)
-    >>> 1024
-  """
-  i = 1
-  while i < n:
-    i = i << 1
-  return i
-
-def acf1d(x):
-  """Estimate the normalized autocorrelation function of a 1-D series
-  stolen from dfm/emcee autocorr.py
-
-  Args:
-    x (np.array): The series as a 1-D numpy array.
-  Returns:
-    np.array: The autocorrelation function of the time series.
-  """
-  x = np.atleast_1d(x)
-  if len(x.shape) != 1:
-    msg = "invalid dimensions for 1D autocorrelation function"
-    raise ValueError(msg)
-  n = next_pow_two(len(x))
-
-  # Compute the FFT and then (from that) the auto-correlation function
-  f = np.fft.fft(x - np.mean(x), n=2*n)
-  acf = np.fft.ifft(f * np.conjugate(f))[: len(x)].real
-  # normalize
-  acf0 = acf[0]
-  if not np.isclose(acf0, 0):
-    acf /= acf[0]
-  return acf
-
-def corr(trace):
-  """ calculate the autocorrelation of a trace of scalar data
-
-  correlation time is defined as the integral of the auto-correlation
-   function from t=0 to when the function first reaches 0.
-
-  Args:
-    trace (list): should be a 1D iterable array of floating point numbers
-  Return:
-    float: correlation_time, the autocorrelation time of this trace of scalars
-  """
-  acf = acf1d(trace)
-  # find first zero crossing
-  sel = acf < 0
-  neg_itau = np.arange(len(acf))[sel]
-  if len(neg_itau) == 0:
-    return np.inf
-  itau = neg_itau[0]
-  correlation_time = 1.0 + 2.0*np.sum(acf[:itau])
-  return correlation_time
-
 def error(trace, kappa=None):
   """ calculate the error of a trace of scalar data
 
@@ -245,7 +183,7 @@ def single_column(df, column, nequil):
     (float,float,float): (ymean,yerr,ycorr), where ymean is the mean of column
      , yerr is the 1-sigma error of column, and ycorr is the autocorrelation
   """
-
+  from qharv.reel.forlib.stats import corr
   myy = df[column].values[nequil:]
 
   ymean = np.mean(myy)
