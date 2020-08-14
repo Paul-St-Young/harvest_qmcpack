@@ -3,6 +3,22 @@
 # dig around for goodies
 import subprocess as sp
 
+def findall(regex, rundir, prepend_star=True, **kwargs):
+  """ find all matching files with regular expression in rundir
+
+  Args:
+    regex (str):  regular expression for file names
+    rundir (str): directory containing the files to be found
+    prepend_star (bool, optional): add '*' to regex, default True
+  Return:
+    list: flist, list of all matching files
+  """
+  if prepend_star:
+    myregex = '*'+regex
+  else:
+    myregex = regex
+  flist = files_with_regex(myregex, rundir, **kwargs)
+  return flist
 
 def files_with_regex(regex, rundir, case=True, ftype='f', **kwargs):
   """ find files with the given suffix in folder rundir
@@ -24,25 +40,9 @@ def files_with_regex(regex, rundir, case=True, ftype='f', **kwargs):
   for key, val in kwargs.items():
     options.append('-'+key)
     options.append(str(val))
-  out = sp.check_output(['find', rundir] + options + [popt, regex, '-type', ftype])
+  cmdl = ['find', rundir] + options + [popt, regex, '-type', ftype]
+  out = sp.check_output(cmdl)
   flist = out.decode().split('\n')[:-1]
-  return flist
-
-def findall(regex, rundir, prepend_star=True, **kwargs):
-  """ find all matching files with regular expression in rundir
-
-  Args:
-    regex (str):  regular expression for file names
-    rundir (str): directory containing the files to be found
-    prepend_star (bool, optional): add '*' to regex, default True
-  Return:
-    list: flist, list of all matching files
-  """
-  if prepend_star:
-    myregex = '*'+regex
-  else:
-    myregex = regex
-  flist = files_with_regex(myregex, rundir, **kwargs)
   return flist
 
 def find(regex, rundir, **kwargs):
@@ -60,7 +60,6 @@ def find(regex, rundir, **kwargs):
     raise RuntimeError('expect 1 but found %d' % len(flist))
   return flist[0]
 
-
 def clean_path(path):
   """ remove . and .. from path
 
@@ -73,7 +72,6 @@ def clean_path(path):
   segs1 = [seg for seg in segs if seg not in ['.', '..']]
   path1 = '/'.join(segs1)
   return path1
-
 
 def interpret_qmcpack_fname(fname):
   """ extract metadata regarding the contents of a file based on its filename.
@@ -131,7 +129,6 @@ def interpret_qmcpack_fname(fname):
     'category': cate, 'ext': ext, 'grouped': grouped
   }
   return entry
-
 
 def build_qmcpack_fname(entry):
   """ inverse of interpret_qmcpack_fname
