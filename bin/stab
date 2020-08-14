@@ -3,117 +3,150 @@
 # Email: yubo.paul.yang@gmail.com
 #
 # Scalar TABle (stab) analyzer
-# `stab prefix.s000.scalar.dat -e 10 -c Kinetic` prints the mean, error and 
+# `stab prefix.s000.scalar.dat -e 10 -c Kinetic` prints the mean, error and
 #  auto-correlation of the 'Kinetic' column.
 #  arbitrary scalar file may be analyzed as long as it is in table format
 
-if __name__ == '__main__':
+def parse_args():
   import argparse
-  import numpy as np
-  import pandas as pd
-  from qharv.reel import scalar_dat
   parser = argparse.ArgumentParser()
-  parser.add_argument('fname',type=str,help='Scalar TABle (stab) file name')
-  parser.add_argument('--xaxis','-x',type=str,default=None)
-  parser.add_argument('--nequil','-e',type=int,default=0
-    ,help='number of equilibration blocks to throw out')
-  parser.add_argument('--column','-c',type=str,default='LocalEnergy'
-    ,help='name of column to analyze, to list all columns use the -l flag')
-  parser.add_argument('--reblock','-rb',type=int,default=1
-    ,help='reblock data to remove auto-correlation, default is 1 i.e. no reblock')
-  parser.add_argument('--list','-l',action='store_true'
-    ,help='list all columns available in the scalar file')
-  parser.add_argument('--trace','-t',action='store_true'
-    ,help='plot the trace of column')
-  parser.add_argument('--append','-a',action='append',help='additional Scalar TABle (stab) file to be appended')
-  parser.add_argument('--dump', action='store_true', help='dump column to file')
+  parser.add_argument('fname', type=str, help='Scalar TABle (stab) file name')
+  parser.add_argument('--xaxis', '-x', type=str, default=None,
+    help='xaxis in plot, default is to use row index')
+  parser.add_argument('--nequil', '-e', type=int, default=0,
+    help='number of equilibration blocks to throw out')
+  parser.add_argument('--column', '-c', type=str, default='LocalEnergy',
+    help='name of column to analyze, to list all columns use the -l flag')
+  parser.add_argument('--reblock', '-rb', type=int, default=1,
+    help='reblock data to remove auto-correlation, default is no reblock')
+  parser.add_argument('--list', '-l', action='store_true',
+    help='list all columns available in the scalar file')
+  parser.add_argument('--trace', '-t', action='store_true',
+    help='plot the trace of column')
+  parser.add_argument('--append', '-a', action='append',
+    help='additional Scalar TABle (stab) file to be appended')
+  parser.add_argument('--dump', action='store_true', help='dump column')
   parser.add_argument('--dump_fname', type=str, default='trace.dat')
-  parser.add_argument('--save', action='store_true', help='save figure to file')
+  parser.add_argument('--save', action='store_true', help='save figure')
   parser.add_argument('--save_fig_name', type=str, default='trace.png')
   parser.add_argument('--save_fig_dpi', type=int, default=320)
   args = parser.parse_args()
+  return args
 
-  dfl = scalar_dat.read_to_list(args.fname)
+def read_scalar_table(fdat, append=None):
+  from qharv.reel.scalar_dat import read_to_list
+  dfl = read_to_list(fdat)
   df = pd.concat(dfl).reset_index(drop=True)
-  # concatenate extra scalar.dat files if given by -a
-  if args.append is not None:
+  # concatenate extra scalar.dat files
+  if append is not None:
     dlist = [df]
-    for fname in args.append:
-      for df0 in scalar_dat.read_to_list(fname):
+    for fname in append:
+      for df0 in read_to_list(fname):
         dlist.append(df0)
     df = pd.concat(dlist, sort=False).reset_index()
+  return df
 
+def get_trace_figax():
+  fig, ax_arr = plt.subplots(1, 2, sharey=True,
+    gridspec_kw = {'width_ratios': [3, 1]}
+  )
+  return fig, ax_arr
+
+def show_trace(ax, myx, myy0, nequil):
+  ax.plot(myx, myy0, c='k', label='')
+  ax.axvline(nequil, c='k', ls='--', lw=2)
+
+def show_histogram(ax, myy):
+  ax.hist(myy, density=False, fc='gray', alpha=0.5,
+    orientation='horizontal')
+
+def overlay_statistics(ax, myy):
+  mymean = myy.mean()
+  mystd = myy.std(ddof=1)
+  ax.axhline(mymean, c='b', lw=2, label="mean = %1.6f" % ymean)
+  ax.axhline(mymean+mystd, ls=":", c="gray", lw=2,
+    label="std     = %1.6f" % mystd)
+  ax.axhline(mymean-mystd, ls=":", c="gray", lw=2)
+
+def plot_trace(myx, myy0, nequil, xaxis, column,):
+  myy = myy0[nequil:]
+
+  fig, ax_arr = get_trace_figax()
+
+  # plot entire trace
+  ax = ax_arr[0]
+  ax.set_xlabel(xaxis, fontsize=14)
+  ax.set_ylabel(column, fontsize=14)
+  show_trace(ax, myx, myy0, nequil)
+
+  # plot histogram of selected data
+  ax = ax_arr[1]
+  ax.set_xlabel('count', fontsize=14)
+  show_histogram(ax, myy)
+  ax.get_yaxis().tick_right()
+
+  # overlay statistics
+  for ax in ax_arr:
+    overlay_statistics(ax, myy)
+  ax_arr[0].legend(loc='best')
+
+  fig.tight_layout()
+  return fig, ax_arr
+
+if __name__ == '__main__':
+  import sys
+  import numpy as np
+  import pandas as pd
+  from qharv.reel import scalar_dat
+  args = parse_args()
+  df = read_scalar_table(args.fname, append=args.append)
   # check or override "df" here
 
   # interpret inputs
   if args.list:
     print(df.columns)
-  if (args.column=='LocalEnergy') and ('LocalEnergy' not in df.columns):
-    args.column = df.columns[0] # change default
+    sys.exit(0)
+  if (args.column == 'LocalEnergy') and ('LocalEnergy' not in df.columns):
+    args.column = df.columns[0]  # change default
   if args.column not in df.columns:
-    raise RuntimeError('requested column "%s" not found\n available:%s'%(
-        args.column,str(df.columns.values)
-    ))
+    msg = 'requested column "%s" not found\n' % args.column
+    msg += ' available: %s' % str(df.columns.values)
+    raise RuntimeError(msg)
 
   # calculate the mean and error of a single column of scalars
   if args.reblock > 1:
     from qharv.sieve.scalar_df import reblock_scalar_df
-    df = reblock_scalar_df(df,args.reblock)
-  # end if
+    df = reblock_scalar_df(df, args.reblock)
+  # dump column if requested
   if args.dump:
     scalar_dat.write(args.dump_fname, df[[args.column]])
-   
-  ymean,yerr,ycorr = scalar_dat.single_column(df,args.column,args.nequil)
-  
+  ymean, yerr, ycorr = scalar_dat.single_column(df, args.column, args.nequil)
+
+  # print statistics
   prt_format = "{name:14s} {mean:10.6f} +/- {error:10.6f} {corr:4.2f}"
   output = prt_format.format(
     name = str(args.column),
     mean = ymean,
     error= yerr,
     corr = ycorr
-    ) 
+  )
   print(output)
 
-  if (args.trace):
-    if args.xaxis is None:
+  if args.trace:  # plot column
+    import matplotlib.pyplot as plt
+    xaxis = args.xaxis
+    column = args.column
+    nequil = args.nequil
+    if xaxis is None:
       myx = df.index
     else:
-      myx = df[args.xaxis]
-    myy0= df[args.column].values
-    myy = myy0[args.nequil:]
-    
-    import matplotlib.pyplot as plt
-    fig, ax_arr = plt.subplots(1,2,sharey=True
-      ,gridspec_kw = {'width_ratios':[3, 1]})
-
-    # plot entire trace
-    ax = ax_arr[0]
-    ax.set_xlabel(args.xaxis,fontsize=14)
-    ax.set_ylabel(args.column,fontsize=14)
-    ax.plot(myx,myy0,c='k',label='')
-    ax.axvline(args.nequil,c='k',ls='--',lw=2)
-
-    # plot histogram of selected data
-    ax = ax_arr[1]
-    ax.set_xlabel('count',fontsize=14)
-    ax.hist(myy, density=False
-      , fc='gray', alpha=0.5, orientation='horizontal')
-    ax.get_yaxis().tick_right() 
-
-    # overlay statistics
-    mystd = np.std(myy,ddof=1)
-    for myax in ax_arr:
-      myax.axhline( ymean, c='b', lw=2, label="mean = %1.6f" % ymean )
-      myax.axhline( ymean+mystd, ls=":", c="gray", lw=2, label="std     = %1.6f" % mystd )
-      myax.axhline( ymean-mystd, ls=":", c="gray", lw=2 )
-    # end for myax
-    ax_arr[0].legend(loc='best')
-
-    fig.tight_layout()
+      myx = df[xaxis]
+    myy0 = df[column].values
+    fig, ax_arr = plot_trace(myx, myy0, nequil, xaxis, column)
     if args.save:
       fig.savefig(args.save_fig_name, dpi=args.save_fig_dpi)
     else:
       plt.show()
-  # end if
+  # end if trace
 
 # end __main__
