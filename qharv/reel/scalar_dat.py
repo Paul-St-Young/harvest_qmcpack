@@ -5,50 +5,45 @@
 import numpy as np
 import pandas as pd
 
-def get_string_io(text):
-  """Obtain StringIO object from text
-   compatible with Python 2 and 3
+def read(dat_fname):
+  """Read the scalar.dat file, should be table format.
+   The header line should start with '#' and contain column labels.
 
   Args:
-    text (str): text to parse
+    dat_fname (str): name of input file
   Return:
-    StringIO: file-like object
+    pd.DataFrame: df containing the table of data
+  Example:
+    >>> df = read('vmc.s001.scalar.dat')
   """
-  import sys
-  if sys.version_info[0] < 3:
-    from StringIO import StringIO
-    fp = StringIO(text)
-  else:
-    from io import StringIO
-    try:
-      fp = StringIO(text.decode())
-    except:
-      fp = StringIO(text)
-  return fp
+  with open(dat_fname, 'r') as f:
+    text = f.read()
+  return parse(text)
 
-def find_header_lines(text):
-  """Find line numbers of all headers
+def write(dat_fname, df, header_pad='# ', **kwargs):
+  """Write dataframe to plain text scalar table format
+
+  Lightly wrap around pandas.to_string with defaults to index and float_format
 
   Args:
-    text (str): text to parse
-  Return:
-    list: a list of integer line numbers
+    dat_fname (str): output data file name
+    df (pd.DataFrame): data
+    header_pad (str, optional): pad beginning of header with comment
+     string, default '# '
   """
-  def is_float(s):
-    try:
-      float(s)
-      return True
-    except ValueError:
-      return False
-  fp = get_string_io(text)
-  first_str = np.array(
-    [is_float(line.split()[0]) for line in fp], dtype=bool)
-  fp.close()
-  idxl = np.where(~first_str)[0]
-  return idxl.tolist()
+  default_kws = {
+    'index': False,
+    'float_format': '%8.6f'
+  }
+  for k, v in default_kws.items():
+    if k not in kwargs:
+      kwargs[k] = v
+  text = df.to_string(**kwargs)
+  with open(dat_fname, 'w') as f:
+    f.write(header_pad + text)
 
 def parse(text):
-  """ Parse text of a scalar.dat file, should be table format.
+  """Parse text of a scalar.dat file, should be table format.
 
   Args:
     text (str): content of scalar.dat file
@@ -81,23 +76,8 @@ def parse(text):
   df.columns = map(str, df.columns)
   return df
 
-def read(dat_fname):
-  """ Read the scalar.dat file, should be table format.
-   The header line should start with '#' and contain column labels.
-
-  Args:
-    dat_fname (str): name of input file
-  Return:
-    pd.DataFrame: df containing the table of data
-  Example:
-    >>> df = read('vmc.s001.scalar.dat')
-  """
-  with open(dat_fname, 'r') as f:
-    text = f.read()
-  return parse(text)
-
 def read_to_list(dat_fname):
-  """ read scalar.dat file into a list of pandas DataFrames
+  """Read scalar.dat file into a list of pandas DataFrames
 
   A line is a header if its first column cannot be converted to a float.
   Many scalar.dat files can be concatenated. A list will be returned.
@@ -127,30 +107,50 @@ def read_to_list(dat_fname):
     dfl.append(df1)
   return dfl
 
-def write(dat_fname, df, header_pad='# ', **kwargs):
-  """ write dataframe to plain text scalar table format
-
-  Lightly wrap around pandas.to_string with defaults to index and float_format
+def get_string_io(text):
+  """Obtain StringIO object from text
+   compatible with Python 2 and 3
 
   Args:
-    dat_fname (str): output data file name
-    df (pd.DataFrame): data
-    header_pad (str, optional): pad beginning of header with comment
-     string, default '# '
+    text (str): text to parse
+  Return:
+    StringIO: file-like object
   """
-  default_kws = {
-    'index': False,
-    'float_format': '%8.6f'
-  }
-  for k, v in default_kws.items():
-    if k not in kwargs:
-      kwargs[k] = v
-  text = df.to_string(**kwargs)
-  with open(dat_fname, 'w') as f:
-    f.write(header_pad + text)
+  import sys
+  if sys.version_info[0] < 3:
+    from StringIO import StringIO
+    fp = StringIO(text)
+  else:
+    from io import StringIO
+    try:
+      fp = StringIO(text.decode())
+    except AttributeError as err:
+      fp = StringIO(text)
+  return fp
+
+def find_header_lines(text):
+  """Find line numbers of all headers
+
+  Args:
+    text (str): text to parse
+  Return:
+    list: a list of integer line numbers
+  """
+  def is_float(s):
+    try:
+      float(s)
+      return True
+    except ValueError:
+      return False
+  fp = get_string_io(text)
+  first_str = np.array(
+    [is_float(line.split()[0]) for line in fp], dtype=bool)
+  fp.close()
+  idxl = np.where(~first_str)[0]
+  return idxl.tolist()
 
 def error(trace, kappa=None):
-  """ calculate the error of a trace of scalar data
+  """Calculate the error of a trace of scalar data
 
   Args:
     trace (list): should be a 1D iterable array of floating point numbers
@@ -158,6 +158,7 @@ def error(trace, kappa=None):
   Return:
     float: stderr, the error of the mean of this trace of scalars
   """
+  from qharv.reel.forlib.stats import corr
   stddev = np.std(trace, ddof=1)
   if np.isclose(stddev, 0):  # easy case
     return 0.0  # no error for constant trace
@@ -168,7 +169,7 @@ def error(trace, kappa=None):
   return err
 
 def single_column(df, column, nequil):
-  """ calculate mean and error of a column
+  """Calculate mean and error of a column
 
     nequil blocks of data are thrown out; autocorrelation time is taken into
   account when calculating error. The equilibrated data is assumed to have
