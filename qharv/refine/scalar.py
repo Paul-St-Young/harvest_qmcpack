@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from qharv.plantation import sugar
 
-def text_mean_error(ym, ye):
+def text_mean_error(ym, ye, nshow=1):
   """ convert data such as 1.23 +/- 0.01 to strings such as 1.23(1)
 
   Args:
@@ -22,10 +22,11 @@ def text_mean_error(ym, ye):
   # print the desired number of digits
   ymt = []
   for (y, n) in zip(ym, ndig):
-    fmt = '%10.'+str(n)+'f'
+    fmt = '%10.'+str(n+nshow-1)+'f'
     ymt.append(fmt % y)
   # get last digit error
-  yet = np.around(abs(ye)*10**(ndig)).astype(int).astype(str)
+  ye_val = np.around(abs(ye)*10**(ndig+nshow-1))
+  yet = ye_val.astype(int).astype(str)
   # append error in parenteses
   yt = [m+'('+e+')' for (m, e) in zip(ymt, yet)]
   return np.array(yt)
