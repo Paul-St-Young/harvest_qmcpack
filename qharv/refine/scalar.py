@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from qharv.plantation import sugar
 
-def text_mean_error(ym, ye, nshow=1):
+def text_mean_error(ym, ye, nshow=1, mndig=8):
   """ convert data such as 1.23 +/- 0.01 to strings such as 1.23(1)
 
   Args:
@@ -15,7 +15,10 @@ def text_mean_error(ym, ye, nshow=1):
     np.array: an array of strings
   """
   # find the number of digits to print
-  ndig = np.ceil(-np.log10(abs(ye))).astype(int)  # last digit is uncertain
+  ndig = mndig*np.ones(len(ye), dtype=int)
+  sel = abs(ye) >= 10**(-mndig)
+  # last nshow digits are uncertain
+  ndig[sel] = np.ceil(-np.log10(abs(ye[sel]))).astype(int)
   #  in case no floating point part (use scientific notation pls)
   sel = ndig < 0
   ndig[sel] = 0
@@ -26,9 +29,9 @@ def text_mean_error(ym, ye, nshow=1):
     ymt.append(fmt % y)
   # get last digit error
   ye_val = np.around(abs(ye)*10**(ndig+nshow-1))
-  yet = ye_val.astype(int).astype(str)
+  yet = ['('+e.astype(int).astype(str)+')' if e > 0 else '' for e in ye_val]
   # append error in parenteses
-  yt = [m+'('+e+')' for (m, e) in zip(ymt, yet)]
+  yt = [m+e for (m, e) in zip(ymt, yet)]
   return np.array(yt)
 
 def mean_error_text(texts):
@@ -51,7 +54,7 @@ def mean_error_text(texts):
     return ym, ye*10**(-ndig)
   return np.vectorize(met)(texts)
 
-def text_df(df, obsl):
+def text_df(df, obsl, **kwargs):
   """ write a subset of df into readable text
 
   for each observable in obsl, there must be a mean and an error column
@@ -67,13 +70,13 @@ def text_df(df, obsl):
     ecol = obs+'_error'
     ym = df[mcol].values
     ye = df[ecol].values
-    yt = text_mean_error(ym, ye)
+    yt = text_mean_error(ym, ye, **kwargs)
     tdata[obs] = yt
 
   tdf = pd.DataFrame(tdata)
   return tdf
 
-def text_df_obs_exobs(df, obsl, exobsl):
+def text_df_obs_exobs(df, obsl, exobsl, **kwargs):
   """ construct text dataframe
 
   assume obsl have associated _mean and _error columns.
@@ -85,7 +88,7 @@ def text_df_obs_exobs(df, obsl, exobsl):
   Return:
     pd.DataFrame: text database
   """
-  tdf = text_df(df, obsl)
+  tdf = text_df(df, obsl, **kwargs)
   for col in exobsl:
     tdf[col] = df[col].values
   return tdf
@@ -101,4 +104,6 @@ def write_latex_table(table_tex, tdf, **kwargs):
   """
   if 'escape' not in kwargs:
     kwargs['escape'] = False  # allow $ in column names
+  if 'index' not in kwargs:
+    kwargs['index'] = False
   tdf.to_latex(table_tex, **kwargs)
