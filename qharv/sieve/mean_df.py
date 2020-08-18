@@ -117,7 +117,7 @@ def dfme(df, cols, no_error=False, weight_name=None):
     entry[col] = y1
   return pd.Series(entry)
 
-def linex(mydf, vseries, dseries, names):
+def linex(mydf, vseries, dseries, names, labels=None):
   """ Linearly extrapolate to 2*DMC-VMC
   hint: can also do time-step extrapolation if tau1 = 2*tau2
 
@@ -142,6 +142,11 @@ def linex(mydf, vseries, dseries, names):
   # linearly extrapolate
   pmarr = 2*dmarr-vmarr
   pearr = (4*dearr**2+vearr**2)**0.5
-  data = np.concatenate([pmarr, pearr], axis=1)
-  pdf = pd.DataFrame(data, columns=mcols+ecols)
+  # add labels
+  meta = []
+  if labels is not None:
+    meta = mydf.loc[dsel, labels].values
+  data = np.concatenate([meta, pmarr, pearr], axis=1)
+  mycols = [] if labels is None else labels
+  pdf = pd.DataFrame(data, columns=mycols+mcols+ecols)
   return pdf
