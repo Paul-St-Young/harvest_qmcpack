@@ -223,7 +223,7 @@ def read_gaussian_cube(fcub):
   # density grid
   data = lines[nskip+ndim+natom+1:]
   data_text = ' '.join(data)
-  data_vals = map(float, data_text.split())
+  data_vals = list(map(float, data_text.split()))
 
   nx, ny, nz = nxyz
   rgrid = np.array(data_vals, dtype=float).reshape(
