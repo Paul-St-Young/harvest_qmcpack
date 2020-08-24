@@ -177,10 +177,11 @@ def linex(mydf, vseries, dseries, names, labels=None):
   pmarr = 2*dmarr-vmarr
   pearr = (4*dearr**2+vearr**2)**0.5
   # add labels
-  meta = []
   if labels is not None:
     meta = mydf.loc[dsel, labels].values
-  data = np.concatenate([meta, pmarr, pearr], axis=1)
+    data = np.concatenate([meta, pmarr, pearr], axis=1)
+  else:
+    data = np.concatenate([pmarr, pearr], axis=1)
   mycols = [] if labels is None else labels
   pdf = pd.DataFrame(data, columns=mycols+mcols+ecols)
   return pdf
