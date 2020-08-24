@@ -337,7 +337,7 @@ def write_misc(fp, nup_ndn, nkpt):
   fp.create_dataset('/electrons/number_of_electrons', data=[nup, ndn])
   fp.create_dataset('/electrons/number_of_kpoints', data=[nkpt])
   fp.create_dataset('/electrons/number_of_spins', data=[nspin])
-  fp.create_dataset('/format', data=['ES-HDF'])
+  fp.create_dataset('/format', data=[b'ES-HDF'])
 
 def write_gvecs(fp, gvecs, kpath='/electrons/kpoint_0'):
   """ fill the electrons/kpoint_0/gvectors group in wf h5 file
@@ -481,7 +481,7 @@ def write_atoms(fp, elem, pos, pseudized_charge):
     # write name
     if name not in species_map.keys():
       raise NotImplementedError('unknown element %s' % name)
-    spec_grp.create_dataset('name', data=[name])
+    spec_grp.create_dataset('name', data=[name.encode()])
     # write atomic number and valence
     Zn   = atomic_number[name]
     spec_grp.create_dataset('atomic_number', data=[Zn])
