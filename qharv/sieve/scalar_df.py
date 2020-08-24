@@ -26,7 +26,7 @@ def merge_list(dfl, labels):
   df = reduce(lambda df1, df2: pd.merge(df1, df2, on=labels), dfl)
   return df
 
-def mean_error_scalar_df(df, nequil=0, kappa=None):
+def mean_error_scalar_df(df, nequil=0):
   """ get mean and average from a dataframe of raw scalar data (per-block)
    take dataframe having columns ['LocalEnergy','Variance',...] to a
    dataframe having columns ['LocalEnergy_mean','LocalEnergy_error',...]
@@ -40,6 +40,7 @@ def mean_error_scalar_df(df, nequil=0, kappa=None):
    Returns:
     pd.DataFrame: mean_error dataframe
   """
+  from qharv.sieve import mean_df
   if nequil > 0:
     if 'index' not in df.columns:
       msg = 'time series must be indexed to drop equilibration,'
@@ -49,32 +50,7 @@ def mean_error_scalar_df(df, nequil=0, kappa=None):
     mydf = df.loc[sel]
   else:  # allow equilibration to be dropped outside of this function
     mydf = df
-
-  # create pd.Series of mean
-  msr = mydf.apply(np.mean)
-  if 'index' in msr:
-    msr.drop('index', inplace=True)
-
-  # create pd.Series of error
-  if kappa is not None:
-    efunc = lambda x: error(x, kappa=kappa)
-  else:
-    try:  # use fortran library to recalculate kappa if compiled
-      from qharv.reel.forlib.stats import error
-    except:
-      print('failed to import fortran stats library')
-    efunc = error
-  esr = mydf.apply(  # error cannot be directly applied to matrix yet
-    lambda x: float(np.apply_along_axis(efunc, 0, x))
-  )
-  if 'index' in esr:
-    esr.drop('index', inplace=True)
-
-  df1 = msr.to_frame().T
-  df2 = esr.to_frame().T
-  jdf = df1.join(df2, lsuffix='_mean', rsuffix='_error')
-  return jdf
-
+  return mean_df.create(mydf)
 
 def reblock(trace, block_size, min_nblock=4, with_sigma=False):
   """ block scalar trace to remove autocorrelation;

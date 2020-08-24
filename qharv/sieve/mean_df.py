@@ -3,10 +3,42 @@
 # Routines to further process mean dataframes.
 #  Mostly built around pandas's API.
 #
-# note: mean dataframes (mdf) are dataframes having the index of columns
-#  structured as those returned by scalar_df.mean_error_scalar_df.
+# note: mean dataframes (mdf) are dataframes, with the specific structure
+#  as defined in mean_df.create. Observable "yname" with statistical error
+#  is stored in columns "${yname}_mean" and "${yname}_error". "yname" with
+#  no error bar is simply kept in column "$yname".
+#  Columns can be categorized using mean_df.categorize_columns, and
+#   extracted using mean_df.xyye.
 import numpy as np
 import pandas as pd
+
+# ======================== level 1: basic I/O =========================
+def create(mydf):
+  # create pd.Series of mean
+  msr = mydf.apply(np.mean)
+  if 'index' in msr:
+    msr.drop('index', inplace=True)
+
+  # create pd.Series of errror
+  try:  # use fortran library to recalculate kappa if compiled
+    from qharv.reel.forlib.stats import error
+  except ImportError as err:
+    msg = str(err)
+    msg += '\n  Please compile qharv.reel.forlib.stats using f2py.'
+    raise ImportError(msg)
+  efunc = error  # override error function here
+
+  esr = mydf.apply(  # error cannot be directly applied to matrix yet
+    lambda x: float(np.apply_along_axis(efunc, 0, x))
+  )
+  if 'index' in esr:
+    esr.drop('index', inplace=True)
+
+  # create _mean _error dataframe
+  df1 = msr.to_frame().T
+  df2 = esr.to_frame().T
+  jdf = df1.join(df2, lsuffix='_mean', rsuffix='_error')
+  return jdf
 
 def categorize_columns(cols):
   """Categorize the column names of a mean dataframe.
@@ -69,6 +101,7 @@ def xyye(df, xname, yname, sel=None, xerr=False, yerr=True, sort=False):
     idx = np.argsort(xm)
   return [ret[idx] for ret in rets if ret is not None]
 
+# ======================== level 2: twist average =========================
 def taw(ym, ye, weights):
   """ twist average with weights """
   wtot = weights.sum()
@@ -117,6 +150,7 @@ def dfme(df, cols, no_error=False, weight_name=None):
     entry[col] = y1
   return pd.Series(entry)
 
+# ======================== level 2: extrap. =========================
 def linex(mydf, vseries, dseries, names, labels=None):
   """ Linearly extrapolate to 2*DMC-VMC
   hint: can also do time-step extrapolation if tau1 = 2*tau2
