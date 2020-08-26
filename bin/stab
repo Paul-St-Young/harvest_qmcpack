@@ -13,7 +13,7 @@ def parse_args():
   parser.add_argument('fname', type=str, help='Scalar TABle (stab) file name')
   parser.add_argument('--xaxis', '-x', type=str, default=None,
     help='xaxis in plot, default is to use row index')
-  parser.add_argument('--nequil', '-e', type=int, default=0,
+  parser.add_argument('--nequil', '-e', type=float, default=0,
     help='number of equilibration blocks to throw out')
   parser.add_argument('--column', '-c', type=str, default='LocalEnergy',
     help='name of column to analyze, to list all columns use the -l flag')
@@ -69,7 +69,8 @@ def overlay_statistics(ax, myy):
   ax.axhline(mymean-mystd, ls=":", c="gray", lw=2)
 
 def plot_trace(myx, myy0, nequil, xaxis, column,):
-  myy = myy0[nequil:]
+  sel = myx > nequil
+  myy = myy0[sel]
 
   fig, ax_arr = get_trace_figax()
 
@@ -120,7 +121,14 @@ if __name__ == '__main__':
   # dump column if requested
   if args.dump:
     scalar_dat.write(args.dump_fname, df[[args.column]])
-  ymean, yerr, ycorr = scalar_dat.single_column(df, args.column, args.nequil)
+  # throw out equilibration
+  xaxis = args.xaxis
+  if xaxis is None:
+    myx = df.index
+  else:
+    myx = df[xaxis]
+  sel = myx > args.nequil
+  ymean, yerr, ycorr = scalar_dat.single_column(df.loc[sel], args.column, 0)
 
   # print statistics
   prt_format = "{name:14s} {mean:10.6f} +/- {error:10.6f} {corr:4.2f}"
@@ -134,15 +142,9 @@ if __name__ == '__main__':
 
   if args.trace:  # plot column
     import matplotlib.pyplot as plt
-    xaxis = args.xaxis
     column = args.column
-    nequil = args.nequil
-    if xaxis is None:
-      myx = df.index
-    else:
-      myx = df[xaxis]
     myy0 = df[column].values
-    fig, ax_arr = plot_trace(myx, myy0, nequil, xaxis, column)
+    fig, ax_arr = plot_trace(myx, myy0, args.nequil, xaxis, column)
     if args.save:
       fig.savefig(args.save_fig_name, dpi=args.save_fig_dpi)
     else:
