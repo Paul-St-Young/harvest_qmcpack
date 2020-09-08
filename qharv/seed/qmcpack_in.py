@@ -172,15 +172,14 @@ def bspline_qmcsystem(fh5, tmat=None):
   nodes.append(sc_node)
 
   # particlesets
-  pset = xml.make_node('particleset', {'name': ion_name})
-  for name in np.unique(elem):
+  ions = xml.make_node('particleset', {'name': ion_name})
+  for name, charge in charge_map.items():
     sel = elem == name
-    charge = charge_map[name]
-    grp = particle_group_from_pos(pos[sel], name, charge)
-    pset.append(grp)
-  nodes.append(pset)
-  epset = ud_electrons(*nelecs)
-  nodes.append(epset)
+    ion_grp = particle_group_from_pos(pos[sel], name, charge)
+    ions.append(ion_grp)
+  nodes.append(ions)
+  elecs = ud_electrons(*nelecs)
+  nodes.append(elecs)
 
   # sposet and builder
   tmat_str = ('%d ' * 9) % tuple(tmat.ravel())
