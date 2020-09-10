@@ -16,6 +16,22 @@ def read(fname):
     mm = mmap(f.fileno(), 0)
   return mm
 
+def stay(read_func, *args, **kwargs):
+  """ stay at current memory location after read
+
+  Args:
+    Callable: read function, which takes mmap as first input
+  Return:
+    Callable: read but no change to mmap tell()
+  """
+  def wrapper(mm, *args, **kwargs):
+    idx = mm.tell()
+    ret = read_func(mm, *args, **kwargs)
+    mm.seek(idx)
+    return ret
+  return wrapper
+
+@stay
 def get_key_value_pairs(mm, sep='='):
   """ read all key value pairs using separator
 
@@ -38,6 +54,7 @@ def get_key_value_pairs(mm, sep='='):
     entry[name.decode()] = val.decode()
   return entry
 
+@stay
 def name_sep_val(mm, name, sep='=', dtype=float, pos=1):
   """ read key-value pair such as "name = value"
   e.g.
@@ -56,7 +73,6 @@ def name_sep_val(mm, name, sep='=', dtype=float, pos=1):
   Return:
     dtype: value of requested variable
   """
-  cur_idx = mm.tell()
   idx = mm.find(name.encode())
   if idx == -1:
     raise RuntimeError(name+' not found')
@@ -67,9 +83,9 @@ def name_sep_val(mm, name, sep='=', dtype=float, pos=1):
   # assume the text immediately next to the separator is the desired value
   val_text = tokens[pos].split()[0]
   val = dtype(val_text)
-  mm.seek(cur_idx)
   return val
 
+@stay
 def all_lines_with_tag(mm, tag, nline_max=1024*1024):
   """ return a list of memory indices pointing to the start of tag
    the search is conducted starting from the current location of mm.
@@ -96,6 +112,7 @@ def all_lines_with_tag(mm, tag, nline_max=1024*1024):
     raise RuntimeError('may need to increase nline_max')
   return all_idx
 
+@stay
 def all_lines_at_idx(mm, idx_list):
   """ return a list of lines given a list of memory locations
   follow up on all_lines_with_tag
@@ -126,6 +143,7 @@ def all_lines_at_idx(mm, idx_list):
     lines.append(line)
   return lines
 
+@stay
 def locate_block(mm, header, trailer, force_head=False, force_tail=False,
                  skip_header=True, skip_trailer=True):
   """ find the memory locations bounding a block of text
