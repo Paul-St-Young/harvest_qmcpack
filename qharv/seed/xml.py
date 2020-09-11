@@ -103,6 +103,16 @@ def append(root, nodes):
     for node in nodes:
       root.append(node)
 
+def remove(nodes):
+  """ remove nodes from the xml tree
+
+  Args:
+    nodes (list): xml nodes
+  """
+  for node in nodes:
+    parent = node.getparent()
+    parent.remove(node)
+
 # ========================= level 1: node content io =========================
 #  node.get & node.set are sufficient for attribute manipulation
 # level 1 routines are needed for node.text and node.children manipulation
