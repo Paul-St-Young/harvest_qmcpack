@@ -6,14 +6,6 @@
 from qharv.seed import xml
 from io import StringIO
 
-# ============================= <project> section =============================
-
-
-def project(name, series0=0):
-  text = '''<project id="%s" series="%d"/>''' % (name, series0)
-  return xml.parse(text)
-
-
 # ============================= <hamiltonian> section =============================
 
 def ee_ham():
@@ -38,7 +30,6 @@ def static_coul_ae_ham():
          <pairpot type="coulomb" name="ElecIon" source="ion0" target="e"/>
       </hamiltonian>'''
   return xml.parse(text)
-
 
 def static_ae_ham():
   text = '''<hamiltonian name="h0" type="generic" target="e">

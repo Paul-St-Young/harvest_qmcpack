@@ -8,7 +8,7 @@ from qharv.reel import mole
 from qharv.seed import xml, xml_examples
 
 # =============== level 0: build input from scratch ===============
-def assemble_project(nodel, name='qmc'):
+def assemble_project(nodel, name='qmc', series=0):
   """ assemble QMCPACK input using a list of xml nodes
 
   usually nodel=[qmcsystem, qmc]
@@ -18,7 +18,7 @@ def assemble_project(nodel, name='qmc'):
     name (str, optional): project name, default 'qmc'
   """
   qsim = etree.Element('simulation')
-  proj = xml_examples.project(name)
+  proj = xml.make_node('project', {'id': name, 'series': str(series)})
   for node in [proj]+nodel:
     qsim.append(node)
   doc = etree.ElementTree(qsim)
