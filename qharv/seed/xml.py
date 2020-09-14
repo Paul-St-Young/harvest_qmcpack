@@ -90,13 +90,17 @@ def ls(node, r=False, level=0, indent="  "):
     return ''
   return mystr
 
-def append(root, nodes):
+def append(root, nodes, copy=True):
   """ append one or more nodes to a root node
 
   Args:
     root (lxml.etree._Element): xml node
     nodes (list or lxml.etree._Element): xml node(s)
+    copy (bool, optional): make copy of nodes to append
   """
+  if copy:
+    from copy import deepcopy
+    nodes = [deepcopy(node) for node in nodes]
   if type(nodes) is etree._Element:
     root.append(nodes)
   else:
