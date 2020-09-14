@@ -100,7 +100,7 @@ def append(root, nodes, copy=True):
   """
   if copy:
     from copy import deepcopy
-    nodes = [deepcopy(node) for node in nodes]
+    nodes = deepcopy(nodes)
   if type(nodes) is etree._Element:
     root.append(nodes)
   else:

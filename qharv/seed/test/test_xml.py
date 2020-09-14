@@ -76,7 +76,7 @@ def test_append():
   jas = xml.parse(text1)
   wfl = doc.findall('.//wf')
   for wf in wfl:
-    xml.append(wf, [jas])
+    xml.append(wf, jas)
   text = xml.str_rep(doc)
   expect = '''<root>
   <wf>
@@ -87,4 +87,10 @@ def test_append():
   </wf>
 </root>
 '''
+  assert text == expect
+  doc = xml.parse(text0)
+  wfl = doc.findall('.//wf')
+  for wf in wfl:
+    xml.append(wf, [jas])
+  text = xml.str_rep(doc)
   assert text == expect
