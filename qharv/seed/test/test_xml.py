@@ -68,3 +68,23 @@ def test_make_node():
     'p p p\n</parameter>\n'
   text = str_rep(make_node('seed', text='31415'))
   assert text == '<seed> 31415 </seed>\n'
+
+def test_append():
+  text0 = '<root><wf/><wf/></root>'
+  text1 = '<jas/>'
+  doc = xml.parse(text0)
+  jas = xml.parse(text1)
+  wfl = doc.findall('.//wf')
+  for wf in wfl:
+    xml.append(wf, [jas])
+  text = xml.str_rep(doc)
+  expect = '''<root>
+  <wf>
+    <jas/>
+  </wf>
+  <wf>
+    <jas/>
+  </wf>
+</root>
+'''
+  assert text == expect
