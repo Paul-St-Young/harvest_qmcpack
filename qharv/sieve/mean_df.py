@@ -151,7 +151,8 @@ def dfme(df, cols, no_error=False, weight_name=None):
   return pd.Series(entry)
 
 # ======================== level 2: extrap. =========================
-def linex(mydf, vseries, dseries, names, labels=None):
+def linex(df_in, vseries, dseries, names, labels=None,
+  sorted_df=False, sort_col=None):
   """ Linearly extrapolate to 2*DMC-VMC
   hint: can also do time-step extrapolation if tau1 = 2*tau2
 
@@ -161,9 +162,21 @@ def linex(mydf, vseries, dseries, names, labels=None):
     vseries (int): VMC series index
     dseries (int): DMC series index
     names (list): a list of observable names to be extrpolated
+    labels (list, optinal): a list of labels columns to keep along
+      observables, default None
+    sorted_df (bool, optional): VMC and DMC entries in input df are aligned
+    sort_col (str, optional): column used to sort entries before subtraction
   Return:
     pd.DataFrame: extrapolated entry
   """
+  if not sorted_df:  # input must be sorted in advance
+    if sort_col is None:
+      msg = 'must provide sort_col if input df is not sorted'
+      raise RuntimeError(msg)
+    else:   # sort input to align VMC and DMC data
+      mydf = df_in.sort_values(sort_col)
+  else:  # assume input is already sorted correctly
+    mydf = df_in
   # extract data
   mcols = ['%s_mean' % col for col in names]
   ecols = ['%s_error' % col for col in names]
