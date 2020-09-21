@@ -174,7 +174,10 @@ def locate_block(mm, header, trailer, force_head=False, force_tail=False,
   if (end_idx == -1) and (not force_tail):
     raise RuntimeError('failed to find "%s"' % trailer)
   if not skip_trailer:
-    mm.seek(end_idx)
+    whence = 1  # seek from current location by default
+    if force_tail:
+      whence = 2  # seek from end of file
+    mm.seek(end_idx, whence)
     mm.readline()
     end_idx = mm.tell()
   return begin_idx, end_idx
