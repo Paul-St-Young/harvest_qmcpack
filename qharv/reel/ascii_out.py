@@ -145,7 +145,7 @@ def all_lines_at_idx(mm, idx_list):
 
 @stay
 def locate_block(mm, header, trailer, force_head=False, force_tail=False,
-                 skip_header=True, skip_trailer=True):
+                 skip_header=True, skip_trailer=None):
   """ find the memory locations bounding a block of text
   in between header and trailer; header and trailer are
   not included by default
@@ -156,10 +156,13 @@ def locate_block(mm, header, trailer, force_head=False, force_tail=False,
     header  (str): string indicating the beginning of block
     trailer (str): string indicating the end of block
     skip_head (bool, optional): skip header, default is True
-    skip_trailer (bool, optional): skip trailer, default is True
+    skip_trailer (bool, optional): skip trailer, default is True,
+      unless force_tail, then default to False
   Return:
     tuple: (begin_idx, end_idx), memory span of text block
   """
+  if skip_trailer is None:
+    skip_trailer = not force_tail
   begin_idx = mm.find(header.encode())
   if begin_idx == -1:
     if force_head:
