@@ -3,7 +3,6 @@
 # Routines to parse hdf5 spectral and volumetric data output.
 #  Mostly built around h5py's API.
 import os
-import h5py
 import numpy as np
 
 from qharv.seed.wf_h5 import read, ls
@@ -26,14 +25,12 @@ def me2d(edata, kappa=None, axis=0):
   # get autocorrelation
   ntrace = edata.shape[axis]
   if kappa is None:
-    try:  # fortran implementation is faster for len(trace)<1000
+    try:  # fortran implementation is faster than np FFT for len(trace)<1000
       from qharv.reel.forlib.stats import corr
-    except ImportError:  # numpy FFT scales better to long traces
-      if ntrace < 1024:
-        msg = 'using slow Python implementation'
-        msg += ' please compile qharv.reel.forlib'
-        print(msg)
-      from qharv.reel.scalar_dat import corr
+    except ImportError as err:
+      msg = str(err)
+      msg += '\n  Please compile qharv.reel.forlib.stats using f2py.'
+      raise ImportError(msg)
     kappa = np.apply_along_axis(corr, axis, edata)
   neffective = ntrace/kappa
   # calculate mean and error
@@ -43,7 +40,7 @@ def me2d(edata, kappa=None, axis=0):
   return val_mean, val_err
 
 def mean_and_err(handle, obs_path, nequil, kappa=None):
-  """ calculate mean and variance of an observable from QMCPACK stat.h5 file
+  """ calculate mean and error of an observable from QMCPACK stat.h5 file
 
   Args:
     handle (h5py.Group): or h5py.File or h5py.Dataset
