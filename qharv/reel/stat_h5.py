@@ -131,10 +131,10 @@ def gofr(fp, obs_name, nequil, kappa=None, force=False):
     obs_name (str): observable name, should start with 'gofr', e.g. gofr_e_0_1
     nequil (int): number of equilibration blocks to remove
     kappa (float, optional): auto-correlation, default recalculate
-    force (bool,optional): force execution, i.e. skip all checks
+    force (bool, optional): force execution, i.e. skip all checks
 
   Returns:
-    tuple: (myr,grm,gre): bin locations, g(r) mean, g(r) error
+    tuple: (myr, grm, gre): bin locations, g(r) mean, g(r) error
   """
   if (not obs_name.startswith('gofr')) and (not force):
     msg = '%s does not start with "gofr"; set force=True to bypass' % obs_name
@@ -160,9 +160,30 @@ def nofk(fp, obs_name, nequil, kappa=None):
     kappa (float, optional): auto-correlation, default recalculate
 
   Return:
-    (np.array, np.array, np.array): (kvecs,nkm,nke),
+    (np.array, np.array, np.array): (kvecs, nkm, nke),
      k-vectors, n(k) mean and error
   """
   kvecs = fp[obs_name]['kpoints'][()]
   nkm, nke = mean_and_err(fp, '%s/value' % obs_name, nequil, kappa)
   return kvecs, nkm, nke
+
+def rdm1(fp, obs_name, nequil, kappa=None):
+  """ extract 1RMD output from stat.h5 file
+
+  Args:
+    fp (h5py.File): h5py handle of stat.h5 file
+    obs_name (str): observable name, probably '1rdms'
+    nequil (int): number of equilibration blocks to remove
+    kappa (float, optional): auto-correlation, default recalculate
+
+  Return:
+    dict: a dictionary of 1RDMs, one for each species (eg. u, d)
+  """
+  matrix_path = os.path.join(obs_name, 'number_matrix')
+  groups = fp[matrix_path].keys()
+  rdms = {}
+  for grp in groups:
+    path = os.path.join(matrix_path, grp, 'value')
+    ym, ye = mean_and_err(fp, path, nequil, kappa)
+    rdms[grp] = (ym, ye)
+  return rdms
