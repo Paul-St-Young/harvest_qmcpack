@@ -22,7 +22,7 @@ def extract_twists(fh5, **suffix_kwargs):
   Return:
     (dict, np.array, np.array): (meta data, mean, error)
   """
-  fp = h5py.File(fh5)
+  fp = h5py.File(fh5, 'r')
   # determine ymean, yerror from first twist
   twist0 = list(fp.keys())[0]
   ymean, yerror = get_ymean_yerror(fp, twist0, **suffix_kwargs)
@@ -92,7 +92,7 @@ def get_ymean_yerror(fp, twist0, msuffix='_mean', esuffix='_error'):
   return ymean, yerror
 
 def twist_concat_h5(fh5, name, twists=None):
-  fp = h5py.File(fh5)
+  fp = h5py.File(fh5, 'r')
   if twists is None:
     twists = fp.keys()
   data = []
