@@ -1,21 +1,21 @@
-qharv.cross package
+qharv.field package
 ===================
 
 Submodules
 ----------
 
-qharv.cross.pqscf module
-------------------------
+qharv.field.kyrt module
+-----------------------
 
-.. automodule:: qharv.cross.pqscf
+.. automodule:: qharv.field.kyrt
    :members:
    :undoc-members:
    :show-inheritance:
 
-qharv.cross.pwscf module
+qharv.field.sugar module
 ------------------------
 
-.. automodule:: qharv.cross.pwscf
+.. automodule:: qharv.field.sugar
    :members:
    :undoc-members:
    :show-inheritance:
@@ -24,7 +24,7 @@ qharv.cross.pwscf module
 Module contents
 ---------------
 
-.. automodule:: qharv.cross
+.. automodule:: qharv.field
    :members:
    :undoc-members:
    :show-inheritance:

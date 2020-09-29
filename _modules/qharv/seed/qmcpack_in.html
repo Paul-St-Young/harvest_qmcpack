@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>qharv.seed.qmcpack_in &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -49,7 +47,7 @@
 <span class="kn">from</span> <span class="nn">qharv.seed</span> <span class="k">import</span> <span class="n">xml</span><span class="p">,</span> <span class="n">xml_examples</span>
 
 <span class="c1"># =============== level 0: build input from scratch ===============</span>
-<div class="viewcode-block" id="assemble_project"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.qmcpack_in.assemble_project">[docs]</a><span class="k">def</span> <span class="nf">assemble_project</span><span class="p">(</span><span class="n">nodel</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;qmc&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="assemble_project"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.qmcpack_in.assemble_project">[docs]</a><span class="k">def</span> <span class="nf">assemble_project</span><span class="p">(</span><span class="n">nodel</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;qmc&#39;</span><span class="p">,</span> <span class="n">series</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; assemble QMCPACK input using a list of xml nodes</span>
 
 <span class="sd">  usually nodel=[qmcsystem, qmc]</span>
@@ -59,7 +57,7 @@
 <span class="sd">    name (str, optional): project name, default &#39;qmc&#39;</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">qsim</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;simulation&#39;</span><span class="p">)</span>
-  <span class="n">proj</span> <span class="o">=</span> <span class="n">xml_examples</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+  <span class="n">proj</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="s1">&#39;project&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s1">&#39;series&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">series</span><span class="p">)})</span>
   <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="p">[</span><span class="n">proj</span><span class="p">]</span><span class="o">+</span><span class="n">nodel</span><span class="p">:</span>
     <span class="n">qsim</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
   <span class="n">doc</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">ElementTree</span><span class="p">(</span><span class="n">qsim</span><span class="p">)</span>
@@ -102,16 +100,21 @@
   <span class="n">sc_node</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lr_node</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">sc_node</span></div>
 
-<div class="viewcode-block" id="particle_group_from_pos"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.qmcpack_in.particle_group_from_pos">[docs]</a><span class="k">def</span> <span class="nf">particle_group_from_pos</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="particle_group_from_pos"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.qmcpack_in.particle_group_from_pos">[docs]</a><span class="k">def</span> <span class="nf">particle_group_from_pos</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; construct a &lt;group&gt; in the &lt;particleset&gt; xml element</span>
 
 <span class="sd">   Args:</span>
 <span class="sd">     pos (np.array): positions, shape (nptcl, ndim)</span>
 <span class="sd">     name (str): name of particle group</span>
+<span class="sd">     charge (float): the amount of charge of this particle species</span>
 <span class="sd">   Return:</span>
 <span class="sd">     etree.Element: &lt;group&gt; including &lt;attrib name=&quot;positions&quot;&gt;</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-
+  <span class="k">if</span> <span class="s1">&#39;charge&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;keyword charge </span><span class="si">%f</span><span class="s1"> will be overwriten&#39;</span>
+    <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39; by </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;charge&#39;</span><span class="p">],</span> <span class="n">charge</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+  <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;charge&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">charge</span>
   <span class="n">group</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">,</span>
     <span class="n">size</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">)),</span>
@@ -155,6 +158,113 @@
 
   <span class="k">return</span> <span class="n">epset</span></div>
 
+<div class="viewcode-block" id="all_electron_hamiltonian"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.qmcpack_in.all_electron_hamiltonian">[docs]</a><span class="k">def</span> <span class="nf">all_electron_hamiltonian</span><span class="p">(</span><span class="n">elec_name</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="n">ion_name</span><span class="o">=</span><span class="s1">&#39;ion0&#39;</span><span class="p">):</span>
+  <span class="n">ee</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="s1">&#39;pairpot&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;coulomb&#39;</span><span class="p">,</span>  <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ElecElec&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">elec_name</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">elec_name</span>
+  <span class="p">})</span>
+  <span class="n">ei</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="s1">&#39;pairpot&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;coulomb&#39;</span><span class="p">,</span>  <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ElecIon&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">ion_name</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">elec_name</span>
+  <span class="p">})</span>
+  <span class="n">ii</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="s1">&#39;pairpot&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;coulomb&#39;</span><span class="p">,</span>  <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;IonIon&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">ion_name</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="n">ion_name</span>
+  <span class="p">})</span>
+  <span class="n">ham</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="s1">&#39;hamiltonian&#39;</span><span class="p">)</span>
+  <span class="n">xml</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ham</span><span class="p">,</span> <span class="p">[</span><span class="n">ee</span><span class="p">,</span> <span class="n">ei</span><span class="p">,</span> <span class="n">ii</span><span class="p">])</span>
+  <span class="k">return</span> <span class="n">ham</span></div>
+
+<div class="viewcode-block" id="bspline_qmcsystem"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.qmcpack_in.bspline_qmcsystem">[docs]</a><span class="k">def</span> <span class="nf">bspline_qmcsystem</span><span class="p">(</span><span class="n">fh5</span><span class="p">,</span> <span class="n">tmat</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Create Slater-Jastrow system input from pw2qmcpack.x h5 file</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fh5 (str): path to wf h5 file</span>
+<span class="sd">    tmat (np.array): tile matrix</span>
+<span class="sd">  Return:</span>
+<span class="sd">    qsys (etree.Element): &lt;qmcsystem&gt;</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+  <span class="kn">from</span> <span class="nn">qharv.seed</span> <span class="k">import</span> <span class="n">wf_h5</span>
+  <span class="n">ndim0</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># !!!! hard-code for three dimensions</span>
+  <span class="n">fp</span> <span class="o">=</span> <span class="n">wf_h5</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fh5</span><span class="p">)</span>
+  <span class="n">axes</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">charge_map</span><span class="p">,</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">wf_h5</span><span class="o">.</span><span class="n">axes_elem_charges_pos</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+  <span class="n">nelecs</span> <span class="o">=</span> <span class="n">wf_h5</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;nelecs&#39;</span><span class="p">)</span>
+  <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+  <span class="n">natom</span><span class="p">,</span> <span class="n">ndim</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">shape</span>
+  <span class="k">assert</span> <span class="n">ndim</span> <span class="o">==</span> <span class="n">ndim0</span>
+  <span class="n">nup</span><span class="p">,</span> <span class="n">ndn</span> <span class="o">=</span> <span class="n">nelecs</span>
+  <span class="k">if</span> <span class="n">nup</span> <span class="o">!=</span> <span class="n">ndn</span><span class="p">:</span>  <span class="c1"># hard-code for unpolarized for now</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;nup != ndn&#39;</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">tmat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># use primitive cell by default</span>
+    <span class="n">tmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>  <span class="c1"># tile supercell</span>
+    <span class="kn">from</span> <span class="nn">qharv.inspect.axes_elem_pos</span> <span class="k">import</span> <span class="n">ase_tile</span>
+    <span class="n">axes</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">ase_tile</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">tmat</span><span class="p">)</span>
+  <span class="n">spoup</span> <span class="o">=</span> <span class="n">spodn</span> <span class="o">=</span> <span class="s1">&#39;spo_ud&#39;</span>
+  <span class="n">psi_name</span> <span class="o">=</span> <span class="s1">&#39;psi0&#39;</span>
+  <span class="n">ion_name</span> <span class="o">=</span> <span class="s1">&#39;ion0&#39;</span>
+  <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+
+  <span class="c1"># simulationcell</span>
+  <span class="n">sc_node</span> <span class="o">=</span> <span class="n">simulationcell_from_axes</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+  <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sc_node</span><span class="p">)</span>
+
+  <span class="c1"># particlesets</span>
+  <span class="n">ions</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="s1">&#39;particleset&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">ion_name</span><span class="p">})</span>
+  <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">charge</span> <span class="ow">in</span> <span class="n">charge_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">sel</span> <span class="o">=</span> <span class="n">elem</span> <span class="o">==</span> <span class="n">name</span>
+    <span class="n">ion_grp</span> <span class="o">=</span> <span class="n">particle_group_from_pos</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="n">sel</span><span class="p">],</span> <span class="n">name</span><span class="p">,</span> <span class="n">charge</span><span class="p">)</span>
+    <span class="n">ions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ion_grp</span><span class="p">)</span>
+  <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ions</span><span class="p">)</span>
+  <span class="n">elecs</span> <span class="o">=</span> <span class="n">ud_electrons</span><span class="p">(</span><span class="o">*</span><span class="n">nelecs</span><span class="p">)</span>
+  <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elecs</span><span class="p">)</span>
+
+  <span class="c1"># sposet and builder</span>
+  <span class="n">tmat_str</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> &#39;</span> <span class="o">*</span> <span class="mi">9</span><span class="p">)</span> <span class="o">%</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">tmat</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+  <span class="n">sb</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="s1">&#39;sposet_builder&#39;</span><span class="p">,</span> <span class="p">{</span>
+      <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;bspline&#39;</span><span class="p">,</span>
+      <span class="s1">&#39;href&#39;</span><span class="p">:</span> <span class="n">fh5</span><span class="p">,</span>
+      <span class="s1">&#39;tilematrix&#39;</span><span class="p">:</span> <span class="n">tmat_str</span><span class="p">,</span>
+      <span class="s1">&#39;twistnum&#39;</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span>
+      <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">ion_name</span><span class="p">,</span>  <span class="c1"># &quot;Einspline needs the source particleset&quot;</span>
+  <span class="p">})</span>
+  <span class="n">spo</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="s1">&#39;sposet&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;bspline&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">spoup</span><span class="p">,</span>
+    <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">nup</span><span class="p">),</span>
+    <span class="s1">&#39;spindataset&#39;</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="p">}</span>
+  <span class="p">)</span>
+  <span class="n">sb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spo</span><span class="p">)</span>
+
+  <span class="c1"># determinantset</span>
+  <span class="n">updet</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="s1">&#39;determinant&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;updet&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">nup</span><span class="p">),</span>
+    <span class="s1">&#39;sposet&#39;</span><span class="p">:</span> <span class="n">spoup</span>
+  <span class="p">})</span>
+  <span class="n">dndet</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="s1">&#39;determinant&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;dndet&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">ndn</span><span class="p">),</span>
+    <span class="s1">&#39;sposet&#39;</span><span class="p">:</span> <span class="n">spodn</span>
+  <span class="p">})</span>
+  <span class="n">sdet</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="s1">&#39;slaterdeterminant&#39;</span><span class="p">)</span>
+  <span class="n">xml</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sdet</span><span class="p">,</span> <span class="p">[</span><span class="n">updet</span><span class="p">,</span> <span class="n">dndet</span><span class="p">])</span>
+  <span class="n">dset</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="s1">&#39;determinantset&#39;</span><span class="p">)</span>
+  <span class="n">dset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sdet</span><span class="p">)</span>
+
+  <span class="c1"># wave function</span>
+  <span class="n">wf</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="s1">&#39;wavefunction&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">psi_name</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="s1">&#39;e&#39;</span><span class="p">})</span>
+  <span class="n">xml</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wf</span><span class="p">,</span> <span class="p">[</span><span class="n">sb</span><span class="p">,</span> <span class="n">dset</span><span class="p">])</span>
+  <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wf</span><span class="p">)</span>
+
+  <span class="c1"># hailtonian</span>
+  <span class="n">ham</span> <span class="o">=</span> <span class="n">all_electron_hamiltonian</span><span class="p">()</span>
+  <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ham</span><span class="p">)</span>
+  <span class="n">qsys</span> <span class="o">=</span> <span class="n">xml</span><span class="o">.</span><span class="n">make_node</span><span class="p">(</span><span class="s1">&#39;qmcsystem&#39;</span><span class="p">)</span>
+  <span class="n">xml</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">qsys</span><span class="p">,</span> <span class="n">nodes</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">qsys</span></div>
+
 <span class="c1"># ================== level 1: use existing input ===================</span>
 <div class="viewcode-block" id="expand_twists"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.qmcpack_in.expand_twists">[docs]</a><span class="k">def</span> <span class="nf">expand_twists</span><span class="p">(</span><span class="n">example_in_xml</span><span class="p">,</span> <span class="n">twist_list</span><span class="p">,</span> <span class="n">calc_dir</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; expand example input xml to all twists in twist_list</span>
@@ -176,6 +286,8 @@
   <span class="n">prefix</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//project&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
 
   <span class="n">fname_fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{prefix:s}</span><span class="s1">.</span><span class="si">{gt:s}</span><span class="s1">.twistnum_</span><span class="si">{itwist:d}</span><span class="s1">.in.xml&#39;</span>
+  <span class="n">bundle_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="n">bundle_in</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">calc_dir</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.in&#39;</span> <span class="o">%</span> <span class="n">prefix</span><span class="p">)</span>
   <span class="k">for</span> <span class="n">itwist</span> <span class="ow">in</span> <span class="n">twist_list</span><span class="p">:</span>
     <span class="c1"># change twist number</span>
     <span class="n">bb</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.//sposet_builder[@type=&quot;bspline&quot;]&#39;</span><span class="p">)</span>
@@ -191,11 +303,14 @@
       <span class="n">itwist</span> <span class="o">=</span> <span class="n">itwist</span>
     <span class="p">)</span>
     <span class="n">floc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">calc_dir</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+    <span class="n">bundle_text</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">fname</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>  <span class="c1"># check if file exists</span>
       <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">floc</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;force to overwrite </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">floc</span><span class="p">)</span>
-    <span class="n">xml</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">floc</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span></div>
+    <span class="n">xml</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">floc</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">bundle_in</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">bundle_text</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="bundle_twists"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.qmcpack_in.bundle_twists">[docs]</a><span class="k">def</span> <span class="nf">bundle_twists</span><span class="p">(</span><span class="n">calc_dir</span><span class="p">,</span> <span class="n">fregex</span><span class="o">=</span><span class="s1">&#39;*twistnum_*.in.xml&#39;</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; bundle all twist inputs</span>
@@ -333,13 +448,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -370,7 +483,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
     </div>
   </body>
 </html>

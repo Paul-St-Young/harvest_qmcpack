@@ -8,23 +8,23 @@ qharv.trans.move module
 -----------------------
 
 .. automodule:: qharv.trans.move
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.trans.nexus\_qmc module
 -----------------------------
 
 .. automodule:: qharv.trans.nexus_qmc
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 
 Module contents
 ---------------
 
 .. automodule:: qharv.trans
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

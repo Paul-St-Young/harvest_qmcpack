@@ -6,19 +6,19 @@ Subpackages
 
 .. toctree::
 
-    qharv.cross
-    qharv.inspect
-    qharv.plantation
-    qharv.reel
-    qharv.refine
-    qharv.seed
-    qharv.sieve
-    qharv.trans
+   qharv.cross
+   qharv.field
+   qharv.inspect
+   qharv.reel
+   qharv.refine
+   qharv.seed
+   qharv.sieve
+   qharv.trans
 
 Module contents
 ---------------
 
 .. automodule:: qharv
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -6,7 +6,7 @@ Subpackages
 
 .. toctree::
 
-    qharv.reel.forlib
+   qharv.reel.forlib
 
 Submodules
 ----------
@@ -15,55 +15,55 @@ qharv.reel.ascii\_out module
 ----------------------------
 
 .. automodule:: qharv.reel.ascii_out
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.reel.config\_h5 module
 ----------------------------
 
 .. automodule:: qharv.reel.config_h5
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.reel.mole module
 ----------------------
 
 .. automodule:: qharv.reel.mole
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.reel.qmcpack\_out module
 ------------------------------
 
 .. automodule:: qharv.reel.qmcpack_out
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.reel.scalar\_dat module
 -----------------------------
 
 .. automodule:: qharv.reel.scalar_dat
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.reel.stat\_h5 module
 --------------------------
 
 .. automodule:: qharv.reel.stat_h5
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 
 Module contents
 ---------------
 
 .. automodule:: qharv.reel
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

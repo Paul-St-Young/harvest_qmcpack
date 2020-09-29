@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>qharv.inspect.axes_pos &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -201,33 +199,6 @@
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;problem in get_nvecs&#39;</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">nvecs</span></div>
 
-<div class="viewcode-block" id="auto_distance_table"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.auto_distance_table">[docs]</a><span class="k">def</span> <span class="nf">auto_distance_table</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">dn</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; calculate distance table of a set of particles among themselves</span>
-<span class="sd">  keep this function simple! use this to test distance_table(axes,pos1,pos2)</span>
-
-<span class="sd">  Args:</span>
-<span class="sd">    axes (np.array): lattice vectors in row-major</span>
-<span class="sd">    pos  (np.array): particle positions in row-major</span>
-<span class="sd">    dn (int,optional): number of neighboring cells to search in each direction</span>
-<span class="sd">  Returns:</span>
-<span class="sd">    np.array: dtable shape=(natom,natom), where natom=len(pos)</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">natom</span><span class="p">,</span> <span class="n">ndim</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">shape</span>
-  <span class="n">dtable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">natom</span><span class="p">,</span> <span class="n">natom</span><span class="p">],</span> <span class="nb">float</span><span class="p">)</span>
-  <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">combinations</span><span class="p">,</span> <span class="n">product</span>
-  <span class="c1"># loop through all unique pairs of atoms</span>
-  <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">natom</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>  <span class="c1"># 2 for pairs</span>
-    <span class="n">dists</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="c1"># loop through all neighboring periodic images of atom j</span>
-    <span class="c1">#  should be 27 images for a 3D box (dn=1)</span>
-    <span class="k">for</span> <span class="n">ushift</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">dn</span><span class="p">,</span> <span class="n">dn</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">repeat</span><span class="o">=</span><span class="n">ndim</span><span class="p">):</span>
-      <span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ushift</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span>
-      <span class="n">disp</span>  <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">shift</span><span class="p">)</span>
-      <span class="n">dist</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">disp</span><span class="p">)</span>
-      <span class="n">dists</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
-    <span class="n">dtable</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtable</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">dists</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">dtable</span></div>
-
 <span class="c1"># ======================== level 2: advanced =========================</span>
 <div class="viewcode-block" id="displacement"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.displacement">[docs]</a><span class="k">def</span> <span class="nf">displacement</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">spos1</span><span class="p">,</span> <span class="n">spos2</span><span class="p">,</span> <span class="n">dn</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; single particle displacement spos1-spos2 under minimum image convention</span>
@@ -258,38 +229,92 @@
       <span class="n">min_disp</span> <span class="o">=</span> <span class="n">disp</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
   <span class="k">return</span> <span class="n">min_disp</span></div>
 
-<div class="viewcode-block" id="find_dimers"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.find_dimers">[docs]</a><span class="k">def</span> <span class="nf">find_dimers</span><span class="p">(</span><span class="n">rij</span><span class="p">,</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">rmin</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="auto_distance_table"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.auto_distance_table">[docs]</a><span class="k">def</span> <span class="nf">auto_distance_table</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">dn</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; calculate distance table of a set of particles among themselves</span>
+<span class="sd">  keep this function simple! use this to test distance_table(axes,pos1,pos2)</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): lattice vectors in row-major</span>
+<span class="sd">    pos  (np.array): particle positions in row-major</span>
+<span class="sd">    dn (int,optional): number of neighboring cells to search in each direction</span>
+<span class="sd">  Returns:</span>
+<span class="sd">    np.array: dtable shape=(natom,natom), where natom=len(pos)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">natom</span><span class="p">,</span> <span class="n">ndim</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">shape</span>
+  <span class="n">dtable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">natom</span><span class="p">,</span> <span class="n">natom</span><span class="p">],</span> <span class="nb">float</span><span class="p">)</span>
+  <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">combinations</span><span class="p">,</span> <span class="n">product</span>
+  <span class="c1"># loop through all unique pairs of atoms</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">natom</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>  <span class="c1"># 2 for pairs</span>
+    <span class="n">disp</span> <span class="o">=</span> <span class="n">displacement</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">pos</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+    <span class="n">dist</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">disp</span><span class="p">)</span>
+    <span class="n">dtable</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtable</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">dist</span>
+  <span class="k">return</span> <span class="n">dtable</span></div>
+
+<div class="viewcode-block" id="find_dimers"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.find_dimers">[docs]</a><span class="k">def</span> <span class="nf">find_dimers</span><span class="p">(</span><span class="n">rij</span><span class="p">,</span> <span class="n">rmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">rmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort_id</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; find all dimers within a separtion of (rmin, rmax)</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    rij  (np.array): distance table</span>
-<span class="sd">    rmax (float): maximum dimer separation</span>
-<span class="sd">    rmin (float,optional): minimum dimer separation</span>
+<span class="sd">    rmax (float, optional): maximum dimer separation, default np.inf</span>
+<span class="sd">    rmin (float, optional): minimum dimer separation, default 0</span>
+<span class="sd">    sort_id (bool, optional): sort pair by first atom id, default false</span>
 <span class="sd">  Return:</span>
 <span class="sd">    np.array: unique pairs, a list of (int, int) particle id pairs</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">natom</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rij</span><span class="p">)</span>
+  <span class="n">natom</span><span class="p">,</span> <span class="n">natom1</span> <span class="o">=</span> <span class="n">rij</span><span class="o">.</span><span class="n">shape</span>
+  <span class="k">assert</span> <span class="n">natom1</span> <span class="o">==</span> <span class="n">natom</span>
   <span class="n">found</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natom</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-  <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">natom</span><span class="p">)</span>
-  <span class="n">mydiag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">rij</span><span class="p">)</span>  <span class="c1"># save diagonal values before overwrite</span>
-  <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">rij</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>  <span class="c1"># diagonal probably all zeros</span>
   <span class="n">pairs</span> <span class="o">=</span> <span class="p">[]</span>
-  <span class="k">for</span> <span class="n">iatom</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">natom</span><span class="p">):</span>
+  <span class="c1"># loop through pair distances from small to large</span>
+  <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">natom</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="n">dists</span> <span class="o">=</span> <span class="n">rij</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+  <span class="n">ij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+  <span class="k">for</span> <span class="n">idist</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">dists</span><span class="p">):</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">ij</span><span class="p">[</span><span class="n">idist</span><span class="p">]</span>  <span class="c1"># pair indices</span>
+    <span class="k">if</span> <span class="n">found</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">or</span> <span class="n">found</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+      <span class="k">continue</span>
+    <span class="n">rb</span> <span class="o">=</span> <span class="n">dists</span><span class="p">[</span><span class="n">idist</span><span class="p">]</span>  <span class="c1"># bond length</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">rb</span> <span class="o">&lt;</span> <span class="n">rmin</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">rb</span> <span class="o">&gt;</span> <span class="n">rmax</span><span class="p">):</span>
+      <span class="k">continue</span>
+    <span class="n">pair</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span> <span class="k">else</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+    <span class="n">found</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">found</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">found</span><span class="p">):</span>
       <span class="k">break</span>
-    <span class="k">if</span> <span class="n">found</span><span class="p">[</span><span class="n">iatom</span><span class="p">]:</span>
-      <span class="k">continue</span>
-    <span class="c1"># look for nearest neibhor, which is not already assigned</span>
-    <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">rij</span><span class="p">[</span><span class="n">iatom</span><span class="p">,</span> <span class="o">~</span><span class="n">found</span><span class="p">])</span>
-    <span class="n">jatom</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="o">~</span><span class="n">found</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
-    <span class="n">drij</span> <span class="o">=</span> <span class="n">rij</span><span class="p">[</span><span class="n">iatom</span><span class="p">,</span> <span class="n">jatom</span><span class="p">]</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">rmin</span> <span class="o">&lt;</span> <span class="n">drij</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">drij</span> <span class="o">&lt;</span> <span class="n">rmax</span><span class="p">):</span>
-      <span class="n">pair</span> <span class="o">=</span> <span class="p">[</span><span class="n">iatom</span><span class="p">,</span> <span class="n">jatom</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">iatom</span> <span class="o">&lt;</span> <span class="n">jatom</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">jatom</span><span class="p">,</span> <span class="n">iatom</span><span class="p">]</span>
-      <span class="n">found</span><span class="p">[</span><span class="n">iatom</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-      <span class="n">found</span><span class="p">[</span><span class="n">jatom</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-      <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
-  <span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">rij</span><span class="p">,</span> <span class="n">mydiag</span><span class="p">)</span>  <span class="c1"># restore diagonal values</span>
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
+  <span class="n">pa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">sort_id</span><span class="p">:</span>  <span class="c1"># sort pairs by first atom id</span>
+    <span class="n">i1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">pa</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">sorted_pairs</span> <span class="o">=</span> <span class="n">pa</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">sorted_pairs</span> <span class="o">=</span> <span class="n">pa</span>
+  <span class="k">return</span> <span class="n">sorted_pairs</span></div>
+
+<div class="viewcode-block" id="dimer_rep"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.dimer_rep">[docs]</a><span class="k">def</span> <span class="nf">dimer_rep</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">rmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">rmin</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+  <span class="n">sort_id</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_pairs</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Find dimer representation of atoms</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    atoms (ase.Atoms): one-component system</span>
+<span class="sd">    rmax (float, optional): maximum dimer separation, default np.inf</span>
+<span class="sd">    return_pairs (bool, optional): return indices of dimers, default False</span>
+<span class="sd">  Return:</span>
+<span class="sd">    (np.array, np.array): (com, avecs), center of mass and</span>
+<span class="sd">     half-bond vector, one for each dimer</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">get_chemical_symbols</span><span class="p">()))</span> <span class="o">==</span> <span class="mi">1</span>
+  <span class="n">drij</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">get_all_distances</span><span class="p">(</span><span class="n">mic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">vector</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+  <span class="n">rij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">drij</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">pairs</span> <span class="o">=</span> <span class="n">find_dimers</span><span class="p">(</span><span class="n">rij</span><span class="p">,</span> <span class="n">rmax</span><span class="o">=</span><span class="n">rmax</span><span class="p">,</span> <span class="n">rmin</span><span class="o">=</span><span class="n">rmin</span><span class="p">,</span> <span class="n">sort_id</span><span class="o">=</span><span class="n">sort_id</span><span class="p">)</span>
+  <span class="c1"># a vector points from particle 0 towards 1</span>
+  <span class="n">avecs</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">drij</span><span class="p">[</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]]</span>
+  <span class="n">pos</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">get_positions</span><span class="p">()</span>
+  <span class="n">com</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="n">avecs</span>
+  <span class="k">if</span> <span class="n">return_pairs</span><span class="p">:</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">com</span><span class="p">,</span> <span class="n">avecs</span><span class="p">,</span> <span class="n">pairs</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">com</span><span class="p">,</span> <span class="n">avecs</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="dimer_pairs_and_dists"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_pos.dimer_pairs_and_dists">[docs]</a><span class="k">def</span> <span class="nf">dimer_pairs_and_dists</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">rmax</span><span class="p">,</span> <span class="n">rmin</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; find all dimers within a separtion of (rmin,rmax)</span>
@@ -363,13 +388,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -400,7 +423,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
     </div>
   </body>
 </html>

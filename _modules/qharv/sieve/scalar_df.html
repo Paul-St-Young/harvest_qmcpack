@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>qharv.sieve.scalar_df &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -61,10 +59,13 @@
 <span class="sd">  Return:</span>
 <span class="sd">    pd.DataFrame: merged df</span>
 <span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">import</span> <span class="nn">sys</span>
+  <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">reduce</span>
   <span class="n">df</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="n">labels</span><span class="p">),</span> <span class="n">dfl</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">df</span></div>
 
-<div class="viewcode-block" id="mean_error_scalar_df"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.mean_error_scalar_df">[docs]</a><span class="k">def</span> <span class="nf">mean_error_scalar_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="mean_error_scalar_df"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.mean_error_scalar_df">[docs]</a><span class="k">def</span> <span class="nf">mean_error_scalar_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">nequil</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; get mean and average from a dataframe of raw scalar data (per-block)</span>
 <span class="sd">   take dataframe having columns [&#39;LocalEnergy&#39;,&#39;Variance&#39;,...] to a</span>
 <span class="sd">   dataframe having columns [&#39;LocalEnergy_mean&#39;,&#39;LocalEnergy_error&#39;,...]</span>
@@ -73,61 +74,55 @@
 <span class="sd">    df (pd.DataFrame): raw scalar dataframe, presumable generated using</span>
 <span class="sd">     qharv.scalar_dat.parse with extra labels columns added to identify</span>
 <span class="sd">     the different runs.</span>
-<span class="sd">    nequil (int): number of equilibration blocks to throw out for each run.</span>
+<span class="sd">    nequil (int, optional): number of equilibration blocks to throw out</span>
+<span class="sd">     for each run, default 0 (keep all data).</span>
 <span class="sd">   Returns:</span>
 <span class="sd">    pd.DataFrame: mean_error dataframe</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">sel</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">nequil</span>  <span class="c1"># zero indexing</span>
+  <span class="kn">from</span> <span class="nn">qharv.sieve</span> <span class="k">import</span> <span class="n">mean_df</span>
+  <span class="k">if</span> <span class="n">nequil</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s1">&#39;index&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;time series must be indexed to drop equilibration,&#39;</span>
+      <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39; please add &quot;index&quot; to DataFrame column.&#39;</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="n">sel</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">nequil</span>  <span class="c1"># zero indexing</span>
+    <span class="n">mydf</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>  <span class="c1"># allow equilibration to be dropped outside of this function</span>
+    <span class="n">mydf</span> <span class="o">=</span> <span class="n">df</span>
+  <span class="k">return</span> <span class="n">mean_df</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">mydf</span><span class="p">)</span></div>
 
-  <span class="c1"># create pd.Series of mean</span>
-  <span class="n">msr</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="reblock"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.reblock">[docs]</a><span class="k">def</span> <span class="nf">reblock</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span> <span class="n">block_size</span><span class="p">,</span> <span class="n">min_nblock</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">with_sigma</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; block scalar trace to remove autocorrelation;</span>
+<span class="sd">  see usage example in reblock_scalar_df</span>
 
-  <span class="c1"># create pd.Series of error</span>
-  <span class="k">if</span> <span class="n">kappa</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">efunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">error</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="n">kappa</span><span class="p">)</span>
-  <span class="k">else</span><span class="p">:</span>
-    <span class="k">try</span><span class="p">:</span>  <span class="c1"># use fortran library to recalculate kappa if compiled</span>
-      <span class="kn">from</span> <span class="nn">qharv.reel.forlib.stats</span> <span class="k">import</span> <span class="n">error</span>
-    <span class="k">except</span><span class="p">:</span>
-      <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;failed to import fortran stats library&#39;</span><span class="p">)</span>
-    <span class="n">efunc</span> <span class="o">=</span> <span class="n">error</span>
-  <span class="n">esr</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>  <span class="c1"># error cannot be directly applied to matrix yet</span>
-    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="nb">float</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">efunc</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">x</span><span class="p">)</span> <span class="p">)</span>
-  <span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
-
-  <span class="n">df1</span> <span class="o">=</span> <span class="n">msr</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">T</span>
-  <span class="n">df2</span> <span class="o">=</span> <span class="n">esr</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">T</span>
-  <span class="n">jdf</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span><span class="n">lsuffix</span><span class="o">=</span><span class="s1">&#39;_mean&#39;</span><span class="p">,</span><span class="n">rsuffix</span><span class="o">=</span><span class="s1">&#39;_error&#39;</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">jdf</span></div>
-
-
-<div class="viewcode-block" id="reblock"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.reblock">[docs]</a><span class="k">def</span> <span class="nf">reblock</span><span class="p">(</span><span class="n">trace</span><span class="p">,</span><span class="n">block_size</span><span class="p">,</span><span class="n">min_nblock</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; block scalar trace to remove autocorrelation; see usage example in reblock_scalar_df</span>
 <span class="sd">  Args:</span>
-<span class="sd">    trace (np.array): a trace of scalars, may have multiple columns !!!! assuming leading dimension is the number of current blocks.</span>
+<span class="sd">    trace (np.array): a trace of scalars, may have multiple columns</span>
+<span class="sd">      !!!! assuming leading dimension is the number of current blocks.</span>
 <span class="sd">    block_size (int): size of block in units of current block.</span>
-<span class="sd">    min_nblock (int,optional): minimum number of blocks needed for meaningful statistics, default is 4.</span>
+<span class="sd">    min_nblock (int,optional): minimum number of blocks needed for</span>
+<span class="sd">      meaningful statistics, default is 4.</span>
 <span class="sd">  Returns:</span>
 <span class="sd">    np.array: re-blocked trace.</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">nblock</span><span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span><span class="o">//</span><span class="n">block_size</span>
   <span class="n">nkeep</span> <span class="o">=</span> <span class="n">nblock</span><span class="o">*</span><span class="n">block_size</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">nblock</span><span class="o">&lt;</span><span class="n">min_nblock</span><span class="p">):</span>
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;only </span><span class="si">%d</span><span class="s1"> blocks left after reblock&#39;</span><span class="o">%</span><span class="n">nblock</span><span class="p">)</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">nblock</span> <span class="o">&lt;</span> <span class="n">min_nblock</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;only </span><span class="si">%d</span><span class="s1"> blocks left after reblock&#39;</span> <span class="o">%</span> <span class="n">nblock</span><span class="p">)</span>
   <span class="c1"># end if</span>
-  <span class="n">blocked_trace</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[:</span><span class="n">nkeep</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">nblock</span><span class="p">,</span><span class="n">block_size</span><span class="p">,</span><span class="o">*</span><span class="n">trace</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">blocked_trace</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+  <span class="n">blocked_trace</span> <span class="o">=</span> <span class="n">trace</span><span class="p">[:</span><span class="n">nkeep</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">nblock</span><span class="p">,</span> <span class="n">block_size</span><span class="p">,</span> <span class="o">*</span><span class="n">trace</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+  <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">blocked_trace</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">with_sigma</span><span class="p">:</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">blocked_trace</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">ret</span></div>
 
-
-<div class="viewcode-block" id="reblock_scalar_df"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.reblock_scalar_df">[docs]</a><span class="k">def</span> <span class="nf">reblock_scalar_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">block_size</span><span class="p">,</span><span class="n">min_nblock</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<div class="viewcode-block" id="reblock_scalar_df"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.reblock_scalar_df">[docs]</a><span class="k">def</span> <span class="nf">reblock_scalar_df</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">block_size</span><span class="p">,</span> <span class="n">min_nblock</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; create a re-blocked scalar dataframe from a current scalar dataframe</span>
 <span class="sd">   see reblock for details</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-    <span class="n">reblock</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">values</span><span class="p">,</span><span class="n">block_size</span><span class="p">,</span><span class="n">min_nblock</span><span class="o">=</span><span class="n">min_nblock</span><span class="p">)</span>
-    <span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">reblock</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">block_size</span><span class="p">,</span> <span class="n">min_nblock</span><span class="o">=</span><span class="n">min_nblock</span><span class="p">),</span>
+    <span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span>
   <span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="poly_extrap_to_x0"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.poly_extrap_to_x0">[docs]</a><span class="k">def</span> <span class="nf">poly_extrap_to_x0</span><span class="p">(</span><span class="n">myx</span><span class="p">,</span> <span class="n">myym</span><span class="p">,</span> <span class="n">myye</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">return_fit</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; fit 1D data to 1D polynomial and extrpolate to x=0</span>
@@ -149,9 +144,9 @@
   <span class="kn">import</span> <span class="nn">scipy.optimize</span> <span class="k">as</span> <span class="nn">op</span>
 
   <span class="k">if</span> <span class="n">order</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;order=</span><span class="si">%d</span><span class="s1"> not supported&#39;</span><span class="o">%</span><span class="n">order</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;order=</span><span class="si">%d</span><span class="s1"> not supported&#39;</span> <span class="o">%</span> <span class="n">order</span><span class="p">)</span>
   <span class="c1"># keep target as zeroth parameter</span>
-  <span class="n">model</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="n">x</span>
+  <span class="n">model</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="n">x</span>
 
   <span class="c1"># setup trust region using 10*sigma around naive extrapolation</span>
 
@@ -169,8 +164,8 @@
   <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">lbounds</span><span class="p">,</span> <span class="n">ubounds</span><span class="p">)</span>
 
   <span class="c1"># finally fit using error and trust region</span>
-  <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">myx</span><span class="p">,</span> <span class="n">myym</span>
-    <span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">myye</span><span class="p">,</span> <span class="n">absolute_sigma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;trf&#39;</span><span class="p">)</span>
+  <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">myx</span><span class="p">,</span> <span class="n">myym</span><span class="p">,</span>
+    <span class="n">sigma</span><span class="o">=</span><span class="n">myye</span><span class="p">,</span> <span class="n">absolute_sigma</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;trf&#39;</span><span class="p">)</span>
   <span class="n">perr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">pcov</span><span class="p">))</span>
   <span class="c1"># return popt,perr to check fit</span>
 
@@ -180,7 +175,6 @@
   <span class="k">if</span> <span class="n">return_fit</span><span class="p">:</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">y0m</span><span class="p">,</span> <span class="n">y0e</span><span class="p">,</span> <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">ret</span></div>
-
 
 <div class="viewcode-block" id="ts_extrap_obs"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.ts_extrap_obs">[docs]</a><span class="k">def</span> <span class="nf">ts_extrap_obs</span><span class="p">(</span><span class="n">calc_df</span><span class="p">,</span> <span class="n">sel</span><span class="p">,</span> <span class="n">tname</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; extrapolate a single dmc observable to zero time-step limit</span>
@@ -204,9 +198,8 @@
 
   <span class="k">return</span> <span class="n">myx</span><span class="p">,</span> <span class="n">y0m</span><span class="p">,</span> <span class="n">y0e</span></div>
 
-
-<div class="viewcode-block" id="ts_extrap"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.ts_extrap">[docs]</a><span class="k">def</span> <span class="nf">ts_extrap</span><span class="p">(</span><span class="n">calc_df</span><span class="p">,</span> <span class="n">issl</span><span class="p">,</span> <span class="n">obsl</span>
-  <span class="p">,</span> <span class="n">tname</span><span class="o">=</span><span class="s1">&#39;timestep&#39;</span><span class="p">,</span> <span class="n">series_name</span><span class="o">=</span><span class="s1">&#39;series&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ts_extrap"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.ts_extrap">[docs]</a><span class="k">def</span> <span class="nf">ts_extrap</span><span class="p">(</span><span class="n">calc_df</span><span class="p">,</span> <span class="n">issl</span><span class="p">,</span> <span class="n">obsl</span><span class="p">,</span>
+  <span class="n">tname</span><span class="o">=</span><span class="s1">&#39;timestep&#39;</span><span class="p">,</span> <span class="n">series_name</span><span class="o">=</span><span class="s1">&#39;series&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; extrapolate all dmc observables to zero time-step limit</span>
 
 <span class="sd">  Args:</span>
@@ -219,30 +212,29 @@
 <span class="sd">    !!!! series number is unchanged</span>
 <span class="sd">  &quot;&quot;&quot;</span>
 
-  <span class="n">sel</span>  <span class="o">=</span> <span class="n">calc_df</span><span class="p">[</span><span class="n">series_name</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span> <span class="ow">in</span> <span class="n">issl</span><span class="p">)</span>
+  <span class="n">sel</span>  <span class="o">=</span> <span class="n">calc_df</span><span class="p">[</span><span class="n">series_name</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">issl</span><span class="p">)</span>
   <span class="n">nfound</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">calc_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel</span><span class="p">])</span>
   <span class="k">if</span> <span class="n">nfound</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">issl</span><span class="p">):</span>
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;found </span><span class="si">%d</span><span class="s1"> series, when </span><span class="si">%d</span><span class="s1"> are requested&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nfound</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">issl</span><span class="p">))</span> <span class="p">)</span>
-  <span class="c1"># end if</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;found </span><span class="si">%d</span><span class="s1"> series, when </span><span class="si">%d</span><span class="s1"> are requested&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nfound</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">issl</span><span class="p">))</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
   <span class="c1"># copy smallest timestep DMC entry</span>
   <span class="n">myx</span>  <span class="o">=</span> <span class="n">calc_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel</span><span class="p">,</span> <span class="n">tname</span><span class="p">]</span>
-  <span class="n">entry</span> <span class="o">=</span> <span class="n">calc_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">calc_df</span><span class="p">[</span><span class="n">tname</span><span class="p">]</span><span class="o">==</span><span class="nb">min</span><span class="p">(</span><span class="n">myx</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+  <span class="n">entry</span> <span class="o">=</span> <span class="n">calc_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">calc_df</span><span class="p">[</span><span class="n">tname</span><span class="p">]</span> <span class="o">==</span> <span class="nb">min</span><span class="p">(</span><span class="n">myx</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
   <span class="c1"># fill entry with new data</span>
   <span class="n">entry</span><span class="p">[</span><span class="n">tname</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 
   <span class="k">for</span> <span class="n">obs</span> <span class="ow">in</span> <span class="n">obsl</span><span class="p">:</span>
-    <span class="n">myx0</span><span class="p">,</span> <span class="n">y0m</span><span class="p">,</span> <span class="n">y0e</span> <span class="o">=</span> <span class="n">ts_extrap_obs</span><span class="p">(</span><span class="n">calc_df</span><span class="p">,</span> <span class="n">sel</span>
-      <span class="p">,</span> <span class="n">tname</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_mean&#39;</span><span class="o">%</span><span class="n">obs</span><span class="p">]</span>  <span class="o">=</span> <span class="n">y0m</span>
-    <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_error&#39;</span><span class="o">%</span><span class="n">obs</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0e</span>
+    <span class="n">myx0</span><span class="p">,</span> <span class="n">y0m</span><span class="p">,</span> <span class="n">y0e</span> <span class="o">=</span> <span class="n">ts_extrap_obs</span><span class="p">(</span><span class="n">calc_df</span><span class="p">,</span> <span class="n">sel</span><span class="p">,</span>
+      <span class="n">tname</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_mean&#39;</span> <span class="o">%</span> <span class="n">obs</span><span class="p">]</span>  <span class="o">=</span> <span class="n">y0m</span>
+    <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_error&#39;</span> <span class="o">%</span> <span class="n">obs</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0e</span>
   <span class="k">return</span> <span class="n">entry</span></div>
 
-
-<div class="viewcode-block" id="mix_est_correction"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.mix_est_correction">[docs]</a><span class="k">def</span> <span class="nf">mix_est_correction</span><span class="p">(</span><span class="n">mydf</span><span class="p">,</span> <span class="n">vseries</span><span class="p">,</span> <span class="n">dseries</span><span class="p">,</span> <span class="n">names</span>
-  <span class="p">,</span> <span class="n">series_name</span><span class="o">=</span><span class="s1">&#39;series&#39;</span><span class="p">,</span> <span class="n">group_name</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span>
-  <span class="p">,</span> <span class="n">drop_missing_twists</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="mix_est_correction"><a class="viewcode-back" href="../../../qharv.sieve.html#qharv.sieve.scalar_df.mix_est_correction">[docs]</a><span class="k">def</span> <span class="nf">mix_est_correction</span><span class="p">(</span><span class="n">mydf</span><span class="p">,</span> <span class="n">vseries</span><span class="p">,</span> <span class="n">dseries</span><span class="p">,</span> <span class="n">namesm</span><span class="p">,</span>
+  <span class="n">series_name</span><span class="o">=</span><span class="s1">&#39;series&#39;</span><span class="p">,</span> <span class="n">group_name</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+  <span class="n">drop_missing_twists</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; extrapolate dmc energy to zero time-step limit</span>
 <span class="sd">  Args:</span>
 <span class="sd">    mydf (pd.DataFrame): dataframe of VMC and DMC mixed estimators</span>
@@ -252,22 +244,26 @@
 <span class="sd">    series_name (str,optional): column name identifying the series</span>
 <span class="sd">    kind (str,optinoal): extrapolation kind, must be either &#39;linear&#39; or &#39;log&#39;</span>
 <span class="sd">  Returns:</span>
-<span class="sd">    pd.Series: an entry copied from the smallest time-step DMC entry, then edited with extrapolated pure estimators. !!!! Series index is not changed!</span>
+<span class="sd">    pd.Series: an entry copied from the smallest time-step DMC entry,</span>
+<span class="sd">      then edited with extrapolated pure estimators.</span>
+<span class="sd">      !!!! Series index is not changed!</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">vsel</span> <span class="o">=</span> <span class="n">mydf</span><span class="p">[</span><span class="n">series_name</span><span class="p">]</span><span class="o">==</span><span class="n">vseries</span> <span class="c1"># vmc</span>
-  <span class="n">msel</span> <span class="o">=</span> <span class="n">mydf</span><span class="p">[</span><span class="n">series_name</span><span class="p">]</span><span class="o">==</span><span class="n">dseries</span> <span class="c1"># mixed estimator</span>
+  <span class="n">vsel</span> <span class="o">=</span> <span class="n">mydf</span><span class="p">[</span><span class="n">series_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">vseries</span>  <span class="c1"># vmc</span>
+  <span class="n">msel</span> <span class="o">=</span> <span class="n">mydf</span><span class="p">[</span><span class="n">series_name</span><span class="p">]</span> <span class="o">==</span> <span class="n">dseries</span>  <span class="c1"># mixed estimator</span>
 
   <span class="c1"># make sure the groups (twists) are aligned!!!!</span>
-  <span class="n">vgroup</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">mydf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">vsel</span><span class="p">,</span><span class="n">group_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-  <span class="n">dgroup</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">mydf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">msel</span><span class="p">,</span><span class="n">group_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+  <span class="n">vgroup</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">mydf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">vsel</span><span class="p">,</span> <span class="n">group_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+  <span class="n">dgroup</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">mydf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">msel</span><span class="p">,</span> <span class="n">group_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
   <span class="n">missing_twists</span> <span class="o">=</span> <span class="p">(</span><span class="n">dgroup</span><span class="o">-</span><span class="n">vgroup</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">vgroup</span><span class="o">-</span><span class="n">dgroup</span><span class="p">)</span>
   <span class="n">nmiss</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_twists</span><span class="p">)</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">nmiss</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">nmiss</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
     <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">drop_missing_twists</span><span class="p">):</span>
-      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;twists </span><span class="si">%s</span><span class="s1"> incomplete, set drop_missing_twists to ignore&#39;</span><span class="o">%</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">missing_twists</span><span class="p">]))</span>
-    <span class="k">else</span><span class="p">:</span> <span class="c1"># drop missing twists</span>
-      <span class="n">good_twist</span> <span class="o">=</span> <span class="n">mydf</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">missing_twists</span><span class="p">)</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;twists &#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">missing_twists</span><span class="p">])</span>
+      <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39; incomplete, set drop_missing_twists to ignore&#39;</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># drop missing twists</span>
+      <span class="n">good_twist</span> <span class="o">=</span> <span class="n">mydf</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">missing_twists</span><span class="p">)</span>
       <span class="n">vsel</span> <span class="o">=</span> <span class="n">vsel</span> <span class="o">&amp;</span> <span class="n">good_twist</span>
       <span class="n">msel</span> <span class="o">=</span> <span class="n">msel</span> <span class="o">&amp;</span> <span class="n">good_twist</span>
     <span class="c1"># end if</span>
@@ -276,10 +272,10 @@
   <span class="c1"># get values and errors</span>
   <span class="n">mnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;_mean&#39;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
   <span class="n">enames</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;_error&#39;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
-  <span class="n">vym</span> <span class="o">=</span> <span class="n">mydf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">vsel</span><span class="p">,</span><span class="n">mnames</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-  <span class="n">vye</span> <span class="o">=</span> <span class="n">mydf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">vsel</span><span class="p">,</span><span class="n">enames</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-  <span class="n">mym</span> <span class="o">=</span> <span class="n">mydf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">msel</span><span class="p">,</span><span class="n">mnames</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
-  <span class="n">mye</span> <span class="o">=</span> <span class="n">mydf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">msel</span><span class="p">,</span><span class="n">enames</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+  <span class="n">vym</span> <span class="o">=</span> <span class="n">mydf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">vsel</span><span class="p">,</span> <span class="n">mnames</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+  <span class="n">vye</span> <span class="o">=</span> <span class="n">mydf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">vsel</span><span class="p">,</span> <span class="n">enames</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+  <span class="n">mym</span> <span class="o">=</span> <span class="n">mydf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">msel</span><span class="p">,</span> <span class="n">mnames</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+  <span class="n">mye</span> <span class="o">=</span> <span class="n">mydf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">msel</span><span class="p">,</span> <span class="n">enames</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
   <span class="c1"># perform extrapolation</span>
   <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;linear&#39;</span><span class="p">:</span>
@@ -298,7 +294,8 @@
     <span class="n">lndye</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">4.</span><span class="o">*</span><span class="n">lnmye</span><span class="o">**</span><span class="mf">2.</span><span class="o">+</span><span class="n">lnvye</span><span class="o">**</span><span class="mf">2.</span><span class="p">)</span>
     <span class="n">dye</span> <span class="o">=</span> <span class="n">dym</span><span class="o">*</span><span class="n">lndye</span>
   <span class="k">else</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;unknown mixed estimator extrapolation kind = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">kind</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;unknown mixed estimator extrapolation kind = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">kind</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
   <span class="c1"># end if</span>
 
   <span class="c1"># store in new data frame</span>
@@ -313,13 +310,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -350,7 +345,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
     </div>
   </body>
 </html>

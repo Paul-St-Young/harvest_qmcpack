@@ -1,12 +1,10 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>qharv.plantation.sugar &#8212; qharv 0.0.0 documentation</title>
+    <meta charset="utf-8" />
+    <title>qharv.field.sugar &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -38,24 +36,24 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>Source code for qharv.plantation.sugar</h1><div class="highlight"><pre>
+  <h1>Source code for qharv.field.sugar</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
 <span class="c1"># Email: yubo.paul.yang@gmail.com</span>
 <span class="c1"># Python candy i.e. decorators</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
 
-<div class="viewcode-block" id="check_dir_before"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.sugar.check_dir_before">[docs]</a><span class="k">def</span> <span class="nf">check_dir_before</span><span class="p">(</span><span class="n">mkdir</span><span class="p">):</span>
+<div class="viewcode-block" id="check_dir_before"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.sugar.check_dir_before">[docs]</a><span class="k">def</span> <span class="nf">check_dir_before</span><span class="p">(</span><span class="n">mkdir</span><span class="p">):</span>
   <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
       <span class="n">mkdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">wrapper</span></div>
 
-<div class="viewcode-block" id="mkdir"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.sugar.mkdir">[docs]</a><span class="nd">@check_dir_before</span>
+<div class="viewcode-block" id="mkdir"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.sugar.mkdir">[docs]</a><span class="nd">@check_dir_before</span>
 <span class="k">def</span> <span class="nf">mkdir</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
   <span class="n">sp</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s1">&#39;mkdir&#39;</span><span class="p">,</span> <span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="skip_exist_file"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.sugar.skip_exist_file">[docs]</a><span class="k">def</span> <span class="nf">skip_exist_file</span><span class="p">(</span><span class="n">write_file</span><span class="p">):</span>
+<div class="viewcode-block" id="skip_exist_file"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.sugar.skip_exist_file">[docs]</a><span class="k">def</span> <span class="nf">skip_exist_file</span><span class="p">(</span><span class="n">write_file</span><span class="p">):</span>
   <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">fout</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fout</span><span class="p">):</span>
       <span class="k">return</span> <span class="n">write_file</span><span class="p">(</span><span class="n">fout</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -63,7 +61,7 @@
       <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> exists&#39;</span> <span class="o">%</span> <span class="n">fout</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">wrapper</span></div>
 
-<div class="viewcode-block" id="cache"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.sugar.cache">[docs]</a><span class="k">def</span> <span class="nf">cache</span><span class="p">(</span><span class="n">write_file</span><span class="p">):</span>
+<div class="viewcode-block" id="cache"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.sugar.cache">[docs]</a><span class="k">def</span> <span class="nf">cache</span><span class="p">(</span><span class="n">write_file</span><span class="p">):</span>
   <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">fout</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">cache_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">fout</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">cache_dir</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
@@ -71,7 +69,7 @@
     <span class="k">return</span> <span class="n">skip_exist_file</span><span class="p">(</span><span class="n">write_file</span><span class="p">)(</span><span class="n">fout</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">wrapper</span></div>
 
-<div class="viewcode-block" id="get_progress_bar"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.sugar.get_progress_bar">[docs]</a><span class="k">def</span> <span class="nf">get_progress_bar</span><span class="p">(</span><span class="n">maxval</span><span class="p">):</span>
+<div class="viewcode-block" id="get_progress_bar"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.sugar.get_progress_bar">[docs]</a><span class="k">def</span> <span class="nf">get_progress_bar</span><span class="p">(</span><span class="n">maxval</span><span class="p">):</span>
   <span class="kn">from</span> <span class="nn">progressbar</span> <span class="k">import</span> <span class="n">ProgressBar</span>
   <span class="n">bar</span> <span class="o">=</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">maxval</span><span class="o">=</span><span class="n">maxval</span><span class="p">)</span>
   <span class="kn">import</span> <span class="nn">sys</span>
@@ -82,7 +80,7 @@
     <span class="n">bar</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
   <span class="k">return</span> <span class="n">bar</span></div>
 
-<div class="viewcode-block" id="show_h5progress"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.sugar.show_h5progress">[docs]</a><span class="k">def</span> <span class="nf">show_h5progress</span><span class="p">(</span><span class="n">collect_h5file</span><span class="p">):</span>
+<div class="viewcode-block" id="show_h5progress"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.sugar.show_h5progress">[docs]</a><span class="k">def</span> <span class="nf">show_h5progress</span><span class="p">(</span><span class="n">collect_h5file</span><span class="p">):</span>
   <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">h5file</span><span class="p">,</span> <span class="n">flist</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">bar</span> <span class="o">=</span> <span class="n">get_progress_bar</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">flist</span><span class="p">))</span>
     <span class="n">ifile</span> <span class="o">=</span> <span class="mi">0</span>
@@ -91,7 +89,7 @@
       <span class="n">bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ifile</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">wrapper</span></div>
 
-<div class="viewcode-block" id="concat_return"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.sugar.concat_return">[docs]</a><span class="k">def</span> <span class="nf">concat_return</span><span class="p">(</span><span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fault_tolerant</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="concat_return"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.sugar.concat_return">[docs]</a><span class="k">def</span> <span class="nf">concat_return</span><span class="p">(</span><span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fault_tolerant</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot;Show progress of concat reduce function&quot;&quot;&quot;</span>
   <span class="k">def</span> <span class="nf">_concat_return</span><span class="p">(</span><span class="n">collect</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Concatenate the return value of a collect function on a file to a list</span>
@@ -113,7 +111,7 @@
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
           <span class="k">if</span> <span class="n">fault_tolerant</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; at:</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">floc</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
           <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">err</span>
         <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
@@ -129,13 +127,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -166,7 +162,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
     </div>
   </body>
 </html>

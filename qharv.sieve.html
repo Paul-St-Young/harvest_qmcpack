@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>qharv.sieve package &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -55,89 +53,113 @@
 <span id="qharv-sieve-mean-df-module"></span><h2>qharv.sieve.mean_df module<a class="headerlink" href="#module-qharv.sieve.mean_df" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="qharv.sieve.mean_df.categorize_columns">
-<code class="descclassname">qharv.sieve.mean_df.</code><code class="descname">categorize_columns</code><span class="sig-paren">(</span><em>mdf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#categorize_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.categorize_columns" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.sieve.mean_df.</code><code class="sig-name descname">categorize_columns</code><span class="sig-paren">(</span><em class="sig-param">cols</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#categorize_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.categorize_columns" title="Permalink to this definition">¶</a></dt>
 <dd><p>Categorize the column names of a mean dataframe.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mdf</strong> (<em>pd.DataFrame</em>) – mean dataframe</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
-<dt>(excol, mcol, ecol)</dt>
-<dd>excol are columns of exact values with no errorbar (possibly labels)
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cols</strong> (<em>list</em>) – a list of column names</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>(excol, mcol, ecol)</dt><dd><p>excol are columns of exact values with no errorbar (possibly labels)
 mcols are mean columns
-ecols are error columns</dd>
+ecols are error columns</p>
+</dd>
 </dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(list, list, list)</td>
-</tr>
-</tbody>
-</table>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(list, list, list)</p>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rcol</span><span class="p">,</span> <span class="n">mcol</span><span class="p">,</span> <span class="n">ecol</span> <span class="o">=</span> <span class="n">categorize_columns</span><span class="p">(</span><span class="n">mdf</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rcol</span><span class="p">,</span> <span class="n">mcol</span><span class="p">,</span> <span class="n">ecol</span> <span class="o">=</span> <span class="n">categorize_columns</span><span class="p">(</span><span class="n">mdf</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xyye</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Pressure&#39;</span><span class="p">,</span> <span class="s1">&#39;LocalEnergy&#39;</span><span class="p">,</span> <span class="n">xerr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="function">
+<dt id="qharv.sieve.mean_df.create">
+<code class="sig-prename descclassname">qharv.sieve.mean_df.</code><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">mydf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="qharv.sieve.mean_df.dfme">
-<code class="descclassname">qharv.sieve.mean_df.</code><code class="descname">dfme</code><span class="sig-paren">(</span><em>df</em>, <em>cols</em>, <em>no_error=False</em>, <em>weight_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#dfme"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.dfme" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.sieve.mean_df.</code><code class="sig-name descname">dfme</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">cols</em>, <em class="sig-param">no_error=False</em>, <em class="sig-param">weight_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#dfme"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.dfme" title="Permalink to this definition">¶</a></dt>
 <dd><p>Average scalar quantities over a set of calculations.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<em>pd.DataFrame</em>) – a mean dataframe containing labels+col_mean+col_error</li>
-<li><strong>cols</strong> (<em>list</em>) – a list of column names, e.g. [‘E_tot’, ‘KE_tot’]</li>
-<li><strong>weight_name</strong> (<em>str</em><em>, </em><em>optional</em>) – name of weight column, default None, i.e.
-every entry has the same weight</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – a mean dataframe containing labels+col_mean+col_error</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – a list of column names, e.g. [‘E_tot’, ‘KE_tot’]</p></li>
+<li><p><strong>weight_name</strong> (<em>str</em><em>, </em><em>optional</em>) – name of weight column, default None, i.e.
+every entry has the same weight</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">averaged database</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pd.DataFrame</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>averaged database</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="qharv.sieve.mean_df.linex">
+<code class="sig-prename descclassname">qharv.sieve.mean_df.</code><code class="sig-name descname">linex</code><span class="sig-paren">(</span><em class="sig-param">df_in</em>, <em class="sig-param">vseries</em>, <em class="sig-param">dseries</em>, <em class="sig-param">names</em>, <em class="sig-param">labels=None</em>, <em class="sig-param">sorted_df=False</em>, <em class="sig-param">sort_col=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#linex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.linex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linearly extrapolate to 2*DMC-VMC
+hint: can also do time-step extrapolation if tau1 = 2*tau2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mydf</strong> (<em>pd.DataFrame</em>) – database, must contain [‘series’] +
+name_mean, name_error for name in names</p></li>
+<li><p><strong>vseries</strong> (<em>int</em>) – VMC series index</p></li>
+<li><p><strong>dseries</strong> (<em>int</em>) – DMC series index</p></li>
+<li><p><strong>names</strong> (<em>list</em>) – a list of observable names to be extrpolated</p></li>
+<li><p><strong>labels</strong> (<em>list</em><em>, </em><em>optinal</em>) – a list of labels columns to keep along
+observables, default None</p></li>
+<li><p><strong>sorted_df</strong> (<em>bool</em><em>, </em><em>optional</em>) – VMC and DMC entries in input df are aligned</p></li>
+<li><p><strong>sort_col</strong> (<em>str</em><em>, </em><em>optional</em>) – column used to sort entries before subtraction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>extrapolated entry</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.sieve.mean_df.taw">
-<code class="descclassname">qharv.sieve.mean_df.</code><code class="descname">taw</code><span class="sig-paren">(</span><em>ym</em>, <em>ye</em>, <em>weights</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#taw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.taw" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.sieve.mean_df.</code><code class="sig-name descname">taw</code><span class="sig-paren">(</span><em class="sig-param">ym</em>, <em class="sig-param">ye</em>, <em class="sig-param">weights</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#taw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.taw" title="Permalink to this definition">¶</a></dt>
 <dd><p>twist average with weights</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.sieve.mean_df.xyye">
-<code class="descclassname">qharv.sieve.mean_df.</code><code class="descname">xyye</code><span class="sig-paren">(</span><em>df</em>, <em>xname</em>, <em>yname</em>, <em>sel=None</em>, <em>xerr=False</em>, <em>yerr=True</em>, <em>sort=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#xyye"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.xyye" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.sieve.mean_df.</code><code class="sig-name descname">xyye</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">xname</em>, <em class="sig-param">yname</em>, <em class="sig-param">sel=None</em>, <em class="sig-param">xerr=False</em>, <em class="sig-param">yerr=True</em>, <em class="sig-param">sort=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/mean_df.html#xyye"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.mean_df.xyye" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get x vs. y data from a mean data frame.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<em>pd.DataFrame</em>) – mean dataframe</li>
-<li><strong>xname</strong> (<em>str</em>) – name of x variable</li>
-<li><strong>yname</strong> (<em>str</em>) – name of y variable</li>
-<li><strong>sel</strong> (<em>np.array</em><em>, </em><em>optional</em>) – boolean selector for subset, default is all</li>
-<li><strong>xerr</strong> (<em>bool</em><em>, </em><em>optional</em>) – x variable has statistical error, default False</li>
-<li><strong>yerr</strong> (<em>bool</em><em>, </em><em>optional</em>) – y variable has statistical error, default True</li>
-<li><strong>sort</strong> (<em>bool</em><em>, </em><em>optional</em>) – sort x</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – mean dataframe</p></li>
+<li><p><strong>xname</strong> (<em>str</em>) – name of x variable</p></li>
+<li><p><strong>yname</strong> (<em>str</em>) – name of y variable</p></li>
+<li><p><strong>sel</strong> (<em>np.array</em><em>, </em><em>optional</em>) – boolean selector for subset, default is all</p></li>
+<li><p><strong>xerr</strong> (<em>bool</em><em>, </em><em>optional</em>) – x variable has statistical error, default False</p></li>
+<li><p><strong>yerr</strong> (<em>bool</em><em>, </em><em>optional</em>) – y variable has statistical error, default True</p></li>
+<li><p><strong>sort</strong> (<em>bool</em><em>, </em><em>optional</em>) – sort x</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(x, ym, ye) OR (xm, xe, ym, ye) if xerr=True</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(x, ym, ye) OR (xm, xe, ym, ye) if xerr=True</p>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">xyye</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;rs&#39;</span><span class="p">,</span> <span class="s1">&#39;LocalEnergy&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xyye</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;Pressure&#39;</span><span class="p">,</span> <span class="s1">&#39;LocalEnergy&#39;</span><span class="p">,</span> <span class="n">xerr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -150,59 +172,52 @@ every entry has the same weight</li>
 <span id="qharv-sieve-scalar-df-module"></span><h2>qharv.sieve.scalar_df module<a class="headerlink" href="#module-qharv.sieve.scalar_df" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="qharv.sieve.scalar_df.mean_error_scalar_df">
-<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">mean_error_scalar_df</code><span class="sig-paren">(</span><em>df</em>, <em>nequil</em>, <em>kappa=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#mean_error_scalar_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.mean_error_scalar_df" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.sieve.scalar_df.</code><code class="sig-name descname">mean_error_scalar_df</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">nequil=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#mean_error_scalar_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.mean_error_scalar_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>get mean and average from a dataframe of raw scalar data (per-block)
 take dataframe having columns [‘LocalEnergy’,’Variance’,…] to a
 dataframe having columns [‘LocalEnergy_mean’,’LocalEnergy_error’,…]</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>df</strong> (<em>pd.DataFrame</em>) – raw scalar dataframe, presumable generated using
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – raw scalar dataframe, presumable generated using
 qharv.scalar_dat.parse with extra labels columns added to identify
-the different runs.</li>
-<li><strong>nequil</strong> (<em>int</em>) – number of equilibration blocks to throw out for each run.</li>
+the different runs.</p></li>
+<li><p><strong>nequil</strong> (<em>int</em><em>, </em><em>optional</em>) – number of equilibration blocks to throw out
+for each run, default 0 (keep all data).</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">mean_error dataframe</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pd.DataFrame</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>mean_error dataframe</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.sieve.scalar_df.merge_list">
-<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">merge_list</code><span class="sig-paren">(</span><em>dfl</em>, <em>labels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#merge_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.merge_list" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.sieve.scalar_df.</code><code class="sig-name descname">merge_list</code><span class="sig-paren">(</span><em class="sig-param">dfl</em>, <em class="sig-param">labels</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#merge_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.merge_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Merge a list of DataFrames sharing common labels</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>dfl</strong> (<em>list</em>) – a list of pd.DataFrame objects</li>
-<li><strong>labels</strong> (<em>list</em>) – a list of column labels</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dfl</strong> (<em>list</em>) – a list of pd.DataFrame objects</p></li>
+<li><p><strong>labels</strong> (<em>list</em>) – a list of column labels</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">merged df</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pd.DataFrame</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>merged df</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.sieve.scalar_df.mix_est_correction">
-<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">mix_est_correction</code><span class="sig-paren">(</span><em>mydf</em>, <em>vseries</em>, <em>dseries</em>, <em>names</em>, <em>series_name='series'</em>, <em>group_name='group'</em>, <em>kind='linear'</em>, <em>drop_missing_twists=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#mix_est_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.mix_est_correction" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.sieve.scalar_df.</code><code class="sig-name descname">mix_est_correction</code><span class="sig-paren">(</span><em class="sig-param">mydf</em>, <em class="sig-param">vseries</em>, <em class="sig-param">dseries</em>, <em class="sig-param">namesm</em>, <em class="sig-param">series_name='series'</em>, <em class="sig-param">group_name='group'</em>, <em class="sig-param">kind='linear'</em>, <em class="sig-param">drop_missing_twists=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#mix_est_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.mix_est_correction" title="Permalink to this definition">¶</a></dt>
 <dd><p>extrapolate dmc energy to zero time-step limit
 :param mydf: dataframe of VMC and DMC mixed estimators
 :type mydf: pd.DataFrame
@@ -216,218 +231,183 @@ the different runs.</li>
 :type series_name: str,optional
 :param kind: extrapolation kind, must be either ‘linear’ or ‘log’
 :type kind: str,optinoal</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">an entry copied from the smallest time-step DMC entry, then edited with extrapolated pure estimators. !!!! Series index is not changed!</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pd.Series</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>an entry copied from the smallest time-step DMC entry,</dt><dd><p>then edited with extrapolated pure estimators.
+!!!! Series index is not changed!</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>pd.Series</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.sieve.scalar_df.poly_extrap_to_x0">
-<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">poly_extrap_to_x0</code><span class="sig-paren">(</span><em>myx</em>, <em>myym</em>, <em>myye</em>, <em>order</em>, <em>return_fit=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#poly_extrap_to_x0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.poly_extrap_to_x0" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.sieve.scalar_df.</code><code class="sig-name descname">poly_extrap_to_x0</code><span class="sig-paren">(</span><em class="sig-param">myx</em>, <em class="sig-param">myym</em>, <em class="sig-param">myye</em>, <em class="sig-param">order</em>, <em class="sig-param">return_fit=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#poly_extrap_to_x0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.poly_extrap_to_x0" title="Permalink to this definition">¶</a></dt>
 <dd><p>fit 1D data to 1D polynomial and extrpolate to x=0</p>
 <p>The fit proceeds in two steps. The first polyfit does not take error into
 account. It estimates the extrapolated value, which is then used to setup
 a trust region (bounds). Using the trust region, curve_fit can robustly
 estimate the error of the extrapolation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>myx</strong> (<em>np.array</em>) – x values</li>
-<li><strong>myym</strong> (<em>np.array</em>) – y values</li>
-<li><strong>myye</strong> (<em>np.array</em>) – y errors (1 sigma)</li>
-<li><strong>order</strong> (<em>int</em>) – order of 1D polynomial</li>
-<li><strong>return_fit</strong> (<em>bool</em><em>, </em><em>optional</em>) – if true, then return fit paramters</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>myx</strong> (<em>np.array</em>) – x values</p></li>
+<li><p><strong>myym</strong> (<em>np.array</em>) – y values</p></li>
+<li><p><strong>myye</strong> (<em>np.array</em>) – y errors (1 sigma)</p></li>
+<li><p><strong>order</strong> (<em>int</em>) – order of 1D polynomial</p></li>
+<li><p><strong>return_fit</strong> (<em>bool</em><em>, </em><em>optional</em>) – if true, then return fit paramters</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">floats (y0m, y0e), y mean and error at x=0</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">2-tuple</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>floats (y0m, y0e), y mean and error at x=0</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>2-tuple</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.sieve.scalar_df.reblock">
-<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">reblock</code><span class="sig-paren">(</span><em>trace</em>, <em>block_size</em>, <em>min_nblock=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#reblock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.reblock" title="Permalink to this definition">¶</a></dt>
-<dd><p>block scalar trace to remove autocorrelation; see usage example in reblock_scalar_df
-:param trace: a trace of scalars, may have multiple columns !!!! assuming leading dimension is the number of current blocks.
-:type trace: np.array
-:param block_size: size of block in units of current block.
-:type block_size: int
-:param min_nblock: minimum number of blocks needed for meaningful statistics, default is 4.
-:type min_nblock: int,optional</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">re-blocked trace.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
-</tr>
-</tbody>
-</table>
+<code class="sig-prename descclassname">qharv.sieve.scalar_df.</code><code class="sig-name descname">reblock</code><span class="sig-paren">(</span><em class="sig-param">trace</em>, <em class="sig-param">block_size</em>, <em class="sig-param">min_nblock=4</em>, <em class="sig-param">with_sigma=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#reblock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.reblock" title="Permalink to this definition">¶</a></dt>
+<dd><p>block scalar trace to remove autocorrelation;
+see usage example in reblock_scalar_df</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trace</strong> (<em>np.array</em>) – a trace of scalars, may have multiple columns
+!!!! assuming leading dimension is the number of current blocks.</p></li>
+<li><p><strong>block_size</strong> (<em>int</em>) – size of block in units of current block.</p></li>
+<li><p><strong>min_nblock</strong> (<em>int</em><em>,</em><em>optional</em>) – minimum number of blocks needed for
+meaningful statistics, default is 4.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>re-blocked trace.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.sieve.scalar_df.reblock_scalar_df">
-<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">reblock_scalar_df</code><span class="sig-paren">(</span><em>df</em>, <em>block_size</em>, <em>min_nblock=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#reblock_scalar_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.reblock_scalar_df" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.sieve.scalar_df.</code><code class="sig-name descname">reblock_scalar_df</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">block_size</em>, <em class="sig-param">min_nblock=4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#reblock_scalar_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.reblock_scalar_df" title="Permalink to this definition">¶</a></dt>
 <dd><p>create a re-blocked scalar dataframe from a current scalar dataframe
 see reblock for details</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.sieve.scalar_df.ts_extrap">
-<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">ts_extrap</code><span class="sig-paren">(</span><em>calc_df</em>, <em>issl</em>, <em>obsl</em>, <em>tname='timestep'</em>, <em>series_name='series'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#ts_extrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.ts_extrap" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.sieve.scalar_df.</code><code class="sig-name descname">ts_extrap</code><span class="sig-paren">(</span><em class="sig-param">calc_df</em>, <em class="sig-param">issl</em>, <em class="sig-param">obsl</em>, <em class="sig-param">tname='timestep'</em>, <em class="sig-param">series_name='series'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#ts_extrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.ts_extrap" title="Permalink to this definition">¶</a></dt>
 <dd><p>extrapolate all dmc observables to zero time-step limit</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>calc_df</strong> (<em>pd.DataFrame</em>) – must contain columns [tname, series_name]</li>
-<li><strong>issl</strong> (<em>list</em>) – list of DMC series index to use in fit</li>
-<li><strong>obsl</strong> (<em>list</em>) – a list of observable names to extrapolate</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc_df</strong> (<em>pd.DataFrame</em>) – must contain columns [tname, series_name]</p></li>
+<li><p><strong>issl</strong> (<em>list</em>) – list of DMC series index to use in fit</p></li>
+<li><p><strong>obsl</strong> (<em>list</em>) – a list of observable names to extrapolate</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">an entry copied from the smallest time-step DMC entry,
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an entry copied from the smallest time-step DMC entry,
 then edited with extrapolated energy and corresponding info
 !!!! series number is unchanged</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pd.Series</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.Series</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.sieve.scalar_df.ts_extrap_obs">
-<code class="descclassname">qharv.sieve.scalar_df.</code><code class="descname">ts_extrap_obs</code><span class="sig-paren">(</span><em>calc_df</em>, <em>sel</em>, <em>tname</em>, <em>obs</em>, <em>order=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#ts_extrap_obs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.ts_extrap_obs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.sieve.scalar_df.</code><code class="sig-name descname">ts_extrap_obs</code><span class="sig-paren">(</span><em class="sig-param">calc_df</em>, <em class="sig-param">sel</em>, <em class="sig-param">tname</em>, <em class="sig-param">obs</em>, <em class="sig-param">order=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_df.html#ts_extrap_obs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_df.ts_extrap_obs" title="Permalink to this definition">¶</a></dt>
 <dd><p>extrapolate a single dmc observable to zero time-step limit</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>calc_df</strong> (<em>pd.DataFrame</em>) – must contain columns [tname, obs_mean, obs_error]</li>
-<li><strong>sel</strong> (<em>np.array</em>) – boolean selector array</li>
-<li><strong>tname</strong> (<em>str</em>) – timestep column name, e.g. ‘timestep’</li>
-<li><strong>obs</strong> (<em>str</em>) – observable column name, e.g. ‘LocalEnergy’</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc_df</strong> (<em>pd.DataFrame</em>) – must contain columns [tname, obs_mean, obs_error]</p></li>
+<li><p><strong>sel</strong> (<em>np.array</em>) – boolean selector array</p></li>
+<li><p><strong>tname</strong> (<em>str</em>) – timestep column name, e.g. ‘timestep’</p></li>
+<li><p><strong>obs</strong> (<em>str</em>) – observable column name, e.g. ‘LocalEnergy’</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(myx, y0m, y0e) of type (list, float, float) containing
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(myx, y0m, y0e) of type (list, float, float) containing
 (timesteps, t=0 value, t=0 error)</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="module-qharv.sieve.scalar_h5">
 <span id="qharv-sieve-scalar-h5-module"></span><h2>qharv.sieve.scalar_h5 module<a class="headerlink" href="#module-qharv.sieve.scalar_h5" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
+<dt id="qharv.sieve.scalar_h5.extract_twists">
+<code class="sig-prename descclassname">qharv.sieve.scalar_h5.</code><code class="sig-name descname">extract_twists</code><span class="sig-paren">(</span><em class="sig-param">fh5</em>, <em class="sig-param">**suffix_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_h5.html#extract_twists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_h5.extract_twists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract an observable at all twists from an HDF5 archive</p>
+<p>each twist should be a group in at root</p>
+<p class="rubric">Example</p>
+<dl class="simple">
+<dt>twist000</dt><dd><p>myr
+gr_mean
+gr_error</p>
+</dd>
+<dt>twist001</dt><dd><p>myr
+gr_mean
+gr_error</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fh5</strong> (<em>str</em>) – h5 file location</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(meta data, mean, error)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(dict, np.array, np.array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="qharv.sieve.scalar_h5.get_ymean_yerror">
-<code class="descclassname">qharv.sieve.scalar_h5.</code><code class="descname">get_ymean_yerror</code><span class="sig-paren">(</span><em>fp</em>, <em>twist0</em>, <em>msuffix='_mean'</em>, <em>esuffix='_error'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_h5.html#get_ymean_yerror"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_h5.get_ymean_yerror" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.sieve.scalar_h5.</code><code class="sig-name descname">get_ymean_yerror</code><span class="sig-paren">(</span><em class="sig-param">fp</em>, <em class="sig-param">twist0</em>, <em class="sig-param">msuffix='_mean'</em>, <em class="sig-param">esuffix='_error'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_h5.html#get_ymean_yerror"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_h5.get_ymean_yerror" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="qharv.sieve.scalar_h5.twist_average_h5">
-<code class="descclassname">qharv.sieve.scalar_h5.</code><code class="descname">twist_average_h5</code><span class="sig-paren">(</span><em>fh5</em>, <em>weights=None</em>, <em>**suffix_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_h5.html#twist_average_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_h5.twist_average_h5" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.sieve.scalar_h5.</code><code class="sig-name descname">twist_average_h5</code><span class="sig-paren">(</span><em class="sig-param">fh5</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">**suffix_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_h5.html#twist_average_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_h5.twist_average_h5" title="Permalink to this definition">¶</a></dt>
 <dd><p>twist average data in an HDF5 archive</p>
-<p>each twist should be a group in at root</p>
-<p class="rubric">Example</p>
-<dl class="docutils">
-<dt>twist000</dt>
-<dd>myr
-gr_mean
-gr_error</dd>
-<dt>twist001</dt>
-<dd>myr
-gr_mean
-gr_error</dd>
+<p>see extract_twists for h5 file format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fh5</strong> (<em>str</em>) – h5 file location</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(meta data, mean, error)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(dict, np.array, np.array)</p>
+</dd>
 </dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fh5</strong> (<em>str</em>) – h5 file location</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(meta data, mean, error)</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(dict, np.array, np.array)</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.sieve.scalar_h5.twist_concat_h5">
-<code class="descclassname">qharv.sieve.scalar_h5.</code><code class="descname">twist_concat_h5</code><span class="sig-paren">(</span><em>fh5</em>, <em>name</em>, <em>twists=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_h5.html#twist_concat_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_h5.twist_concat_h5" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="module-qharv.sieve.stat_df">
-<span id="qharv-sieve-stat-df-module"></span><h2>qharv.sieve.stat_df module<a class="headerlink" href="#module-qharv.sieve.stat_df" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="qharv.sieve.stat_df.mix_extrap_gofr">
-<code class="descclassname">qharv.sieve.stat_df.</code><code class="descname">mix_extrap_gofr</code><span class="sig-paren">(</span><em>y0m</em>, <em>y0e</em>, <em>y1m</em>, <em>y1e</em>, <em>ythres=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/stat_df.html#mix_extrap_gofr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.stat_df.mix_extrap_gofr" title="Permalink to this definition">¶</a></dt>
-<dd><p>use VMC g(r) to correct mixed-estimator DMC g(r)
-:param y0m: mean  of VMC g(r)
-:type y0m: np.array
-:param y0e: error of VMC g(r)
-:type y0e: np.array
-:param y1m: mean  of DMC g(r)
-:type y1m: np.array
-:param y1e: error of DMC g(r)
-:type y1e: np.array
-:param ythres: VMC g(r) &lt; ythres will not be used</p>
-<blockquote>
-<div>to avoid numerical instability, default 0.01</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">(y2m,y2e) extrapolated g(r) mean and error</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="qharv.sieve.stat_df.mix_extrap_two_steps_linear">
-<code class="descclassname">qharv.sieve.stat_df.</code><code class="descname">mix_extrap_two_steps_linear</code><span class="sig-paren">(</span><em>entry</em>, <em>iss0</em>, <em>iss1</em>, <em>yname</em>, <em>series_name='series'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/stat_df.html#mix_extrap_two_steps_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.stat_df.mix_extrap_two_steps_linear" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="qharv.sieve.stat_df.mix_extrap_two_steps_log">
-<code class="descclassname">qharv.sieve.stat_df.</code><code class="descname">mix_extrap_two_steps_log</code><span class="sig-paren">(</span><em>entry</em>, <em>iss0</em>, <em>iss1</em>, <em>yname</em>, <em>series_name='series'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/stat_df.html#mix_extrap_two_steps_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.stat_df.mix_extrap_two_steps_log" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="qharv.sieve.stat_df.ts_extrap_two_steps_linear">
-<code class="descclassname">qharv.sieve.stat_df.</code><code class="descname">ts_extrap_two_steps_linear</code><span class="sig-paren">(</span><em>entry</em>, <em>iss0</em>, <em>iss1</em>, <em>yname</em>, <em>series_name='series'</em>, <em>ts_name='timestep'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/stat_df.html#ts_extrap_two_steps_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.stat_df.ts_extrap_two_steps_linear" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.sieve.scalar_h5.</code><code class="sig-name descname">twist_concat_h5</code><span class="sig-paren">(</span><em class="sig-param">fh5</em>, <em class="sig-param">name</em>, <em class="sig-param">twists=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/sieve/scalar_h5.html#twist_concat_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.sieve.scalar_h5.twist_concat_h5" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -443,13 +423,11 @@ gr_error</dd>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -499,7 +477,7 @@ gr_error</dd>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
     </div>
   </body>
 </html>

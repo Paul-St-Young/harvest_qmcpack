@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>qharv.inspect.axes_elem_pos &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -46,6 +44,15 @@
 <span class="c1">#  heavily borrow from the atomic simulation environment (ase) package</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+<span class="c1"># ======================== level 0: construct atoms =========================</span>
+
+<div class="viewcode-block" id="default_pbc"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_elem_pos.default_pbc">[docs]</a><span class="k">def</span> <span class="nf">default_pbc</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+  <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;pbc&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">pbc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+    <span class="n">pbc</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span><span class="o">*</span><span class="n">ndim</span>
+  <span class="k">return</span> <span class="n">pbc</span></div>
+
 <div class="viewcode-block" id="ase_atoms"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_elem_pos.ase_atoms">[docs]</a><span class="k">def</span> <span class="nf">ase_atoms</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; create ase Atoms object</span>
 
@@ -54,13 +61,32 @@
 <span class="sd">    elem (np.array): chemical symbols</span>
 <span class="sd">    pos (np.array): atomic positions</span>
 <span class="sd">  Return:</span>
-<span class="sd">    ase.Atoms: object</span>
+<span class="sd">    ase.Atoms: Atoms object</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="kn">from</span> <span class="nn">ase</span> <span class="k">import</span> <span class="n">Atoms</span>
-  <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;pbc&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-  <span class="k">if</span> <span class="n">pbc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
-    <span class="n">pbc</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span><span class="o">*</span><span class="n">ndim</span>
+  <span class="n">pbc</span> <span class="o">=</span> <span class="n">default_pbc</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+  <span class="n">s0</span> <span class="o">=</span> <span class="n">Atoms</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">elem</span><span class="p">),</span> <span class="n">cell</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">positions</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">s0</span></div>
+
+<div class="viewcode-block" id="make_atoms"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_elem_pos.make_atoms">[docs]</a><span class="k">def</span> <span class="nf">make_atoms</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">posl</span><span class="p">,</span> <span class="n">eleml</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; create ase Atoms object using arbitrary element names</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    axes (np.array): lattice vectors in row-major</span>
+<span class="sd">    posl (list): a list of atomic positions, each a np.array</span>
+<span class="sd">    eleml (list, optional): a list of chemical symbols</span>
+<span class="sd">  Return:</span>
+<span class="sd">    ase.Atoms: Atoms object</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="kn">from</span> <span class="nn">ase</span> <span class="k">import</span> <span class="n">Atoms</span>
+  <span class="n">pbc</span> <span class="o">=</span> <span class="n">default_pbc</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">eleml</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">eleml</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;He&#39;</span><span class="p">,</span> <span class="s1">&#39;Li&#39;</span><span class="p">,</span> <span class="s1">&#39;Be&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;Ne&#39;</span><span class="p">]</span>
+  <span class="n">pos</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">elem</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">e1</span><span class="p">,</span> <span class="n">p1</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">eleml</span><span class="p">,</span> <span class="n">posl</span><span class="p">):</span>
+    <span class="n">elem</span> <span class="o">+=</span> <span class="p">[</span><span class="n">e1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+    <span class="n">pos</span> <span class="o">+=</span> <span class="n">p1</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
   <span class="n">s0</span> <span class="o">=</span> <span class="n">Atoms</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">elem</span><span class="p">),</span> <span class="n">cell</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">positions</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">s0</span></div>
 
@@ -86,6 +112,8 @@
   <span class="p">}</span>
   <span class="k">return</span> <span class="n">data</span></div>
 
+<span class="c1"># ======================== level 0: use methods =========================</span>
+
 <div class="viewcode-block" id="ase_tile"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_elem_pos.ase_tile">[docs]</a><span class="k">def</span> <span class="nf">ase_tile</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">elem</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">tmat</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; use ase to tile supercell</span>
 
@@ -105,7 +133,17 @@
   <span class="n">axes1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">get_cell</span><span class="p">()</span>
   <span class="n">elem1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">get_chemical_symbols</span><span class="p">()</span>
   <span class="n">pos1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">get_positions</span><span class="p">()</span>
-  <span class="k">return</span> <span class="n">axes1</span><span class="p">,</span> <span class="n">elem1</span><span class="p">,</span> <span class="n">pos1</span></div>
+  <span class="k">return</span> <span class="n">axes1</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">elem1</span><span class="p">),</span> <span class="n">pos1</span></div>
+
+<div class="viewcode-block" id="ase_drij"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_elem_pos.ase_drij">[docs]</a><span class="k">def</span> <span class="nf">ase_drij</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">mic</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">mic</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">get_pbc</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">get_all_distances</span><span class="p">(</span><span class="n">mic</span><span class="o">=</span><span class="n">mic</span><span class="p">,</span> <span class="n">vector</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ase_rij"><a class="viewcode-back" href="../../../qharv.inspect.html#qharv.inspect.axes_elem_pos.ase_rij">[docs]</a><span class="k">def</span> <span class="nf">ase_rij</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">mic</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">mic</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">get_pbc</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">get_all_distances</span><span class="p">(</span><span class="n">mic</span><span class="o">=</span><span class="n">mic</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -114,13 +152,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -151,7 +187,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
     </div>
   </body>
 </html>

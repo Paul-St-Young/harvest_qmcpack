@@ -1,12 +1,10 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>qharv.plantation.kyrt &#8212; qharv 0.0.0 documentation</title>
+    <meta charset="utf-8" />
+    <title>qharv.field.kyrt &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -38,7 +36,7 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <h1>Source code for qharv.plantation.kyrt</h1><div class="highlight"><pre>
+  <h1>Source code for qharv.field.kyrt</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Author: Yubo &quot;Paul&quot; Yang</span>
 <span class="c1"># Email: yubo.paul.yang@gmail.com</span>
 <span class="c1"># Kyrt is a versatile fabric exclusive to the planet Florina of Sark.</span>
@@ -77,7 +75,7 @@
 <span class="p">}</span>
 
 <span class="c1"># ======================== level 0: basic color =========================</span>
-<div class="viewcode-block" id="get_cmap"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.get_cmap">[docs]</a><span class="k">def</span> <span class="nf">get_cmap</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="get_cmap"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.get_cmap">[docs]</a><span class="k">def</span> <span class="nf">get_cmap</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; return color map by name</span>
 
 <span class="sd">  Args:</span>
@@ -89,7 +87,7 @@
   <span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">cmap</span></div>
 
-<div class="viewcode-block" id="get_norm"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.get_norm">[docs]</a><span class="k">def</span> <span class="nf">get_norm</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
+<div class="viewcode-block" id="get_norm"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.get_norm">[docs]</a><span class="k">def</span> <span class="nf">get_norm</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; return norm function for scalar in range (vmin, vmax)</span>
 
 <span class="sd">  Args:</span>
@@ -101,7 +99,7 @@
   <span class="n">norm</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">norm</span></div>
 
-<div class="viewcode-block" id="scalar_colormap"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.scalar_colormap">[docs]</a><span class="k">def</span> <span class="nf">scalar_colormap</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="scalar_colormap"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.scalar_colormap">[docs]</a><span class="k">def</span> <span class="nf">scalar_colormap</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; return a function that maps a number to a color</span>
 
 <span class="sd">  Args:</span>
@@ -118,7 +116,7 @@
     <span class="k">return</span> <span class="n">cmap</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
   <span class="k">return</span> <span class="n">v2c</span></div>
 
-<div class="viewcode-block" id="scalar_colorbar"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.scalar_colorbar">[docs]</a><span class="k">def</span> <span class="nf">scalar_colorbar</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="scalar_colorbar"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.scalar_colorbar">[docs]</a><span class="k">def</span> <span class="nf">scalar_colorbar</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; return a colorbar for scalar_color_map()</span>
 
 <span class="sd">  Args:</span>
@@ -137,7 +135,7 @@
   <span class="k">return</span> <span class="n">cbar</span></div>
 
 <span class="c1"># ======================== level 0: basic ax edits =========================</span>
-<div class="viewcode-block" id="figaxad"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.figaxad">[docs]</a><span class="k">def</span> <span class="nf">figaxad</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+<div class="viewcode-block" id="figaxad"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.figaxad">[docs]</a><span class="k">def</span> <span class="nf">figaxad</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; construct a absolute/difference (ad) figure</span>
 <span class="sd">   top 3/4 of the plot will be comparison at an absolute scale</span>
 <span class="sd">   bottom 1/4 of the plot will be comparison at a relative scale</span>
@@ -158,7 +156,7 @@
   <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">axa</span><span class="p">,</span> <span class="n">axd</span></div>
 
-<div class="viewcode-block" id="set_xy_format"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.set_xy_format">[docs]</a><span class="k">def</span> <span class="nf">set_xy_format</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xfmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%3.2f</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">yfmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%3.2f</span><span class="s1">&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="set_xy_format"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.set_xy_format">[docs]</a><span class="k">def</span> <span class="nf">set_xy_format</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xfmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%3.2f</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">yfmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%3.2f</span><span class="s1">&#39;</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; change x,y tick formats e.g. number of digits</span>
 
 <span class="sd">  Args:</span>
@@ -169,7 +167,7 @@
   <span class="n">ax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">FormatStrFormatter</span><span class="p">(</span><span class="n">xfmt</span><span class="p">))</span>
   <span class="n">ax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">FormatStrFormatter</span><span class="p">(</span><span class="n">yfmt</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="set_tick_font"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.set_tick_font">[docs]</a><span class="k">def</span> <span class="nf">set_tick_font</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">ysize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
+<div class="viewcode-block" id="set_tick_font"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.set_tick_font">[docs]</a><span class="k">def</span> <span class="nf">set_tick_font</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">ysize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
   <span class="n">xweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">yweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; change x,y tick fonts</span>
 
@@ -186,7 +184,7 @@
   <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_yticklabels</span><span class="p">(),</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">ysize</span><span class="p">,</span>
     <span class="n">fontweight</span><span class="o">=</span><span class="n">yweight</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="set_label_font"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.set_label_font">[docs]</a><span class="k">def</span> <span class="nf">set_label_font</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">ysize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
+<div class="viewcode-block" id="set_label_font"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.set_label_font">[docs]</a><span class="k">def</span> <span class="nf">set_label_font</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">xsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">ysize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
   <span class="n">xweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="n">yweight</span><span class="o">=</span><span class="s1">&#39;bold&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; change x,y label fonts</span>
 
@@ -203,7 +201,7 @@
   <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">ysize</span><span class="p">,</span>
     <span class="n">fontweight</span><span class="o">=</span><span class="n">yweight</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="xtop"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.xtop">[docs]</a><span class="k">def</span> <span class="nf">xtop</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+<div class="viewcode-block" id="xtop"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.xtop">[docs]</a><span class="k">def</span> <span class="nf">xtop</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; move xaxis label and ticks to the top</span>
 
 <span class="sd">  Args:</span>
@@ -213,7 +211,7 @@
   <span class="n">xaxis</span><span class="o">.</span><span class="n">tick_top</span><span class="p">()</span>
   <span class="n">xaxis</span><span class="o">.</span><span class="n">set_label_position</span><span class="p">(</span><span class="s1">&#39;top&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="yright"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.yright">[docs]</a><span class="k">def</span> <span class="nf">yright</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+<div class="viewcode-block" id="yright"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.yright">[docs]</a><span class="k">def</span> <span class="nf">yright</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; move yaxis label and ticks to the right</span>
 
 <span class="sd">  Args:</span>
@@ -223,14 +221,48 @@
   <span class="n">yaxis</span><span class="o">.</span><span class="n">tick_right</span><span class="p">()</span>
   <span class="n">yaxis</span><span class="o">.</span><span class="n">set_label_position</span><span class="p">(</span><span class="s1">&#39;right&#39;</span><span class="p">)</span></div>
 
+<span class="c1"># ======================= level 1: advanced ax edits ========================</span>
+
+<div class="viewcode-block" id="cox"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.cox">[docs]</a><span class="k">def</span> <span class="nf">cox</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">xtlabels</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Add co-xticklabels at top of the plot, e.g., with a different unit</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    ax (plt.Axes): matplotlib axes</span>
+<span class="sd">    x (list): xtick locations</span>
+<span class="sd">    xtlabels (list): xtick labels</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">ax1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">twiny</span><span class="p">()</span>
+  <span class="n">ax1</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">())</span>
+  <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+  <span class="n">ax1</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+  <span class="n">ax1</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">xtlabels</span><span class="p">)</span>
+  <span class="n">xtop</span><span class="p">(</span><span class="n">ax1</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">ax1</span></div>
+
+<div class="viewcode-block" id="coy"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.coy">[docs]</a><span class="k">def</span> <span class="nf">coy</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ytlabels</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;Add co-yticklabels on the right of the plot, e.g., with a different unit</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    ax (plt.Axes): matplotlib axes</span>
+<span class="sd">    y (list): ytick locations</span>
+<span class="sd">    ytlabels (list): ytick labels</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">ax1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+  <span class="n">ax1</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">())</span>
+  <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+  <span class="n">ax1</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+  <span class="n">ax1</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">ytlabels</span><span class="p">)</span>
+  <span class="n">yright</span><span class="p">(</span><span class="n">ax1</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">ax1</span></div>
+
 <span class="c1"># ====================== level 0: basic legend edits =======================</span>
-<div class="viewcode-block" id="set_legend_marker_size"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.set_legend_marker_size">[docs]</a><span class="k">def</span> <span class="nf">set_legend_marker_size</span><span class="p">(</span><span class="n">leg</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="set_legend_marker_size"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.set_legend_marker_size">[docs]</a><span class="k">def</span> <span class="nf">set_legend_marker_size</span><span class="p">(</span><span class="n">leg</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
   <span class="n">handl</span> <span class="o">=</span> <span class="n">leg</span><span class="o">.</span><span class="n">legendHandles</span>
   <span class="n">msl</span>   <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">handl</span><span class="p">)</span>  <span class="c1"># override marker sizes here</span>
   <span class="k">for</span> <span class="n">hand</span><span class="p">,</span> <span class="n">ms</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">handl</span><span class="p">,</span> <span class="n">msl</span><span class="p">):</span>
     <span class="n">hand</span><span class="o">.</span><span class="n">_legmarker</span><span class="o">.</span><span class="n">set_markersize</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="create_legend"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.create_legend">[docs]</a><span class="k">def</span> <span class="nf">create_legend</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">styles</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="create_legend"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.create_legend">[docs]</a><span class="k">def</span> <span class="nf">create_legend</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">styles</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; create custom legend</span>
 
 <span class="sd">  learned from &quot;Composing Custom Legends&quot;</span>
@@ -245,8 +277,16 @@
   <span class="n">leg</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">custom_lines</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">leg</span></div>
 
+<span class="c1"># ====================== level 0: global edits =======================</span>
+<div class="viewcode-block" id="set_style"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.set_style">[docs]</a><span class="k">def</span> <span class="nf">set_style</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;ticks&#39;</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s1">&#39;talk&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">context</span><span class="o">==</span><span class="s1">&#39;talk&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;font_scale&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;font_scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.7</span>
+  <span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+  <span class="n">sns</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
 <span class="c1"># ====================== level 0: basic Line2D edits =======================</span>
-<div class="viewcode-block" id="get_style"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.get_style">[docs]</a><span class="k">def</span> <span class="nf">get_style</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+<div class="viewcode-block" id="get_style"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.get_style">[docs]</a><span class="k">def</span> <span class="nf">get_style</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; get plot styles from Line2D object</span>
 
 <span class="sd">  mostly copied from &quot;Line2D.update_from&quot;</span>
@@ -267,7 +307,7 @@
   <span class="k">return</span> <span class="n">styles</span></div>
 
 <span class="c1"># ====================== level 0: basic Line2D =======================</span>
-<div class="viewcode-block" id="errorshade"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.errorshade">[docs]</a><span class="k">def</span> <span class="nf">errorshade</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ym</span><span class="p">,</span> <span class="n">ye</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="errorshade"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.errorshade">[docs]</a><span class="k">def</span> <span class="nf">errorshade</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ym</span><span class="p">,</span> <span class="n">ye</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="n">line</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ym</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.4</span>
   <span class="n">myc</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
@@ -275,7 +315,9 @@
   <span class="k">return</span> <span class="n">line</span><span class="p">,</span> <span class="n">eline</span></div>
 
 <span class="c1"># ===================== level 1: fit line ======================</span>
-<div class="viewcode-block" id="show_fit"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.show_fit">[docs]</a><span class="k">def</span> <span class="nf">show_fit</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="show_fit"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.show_fit">[docs]</a><span class="k">def</span> <span class="nf">show_fit</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">popt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">xmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">circle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">circle_style</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="n">cross</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cross_style</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; fit a segment of (x, y) data and show fit</span>
 
 <span class="sd">  get x, y data from line; use sel to make selection</span>
@@ -288,6 +330,8 @@
 <span class="sd">    nx (int, optional): grid size, default 64</span>
 <span class="sd">    xmin (float, optional): grid min</span>
 <span class="sd">    xmax (float, optional): grid max</span>
+<span class="sd">    circle (bool, optional): circle selected points, default True</span>
+<span class="sd">    cross (bool, optional): cross out deselected points, default False</span>
 <span class="sd">  Return:</span>
 <span class="sd">    (np.array, np.array, list): (popt, perr, lines)</span>
 <span class="sd">  &quot;&quot;&quot;</span>
@@ -301,26 +345,53 @@
     <span class="n">sel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">myx</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
   <span class="n">myx1</span> <span class="o">=</span> <span class="n">myx</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span>
   <span class="n">myy1</span> <span class="o">=</span> <span class="n">myy</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span>
+  <span class="n">myx11</span> <span class="o">=</span> <span class="n">myx</span><span class="p">[</span><span class="o">~</span><span class="n">sel</span><span class="p">]</span>
+  <span class="n">myy11</span> <span class="o">=</span> <span class="n">myy</span><span class="p">[</span><span class="o">~</span><span class="n">sel</span><span class="p">]</span>
   <span class="k">if</span> <span class="n">xmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">xmin</span> <span class="o">=</span> <span class="n">myx1</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
   <span class="k">if</span> <span class="n">xmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
     <span class="n">xmax</span> <span class="o">=</span> <span class="n">myx1</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-  <span class="n">styles</span> <span class="o">=</span> <span class="n">get_style</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-  <span class="n">styles</span><span class="p">[</span><span class="s1">&#39;ls&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-  <span class="n">styles</span><span class="p">[</span><span class="s1">&#39;marker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span>
-  <span class="n">styles</span><span class="p">[</span><span class="s1">&#39;fillstyle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>
-  <span class="n">line1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">myx</span><span class="p">[</span><span class="n">sel</span><span class="p">],</span> <span class="n">myy</span><span class="p">[</span><span class="n">sel</span><span class="p">],</span> <span class="o">**</span><span class="n">styles</span><span class="p">)</span>
-  <span class="c1"># perform fit</span>
-  <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">myx1</span><span class="p">,</span> <span class="n">myy1</span><span class="p">)</span>
-  <span class="n">perr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">pcov</span><span class="p">))</span>
+  <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">if</span> <span class="n">circle</span><span class="p">:</span>
+    <span class="n">styles</span> <span class="o">=</span> <span class="n">get_style</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="n">styles</span><span class="p">[</span><span class="s1">&#39;linestyle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">styles</span><span class="p">[</span><span class="s1">&#39;marker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;o&#39;</span>
+    <span class="n">styles</span><span class="p">[</span><span class="s1">&#39;fillstyle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>
+    <span class="k">if</span> <span class="n">circle_style</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">styles</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">circle_style</span><span class="p">)</span>
+    <span class="n">line1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">myx</span><span class="p">[</span><span class="n">sel</span><span class="p">],</span> <span class="n">myy</span><span class="p">[</span><span class="n">sel</span><span class="p">],</span> <span class="o">**</span><span class="n">styles</span><span class="p">)</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+  <span class="k">if</span> <span class="n">cross</span><span class="p">:</span>
+    <span class="n">styles</span> <span class="o">=</span> <span class="n">get_style</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="n">styles</span><span class="p">[</span><span class="s1">&#39;linestyle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">styles</span><span class="p">[</span><span class="s1">&#39;marker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span>
+    <span class="k">if</span> <span class="n">cross_style</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">styles</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cross_style</span><span class="p">)</span>
+    <span class="n">line11</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">myx11</span><span class="p">,</span> <span class="n">myy11</span><span class="p">,</span> <span class="o">**</span><span class="n">styles</span><span class="p">)</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line11</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+  <span class="k">if</span> <span class="n">popt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># perform fit</span>
+    <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">myx1</span><span class="p">,</span> <span class="n">myy1</span><span class="p">)</span>
+    <span class="n">perr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">pcov</span><span class="p">))</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">perr</span> <span class="o">=</span> <span class="kc">None</span>
   <span class="c1"># show fit</span>
   <span class="n">finex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
   <span class="n">line2</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">finex</span><span class="p">,</span> <span class="n">model</span><span class="p">(</span><span class="n">finex</span><span class="p">,</span> <span class="o">*</span><span class="n">popt</span><span class="p">),</span>
     <span class="n">c</span><span class="o">=</span><span class="n">line</span><span class="o">.</span><span class="n">get_color</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line2</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+  <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
   <span class="k">return</span> <span class="n">popt</span><span class="p">,</span> <span class="n">perr</span><span class="p">,</span> <span class="n">lines</span></div>
 
-<div class="viewcode-block" id="show_spline"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.show_spline">[docs]</a><span class="k">def</span> <span class="nf">show_spline</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">spl_kws</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span> <span class="n">nx</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="smooth_bspline"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.smooth_bspline">[docs]</a><span class="k">def</span> <span class="nf">smooth_bspline</span><span class="p">(</span><span class="n">myx</span><span class="p">,</span> <span class="n">myy</span><span class="p">,</span> <span class="n">nxmult</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">spl_kws</span><span class="p">):</span>
+  <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+  <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">splrep</span><span class="p">,</span> <span class="n">splev</span>
+  <span class="n">nx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">myx</span><span class="p">)</span><span class="o">*</span><span class="n">nxmult</span>
+  <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">myx</span><span class="p">)</span>
+  <span class="n">tck</span> <span class="o">=</span> <span class="n">splrep</span><span class="p">(</span><span class="n">myx</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">myy</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="o">**</span><span class="n">spl_kws</span><span class="p">)</span>
+  <span class="n">finex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">myx</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">myx</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">nx</span><span class="p">)</span>
+  <span class="n">finey</span> <span class="o">=</span> <span class="n">splev</span><span class="p">(</span><span class="n">finex</span><span class="p">,</span> <span class="n">tck</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">finex</span><span class="p">,</span> <span class="n">finey</span></div>
+
+<div class="viewcode-block" id="show_spline"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.show_spline">[docs]</a><span class="k">def</span> <span class="nf">show_spline</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">spl_kws</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span> <span class="n">sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; show a smooth spline through given line x y</span>
 
 <span class="sd">  Args:</span>
@@ -332,17 +403,54 @@
 <span class="sd">    Line1D: interpolating line</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-  <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">splrep</span><span class="p">,</span> <span class="n">splev</span>
   <span class="n">myx</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">get_xdata</span><span class="p">()</span>
   <span class="n">myy</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">sel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">myx</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+  <span class="n">myx</span> <span class="o">=</span> <span class="n">myx</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span>
+  <span class="n">myy</span> <span class="o">=</span> <span class="n">myy</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span>
+  <span class="n">finex</span><span class="p">,</span> <span class="n">finey</span> <span class="o">=</span> <span class="n">smooth_bspline</span><span class="p">(</span><span class="n">myx</span><span class="p">,</span> <span class="n">myy</span><span class="p">,</span> <span class="o">**</span><span class="n">spl_kws</span><span class="p">)</span>
   <span class="n">color</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
-  <span class="n">finex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">myx</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">myx</span><span class="p">),</span> <span class="n">nx</span><span class="p">)</span>
-  <span class="n">tck</span> <span class="o">=</span> <span class="n">splrep</span><span class="p">(</span><span class="n">myx</span><span class="p">,</span> <span class="n">myy</span><span class="p">,</span> <span class="o">**</span><span class="n">spl_kws</span><span class="p">)</span>
-  <span class="n">line1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">finex</span><span class="p">,</span> <span class="n">splev</span><span class="p">(</span><span class="n">finex</span><span class="p">,</span> <span class="n">tck</span><span class="p">),</span> <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="n">line1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">finex</span><span class="p">,</span> <span class="n">finey</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">line1</span></div>
 
+<div class="viewcode-block" id="krig"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.krig">[docs]</a><span class="k">def</span> <span class="nf">krig</span><span class="p">(</span><span class="n">finex</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">length_scale</span><span class="p">,</span> <span class="n">noise_level</span><span class="p">):</span>
+  <span class="kn">from</span> <span class="nn">sklearn.gaussian_process.gpr</span> <span class="k">import</span> <span class="n">GaussianProcessRegressor</span>
+  <span class="kn">from</span> <span class="nn">sklearn.gaussian_process.kernels</span> <span class="k">import</span> <span class="n">DotProduct</span><span class="p">,</span> <span class="n">RBF</span>
+  <span class="kn">from</span> <span class="nn">sklearn.gaussian_process.kernels</span> <span class="k">import</span> <span class="n">WhiteKernel</span>
+  <span class="n">kernel</span> <span class="o">=</span> <span class="n">DotProduct</span><span class="p">()</span> <span class="o">+</span> <span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">)</span>
+  <span class="n">kernel</span> <span class="o">+=</span> <span class="n">WhiteKernel</span><span class="p">(</span><span class="n">noise_level</span><span class="o">=</span><span class="n">noise_level</span><span class="p">)</span>
+  <span class="n">gpr</span> <span class="o">=</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="n">kernel</span><span class="p">)</span>
+  <span class="n">gpr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x0</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">y0</span><span class="p">)</span>
+  <span class="n">ym</span><span class="p">,</span> <span class="n">ye</span> <span class="o">=</span> <span class="n">gpr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">finex</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">return_std</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">ym</span><span class="p">,</span> <span class="n">ye</span></div>
+
+<div class="viewcode-block" id="gpr_errorshade"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.gpr_errorshade">[docs]</a><span class="k">def</span> <span class="nf">gpr_errorshade</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ym</span><span class="p">,</span> <span class="n">ye</span><span class="p">,</span>
+  <span class="n">length_scale</span><span class="p">,</span> <span class="n">noise_level</span><span class="p">,</span> <span class="n">fb_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;WARNING: length_scale and noise_level are VERY DIFFICULT to tune &quot;&quot;&quot;</span>
+  <span class="c1"># make errorbar plot and extract color</span>
+  <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;ls&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;linestyle&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ls&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="n">line</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ym</span><span class="p">,</span> <span class="n">ye</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  <span class="n">myc</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
+  <span class="c1"># smoothly fit data</span>
+  <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+  <span class="n">dx</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+  <span class="n">xmin</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">();</span> <span class="n">xmax</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+  <span class="n">finex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">dx</span><span class="o">/</span><span class="mf">10.</span><span class="p">)</span>
+  <span class="n">ylm</span><span class="p">,</span> <span class="n">yle</span> <span class="o">=</span> <span class="n">krig</span><span class="p">(</span><span class="n">finex</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ym</span><span class="o">-</span><span class="n">ye</span><span class="p">,</span>
+    <span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">,</span> <span class="n">noise_level</span><span class="o">=</span><span class="n">noise_level</span><span class="p">)</span>
+  <span class="n">yhm</span><span class="p">,</span> <span class="n">yhe</span> <span class="o">=</span> <span class="n">krig</span><span class="p">(</span><span class="n">finex</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">ym</span><span class="o">+</span><span class="n">ye</span><span class="p">,</span>
+    <span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">,</span> <span class="n">noise_level</span><span class="o">=</span><span class="n">noise_level</span><span class="p">)</span>
+  <span class="c1"># plot fit</span>
+  <span class="k">if</span> <span class="n">fb_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">fb_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">myc</span><span class="p">,</span> <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">}</span>
+  <span class="n">eline</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">finex</span><span class="p">,</span> <span class="n">ylm</span><span class="o">-</span><span class="n">yle</span><span class="p">,</span> <span class="n">yhm</span><span class="o">+</span><span class="n">yhe</span><span class="p">,</span> <span class="o">**</span><span class="n">fb_kwargs</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eline</span></div>
+
 <span class="c1"># ===================== level 2: insets ======================</span>
-<div class="viewcode-block" id="inset_zoom"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.inset_zoom">[docs]</a><span class="k">def</span> <span class="nf">inset_zoom</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax_box</span><span class="p">,</span> <span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span><span class="p">,</span> <span class="n">draw_func</span><span class="p">,</span> <span class="n">xy_label</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="inset_zoom"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.inset_zoom">[docs]</a><span class="k">def</span> <span class="nf">inset_zoom</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax_box</span><span class="p">,</span> <span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span><span class="p">,</span> <span class="n">draw_func</span><span class="p">,</span> <span class="n">xy_label</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; show an inset that zooms into a given part of the figure</span>
 
 <span class="sd">  Args:</span>
@@ -369,7 +477,7 @@
   <span class="k">return</span> <span class="n">ax1</span></div>
 
 <span class="c1"># ======================== composition =========================</span>
-<div class="viewcode-block" id="pretty_up"><a class="viewcode-back" href="../../../qharv.plantation.html#qharv.plantation.kyrt.pretty_up">[docs]</a><span class="k">def</span> <span class="nf">pretty_up</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+<div class="viewcode-block" id="pretty_up"><a class="viewcode-back" href="../../../qharv.field.html#qharv.field.kyrt.pretty_up">[docs]</a><span class="k">def</span> <span class="nf">pretty_up</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
   <span class="n">set_tick_font</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
   <span class="n">set_label_font</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span></div>
 </pre></div>
@@ -380,13 +488,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -417,7 +523,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
     </div>
   </body>
 </html>

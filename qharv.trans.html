@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>qharv.trans package &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -54,91 +52,61 @@
 <div class="section" id="module-qharv.trans.move">
 <span id="qharv-trans-move-module"></span><h2>qharv.trans.move module<a class="headerlink" href="#module-qharv.trans.move" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="qharv.trans.move.clean_path">
-<code class="descclassname">qharv.trans.move.</code><code class="descname">clean_path</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/move.html#clean_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.move.clean_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>remove any ‘.’ or ‘..’ in the path expression
-:param path: any path string e.g. ‘../run/./opt’
-:type path: str</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">clean path e.g. ‘run/opt’</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="qharv.trans.move.inverse_st_map">
-<code class="descclassname">qharv.trans.move.</code><code class="descname">inverse_st_map</code><span class="sig-paren">(</span><em>flist</em>, <em>new_dir</em>, <em>old_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/move.html#inverse_st_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.move.inverse_st_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.trans.move.</code><code class="sig-name descname">inverse_st_map</code><span class="sig-paren">(</span><em class="sig-param">flist</em>, <em class="sig-param">new_dir</em>, <em class="sig-param">old_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/move.html#inverse_st_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.move.inverse_st_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>fix common screw up: moved all source files without saving st_map</p>
-<dl class="docutils">
-<dt>e.g.</dt>
-<dd><dl class="first last docutils">
-<dt>inverse_st_map([‘./opt_backup/opt0’, ‘./opt_backup/opt1’],</dt>
-<dd>‘./opt_backup’,
-‘./run’)</dd>
+<dl class="simple">
+<dt>e.g.</dt><dd><dl class="simple">
+<dt>inverse_st_map([‘./opt_backup/opt0’, ‘./opt_backup/opt1’],</dt><dd><p>‘./opt_backup’,
+‘./run’)</p>
+</dd>
 </dl>
 </dd>
 </dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>flist</strong> (<em>list</em>) – a list of backedup file locations</li>
-<li><strong>new_dir</strong> (<em>str</em>) – directory holding the backups</li>
-<li><strong>old_dir</strong> (<em>str</em>) – directory to restore backups to</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flist</strong> (<em>list</em>) – a list of backedup file locations</p></li>
+<li><p><strong>new_dir</strong> (<em>str</em>) – directory holding the backups</p></li>
+<li><p><strong>old_dir</strong> (<em>str</em>) – directory to restore backups to</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.trans.move.move_by_st_map">
-<code class="descclassname">qharv.trans.move.</code><code class="descname">move_by_st_map</code><span class="sig-paren">(</span><em>st_map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/move.html#move_by_st_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.move.move_by_st_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.trans.move.</code><code class="sig-name descname">move_by_st_map</code><span class="sig-paren">(</span><em class="sig-param">st_map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/move.html#move_by_st_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.move.move_by_st_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>move files according to source-target map</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>st_map</strong> (<em>dict</em>) – source-target map</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>st_map</strong> (<em>dict</em>) – source-target map</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.trans.move.source_target_map">
-<code class="descclassname">qharv.trans.move.</code><code class="descname">source_target_map</code><span class="sig-paren">(</span><em>flist</em>, <em>new_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/move.html#source_target_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.move.source_target_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.trans.move.</code><code class="sig-name descname">source_target_map</code><span class="sig-paren">(</span><em class="sig-param">flist</em>, <em class="sig-param">new_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/move.html#source_target_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.move.source_target_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>for each file in flist, provide its new location in new_dir</p>
-<dl class="docutils">
-<dt>e.g.</dt>
-<dd>source_target_map([‘./run/opt0’, ‘./run/opt1’], ‘./opt_backup’)</dd>
+<dl class="simple">
+<dt>e.g.</dt><dd><p>source_target_map([‘./run/opt0’, ‘./run/opt1’], ‘./opt_backup’)</p>
+</dd>
 </dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>flist</strong> (<em>list</em>) – a list of file locations</li>
-<li><strong>new_dir</strong> (<em>str</em>) – location of new directory</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flist</strong> (<em>list</em>) – a list of file locations</p></li>
+<li><p><strong>new_dir</strong> (<em>str</em>) – location of new directory</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">st_map, source-target map for files operations such as copy or move.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>st_map, source-target map for files operations such as copy or move.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -146,48 +114,44 @@
 <span id="qharv-trans-nexus-qmc-module"></span><h2>qharv.trans.nexus_qmc module<a class="headerlink" href="#module-qharv.trans.nexus_qmc" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="qharv.trans.nexus_qmc.backup">
-<code class="descclassname">qharv.trans.nexus_qmc.</code><code class="descname">backup</code><span class="sig-paren">(</span><em>ref_loc</em>, <em>tar_loc</em>, <em>execute=False</em>, <em>skip_exist=False</em>, <em>overwrite_target=False</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/nexus_qmc.html#backup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.nexus_qmc.backup" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.trans.nexus_qmc.</code><code class="sig-name descname">backup</code><span class="sig-paren">(</span><em class="sig-param">ref_loc</em>, <em class="sig-param">tar_loc</em>, <em class="sig-param">execute=False</em>, <em class="sig-param">skip_exist=False</em>, <em class="sig-param">overwrite_target=False</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/nexus_qmc.html#backup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.nexus_qmc.backup" title="Permalink to this definition">¶</a></dt>
 <dd><p>essentially <cite>rsync</cite> from bash, but with a bunch of checks</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.trans.nexus_qmc.backup_calculations">
-<code class="descclassname">qharv.trans.nexus_qmc.</code><code class="descname">backup_calculations</code><span class="sig-paren">(</span><em>ref_dir</em>, <em>tar_dir</em>, <em>subdirs</em>, <em>execute=False</em>, <em>verbose=True</em>, <em>**bk_kws</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/nexus_qmc.html#backup_calculations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.nexus_qmc.backup_calculations" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.trans.nexus_qmc.</code><code class="sig-name descname">backup_calculations</code><span class="sig-paren">(</span><em class="sig-param">ref_dir</em>, <em class="sig-param">tar_dir</em>, <em class="sig-param">subdirs</em>, <em class="sig-param">execute=False</em>, <em class="sig-param">verbose=True</em>, <em class="sig-param">**bk_kws</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/nexus_qmc.html#backup_calculations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.nexus_qmc.backup_calculations" title="Permalink to this definition">¶</a></dt>
 <dd><p>copy all nexus calculations listed in subdirs from ref_dir to tar_dir
 motivation: backup nexus-generated calculations and rerun with a tweak
 problem: nexus keeps a run folder and a result folder in parallel. A full backup</p>
 <blockquote>
-<div>must take both folders into account and keep them consistent.</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ref_dir</strong> (<em>str</em>) – reference directory containing calculations to backup tar_dir (str): target directory to backup (e.g. attic/)</li>
-<li><strong>subdirs</strong> (<em>list</em>) – a list of folders names generated by nexus, e.g.
-[‘opt’,’dmc’]</li>
-<li><strong>bk_kws</strong> (<em>dict</em>) – keyword arguments to pass to backup(ref_loc,tar_loc)</li>
+<div><p>must take both folders into account and keep them consistent.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ref_dir</strong> (<em>str</em>) – reference directory containing calculations to backup tar_dir (str): target directory to backup (e.g. attic/)</p></li>
+<li><p><strong>subdirs</strong> (<em>list</em>) – a list of folders names generated by nexus, e.g.
+[‘opt’,’dmc’]</p></li>
+<li><p><strong>bk_kws</strong> (<em>dict</em>) – keyword arguments to pass to backup(ref_loc,tar_loc)</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>a list of source-target maps backed up, this list can be used</dt>
-<dd><p class="first last">to clean the backed up directory</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>a list of source-target maps backed up, this list can be used</dt><dd><p>to clean the backed up directory</p>
 </dd>
 </dl>
 </p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="qharv.trans.nexus_qmc.find_run_folders">
-<code class="descclassname">qharv.trans.nexus_qmc.</code><code class="descname">find_run_folders</code><span class="sig-paren">(</span><em>results_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/nexus_qmc.html#find_run_folders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.nexus_qmc.find_run_folders" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">qharv.trans.nexus_qmc.</code><code class="sig-name descname">find_run_folders</code><span class="sig-paren">(</span><em class="sig-param">results_dir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/qharv/trans/nexus_qmc.html#find_run_folders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#qharv.trans.nexus_qmc.find_run_folders" title="Permalink to this definition">¶</a></dt>
 <dd><p>find all nexus-generated run folders given the results folder</p>
 </dd></dl>
 
@@ -204,13 +168,11 @@ problem: nexus keeps a run folder and a result folder in parallel. A full backup
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -260,7 +222,7 @@ problem: nexus keeps a run folder and a result folder in parallel. A full backup
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
     </div>
   </body>
 </html>

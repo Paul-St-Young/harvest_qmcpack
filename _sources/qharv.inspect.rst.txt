@@ -8,71 +8,71 @@ qharv.inspect.axes\_elem\_pos module
 ------------------------------------
 
 .. automodule:: qharv.inspect.axes_elem_pos
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.inspect.axes\_pos module
 ------------------------------
 
 .. automodule:: qharv.inspect.axes_pos
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.inspect.box\_pos module
 -----------------------------
 
 .. automodule:: qharv.inspect.box_pos
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.inspect.crystal module
 ----------------------------
 
 .. automodule:: qharv.inspect.crystal
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.inspect.grsk module
 -------------------------
 
 .. automodule:: qharv.inspect.grsk
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.inspect.inp\_xml module
 -----------------------------
 
 .. automodule:: qharv.inspect.inp_xml
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.inspect.jas module
 ------------------------
 
 .. automodule:: qharv.inspect.jas
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.inspect.volumetric module
 -------------------------------
 
 .. automodule:: qharv.inspect.volumetric
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 
 Module contents
 ---------------
 
 .. automodule:: qharv.inspect
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

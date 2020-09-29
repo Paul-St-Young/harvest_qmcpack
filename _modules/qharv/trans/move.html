@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>qharv.trans.move &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -45,21 +43,8 @@
 <span class="c1">#  useful routines for file transfer and file backup</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">subprocess</span> <span class="k">as</span> <span class="nn">sp</span>
-<span class="kn">from</span> <span class="nn">qharv.plantation.sugar</span> <span class="k">import</span> <span class="n">mkdir</span>
-
-
-<div class="viewcode-block" id="clean_path"><a class="viewcode-back" href="../../../qharv.trans.html#qharv.trans.move.clean_path">[docs]</a><span class="k">def</span> <span class="nf">clean_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; remove any &#39;.&#39; or &#39;..&#39; in the path expression</span>
-<span class="sd">  Args:</span>
-<span class="sd">    path (str): any path string e.g. &#39;../run/./opt&#39;</span>
-<span class="sd">  Return:</span>
-<span class="sd">    str: clean path e.g. &#39;run/opt&#39;</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">tokens</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
-  <span class="n">tokens1</span> <span class="o">=</span> <span class="p">[</span><span class="n">tok</span> <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="n">tok</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;..&#39;</span><span class="p">)]</span>
-  <span class="n">path1</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens1</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">path1</span></div>
-
+<span class="kn">from</span> <span class="nn">qharv.reel.mole</span> <span class="k">import</span> <span class="n">clean_path</span>
+<span class="kn">from</span> <span class="nn">qharv.field.sugar</span> <span class="k">import</span> <span class="n">mkdir</span>
 
 <div class="viewcode-block" id="source_target_map"><a class="viewcode-back" href="../../../qharv.trans.html#qharv.trans.move.source_target_map">[docs]</a><span class="k">def</span> <span class="nf">source_target_map</span><span class="p">(</span><span class="n">flist</span><span class="p">,</span> <span class="n">new_dir</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; for each file in flist, provide its new location in new_dir</span>
@@ -78,7 +63,6 @@
     <span class="n">floc1</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_dir</span><span class="p">,</span> <span class="n">clean_path</span><span class="p">(</span><span class="n">floc</span><span class="p">))</span>
     <span class="n">st_map</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">floc</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">floc1</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">st_map</span></div>
-
 
 <div class="viewcode-block" id="inverse_st_map"><a class="viewcode-back" href="../../../qharv.trans.html#qharv.trans.move.inverse_st_map">[docs]</a><span class="k">def</span> <span class="nf">inverse_st_map</span><span class="p">(</span><span class="n">flist</span><span class="p">,</span> <span class="n">new_dir</span><span class="p">,</span> <span class="n">old_dir</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; fix common screw up: moved all source files without saving st_map</span>
@@ -100,7 +84,6 @@
     <span class="n">new_map</span><span class="p">[</span><span class="n">floc</span><span class="p">]</span> <span class="o">=</span> <span class="n">floc</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">new_dir</span><span class="p">,</span> <span class="n">parent_dir</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">new_map</span></div>
 
-
 <div class="viewcode-block" id="move_by_st_map"><a class="viewcode-back" href="../../../qharv.trans.html#qharv.trans.move.move_by_st_map">[docs]</a><span class="k">def</span> <span class="nf">move_by_st_map</span><span class="p">(</span><span class="n">st_map</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; move files according to source-target map</span>
 
@@ -119,13 +102,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -156,7 +137,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
     </div>
   </body>
 </html>

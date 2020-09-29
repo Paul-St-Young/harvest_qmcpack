@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>qharv.reel.stat_h5 &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -44,7 +42,6 @@
 <span class="c1"># Routines to parse hdf5 spectral and volumetric data output.</span>
 <span class="c1">#  Mostly built around h5py&#39;s API.</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">qharv.seed.wf_h5</span> <span class="k">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">ls</span>
@@ -60,18 +57,21 @@
 <span class="sd">    kappa (float, optional): pre-calculate auto-correlation, default is to</span>
 <span class="sd">     re-calculate on-the-fly</span>
 <span class="sd">    axis (int, optional): axis to average over, default 0 i.e. columns</span>
+
 <span class="sd">  Return:</span>
 <span class="sd">    (np.array, np.array): (mean, error) of each column</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="c1"># get autocorrelation</span>
+  <span class="n">ntrace</span> <span class="o">=</span> <span class="n">edata</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
   <span class="k">if</span> <span class="n">kappa</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">try</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>  <span class="c1"># fortran implementation is faster than np FFT for len(trace)&lt;1000</span>
       <span class="kn">from</span> <span class="nn">qharv.reel.forlib.stats</span> <span class="k">import</span> <span class="n">corr</span>
-    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-      <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s1">&#39;please compile qharv.reel.forlib&#39;</span><span class="p">)</span>
-      <span class="c1"># from qharv.reel.scalar_dat import corr  # slow Python implementation</span>
+    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+      <span class="n">msg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+      <span class="n">msg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  Please compile qharv.reel.forlib.stats using f2py.&#39;</span>
+      <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="n">kappa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">corr</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">edata</span><span class="p">)</span>
-  <span class="n">neffective</span> <span class="o">=</span> <span class="n">edata</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span><span class="o">/</span><span class="n">kappa</span>
+  <span class="n">neffective</span> <span class="o">=</span> <span class="n">ntrace</span><span class="o">/</span><span class="n">kappa</span>
   <span class="c1"># calculate mean and error</span>
   <span class="n">val_mean</span> <span class="o">=</span> <span class="n">edata</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
   <span class="n">val_std</span>  <span class="o">=</span> <span class="n">edata</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
@@ -79,17 +79,15 @@
   <span class="k">return</span> <span class="n">val_mean</span><span class="p">,</span> <span class="n">val_err</span></div>
 
 <div class="viewcode-block" id="mean_and_err"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.mean_and_err">[docs]</a><span class="k">def</span> <span class="nf">mean_and_err</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">obs_path</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; calculate mean and variance of an observable from QMCPACK stat.h5 file</span>
-
-<span class="sd">  assume autocorrelation = 1 by default</span>
+  <span class="sd">&quot;&quot;&quot; calculate mean and error of an observable from QMCPACK stat.h5 file</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    handle (h5py.Group): or h5py.File or h5py.Dataset</span>
 <span class="sd">    obs_path (str): path to observable, e.g. &#39;gofr_e_1_1&#39;</span>
 <span class="sd">    nequil (int): number of equilibration blocks to throw out</span>
-<span class="sd">    kappa (float,optional): auto-correlation of the data, default=1.0 i.e. no</span>
-<span class="sd">     auto-correlation</span>
-<span class="sd">  Returns:</span>
+<span class="sd">    kappa (float, optional): auto-correlation, default recalculate</span>
+
+<span class="sd">  Return:</span>
 <span class="sd">    (np.array, np.array): (mean, err), the mean and error of observable</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="c1"># look for hdf5 group corresponding to the requested observable</span>
@@ -112,24 +110,24 @@
   <span class="n">val_mean</span><span class="p">,</span> <span class="n">val_err</span> <span class="o">=</span> <span class="n">me2d</span><span class="p">(</span><span class="n">edata</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">val_mean</span><span class="p">,</span> <span class="n">val_err</span></div>
 
-<div class="viewcode-block" id="dsk_from_skall"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.dsk_from_skall">[docs]</a><span class="k">def</span> <span class="nf">dsk_from_skall</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">ska_name</span><span class="o">=</span><span class="s1">&#39;skall&#39;</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="dsk_from_skall"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.dsk_from_skall">[docs]</a><span class="k">def</span> <span class="nf">dsk_from_skall</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; extract fluctuating structure factor dS(k) from skall</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    fp (h5py.File): stat.h5 handle</span>
+<span class="sd">    obs_name (str, optional): name the &quot;skall&quot; estimator, likely &quot;skall&quot;</span>
 <span class="sd">    nequil (int): equilibration length</span>
-<span class="sd">    ska_name (str, optional): name the &quot;skall&quot; estimator, default &quot;skall&quot;</span>
-<span class="sd">    kappa (float, optional): autocorrelation length, default is to calcaulte</span>
-<span class="sd">     on-the-fly</span>
+<span class="sd">    kappa (float, optional): auto-correlation, default recalculate</span>
+
 <span class="sd">  Return:</span>
-<span class="sd">    (np.array, np.array, np.array): (kvecs, dskm, dske), kvectors and S(k)</span>
-<span class="sd">    mean and error</span>
+<span class="sd">    (np.array, np.array, np.array): (kvecs, dskm, dske),</span>
+<span class="sd">     kvectors and S(k) mean and error</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="c1"># get data</span>
-  <span class="n">kpt_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/kpoints/value&#39;</span> <span class="o">%</span> <span class="n">ska_name</span>
-  <span class="n">sk_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_e/value&#39;</span> <span class="o">%</span> <span class="n">ska_name</span>
-  <span class="n">rhoki_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_i/value&#39;</span> <span class="o">%</span> <span class="n">ska_name</span>
-  <span class="n">rhokr_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_r/value&#39;</span> <span class="o">%</span> <span class="n">ska_name</span>
+  <span class="n">kpt_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/kpoints/value&#39;</span> <span class="o">%</span> <span class="n">obs_name</span>
+  <span class="n">sk_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_e/value&#39;</span> <span class="o">%</span> <span class="n">obs_name</span>
+  <span class="n">rhoki_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_i/value&#39;</span> <span class="o">%</span> <span class="n">obs_name</span>
+  <span class="n">rhokr_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_r/value&#39;</span> <span class="o">%</span> <span class="n">obs_name</span>
   <span class="n">kvecs</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">kpt_path</span><span class="p">][()]</span>
   <span class="n">ska</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">sk_path</span><span class="p">][()]</span>
   <span class="n">rkra</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">rhokr_path</span><span class="p">][()]</span>
@@ -140,24 +138,24 @@
   <span class="n">dskm</span><span class="p">,</span> <span class="n">dske</span> <span class="o">=</span> <span class="n">me2d</span><span class="p">(</span><span class="n">dska</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">kvecs</span><span class="p">,</span> <span class="n">dskm</span><span class="p">,</span> <span class="n">dske</span></div>
 
-<div class="viewcode-block" id="rhok_from_skall"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.rhok_from_skall">[docs]</a><span class="k">def</span> <span class="nf">rhok_from_skall</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">ska_name</span><span class="o">=</span><span class="s1">&#39;skall&#39;</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="rhok_from_skall"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.rhok_from_skall">[docs]</a><span class="k">def</span> <span class="nf">rhok_from_skall</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; extract electronic density rho(k) from stat.h5 file</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    fp (h5py.File): h5py handle of stat.h5 file</span>
+<span class="sd">    obs_name (str, optional): name the &quot;skall&quot; estimator, likely &quot;skall&quot;</span>
 <span class="sd">    nequil (int): number of equilibration blocks to remove</span>
-<span class="sd">    ska_name (str, optional): name the &quot;skall&quot; estimator, default &quot;skall&quot;</span>
-<span class="sd">    kappa (float, optional): autocorrelation, default is to calculate</span>
-<span class="sd">     on-the-fly</span>
+<span class="sd">    kappa (float, optional): auto-correlation, default recalculate</span>
+
 <span class="sd">  Return:</span>
 <span class="sd">    (np.array, np.array, np.array): (kvecs, rhokm, rhoke)</span>
 <span class="sd">      k-vectors, rho(k) mean and error, shape (nk, ndim)</span>
 <span class="sd">      notice rhok is the real-view of a complex vector, shape (2*nk,)</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="c1"># get data</span>
-  <span class="n">kpt_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/kpoints/value&#39;</span> <span class="o">%</span> <span class="n">ska_name</span>
-  <span class="n">rhokr_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_r/value&#39;</span> <span class="o">%</span> <span class="n">ska_name</span>
-  <span class="n">rhoki_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_i/value&#39;</span> <span class="o">%</span> <span class="n">ska_name</span>
+  <span class="n">kpt_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/kpoints/value&#39;</span> <span class="o">%</span> <span class="n">obs_name</span>
+  <span class="n">rhokr_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_r/value&#39;</span> <span class="o">%</span> <span class="n">obs_name</span>
+  <span class="n">rhoki_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/rhok_e_i/value&#39;</span> <span class="o">%</span> <span class="n">obs_name</span>
   <span class="n">kvecs</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">kpt_path</span><span class="p">][()]</span>
   <span class="n">rkrm</span><span class="p">,</span> <span class="n">rkre</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">rhokr_path</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="p">)</span>
   <span class="n">rkim</span><span class="p">,</span> <span class="n">rkie</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">rhoki_path</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="p">)</span>
@@ -171,11 +169,11 @@
 <span class="sd">    fp (h5py.File): h5py handle of stat.h5 file</span>
 <span class="sd">    obs_name (str): observable name, should start with &#39;gofr&#39;, e.g. gofr_e_0_1</span>
 <span class="sd">    nequil (int): number of equilibration blocks to remove</span>
-<span class="sd">    kappa (float, optional): autocorrelation length, default is to calcaulte</span>
-<span class="sd">     on-the-fly</span>
-<span class="sd">    force (bool,optional): force execution, i.e. skip all checks</span>
+<span class="sd">    kappa (float, optional): auto-correlation, default recalculate</span>
+<span class="sd">    force (bool, optional): force execution, i.e. skip all checks</span>
+
 <span class="sd">  Returns:</span>
-<span class="sd">    tuple: (myr,grm,gre): bin locations, g(r) mean, g(r) error</span>
+<span class="sd">    tuple: (myr, grm, gre): bin locations, g(r) mean, g(r) error</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">obs_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;gofr&#39;</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">force</span><span class="p">):</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> does not start with &quot;gofr&quot;; set force=True to bypass&#39;</span> <span class="o">%</span> <span class="n">obs_name</span>
@@ -198,67 +196,82 @@
 <span class="sd">    fp (h5py.File): h5py handle of stat.h5 file</span>
 <span class="sd">    obs_name (str): observable name, probably &#39;nofk&#39;</span>
 <span class="sd">    nequil (int): number of equilibration blocks to remove</span>
-<span class="sd">    kappa (float, optional): autocorrelation, default is to calculate</span>
-<span class="sd">     on-the-fly</span>
+<span class="sd">    kappa (float, optional): auto-correlation, default recalculate</span>
+
 <span class="sd">  Return:</span>
-<span class="sd">    (np.array, np.array, np.array): (kvecs,nkm,nke) k-vectors, n(k) mean and</span>
-<span class="sd">     error</span>
+<span class="sd">    (np.array, np.array, np.array): (kvecs, nkm, nke),</span>
+<span class="sd">     k-vectors, n(k) mean and error</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">kvecs</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">obs_name</span><span class="p">][</span><span class="s1">&#39;kpoints&#39;</span><span class="p">][()]</span>
   <span class="n">nkm</span><span class="p">,</span> <span class="n">nke</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/value&#39;</span> <span class="o">%</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">kvecs</span><span class="p">,</span> <span class="n">nkm</span><span class="p">,</span> <span class="n">nke</span></div>
 
-<span class="c1"># ---------------- begin charged structure factor ----------------</span>
-<span class="c1"># note: charged S(k), rho(k) were added for multi-component simulation,</span>
-<span class="c1">#  e.g. electrons &amp; protons. Nobody does mc sim. so deprecate?</span>
-<div class="viewcode-block" id="dsk_from_csk"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.dsk_from_csk">[docs]</a><span class="k">def</span> <span class="nf">dsk_from_csk</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">csk_name</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; extract fluctuating structure factor dS(k) from charged structure factor</span>
-
-<span class="sd">  Args:</span>
-<span class="sd">    fp (h5py.File): stat.h5 handle</span>
-<span class="sd">    csk_name (str): name the charged S(k) estimator, likely &#39;csk&#39;</span>
-<span class="sd">    nequil (int): equilibration length</span>
-<span class="sd">    kappa (float, optional): autocorrelation length, default is to calcaulte</span>
-<span class="sd">     on-the-fly</span>
-<span class="sd">  Return:</span>
-<span class="sd">    (np.array, np.array, np.array): (kvecs, dskm, dske), kvectors and S(k)</span>
-<span class="sd">    mean and error</span>
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="c1"># get data</span>
-  <span class="n">kpt_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/kpoints/value&#39;</span> <span class="o">%</span> <span class="n">csk_name</span>
-  <span class="n">csk_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/csk/value&#39;</span> <span class="o">%</span> <span class="n">csk_name</span>
-  <span class="n">crho_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/crhok/value&#39;</span> <span class="o">%</span> <span class="n">csk_name</span>
-  <span class="n">kvecs</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">kpt_path</span><span class="p">][()]</span>
-  <span class="n">cska</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">csk_path</span><span class="p">][()]</span>
-  <span class="n">crhoa</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">crho_path</span><span class="p">][()]</span>
-  <span class="n">nblock</span><span class="p">,</span> <span class="n">nspin</span><span class="p">,</span> <span class="n">nk</span> <span class="o">=</span> <span class="n">cska</span><span class="o">.</span><span class="n">shape</span>
-
-  <span class="c1"># get dsk using equilibrated data</span>
-  <span class="n">dska</span> <span class="o">=</span> <span class="n">cska</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]</span> <span class="o">-</span> <span class="n">crhoa</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]</span><span class="o">**</span><span class="mi">2</span>
-  <span class="n">dskm</span><span class="p">,</span> <span class="n">dske</span> <span class="o">=</span> <span class="n">me2d</span><span class="p">(</span><span class="n">dska</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">kvecs</span><span class="p">,</span> <span class="n">dskm</span><span class="p">,</span> <span class="n">dske</span></div>
-
-<div class="viewcode-block" id="rhok"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.rhok">[docs]</a><span class="k">def</span> <span class="nf">rhok</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-  <span class="sd">&quot;&quot;&quot; extract electronic density rho(k) from stat.h5 file</span>
+<div class="viewcode-block" id="rdm1"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.rdm1">[docs]</a><span class="k">def</span> <span class="nf">rdm1</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; extract 1RMD output from stat.h5 file</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    fp (h5py.File): h5py handle of stat.h5 file</span>
-<span class="sd">    obs_name (str): observable name, probably &#39;csk&#39;</span>
+<span class="sd">    obs_name (str): observable name, probably &#39;1rdms&#39;</span>
 <span class="sd">    nequil (int): number of equilibration blocks to remove</span>
-<span class="sd">    kappa (float, optional): autocorrelation, default is to calculate</span>
-<span class="sd">     on-the-fly</span>
+<span class="sd">    kappa (float, optional): auto-correlation, default recalculate</span>
+
 <span class="sd">  Return:</span>
-<span class="sd">    (np.array, np.array, np.array): (kvecs, rhokm, rhoke)</span>
-<span class="sd">      k-vectors, rho(k) mean and error</span>
-<span class="sd">      notice rhokm has two rows for real and imag components (2, nk)</span>
+<span class="sd">    dict: a dictionary of 1RDMs, one for each species (eg. u, d)</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="c1"># get data</span>
-  <span class="n">kpt_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/kpoints/value&#39;</span> <span class="o">%</span> <span class="n">obs_name</span>
-  <span class="n">crho_path</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">/crhok/value&#39;</span> <span class="o">%</span> <span class="n">obs_name</span>
-  <span class="n">kvecs</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">kpt_path</span><span class="p">][()]</span>
-  <span class="n">rhokm</span><span class="p">,</span> <span class="n">rhoke</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">crho_path</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">kvecs</span><span class="p">,</span> <span class="n">rhokm</span><span class="p">,</span> <span class="n">rhoke</span></div>
-<span class="c1"># ---------------- charged structure factor end ----------------</span>
+  <span class="n">matrix_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">obs_name</span><span class="p">,</span> <span class="s1">&#39;number_matrix&#39;</span><span class="p">)</span>
+  <span class="n">groups</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">matrix_path</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+  <span class="n">rdms</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">for</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">matrix_path</span><span class="p">,</span> <span class="n">grp</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)</span>
+    <span class="n">ym</span><span class="p">,</span> <span class="n">ye</span> <span class="o">=</span> <span class="n">mean_and_err</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="p">)</span>
+    <span class="n">rdms</span><span class="p">[</span><span class="n">grp</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ym</span><span class="p">,</span> <span class="n">ye</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">rdms</span></div>
+
+<div class="viewcode-block" id="afobs"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.stat_h5.afobs">[docs]</a><span class="k">def</span> <span class="nf">afobs</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">,</span> <span class="n">nequil</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">numer</span><span class="o">=</span><span class="s1">&#39;one_rdm&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; extract &quot;best&quot; 1RMD output from AFQMC stat.h5 file</span>
+<span class="sd">   BackPropagated (BP)</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    fp (h5py.File): h5py handle of stat.h5 file</span>
+<span class="sd">    obs_name (str): observable name, probably &#39;FullOneRDM&#39;</span>
+<span class="sd">    nequil (int): number of equilibration BP blocks to remove</span>
+<span class="sd">    kappa (float, optional): auto-correlation, default recalculate</span>
+<span class="sd">    numer (str, optional): numerator to extract, default &#39;one_rdm&#39;</span>
+<span class="sd">  Return:</span>
+<span class="sd">    dict: a dictionary of 1RDMs, one for each species (eg. u, d)</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">avg_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;Observables&#39;</span><span class="p">,</span> <span class="s1">&#39;BackPropagated&#39;</span><span class="p">,</span> <span class="n">obs_name</span><span class="p">)</span>
+  <span class="n">avgs</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">avg_path</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+  <span class="n">iavgs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;Average_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">avgs</span><span class="p">]</span>
+  <span class="n">mav</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">iavgs</span><span class="p">)</span>  <span class="c1"># use longest BP</span>
+  <span class="n">matrix_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">avg_path</span><span class="p">,</span> <span class="s1">&#39;Average_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">mav</span><span class="p">)</span>
+  <span class="n">blocks</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">matrix_path</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+  <span class="n">rdm_blocks</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">blocks</span> <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">numer</span><span class="p">)]</span>
+  <span class="n">nblock</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rdm_blocks</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">nequil</span> <span class="o">&gt;=</span> <span class="n">nblock</span><span class="p">:</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;cannot discard </span><span class="si">%d</span><span class="s1">/</span><span class="si">%d</span><span class="s1"> blocks&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nequil</span><span class="p">,</span> <span class="n">nblock</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+  <span class="c1"># get 1RDM at all equilibrated blocks</span>
+  <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">rdm_blocks</span><span class="p">[</span><span class="n">nequil</span><span class="p">:]:</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">matrix_path</span><span class="p">,</span> <span class="n">block</span><span class="p">)</span>
+    <span class="n">rdm</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">path</span><span class="p">][()]</span>
+    <span class="n">dpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">matrix_path</span><span class="p">,</span> <span class="n">block</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">numer</span><span class="p">,</span> <span class="s1">&#39;denominator&#39;</span><span class="p">))</span>
+    <span class="n">deno</span> <span class="o">=</span> <span class="n">fp</span><span class="p">[</span><span class="n">dpath</span><span class="p">][()]</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rdm</span><span class="o">/</span><span class="n">deno</span><span class="p">)</span>
+  <span class="n">rdm_shape</span> <span class="o">=</span> <span class="n">rdm</span><span class="o">.</span><span class="n">shape</span>
+  <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rdm_shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>  <span class="c1"># (nbas*nbas, 2); 2 for real, complex</span>
+  <span class="n">nbas</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">rdm_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mf">0.5</span><span class="p">))</span>
+  <span class="k">assert</span> <span class="n">nbas</span><span class="o">**</span><span class="mi">2</span> <span class="o">==</span> <span class="n">rdm_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">rdm_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">nbas</span><span class="p">,</span> <span class="n">nbas</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+  <span class="c1"># get mean and standard error</span>
+  <span class="n">mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">rdm_shape</span><span class="p">))</span>
+  <span class="n">ym</span><span class="p">,</span> <span class="n">ye</span> <span class="o">=</span> <span class="n">me2d</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+  <span class="n">dm</span> <span class="o">=</span> <span class="n">ym</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">rdm_shape</span><span class="p">)</span>
+  <span class="n">de</span> <span class="o">=</span> <span class="n">ye</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">rdm_shape</span><span class="p">)</span>
+  <span class="n">rdms</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="n">rdms</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">de</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">rdms</span></div>
 </pre></div>
 
           </div>
@@ -267,13 +280,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -304,7 +315,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
     </div>
   </body>
 </html>

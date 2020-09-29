@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>qharv.reel.ascii_out &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -57,7 +55,46 @@
     <span class="n">mm</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">mm</span></div>
 
-<div class="viewcode-block" id="name_sep_val"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.name_sep_val">[docs]</a><span class="k">def</span> <span class="nf">name_sep_val</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="stay"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.stay">[docs]</a><span class="k">def</span> <span class="nf">stay</span><span class="p">(</span><span class="n">read_func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; stay at current memory location after read</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    Callable: read function, which takes mmap as first input</span>
+<span class="sd">  Return:</span>
+<span class="sd">    Callable: read but no change to mmap tell()</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">read_func</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ret</span>
+  <span class="k">return</span> <span class="n">wrapper</span></div>
+
+<div class="viewcode-block" id="get_key_value_pairs"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.get_key_value_pairs">[docs]</a><span class="nd">@stay</span>
+<span class="k">def</span> <span class="nf">get_key_value_pairs</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;=&#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; read all key value pairs using separator</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    mm (mmap.mmap): memory map</span>
+<span class="sd">  Return:</span>
+<span class="sd">    dict: string-&gt;string key-value pairs</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">idxl</span> <span class="o">=</span> <span class="n">all_lines_with_tag</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">sep</span><span class="p">)</span>
+  <span class="n">entry</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">idxl</span><span class="p">:</span>
+    <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+    <span class="n">ibegin</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
+    <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">ibegin</span><span class="p">)</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># skip \n</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">sep</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># strip whitespace</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">entry</span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">decode</span><span class="p">()]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+  <span class="k">return</span> <span class="n">entry</span></div>
+
+<div class="viewcode-block" id="name_sep_val"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.name_sep_val">[docs]</a><span class="nd">@stay</span>
+<span class="k">def</span> <span class="nf">name_sep_val</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; read key-value pair such as &quot;name = value&quot;</span>
 <span class="sd">  e.g.</span>
 <span class="sd">  name_sep_val(mm, &#39;a&#39;): &#39;a = 2.4&#39;</span>
@@ -75,21 +112,20 @@
 <span class="sd">  Return:</span>
 <span class="sd">    dtype: value of requested variable</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">cur_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-  <span class="n">idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+  <span class="n">idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
   <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39; not found&#39;</span><span class="p">)</span>
   <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-  <span class="n">line</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+  <span class="n">line</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
   <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
 
   <span class="c1"># assume the text immediately next to the separator is the desired value</span>
   <span class="n">val_text</span> <span class="o">=</span> <span class="n">tokens</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
   <span class="n">val</span> <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">val_text</span><span class="p">)</span>
-  <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">cur_idx</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">val</span></div>
 
-<div class="viewcode-block" id="all_lines_with_tag"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.all_lines_with_tag">[docs]</a><span class="k">def</span> <span class="nf">all_lines_with_tag</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">nline_max</span><span class="o">=</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">):</span>
+<div class="viewcode-block" id="all_lines_with_tag"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.all_lines_with_tag">[docs]</a><span class="nd">@stay</span>
+<span class="k">def</span> <span class="nf">all_lines_with_tag</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">nline_max</span><span class="o">=</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; return a list of memory indices pointing to the start of tag</span>
 <span class="sd">   the search is conducted starting from the current location of mm.</span>
 
@@ -115,14 +151,8 @@
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;may need to increase nline_max&#39;</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">all_idx</span></div>
 
-<span class="c1">#def line_home(mm):</span>
-<span class="c1">#  ibegin = mm.rfind(&#39;\n&#39;)</span>
-<span class="c1">#  if ibegin == -1:</span>
-<span class="c1">#    ibegin = 0</span>
-<span class="c1">#  mm.seek(ibegin)</span>
-<span class="c1">#  mm.readline()</span>
-
-<div class="viewcode-block" id="all_lines_at_idx"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.all_lines_at_idx">[docs]</a><span class="k">def</span> <span class="nf">all_lines_at_idx</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">idx_list</span><span class="p">):</span>
+<div class="viewcode-block" id="all_lines_at_idx"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.all_lines_at_idx">[docs]</a><span class="nd">@stay</span>
+<span class="k">def</span> <span class="nf">all_lines_at_idx</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">idx_list</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; return a list of lines given a list of memory locations</span>
 <span class="sd">  follow up on all_lines_with_tag</span>
 <span class="sd">  e.g. all_lines_at_idx(mm, all_lines_with_tag(mm, &#39;Atom&#39;) )</span>
@@ -141,15 +171,20 @@
   <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
   <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">idx_list</span><span class="p">:</span>
     <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-    <span class="c1">## row back to beginning of line</span>
-    <span class="c1">#line_home(mm)</span>
+    <span class="c1"># row back to beginning of line</span>
+    <span class="n">ibegin</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ibegin</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+      <span class="n">ibegin</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">ibegin</span><span class="p">)</span>
+    <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
     <span class="c1"># read desired line</span>
     <span class="n">line</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
     <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
   <span class="k">return</span> <span class="n">lines</span></div>
 
-<div class="viewcode-block" id="locate_block"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.locate_block">[docs]</a><span class="k">def</span> <span class="nf">locate_block</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">trailer</span><span class="p">,</span>
-                 <span class="n">skip_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">skip_trailer</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="locate_block"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.locate_block">[docs]</a><span class="nd">@stay</span>
+<span class="k">def</span> <span class="nf">locate_block</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">trailer</span><span class="p">,</span> <span class="n">force_head</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force_tail</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">skip_header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">skip_trailer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; find the memory locations bounding a block of text</span>
 <span class="sd">  in between header and trailer; header and trailer are</span>
 <span class="sd">  not included by default</span>
@@ -160,22 +195,31 @@
 <span class="sd">    header  (str): string indicating the beginning of block</span>
 <span class="sd">    trailer (str): string indicating the end of block</span>
 <span class="sd">    skip_head (bool, optional): skip header, default is True</span>
-<span class="sd">    skip_trailer (bool, optional): skip trailer, default is True</span>
+<span class="sd">    skip_trailer (bool, optional): skip trailer, default is True,</span>
+<span class="sd">      unless force_tail, then default to False</span>
 <span class="sd">  Return:</span>
 <span class="sd">    tuple: (begin_idx, end_idx), memory span of text block</span>
 <span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="n">skip_trailer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">skip_trailer</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">force_tail</span>
   <span class="n">begin_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
   <span class="k">if</span> <span class="n">begin_idx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;failed to find &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">header</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">force_head</span><span class="p">:</span>
+      <span class="n">begin_idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;failed to find &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">header</span><span class="p">)</span>
   <span class="k">if</span> <span class="n">skip_header</span><span class="p">:</span>
     <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">begin_idx</span><span class="p">)</span>
     <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
     <span class="n">begin_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
   <span class="n">end_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">trailer</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
-  <span class="k">if</span> <span class="n">end_idx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">end_idx</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">force_tail</span><span class="p">):</span>
     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;failed to find &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">trailer</span><span class="p">)</span>
   <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_trailer</span><span class="p">:</span>
-    <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">end_idx</span><span class="p">)</span>
+    <span class="n">whence</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># seek from current location by default</span>
+    <span class="k">if</span> <span class="n">force_tail</span><span class="p">:</span>
+      <span class="n">whence</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># seek from end of file</span>
+    <span class="n">mm</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">end_idx</span><span class="p">,</span> <span class="n">whence</span><span class="p">)</span>
     <span class="n">mm</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
     <span class="n">end_idx</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
   <span class="k">return</span> <span class="n">begin_idx</span><span class="p">,</span> <span class="n">end_idx</span></div>
@@ -205,7 +249,7 @@
 <span class="sd">    trailer (str): string indicating the end of block</span>
 <span class="sd">  &quot;&quot;&quot;</span>
   <span class="n">bidx</span><span class="p">,</span> <span class="n">eidx</span> <span class="o">=</span> <span class="n">locate_block</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">trailer</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-  <span class="k">return</span> <span class="n">mm</span><span class="p">[</span><span class="n">bidx</span><span class="p">:</span><span class="n">eidx</span><span class="p">]</span></div>
+  <span class="k">return</span> <span class="n">mm</span><span class="p">[</span><span class="n">bidx</span><span class="p">:</span><span class="n">eidx</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="lr_mark"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.lr_mark">[docs]</a><span class="k">def</span> <span class="nf">lr_mark</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">lmark</span><span class="p">,</span> <span class="n">rmark</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; read a string segment from line, which is enclosed between l&amp;rmark</span>
@@ -250,6 +294,16 @@
     <span class="n">val</span>  <span class="o">=</span> <span class="n">dtype</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">var_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
   <span class="k">return</span> <span class="n">var_dict</span></div>
+
+<div class="viewcode-block" id="change_line"><a class="viewcode-back" href="../../../qharv.reel.html#qharv.reel.ascii_out.change_line">[docs]</a><span class="k">def</span> <span class="nf">change_line</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">):</span>
+  <span class="n">text1</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">t0</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+      <span class="n">text1</span> <span class="o">+=</span> <span class="n">t1</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">text1</span> <span class="o">+=</span> <span class="n">line</span>
+    <span class="n">text1</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+  <span class="k">return</span> <span class="n">text1</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -258,13 +312,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -295,7 +347,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
     </div>
   </body>
 </html>

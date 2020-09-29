@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>qharv.seed.xml &#8212; qharv 0.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -100,7 +98,7 @@
 <span class="sd">  Return:</span>
 <span class="sd">    str: string representation of node</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">return</span> <span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+  <span class="k">return</span> <span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="show"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.show">[docs]</a><span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
   <span class="nb">print</span><span class="p">(</span><span class="n">str_rep</span><span class="p">(</span><span class="n">node</span><span class="p">))</span></div>
@@ -131,22 +129,60 @@
     <span class="k">return</span> <span class="s1">&#39;&#39;</span>
   <span class="k">return</span> <span class="n">mystr</span></div>
 
-<div class="viewcode-block" id="append"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.append">[docs]</a><span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
+<div class="viewcode-block" id="append"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.append">[docs]</a><span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; append one or more nodes to a root node</span>
 
 <span class="sd">  Args:</span>
 <span class="sd">    root (lxml.etree._Element): xml node</span>
 <span class="sd">    nodes (list or lxml.etree._Element): xml node(s)</span>
+<span class="sd">    copy (bool, optional): make copy of nodes to append</span>
 <span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
   <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="ow">is</span> <span class="n">etree</span><span class="o">.</span><span class="n">_Element</span><span class="p">:</span>
     <span class="n">root</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
   <span class="k">else</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
       <span class="n">root</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="remove"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.remove">[docs]</a><span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="n">nodes</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; remove nodes from the xml tree</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    nodes (list): xml nodes</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">getparent</span><span class="p">()</span>
+    <span class="n">parent</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
+
 <span class="c1"># ========================= level 1: node content io =========================</span>
 <span class="c1">#  node.get &amp; node.set are sufficient for attribute manipulation</span>
 <span class="c1"># level 1 routines are needed for node.text and node.children manipulation</span>
+
+<div class="viewcode-block" id="make_node"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.make_node">[docs]</a><span class="k">def</span> <span class="nf">make_node</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attribs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; create etree.Element</span>
+<span class="sd">  &lt;tag **attribs&gt; text &lt;/tag&gt;</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    tag (str): tag node</span>
+<span class="sd">    attribs (dict, optional): attributes, default None</span>
+<span class="sd">    text (str, optional): text content, default None</span>
+<span class="sd">    pad (str, optional): padding for text, default &#39; &#39;</span>
+<span class="sd">  Return:</span>
+<span class="sd">    etree.Element: node</span>
+<span class="sd">  Examples:</span>
+<span class="sd">    &gt;&gt;&gt; sim = make_node(&#39;simulation&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; epset = make_node(&#39;particleset&#39;, {&#39;name&#39;: &#39;e&#39;})</span>
+<span class="sd">    &gt;&gt;&gt; lrnode = make_node(&#39;parameter&#39;, {&#39;name&#39;: &#39;LR_dim_cutoff&#39;}, str(20))</span>
+<span class="sd">    &gt;&gt;&gt; bconds = make_node(&#39;parameter&#39;, {&#39;name&#39;: &#39;bconds&#39;}, &#39;p p p&#39;, pad=&#39;\n&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; seed = make_node(&#39;seed&#39;, text=str(31415))</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">node</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">attribs</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">node</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">pad</span> <span class="o">+</span> <span class="n">text</span> <span class="o">+</span> <span class="n">pad</span>
+  <span class="k">return</span> <span class="n">node</span></div>
+
 <div class="viewcode-block" id="arr2text"><a class="viewcode-back" href="../../../qharv.seed.html#qharv.seed.xml.arr2text">[docs]</a><span class="k">def</span> <span class="nf">arr2text</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
   <span class="sd">&quot;&quot;&quot; format a numpy array into a text string &quot;&quot;&quot;</span>
   <span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -469,13 +505,11 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -506,7 +540,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Yubo &#34;Paul&#34; Yang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
     </div>
   </body>
 </html>

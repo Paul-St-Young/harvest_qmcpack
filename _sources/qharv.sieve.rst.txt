@@ -8,39 +8,31 @@ qharv.sieve.mean\_df module
 ---------------------------
 
 .. automodule:: qharv.sieve.mean_df
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.sieve.scalar\_df module
 -----------------------------
 
 .. automodule:: qharv.sieve.scalar_df
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 qharv.sieve.scalar\_h5 module
 -----------------------------
 
 .. automodule:: qharv.sieve.scalar_h5
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-qharv.sieve.stat\_df module
----------------------------
-
-.. automodule:: qharv.sieve.stat_df
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 
 Module contents
 ---------------
 
 .. automodule:: qharv.sieve
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

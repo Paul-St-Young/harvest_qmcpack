@@ -5,6 +5,6 @@ Module contents
 ---------------
 
 .. automodule:: qharv.reel.forlib
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
