@@ -4,21 +4,8 @@
 #  useful routines for file transfer and file backup
 import os
 import subprocess as sp
-from qharv.plantation.sugar import mkdir
-
-
-def clean_path(path):
-  """ remove any '.' or '..' in the path expression
-  Args:
-    path (str): any path string e.g. '../run/./opt'
-  Return:
-    str: clean path e.g. 'run/opt'
-  """
-  tokens = path.split('/')
-  tokens1 = [tok for tok in tokens if tok not in ('.', '..')]
-  path1 = '/'.join(tokens1)
-  return path1
-
+from qharv.reel.mole import clean_path
+from qharv.field.sugar import mkdir
 
 def source_target_map(flist, new_dir):
   """ for each file in flist, provide its new location in new_dir
@@ -37,7 +24,6 @@ def source_target_map(flist, new_dir):
     floc1 = os.path.join(new_dir, clean_path(floc))
     st_map[str(floc)] = str(floc1)
   return st_map
-
 
 def inverse_st_map(flist, new_dir, old_dir):
   """ fix common screw up: moved all source files without saving st_map
@@ -58,7 +44,6 @@ def inverse_st_map(flist, new_dir, old_dir):
   for floc, floc1 in inv_st_map.items():
     new_map[floc] = floc.replace(new_dir, parent_dir)
   return new_map
-
 
 def move_by_st_map(st_map):
   """ move files according to source-target map

@@ -3,7 +3,7 @@
 # Routines to refine collected data to be presentable
 import numpy as np
 import pandas as pd
-from qharv.plantation import sugar
+from qharv.field import sugar
 
 def text_mean_error(ym, ye, nshow=1, mndig=8):
   """ convert data such as 1.23 +/- 0.01 to strings such as 1.23(1)

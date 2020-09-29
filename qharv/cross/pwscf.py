@@ -17,7 +17,7 @@ def copy_charge_density(scf_dir, nscf_dir, execute=True):
   if scf_dir == nscf_dir:
     return  # do nothing
   from qharv.reel import mole
-  from qharv.plantation.sugar import mkdir
+  from qharv.field.sugar import mkdir
   # find charge density
   fcharge = mole.find('*charge-density.dat', scf_dir)
   save_dir = os.path.dirname(fcharge)
