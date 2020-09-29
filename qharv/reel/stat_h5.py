@@ -188,9 +188,9 @@ def rdm1(fp, obs_name, nequil, kappa=None):
     rdms[grp] = (ym, ye)
   return rdms
 
-def afobs(fp, obs_name, nequil, kappa=None, numer='one_rdm'):
-  """ extract "best" 1RMD output from AFQMC stat.h5 file
-   BackPropagated (BP)
+def afobs(fp, obs_name, nequil, kappa=None, numer='one_rdm', iav=None):
+  """ extract 1RMD output from AFQMC stat.h5 file
+   assume BackPropagated (BP) 'Observables/BackPropagated'
 
   Args:
     fp (h5py.File): h5py handle of stat.h5 file
@@ -198,21 +198,43 @@ def afobs(fp, obs_name, nequil, kappa=None, numer='one_rdm'):
     nequil (int): number of equilibration BP blocks to remove
     kappa (float, optional): auto-correlation, default recalculate
     numer (str, optional): numerator to extract, default 'one_rdm'
+    iav (int, optional): BP level (Average_$iav), default is last level
   Return:
     dict: a dictionary of 1RDMs, one for each species (eg. u, d)
   """
+  # 1. gather meta data
+  meta_paths = {
+    'walker_type': 'Metadata/WalkerType',
+    'nmo': 'Metadata/NMO',
+    'dt': 'Metadata/Timestep',
+  }
+  meta = {}
+  for key, path in meta_paths.items():
+    meta[key] = fp[path][()]
+  nbas = int(meta['nmo'])
+  itwalker = int(meta['walker_type'])
+  if itwalker == 1:  # CLOSED
+    rdm_shape = (nbas, nbas, 2)
+  elif itwalker == 2:  # COLLINEAR
+    rdm_shape = (2, nbas, nbas, 2)
+  else:
+    raise NotImplementedError('WalkerType %d' % itwalker)
+  # 2. deal with back propagation (BP)
   avg_path = os.path.join('Observables', 'BackPropagated', obs_name)
-  avgs = fp[avg_path].keys()
-  iavgs = [int(a.replace('Average_', '')) for a in avgs]
-  mav = max(iavgs)  # use longest BP
+  if iav is None:  # use longest BP
+    avgs = fp[avg_path].keys()
+    iavgs = [int(a.replace('Average_', '')) for a in avgs]
+    mav = max(iavgs)
+  else:  # use user request
+    mav = iav
   matrix_path = os.path.join(avg_path, 'Average_%d' % mav)
+  # 3. get 1RDM at all equilibrated blocks
   blocks = fp[matrix_path].keys()
   rdm_blocks = [key for key in blocks if key.startswith(numer)]
   nblock = len(rdm_blocks)
   if nequil >= nblock:
     msg = 'cannot discard %d/%d blocks' % (nequil, nblock)
     raise RuntimeError(msg)
-  # get 1RDM at all equilibrated blocks
   data = []
   for block in rdm_blocks[nequil:]:
     path = os.path.join(matrix_path, block)
@@ -220,16 +242,18 @@ def afobs(fp, obs_name, nequil, kappa=None, numer='one_rdm'):
     dpath = os.path.join(matrix_path, block.replace(numer, 'denominator'))
     deno = fp[dpath][()]
     data.append(rdm/deno)
-  rdm_shape = rdm.shape
-  assert len(rdm_shape) == 2  # (nbas*nbas, 2); 2 for real, complex
-  nbas = int(round(rdm_shape[0]**0.5))
-  assert nbas**2 == rdm_shape[0]
-  rdm_shape = (nbas, nbas, 2)
-  # get mean and standard error
+  assert np.prod(rdm_shape) == np.prod(rdm.shape)
+  # 4. get mean and standard error
   mat = np.array(data).reshape(-1, np.prod(rdm_shape))
   ym, ye = me2d(mat)
   dm = ym.reshape(rdm_shape)
   de = ye.reshape(rdm_shape)
   rdms = {}
-  rdms['u'] = (dm, de)
+  if itwalker == 1:  # CLOSED
+    rdms['u'] = (dm, de)
+  elif itwalker == 2:  # COLLINEAR
+    rdms['u'] = (dm[0], de[0])
+    rdms['d'] = (dm[1], de[1])
+  else:
+    raise NotImplementedError('WalkerType %d' % itwalker)
   return rdms
