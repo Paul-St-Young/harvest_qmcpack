@@ -187,3 +187,49 @@ def rdm1(fp, obs_name, nequil, kappa=None):
     ym, ye = mean_and_err(fp, path, nequil, kappa)
     rdms[grp] = (ym, ye)
   return rdms
+
+def afobs(fp, obs_name, nequil, kappa=None, numer='one_rdm'):
+  """ extract "best" 1RMD output from AFQMC stat.h5 file
+   BackPropagated (BP)
+
+  Args:
+    fp (h5py.File): h5py handle of stat.h5 file
+    obs_name (str): observable name, probably 'FullOneRDM'
+    nequil (int): number of equilibration BP blocks to remove
+    kappa (float, optional): auto-correlation, default recalculate
+    numer (str, optional): numerator to extract, default 'one_rdm'
+  Return:
+    dict: a dictionary of 1RDMs, one for each species (eg. u, d)
+  """
+  avg_path = os.path.join('Observables', 'BackPropagated', obs_name)
+  avgs = fp[avg_path].keys()
+  iavgs = [int(a.replace('Average_', '')) for a in avgs]
+  mav = max(iavgs)  # use longest BP
+  matrix_path = os.path.join(avg_path, 'Average_%d' % mav)
+  blocks = fp[matrix_path].keys()
+  rdm_blocks = [key for key in blocks if key.startswith(numer)]
+  nblock = len(rdm_blocks)
+  if nequil >= nblock:
+    msg = 'cannot discard %d/%d blocks' % (nequil, nblock)
+    raise RuntimeError(msg)
+  # get 1RDM at all equilibrated blocks
+  data = []
+  for block in rdm_blocks[nequil:]:
+    path = os.path.join(matrix_path, block)
+    rdm = fp[path][()]
+    dpath = os.path.join(matrix_path, block.replace(numer, 'denominator'))
+    deno = fp[dpath][()]
+    data.append(rdm/deno)
+  rdm_shape = rdm.shape
+  assert len(rdm_shape) == 2  # (nbas*nbas, 2); 2 for real, complex
+  nbas = int(round(rdm_shape[0]**0.5))
+  assert nbas**2 == rdm_shape[0]
+  rdm_shape = (nbas, nbas, 2)
+  # get mean and standard error
+  mat = np.array(data).reshape(-1, np.prod(rdm_shape))
+  ym, ye = me2d(mat)
+  dm = ym.reshape(rdm_shape)
+  de = ye.reshape(rdm_shape)
+  rdms = {}
+  rdms['u'] = (dm, de)
+  return rdms
