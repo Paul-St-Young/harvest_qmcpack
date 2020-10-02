@@ -65,7 +65,6 @@ def parse(text, shebang='#'):
     df = pd.read_csv(fp, sep=sep)
     # drop shebang from column names
     ncol_to_drop = len(shebang.split())
-    print(shebang, ncol_to_drop)
     columns = df.columns
     df.drop(columns[-ncol_to_drop:], axis=1, inplace=True)
     df.columns = columns[ncol_to_drop:]
