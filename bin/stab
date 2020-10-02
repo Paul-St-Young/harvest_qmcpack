@@ -11,6 +11,8 @@ def parse_args():
   import argparse
   parser = argparse.ArgumentParser()
   parser.add_argument('fname', type=str, help='Scalar TABle (stab) file name')
+  parser.add_argument('--shebang', '-s', type=str, default='#',
+    help='marker for start of header line, default is "#"')
   parser.add_argument('--xaxis', '-x', type=str, default=None,
     help='xaxis in plot, default is to use row index')
   parser.add_argument('--nequil', '-e', type=float, default=0,
@@ -35,13 +37,13 @@ def parse_args():
 
 def read_scalar_table(fdat, append=None):
   from qharv.reel.scalar_dat import read_to_list
-  dfl = read_to_list(fdat)
+  dfl = read_to_list(fdat, shebang=args.shebang)
   df = pd.concat(dfl).reset_index(drop=True)
   # concatenate extra scalar.dat files
   if append is not None:
     dlist = [df]
     for fname in append:
-      for df0 in read_to_list(fname):
+      for df0 in read_to_list(fname, shebang=args.shebang):
         dlist.append(df0)
     df = pd.concat(dlist, sort=False).reset_index()
   return df

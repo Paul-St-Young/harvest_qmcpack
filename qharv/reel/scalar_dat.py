@@ -5,7 +5,7 @@
 import numpy as np
 import pandas as pd
 
-def read(dat_fname):
+def read(dat_fname, **kwargs):
   """Read the scalar.dat file, should be table format.
    The header line should start with '#' and contain column labels.
 
@@ -18,7 +18,7 @@ def read(dat_fname):
   """
   with open(dat_fname, 'r') as f:
     text = f.read()
-  return parse(text)
+  return parse(text, **kwargs)
 
 def write(dat_fname, df, header_pad='# ', **kwargs):
   """Write dataframe to plain text scalar table format
@@ -42,11 +42,12 @@ def write(dat_fname, df, header_pad='# ', **kwargs):
   with open(dat_fname, 'w') as f:
     f.write(header_pad + text)
 
-def parse(text):
+def parse(text, shebang='#'):
   """Parse text of a scalar.dat file, should be table format.
 
   Args:
     text (str): content of scalar.dat file
+    shebang (str, optional): marker for header line, default "#"
   Return:
     pd.DataFrame: table data
   Example:
@@ -60,12 +61,14 @@ def parse(text):
   fp.seek(0)
   # read data
   sep = r'\s+'
-  if header.startswith('#'):
+  if header.startswith(shebang):
     df = pd.read_csv(fp, sep=sep)
-    # remove first column name '#'
+    # drop shebang from column names
+    ncol_to_drop = len(shebang.split())
+    print(shebang, ncol_to_drop)
     columns = df.columns
-    df.drop(columns[-1], axis=1, inplace=True)
-    df.columns = columns[1:]
+    df.drop(columns[-ncol_to_drop:], axis=1, inplace=True)
+    df.columns = columns[ncol_to_drop:]
     # calculate local energy variance if possible (QMCPACK specific)
     if ('LocalEnergy' in columns) and ('LocalEnergy_sq' in columns):
       df['Variance'] = df['LocalEnergy_sq']-df['LocalEnergy']**2.
@@ -76,7 +79,7 @@ def parse(text):
   df.columns = map(str, df.columns)
   return df
 
-def read_to_list(dat_fname):
+def read_to_list(dat_fname, **kwargs):
   """Read scalar.dat file into a list of pandas DataFrames
 
   A line is a header if its first column cannot be converted to a float.
@@ -96,14 +99,14 @@ def read_to_list(dat_fname):
   idxl = find_header_lines(text)
   lines = text.split('\n')
   if len(idxl) == 0:  # no header
-    return [parse(text)]
+    return [parse(text, **kwargs)]
   idxl.append(None)
   # now read data and use headers to label columns
   lines = text.split('\n')
   dfl = []
   for bidx, eidx in zip(idxl[:-1], idxl[1:]):
     text1 = '\n'.join(lines[bidx:eidx])
-    df1 = parse(text1)
+    df1 = parse(text1, **kwargs)
     dfl.append(df1)
   return dfl
 
