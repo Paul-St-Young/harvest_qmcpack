@@ -77,6 +77,8 @@ def ls(node, r=False, level=0, indent="  "):
    Return:
      str: mystr, a string representation of the directory structure
   """
+  if type(node) is etree._ElementTree:
+    node = node.getroot()
   mystr = ''
   children = node.getchildren()
   if len(children) > 0:
