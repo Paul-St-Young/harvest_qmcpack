@@ -20,7 +20,7 @@ def read(dat_fname, **kwargs):
     text = f.read()
   return parse(text, **kwargs)
 
-def write(dat_fname, df, header_pad='# ', **kwargs):
+def write(dat_fname, df, header_pad='# ', end='\n', **kwargs):
   """Write dataframe to plain text scalar table format
 
   Lightly wrap around pandas.to_string with defaults to index and float_format
@@ -40,7 +40,7 @@ def write(dat_fname, df, header_pad='# ', **kwargs):
       kwargs[k] = v
   text = df.to_string(**kwargs)
   with open(dat_fname, 'w') as f:
-    f.write(header_pad + text)
+    f.write(header_pad + text + end)
 
 def parse(text, shebang='#'):
   """Parse text of a scalar.dat file, should be table format.
