@@ -216,6 +216,15 @@ def coy(ax, y, ytlabels):
   yright(ax1)
   return ax1
 
+def align_ylim(ax1, ax2):
+  ylim1 = ax1.get_ylim()
+  ylim2 = ax2.get_ylim()
+  ymin = min(ylim1[0], ylim2[0])
+  ymax = max(ylim1[1], ylim2[1])
+  ylim = (ymin, ymax)
+  ax1.set_ylim(ylim)
+  ax2.set_ylim(ylim)
+
 # ====================== level 0: basic legend edits =======================
 def set_legend_marker_size(leg, ms=10):
   handl = leg.legendHandles
