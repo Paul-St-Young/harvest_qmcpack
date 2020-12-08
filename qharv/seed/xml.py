@@ -92,7 +92,7 @@ def ls(node, r=False, level=0, indent="  "):
     return ''
   return mystr
 
-def to_dict(node):
+def todict(node):
   """ convert to dictionary
 
   Args:
@@ -108,7 +108,7 @@ def to_dict(node):
     for child in children:
       if type(child) is not etree._Element:
         continue
-      mydict[node.tag].update(to_dict(child))
+      mydict[node.tag].update(todict(child))
   else:
     return mydict
   return mydict
