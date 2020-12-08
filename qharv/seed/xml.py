@@ -92,6 +92,27 @@ def ls(node, r=False, level=0, indent="  "):
     return ''
   return mystr
 
+def to_dict(node):
+  """ convert to dictionary
+
+  Args:
+    node (lxml.etree._Element): xml node
+  Return:
+    dict: dictionary representation of the xml tree
+  """
+  if type(node) is etree._ElementTree:
+    node = node.getroot()
+  mydict = {node.tag: {'_attrib': node.attrib, '_text': node.text}}
+  children = node.getchildren()
+  if len(children) > 0:
+    for child in children:
+      if type(child) is not etree._Element:
+        continue
+      mydict[node.tag].update(to_dict(child))
+  else:
+    return mydict
+  return mydict
+
 def append(root, nodes, copy=True):
   """ append one or more nodes to a root node
 
