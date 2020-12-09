@@ -102,7 +102,7 @@ def todict(node):
   """
   if type(node) is etree._ElementTree:
     node = node.getroot()
-  mydict = {node.tag: {'_attrib': node.attrib, '_text': node.text}}
+  mydict = {node.tag: {'_attrib': dict(node.attrib), '_text': node.text}}
   children = node.getchildren()
   if len(children) > 0:
     for child in children:
