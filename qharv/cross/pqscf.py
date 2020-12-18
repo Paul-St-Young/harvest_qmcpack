@@ -3,6 +3,20 @@
 # Routines to manipulate pyscf results for use in QMCPACK
 import numpy as np
 
+# ======================== level 0: basic pyscf =========================
+
+def mf_from_chkfile(chkfile, scf_class=None, pbc=True):
+  if pbc:
+    from pyscf.pbc import scf
+  else:
+    from pyscf import scf
+  if scf_class is None:
+    scf_class = scf.RHF
+  cell, scf_rec = scf.chkfile.load_scf(chkfile)
+  mf = scf_class(cell)
+  mf.__dict__.update(scf_rec)
+  return mf
+
 def atom_text(elem, pos):
   """convert elem,pos to text representation
 
@@ -26,17 +40,7 @@ def atom_text(elem, pos):
   return atext
 # end def
 
-def mf_from_chkfile(chkfile, scf_class=None, pbc=True):
-  if pbc:
-    from pyscf.pbc import scf
-  else:
-    from pyscf import scf
-  if scf_class is None:
-    scf_class = scf.RHF
-  cell, scf_rec = scf.chkfile.load_scf(chkfile)
-  mf = scf_class(cell)
-  mf.__dict__.update(scf_rec)
-  return mf
+# ======================== level 1: structure =========================
 
 def ase_tile(cell, tmat):
   """Create supercell from primitive cell and tiling matrix
@@ -82,6 +86,8 @@ def check_grid_shape(grid_shape, gvecs):
       msg += 'Please increase to at least %s' % str(ns_shape)
       raise RuntimeError(msg)
   return grid_shape
+
+# ======================== level 2: orbital =========================
 
 def pw_to_r(gvecs, psig, grid_shape=None):
   """ convert a 3D function from plane-wave to real-space basis
