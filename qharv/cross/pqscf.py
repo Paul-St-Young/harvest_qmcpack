@@ -17,6 +17,50 @@ def mf_from_chkfile(chkfile, scf_class=None, pbc=True):
   mf.__dict__.update(scf_rec)
   return mf
 
+def show_orbital_occupations(mol, mf, nshow):
+  from pyscf import symm
+  # Q/ how many s basis?
+  names = mol.irrep_name
+  orbs = mol.symm_orb
+  nao = mol.nao
+  aosym = symm.label_orb_symm(mol, names, orbs, np.eye(nao))
+  ns = 0
+  for sym in aosym:
+    if sym != 'Ag':
+      break
+    ns += 1
+  # A/ ns
+  print()
+  print('# MO schar occ  eigenvalue')
+  sfmt = '%4s %5.2f %3.1f %10.6f'
+  if len(mf.mo_energy) != nao:  # UHF
+    ev1 = mf.mo_energy[0]
+    co1 = mf.mo_coeff[0]
+    oc1 = mf.mo_occ[0]
+    ev2 = mf.mo_energy[1]
+    co2 = mf.mo_coeff[1]
+    oc2 = mf.mo_occ[1]
+    os1 = symm.label_orb_symm(mol, names, orbs, co1)
+    os2 = symm.label_orb_symm(mol, names, orbs, co2)
+    i = 0
+    for e1, o1, s1, c1, e2, o2, s2, c2 in zip(
+      ev1[:nshow+1], oc1, os1, co1.T, ev2, oc2, os2, co2.T
+    ):
+      sup = sfmt % (s1, sum(c1[:ns]), o1, e1)
+      sdn = sfmt % (s2, sum(c2[:ns]), o2, e2)
+      print('%s %s %d' % (sup, sdn, i))
+      i += 1
+  else:  # RHF or ROHF
+    evals = mf.mo_energy
+    coeff = mf.mo_coeff
+    occ = mf.mo_occ
+    orbsym = symm.label_orb_symm(mol, mol.irrep_name, mol.symm_orb, coeff)
+    i = 0
+    for e, o, s, c in zip(evals[:nshow+1], occ, orbsym, coeff.T):
+      sup = sfmt % (s, sum(c[:ns]), o, e)
+      print('%s %d' % (sup, i))
+      i += 1
+
 def atom_text(elem, pos):
   """convert elem,pos to text representation
 
