@@ -140,6 +140,8 @@ def ase_tile(cell, tmat):
   cell1.verbose = cell.verbose
   return cell1
 
+# ======================== level 2: orbital =========================
+
 def check_grid_shape(grid_shape, gvecs):
   # Nyquist-Shannon sampling grid
   ns_shape = 2*(gvecs.max(axis=0)-gvecs.min(axis=0))+1
@@ -152,8 +154,6 @@ def check_grid_shape(grid_shape, gvecs):
       msg += 'Please increase to at least %s' % str(ns_shape)
       raise RuntimeError(msg)
   return grid_shape
-
-# ======================== level 2: orbital =========================
 
 def pw_to_r(gvecs, psig, grid_shape=None):
   """ convert a 3D function from plane-wave to real-space basis
