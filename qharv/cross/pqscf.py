@@ -17,13 +17,35 @@ def mf_from_chkfile(chkfile, scf_class=None, pbc=True):
   mf.__dict__.update(scf_rec)
   return mf
 
+def reorder(mf, order, ispin=None):
+  if type(mf.mo_coeff) is np.ndarray:  # RHF
+    coeff = mf.mo_coeff
+    evals = mf.mo_energy
+  else:  # UHF
+    if ispin is None:
+      raise RuntimeError('must provide ispon for UHF')
+    coeff = mf.mo_coeff[ispin]
+    evals = mf.mo_energy[ispin]
+  old_coeff = coeff.copy()
+  old_energy = evals.copy()
+  for i, j in enumerate(order):
+    coeff[:, i] = old_coeff[:, j]
+    evals[i] = old_energy[j]
+
+def get_ao_symm(mol):
+  from pyscf import symm
+  names = mol.irrep_name
+  orbs = mol.symm_orb
+  nao = mol.nao
+  return symm.label_orb_symm(mol, names, orbs, np.eye(nao))
+
 def show_orbital_occupations(mol, mf, nshow):
   from pyscf import symm
   # Q/ how many s basis?
   names = mol.irrep_name
   orbs = mol.symm_orb
   nao = mol.nao
-  aosym = symm.label_orb_symm(mol, names, orbs, np.eye(nao))
+  aosym = get_ao_symm(mol)
   ns = 0
   for sym in aosym:
     if sym != 'Ag':
