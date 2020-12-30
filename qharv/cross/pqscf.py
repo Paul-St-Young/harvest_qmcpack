@@ -18,12 +18,12 @@ def mf_from_chkfile(chkfile, scf_class=None, pbc=True):
   return mf
 
 def reorder(mf, order, ispin=None):
-  if type(mf.mo_coeff) is np.ndarray:  # RHF
+  if np.isscalar(mf.mo_coeff[0][0]):  # RHF
     coeff = mf.mo_coeff
     evals = mf.mo_energy
   else:  # UHF
     if ispin is None:
-      raise RuntimeError('must provide ispon for UHF')
+      raise RuntimeError('must provide ispin for UHF')
     coeff = mf.mo_coeff[ispin]
     evals = mf.mo_energy[ispin]
   old_coeff = coeff.copy()
