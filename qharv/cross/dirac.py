@@ -1,9 +1,11 @@
 import pandas as pd
 
-def read(fout, vp_kwargs=None):
+def read(fout, vp_kwargs=None, mp_kwargs=None):
   from qharv.reel import ascii_out
   if vp_kwargs is None:
     vp_kwargs = dict()
+  if mp_kwargs is None:
+    mp_kwargs = dict()
   mm = ascii_out.read(fout)
   etot = ascii_out.name_sep_val(mm, 'Total energy', ':')
   ehomo = ascii_out.name_sep_val(mm, 'E(HOMO)', ':')
@@ -12,8 +14,12 @@ def read(fout, vp_kwargs=None):
     'etot': etot,
     'ehomo': ehomo,
     'elumo': elumo,
-    'vectors': parse_vector_print(mm, **vp_kwargs)
   }
+  if mm.find(b'* Vector print *') > 0:
+    data['vectors'] = parse_vector_print(mm, **vp_kwargs)
+  if mm.find(b'* Mulliken population analysis *') > 0:
+    data['populations'] = parse_mulliken(mm, **mp_kwargs)
+  mm.close()
   return data
 
 def parse_ev_text(text):
