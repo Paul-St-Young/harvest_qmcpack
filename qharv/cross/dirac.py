@@ -187,6 +187,30 @@ def parse_mulliken(mm,
   df = pd.concat([gdf, udf], sort=False).reset_index(drop=True)
   return df
 
+def get_basis_symm(vdf):
+  """Get basis symmetry labels
+
+  Args:
+    vdf (pd.DataFrame): Vector Print database
+  Return:
+    list: a list of strings indicating the symmetry of each basis function
+  Example:
+    >>> data = dirac.read('W6+_stu.out')
+    >>> vdf = data['vectors']
+    >>> ao_symms = dirac.get_basis_symm(vdf)
+  """
+  import numpy as np
+  ibasl = vdf.ibas.unique()
+  ibasl.sort()
+  nbas = len(ibasl)
+  assert np.allclose(np.array(ibasl)-1, range(nbas))
+  ao_symms = []
+  for ibas in ibasl:
+    asymm = vdf.loc[vdf.ibas==ibas, 'ao_symm'].unique()
+    assert len(asymm) == 1
+    ao_symms.append(str(asymm[0]))
+  return ao_symms
+
 # =================== level 1: scalar relativistic ===================
 
 def is_spinor_up(cup0, cdn0, ztol):
