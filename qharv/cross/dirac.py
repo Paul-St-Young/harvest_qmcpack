@@ -211,7 +211,8 @@ def is_spinor_up(cup0, cdn0, ztol):
     raise RuntimeError(msg)
   return is_up
 
-def read_scalar_relativistic(fdir, mu=None, ztol=1e-4, sort=True):
+def read_scalar_relativistic(fdir, mu=None, ztol=1e-4, sort=True,
+  renorm_dcoeff=False):
   """Read MO energy and coeff from DIRAC output
    assuming calculation is scalar relativistic
 
@@ -220,10 +221,16 @@ def read_scalar_relativistic(fdir, mu=None, ztol=1e-4, sort=True):
     mu (float, optional): chemical potential in eV, default 0.5*(HOMO+LUMO)
     ztol (float, optional): zero tolerance, default 1e-4
     sort (bool, optional): sort MOs by energy, default True
+    renorm_dcoeff (bool, optional): renormalize d coefficiets for PySCF,
+      default False
   Return:
-    evals (np.array): MO energy
-    cup (np.array): complex valued MO coeff for up orbitals
-    cdn (np.array): complex valued MO coeff for down orbitals
+    dict:
+      etot (float): total energy
+      ehomo (float): HOMO energy
+      elumo (float): LUMO energy
+      evals (np.array): MO energy
+      cup (np.array): complex valued MO coeff for up orbitals
+      cdn (np.array): complex valued MO coeff for down orbitals
   Example:
     >>> evals, cup, cdn = read_scalar_relativistic('W6+_stu.out', mu=np.inf)
   """
@@ -276,4 +283,12 @@ def read_scalar_relativistic(fdir, mu=None, ztol=1e-4, sort=True):
   iup = np.ones(len(evals), dtype=bool)
   if sort:  # sort by MO energy
     iup = np.argsort(el)
-  return evals[iup], cup[iup].T, cdn[iup].T
+  ret = {
+    'etot': data['etot'],
+    'ehomo': data['ehomo'],
+    'elumo': data['elumo'],
+    'evals': evals[iup],
+    'cup': cup[iup].T,
+    'cdn': cdn[iup].T,
+  }
+  return ret
