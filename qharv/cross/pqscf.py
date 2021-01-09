@@ -64,12 +64,16 @@ def show_orbital_occupations(mol, mf, nshow):
     oc2 = mf.mo_occ[1]
     os1 = symm.label_orb_symm(mol, names, orbs, co1)
     os2 = symm.label_orb_symm(mol, names, orbs, co2)
+    if mf.mo_energy == 'None':  # CASSCF
+      ev1 = ev2 = -np.ones(nshow+1)
     i = 0
     for e1, o1, s1, c1, e2, o2, s2, c2 in zip(
       ev1[:nshow+1], oc1, os1, co1.T, ev2, oc2, os2, co2.T
     ):
-      sup = sfmt % (s1, sum(c1[:ns]), o1, e1)
-      sdn = sfmt % (s2, sum(c2[:ns]), o2, e2)
+      schar1 = np.dot(c1[:ns], c1[:ns].conj()).real
+      schar2 = np.dot(c2[:ns], c2[:ns].conj()).real
+      sup = sfmt % (s1, schar1, o1, e1)
+      sdn = sfmt % (s2, schar2, o2, e2)
       print('%s %s %d' % (sup, sdn, i))
       i += 1
   else:  # RHF or ROHF
