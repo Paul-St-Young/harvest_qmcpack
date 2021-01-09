@@ -304,6 +304,12 @@ def read_scalar_relativistic(fdir, mu=None, ztol=1e-4, sort=True,
   cup = np.array(cupl)
   cdn = np.array(cdnl)
   evals = np.array(el)
+  if renorm_dcoeff:
+    ao_symms = get_basis_symm(df)
+    dnorm = 0.83775**0.5  # !!!! how to calculate this better?
+    sel = [asymm.startswith('d') for asymm in ao_symms]
+    cup[:, sel] /= dnorm
+    cdn[:, sel] /= dnorm
   iup = np.ones(len(evals), dtype=bool)
   if sort:  # sort by MO energy
     iup = np.argsort(el)
