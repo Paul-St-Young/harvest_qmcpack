@@ -1,5 +1,7 @@
 import pandas as pd
 
+# ====================== level 0: basic output ======================
+
 def read(fout, vp_kwargs=None, mp_kwargs=None):
   from qharv.reel import ascii_out
   if vp_kwargs is None:
@@ -184,3 +186,94 @@ def parse_mulliken(mm,
   udf['mo_symm'] = 'E1u'
   df = pd.concat([gdf, udf], sort=False).reset_index(drop=True)
   return df
+
+# =================== level 1: scalar relativistic ===================
+
+def is_spinor_up(cup0, cdn0, ztol):
+  """Determine if spinor is dominated by spin-up component
+
+  Args:
+    cup0 (np.array): complex valued spin-up component of spinor
+    cdn0 (np.array): complex valued spin-down component of spinor
+    ztol (float): small value to tolerate non-exact zero
+  Return:
+    bool: True if spinor is dominated by spin-up component
+  """
+  import numpy as np
+  nup0 = np.dot(cup0, cup0.conj()).real
+  ndn0 = np.dot(cdn0, cdn0.conj()).real
+  is_up = True
+  if nup0 < ztol:
+    is_up = False
+  elif ndn0 >= ztol:
+    msg = '|cup| = %f; |cdn| = %f' % (nup0, ndn0)
+    msg += ' neither is zero given ztol = %f.' % ztol
+    raise RuntimeError(msg)
+  return is_up
+
+def read_scalar_relativistic(fdir, mu=None, ztol=1e-4, sort=True):
+  """Read MO energy and coeff from DIRAC output
+   assuming calculation is scalar relativistic
+
+  Args:
+    fdir (str): DIRAC output file
+    mu (float, optional): chemical potential in eV, default 0.5*(HOMO+LUMO)
+    ztol (float, optional): zero tolerance, default 1e-4
+    sort (bool, optional): sort MOs by energy, default True
+  Return:
+    evals (np.array): MO energy
+    cup (np.array): complex valued MO coeff for up orbitals
+    cdn (np.array): complex valued MO coeff for down orbitals
+  Example:
+    >>> evals, cup, cdn = read_scalar_relativistic('W6+_stu.out', mu=np.inf)
+  """
+  import numpy as np
+  data = read(fdir)
+  if mu is None:  # return only occupied MOs by default
+    mu = 0.5*(data['ehomo']+data['elumo'])
+  df = data['vectors']
+  nbas = df.ibas.max()
+  sel0 = df.ev < mu
+  el = []
+  cupl = []
+  cdnl = []
+  for mo_symm in ['E1g', 'E1u']:
+    sel1 = df.mo_symm == mo_symm
+    ievl = df.loc[sel0&sel1, 'iev'].unique()
+    for iev in ievl:
+      sel = sel0&sel1&(df.iev==iev)
+      evl = df.loc[sel, 'ev'].unique()
+      assert len(evl) == 1
+      ev = evl[0]
+      el.append(ev)
+      # 1-based to 0-based basis index
+      idx = df.loc[sel, 'ibas'].values-1
+      # up & dn components of this spinor
+      cup0 = df.loc[sel, 'cup'].values
+      cdn0 = df.loc[sel, 'cdn'].values
+      # degenerate Kramer's pair
+      cup1 = -cdn0.conj()
+      cdn1 = cup0.conj()
+      # is this spinor up or down?
+      is_up = is_spinor_up(cup0, cdn0, ztol)
+      if is_up:
+        c = np.zeros(nbas, dtype=complex)
+        c[idx] = cup0
+        cupl.append(c)
+        c = np.zeros(nbas, dtype=complex)
+        c[idx] = cdn1
+        cdnl.append(c)
+      else:
+        c = np.zeros(nbas, dtype=complex)
+        c[idx] = cup1
+        cupl.append(c)
+        c = np.zeros(nbas, dtype=complex)
+        c[idx] = cdn0
+        cdnl.append(c)
+  cup = np.array(cupl)
+  cdn = np.array(cdnl)
+  evals = np.array(el)
+  iup = np.ones(len(evals), dtype=bool)
+  if sort:  # sort by MO energy
+    iup = np.argsort(el)
+  return evals[iup], cup[iup].T, cdn[iup].T
