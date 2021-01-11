@@ -265,7 +265,7 @@ def write_gaussian_cube(fcub, data, overwrite=False, **kwargs):
 
 def write_gaussian_cube_text(
   vol, axes,
-  elem=(1,), pos=((0, 0, 0),), origin=(0, 0, 0),
+  elem=(1,), qs=(0,), pos=((0, 0, 0),), origin=(0, 0, 0),
   two_line_comment='cube\nfile\n'):
   """Write Gaussian cube file using volumetric data
 
@@ -273,6 +273,7 @@ def write_gaussian_cube_text(
     vol (np.array): volumetric data, shape (nx, ny, nz)
     axes (np.array): grid basis, e.g. np.diag((dx, dy, dz))
     elem (array-like, optional): list of atomic numbers, default (1,)
+    qs (array-like, optional): list of atomic charges, default (0,)
     pos (array-like, optional): list of atomic positions
     origin (array-like, optional): coordinates of the origin
     two_line_comment (str, optional): comments at file head
@@ -291,11 +292,12 @@ def write_gaussian_cube_text(
     line2 += '%4d %8.6f %8.6f %8.6f\n' % (n, x, y, z)
   # atoms
   line3 = ''
-  for num, vec in zip(elem, pos):
+  for num, q, vec in zip(elem, qs, pos):
     x, y, z = vec
-    line3 += '%4d %8.6f %8.6f %8.6f\n' % (num, x, y, z)
+    line3 += '%4d %4.1f %8.6f %8.6f %8.6f\n' % (num, q, x, y, z)
   # volumetric data (not human-readable format)
-  dline = ' '.join(vol.ravel().astype(str))
+  #dline = ' '.join(vol.ravel().astype(str))
+  dline = (len(vol.ravel())*'%8.6f ') % tuple(vol.ravel())
   return text + line1 + line2 + line3 + dline
 
 def write_wavefront_obj(verts, faces, normals):
