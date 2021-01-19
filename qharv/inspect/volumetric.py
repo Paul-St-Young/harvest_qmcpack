@@ -108,6 +108,28 @@ def spline_volumetric(val3d):
   fval3d = RegularGridInterpolator((myx, myy, myz), val3d)
   return fval3d
 
+def frac_to_cart(frac, data):
+  """ convert fractional to cartesian coordinates on regular grid
+   useful for splined 3D data with RegularGridInterpolator
+
+  Args:
+    frac (np.array): fractional coordinates, shape (npt, ndim=3)
+    data (dict): must contain 3D grid 'data', basis 'axes', and 'origin'
+  Return:
+    np.array: cartesian coordinates
+  """
+  nxyz = np.array(data['data'].shape)
+  amat = (nxyz-1)*data['axes']
+  rvec = np.dot(frac, amat)+data['origin']
+  return rvec
+
+def cart_to_frac(rvec, data):
+  """ inverse of frac_to_cart """
+  nxyz = np.array(data['data'].shape)
+  amat = (nxyz-1)*data['axes']
+  frac = np.dot(rvec-data['origin'], np.linalg.inv(amat))
+  return frac
+
 def axes_func_on_grid3d(axes, func, grid_shape):
   """ put a function define in axes units on a 3D grid
   Args:
