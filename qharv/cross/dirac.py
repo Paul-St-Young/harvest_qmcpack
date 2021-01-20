@@ -1,5 +1,92 @@
 import pandas as pd
 
+# ====================== level 0: basic input =======================
+
+def read_bas_ecp(fmol):
+  from qharv.reel import ascii_out
+  mm = ascii_out.read(fmol)
+  # skip comment lines
+  for iline in range(3):
+    line = mm.readline()
+  lines = []
+  for iline in range(3):
+    line = mm.readline().decode()
+    lines.append(line)
+  symm_line = lines[0]
+  if not symm_line.startswith('C'):
+    msg = 'need Cartesian expansion for ECP run\n'
+    msg += symm_line
+    raise RuntimeError(msg)
+  atom_line = lines[1]
+  toks = list(map(float, atom_line.split()))
+  if len(toks) > 2:
+    msg = 'can handle only 1 species for now'
+    raise NotImplementedError(msg)
+  pos_line = lines[2]
+  elem = pos_line.split()[0]
+  # convert basis string to PySCF format
+  dbas_str = ascii_out.block_text(mm, 'LARGE EXPLICIT', 'ECP')
+  ang_moms = ['S', 'P', 'D', 'F', 'G', 'H']
+  nang_avail = len(ang_moms)
+  bas_fmt = '%16.8f  %20.8f\n'  # expo, c
+  iang = -1
+  nbas1 = None
+  bas_str = ''
+  for line in dbas_str.split('\n'):
+    toks = line.split()
+    if len(toks) < 1: continue
+    if line.startswith('f'):
+      iang += 1
+      if iang > nang_avail-1:
+        msg = 'iang = %d not available from %s' % (iang, ang_moms)
+        raise RuntimeError(msg)
+      ang = ang_moms[iang]
+      if nbas1 is not None:
+        ifmatch = nbas1 == nbas0
+        if not ifmatch:
+          msg = 'expected %d basis, got %d' % (nbas0, nbas1)
+          raise RuntimeError(msg)
+      nbas0 = int(toks[1])
+      nbas1 = 0
+    else:
+      expo = float(toks[0])
+      new1 = '%2s    %s\n' % (elem, ang)
+      new1 += bas_fmt % (expo, 1.0)
+      bas_str += new1
+      nbas1 += 1
+  # convert ECP string to PySCF format
+  ang_moms += ['ul']  # fake local channel as last ang_mom
+  decp_str = ascii_out.block_text(mm, 'ECP', 'FINISH', skip_header=False)
+  lines = decp_str.split('\n')
+  header = lines[0]
+  nelec = int(header.split()[1])
+  ecp_str = '%s nelec %d\n' % (elem, nelec)
+  iang = -1
+  nbas1 = None
+  for line in lines[1:]:
+    toks = line.split()
+    if len(toks) < 1: continue
+    if len(toks) == 1:
+      if iang > nang_avail-1:
+        msg = 'iang = %d not available from %s' % (iang, ang_moms)
+        raise RuntimeError(msg)
+      ang = ang_moms[iang]
+      iang += 1
+      if nbas1 is not None:
+        ifmatch = nbas1 == nbas0
+        if not ifmatch:
+          msg = 'expected %d ecp basis, got %d' % (nbas0, nbas1)
+          raise RuntimeError(msg)
+      nbas1 = 0
+      nbas0 = int(toks[0])
+      ecp_str += '%s %s\n' % (elem, ang)
+    else:
+      nbas1 += 1
+      ecp_str += line + '\n'
+  bas = {elem: bas_str}
+  ecp = {elem: ecp_str}
+  return bas, ecp
+
 # ====================== level 0: basic output ======================
 
 def read(fout, vp_kwargs=None, mp_kwargs=None):
