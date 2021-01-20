@@ -111,23 +111,36 @@ def read(fout, vp_kwargs=None, mp_kwargs=None):
   mm.close()
   return data
 
+def parse_basis_line(line):
+  # eg. '1  L W   1 s      -1.1034620201  0.0000000000'
+  assert len(line) == 80
+  ibas = int(line[:8])
+  sl = line[8:11].strip()  # large or small component
+  elem = line[11:14].strip()
+  ie = int(line[14:17])
+  symm = line[17:24].strip()
+  istart = 24
+  nspan = 14
+  cupr = float(line[istart:istart+nspan])
+  istart += nspan
+  cupi = float(line[istart:istart+nspan])
+  istart += nspan
+  cdnr = float(line[istart:istart+nspan])
+  istart += nspan
+  cdni = float(line[istart:istart+nspan])
+  cup = cupr + 1j*cupi
+  cdn = cdnr + 1j*cdni
+  entry = {'elem': elem, 'ibas': ibas, 'ao_symm': symm,
+           'cup': cup, 'cdn': cdn}
+  return entry
+
 def parse_ev_text(text):
   lines = text.split('\n')
   entryl = []
   for line in lines:
-    # eg. '1  L W   1 s      -1.1034620201  0.0000000000'
-    toks = line.split()
-    if len(toks) < 8:
+    if len(line) != 80:
       continue
-    ibas = int(toks[0])
-    elem = toks[2]
-    symm = toks[4]
-    # (a, b, c, d) -> a+ib, c+id
-    cup = float(toks[-4])+1j*float(toks[-3])
-    cdn = float(toks[-2])+1j*float(toks[-1])
-    # Kramer's pair: (-c, d, a, -b)
-    entry = {'elem': elem, 'ibas': ibas, 'ao_symm': symm,
-             'cup': cup, 'cdn': cdn}
+    entry = parse_basis_line(line)
     entryl.append(entry)
   df = pd.DataFrame(entryl)
   return df
