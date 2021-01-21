@@ -17,15 +17,18 @@ def mf_from_chkfile(chkfile, scf_class=None, pbc=True):
   mf.__dict__.update(scf_rec)
   return mf
 
+def is_uhf(mo_coeff):
+  return not np.isscalar(mo_coeff[0][0])
+
 def reorder(mf, order, ispin=None):
-  if np.isscalar(mf.mo_coeff[0][0]):  # RHF
-    coeff = mf.mo_coeff
-    evals = mf.mo_energy
-  else:  # UHF
+  if is_uhf(mf.mo_coeff):  # UHF
     if ispin is None:
       raise RuntimeError('must provide ispin for UHF')
     coeff = mf.mo_coeff[ispin]
     evals = mf.mo_energy[ispin]
+  else:  # RHF or ROHF
+    coeff = mf.mo_coeff
+    evals = mf.mo_energy
   old_coeff = coeff.copy()
   old_energy = evals.copy()
   for i, j in enumerate(order):
@@ -55,7 +58,7 @@ def show_orbital_occupations(mol, mf, nshow):
   print()
   print('# MO schar occ  eigenvalue')
   sfmt = '%4s %5.2f %3.1f %10.6f'
-  if len(mf.mo_energy) != nao:  # UHF
+  if is_uhf(mf.mo_coeff):  # UHF
     ev1 = mf.mo_energy[0]
     co1 = mf.mo_coeff[0]
     oc1 = mf.mo_occ[0]
