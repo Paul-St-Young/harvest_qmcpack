@@ -17,12 +17,10 @@ def read_dice_output(fdat, force=False):
   df1 = parse_variational_step(mm)
   emin = df1.groupby(['Root', 'Eps1'])['Energy'].min()
   # get converged energy
-  #entryl = [{'ndet': 1, 'Eps1': np.inf, 'Iter': -1, 'Root': 0, 'ndave': 0,
-  #  'Energy': eref}]
   entryl = []
   for e in emin:
     sel = df1.Energy == e
-    entryl.append(df1.loc[sel].squeeze())
+    entryl.append(df1.loc[sel].iloc[-1])
   df2 = pd.DataFrame(entryl)
   for col in ['Iter', 'Root', 'ndet', 'ndave']:
     df2[col] = df2[col].astype(int)
