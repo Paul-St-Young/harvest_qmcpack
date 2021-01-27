@@ -39,6 +39,19 @@ def read_dice_output(fdat, force=False):
   mm.close()
   return data
 
+def read_rdm1(ftxt):
+  import numpy as np
+  with open(ftxt, 'r') as f:
+    n = int(f.readline())
+    dm = np.zeros([n, n])
+    for line in f:
+      it, jt, valt = line.split()
+      i = int(it)
+      j = int(jt)
+      val = float(valt)
+      dm[i, j] = val
+  return dm
+
 def parse_variational_step(mm):
   from qharv.reel import scalar_dat
   vtext = ascii_out.block_text(mm, 'Iter Root', 'Performing final tight',
