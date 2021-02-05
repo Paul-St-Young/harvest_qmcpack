@@ -151,6 +151,17 @@ def find_header_lines(text):
   idxl = np.where(~first_str)[0]
   return idxl.tolist()
 
+def corr(trace):
+  """Calculate the autocorrelation of a trace of scalar data
+
+  Args:
+    trace (list): should be a 1D iterable array of floating point numbers
+  Return:
+    float: autocorrelation time in blocks
+  """
+  from qharv.reel.forlib.stats import corr
+  return corr(trace)
+
 def error(trace, kappa=None):
   """Calculate the error of a trace of scalar data
 
