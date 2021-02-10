@@ -33,7 +33,7 @@ def extract_twists(fh5, **suffix_kwargs):
   # determine meta, ymean, yerror from first twist
   twist0 = list(fp.keys())[0]
   cols = fp[twist0].keys()
-  labels, mcols, ecols = categorize_columns(cols)
+  labels, mcols, ecols = categorize_columns(cols, **suffix_kwargs)
   # treat all other entries as metadata
   meta = {}
   for name in labels:
