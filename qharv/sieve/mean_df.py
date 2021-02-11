@@ -169,7 +169,7 @@ def linex(df_in, vseries, dseries, names, labels=None,
   Return:
     pd.DataFrame: extrapolated entry
   """
-  if not sorted_df:  # input must be sorted in advance
+  if (len(df_in) != 2) and (not sorted_df):  # input must be sorted in advance
     if sort_col is None:
       msg = 'must provide sort_col if input df is not sorted'
       raise RuntimeError(msg)
