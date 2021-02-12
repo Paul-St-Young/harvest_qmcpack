@@ -23,6 +23,40 @@ def input_keywords(scf_in):
 
 # ========================= level 1: modify =========================
 
+def change_keyword(text, section, key, val, indent=' '):
+  """Change input keyword
+
+  Args:
+    text (str): input text
+    section (str): section name, must be an existing section
+     e.g. ['control', 'system', 'electrons', 'ions', 'cell']
+    key (str): keyword name, e.g. ecutwfc, input_dft, nosym, noinv
+    val (dtype): keyword value
+  Return:
+    str: modified input text
+  """
+  from qharv.reel import ascii_out
+  # find section to edit
+  sname = '&' + section
+  if sname not in text:
+    sname = '&' + section.upper()
+  if sname not in text:
+    msg = 'section %s not found in %s' % (section, text)
+    raise RuntimeError(msg)
+  # determine keyword data type
+  fmt = '%s = "%s"'
+  if np.issubdtype(type(val), np.integer):
+    fmt = '%s = %d'
+  if np.issubdtype(type(val), np.floating):
+    fmt = '%s = %f'
+  line = indent + fmt % (key, val)
+  # edit input
+  if key in text:  # change existing keyword
+    text1 = ascii_out.change_line(text, key, line)
+  else:  # put new keyword at beginning of section
+    text1 = ascii_out.change_line(text, sname, sname+'\n'+line)
+  return text1
+
 def ktext_frac(kpts):
   """Write K_POINTS card assuming fractional kpoints with uniform weight.
 
