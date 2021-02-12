@@ -49,6 +49,8 @@ def change_keyword(text, section, key, val, indent=' '):
     fmt = '%s = %d'
   if np.issubdtype(type(val), np.floating):
     fmt = '%s = %f'
+    if val < 1e-4:
+      fmt = '%s = %e'
   line = indent + fmt % (key, val)
   # edit input
   if key in text:  # change existing keyword
