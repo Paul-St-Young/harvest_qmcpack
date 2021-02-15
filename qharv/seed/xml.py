@@ -108,7 +108,15 @@ def todict(node):
     for child in children:
       if type(child) is not etree._Element:
         continue
-      mydict[node.tag].update(todict(child))
+      mychild = todict(child)
+      if child.tag not in mydict:
+        mydict[node.tag].update(mychild)
+      else:  # duplicate tag, make input list if not already so
+        mylist = mydict[child.tag]
+        if type(mylist) is list:
+          mylist.append(mychild)
+        else:
+          mydict[node.tag] = [mylist, mychild]
   else:
     return mydict
   return mydict
