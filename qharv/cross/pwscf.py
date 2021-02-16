@@ -74,6 +74,53 @@ def ktext_frac(kpts):
   ktext = header + '\n'.join(lines)
   return ktext
 
+# ====================== level 1: read output =======================
+
+def find_lines(lines, label):
+  idxl = []
+  for i, line in enumerate(lines):
+    if label in line:
+      idxl.append(i)
+  return idxl
+
+def parse_occupation_numbers(text):
+  lines = text.split('\n')
+  idxl = find_lines(lines, 'occupation numbers')
+  omat = []
+  for i in idxl:
+    occl = []
+    for line in lines[i+1:]:
+      tokens = line.split()
+      if len(tokens) < 1:
+        break
+      occl += list(map(float, tokens))
+    omat.append(occl)
+  return np.array(omat)
+
+def read_occupation_numbers(scf_out):
+  with open(scf_out, 'r') as f:
+    text = f.read()
+  return parse_occupation_numbers(text)
+
+def parse_bands(text):
+  lines = text.split('\n')
+  idxl = find_lines(lines, 'bands (ev)')
+  bmat = []
+  for i in idxl:
+    evals = []
+    for line in lines[i+2:]:
+      tokens = line.split()
+      if len(tokens) < 1:
+        break
+      evals += list(map(float, tokens))
+    bmat.append(evals)
+  return np.array(bmat)
+
+def read_bands(scf_out):
+  with open(scf_out, 'r') as f:
+    text = f.read()
+  return parse_bands(text)
+
 # ========================= level 2: cross ==========================
 
 def copy_charge_density(scf_dir, nscf_dir, execute=True):
