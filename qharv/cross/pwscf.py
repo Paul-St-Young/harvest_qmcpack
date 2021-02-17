@@ -121,6 +121,13 @@ def read_bands(scf_out):
     text = f.read()
   return parse_bands(text)
 
+def read_efermi(scf_out):
+  from qharv.reel import ascii_out
+  mm = ascii_out.read(scf_out)
+  efermi = ascii_out.name_sep_val(mm, 'the Fermi energy', sep='is')
+  mm.close()
+  return efermi
+
 # ========================= level 2: cross ==========================
 
 def copy_charge_density(scf_dir, nscf_dir, execute=True):
