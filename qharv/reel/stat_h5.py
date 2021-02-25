@@ -31,7 +31,7 @@ def me2d(edata, kappa=None, axis=0):
       msg = str(err)
       msg += '\n  Please compile qharv.reel.forlib.stats using f2py.'
       raise ImportError(msg)
-    kappa = np.apply_along_axis(corr, axis, edata)
+    kappa = np.apply_along_axis(corr, axis, edata.real)
   neffective = ntrace/kappa
   # calculate mean and error
   val_mean = edata.mean(axis=axis)
@@ -214,9 +214,9 @@ def afobs(fp, obs_name, nequil, kappa=None, numer='one_rdm', iav=None):
   nbas = int(meta['nmo'])
   itwalker = int(meta['walker_type'])
   if itwalker == 1:  # CLOSED
-    rdm_shape = (nbas, nbas, 2)
+    rdm_shape = (nbas, nbas)
   elif itwalker == 2:  # COLLINEAR
-    rdm_shape = (2, nbas, nbas, 2)
+    rdm_shape = (2, nbas, nbas)
   else:
     raise NotImplementedError('WalkerType %d' % itwalker)
   # 2. deal with back propagation (BP)
@@ -238,13 +238,14 @@ def afobs(fp, obs_name, nequil, kappa=None, numer='one_rdm', iav=None):
   data = []
   for block in rdm_blocks[nequil:]:
     path = os.path.join(matrix_path, block)
-    rdm = fp[path][()]
+    rdm = fp[path][()].view(np.complex128)
     dpath = os.path.join(matrix_path, block.replace(numer, 'denominator'))
-    deno = fp[dpath][()]
+    deno = fp[dpath][()].view(np.complex128)
     data.append(rdm/deno)
   assert np.prod(rdm_shape) == np.prod(rdm.shape)
   # 4. get mean and standard error
-  mat = np.array(data).reshape(-1, np.prod(rdm_shape))
+  mat = np.array(data, dtype=np.complex128).reshape(
+    -1, np.prod(rdm_shape))
   ym, ye = me2d(mat)
   dm = ym.reshape(rdm_shape)
   de = ye.reshape(rdm_shape)
