@@ -101,6 +101,16 @@ def xyye(df, xname, yname, sel=None, xerr=False, yerr=True, sort=False):
     idx = np.argsort(xm)
   return [ret[idx] for ret in rets if ret is not None]
 
+# ======================== level 2: propagate error =======================
+def resample(marr, earr, nsample, seed=None):
+  shape = marr.shape
+  assert np.allclose(shape, earr.shape)
+  if seed is not None:
+    np.random.seed(seed)
+  noise = earr*np.random.randn(nsample, *shape)
+  new_marr = marr[np.newaxis] + noise
+  return new_marr
+
 # ======================== level 2: twist average =========================
 def taw(ym, ye, weights):
   """ twist average with weights """
