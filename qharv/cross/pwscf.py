@@ -128,6 +128,44 @@ def read_efermi(scf_out):
   mm.close()
   return efermi
 
+def parse_kline(line, ik=None):
+  from qharv.reel import ascii_out
+  assert 'k(' in line
+  ikt, kvect, wkt = line.split('=')
+  myik = int(ascii_out.lr_mark(ikt, '(', ')'))
+  if ik is not None:  # check k index
+    assert ik == myik-1  # fortran 1-based indexing
+  wk = float(wkt)
+  klist = ascii_out.lr_mark(kvect, '(', ')').split()
+  kvec = np.array(klist, dtype=float)
+  return kvec, wk
+
+def read_kpoints(scf_out):
+  from qharv.reel import ascii_out
+  mm = ascii_out.read(scf_out)
+  # get lattice units
+  alat = ascii_out.name_sep_val(mm, 'lattice parameter (alat)')
+  blat = 2*np.pi/alat
+  # start parsing k points
+  idx = mm.find(b'number of k points')
+  mm.seek(idx)
+  # read first line
+  #  e.g. number of k points=    32  Fermi-Dirac smearing ...
+  line = mm.readline().decode()
+  nk = int(line.split('=')[1].split()[0])
+  # confirm units in second line
+  line = mm.readline().decode()
+  assert '2pi/alat' in line
+  # start parsing kvectors
+  data = np.zeros([nk, 4])  # ik, kx, ky, kz, wk
+  for ik in range(nk):
+    line = mm.readline().decode()
+    kvec, wk = parse_kline(line, ik=ik)
+    data[ik, :3] = kvec*blat
+    data[ik, 3] = wk
+  mm.close()
+  return data
+
 # ========================= level 2: cross ==========================
 
 def copy_charge_density(scf_dir, nscf_dir, execute=True):
