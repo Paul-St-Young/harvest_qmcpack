@@ -188,7 +188,7 @@ def rdm1(fp, obs_name, nequil, kappa=None):
     rdms[grp] = (ym, ye)
   return rdms
 
-def afobs(fp, obs_name, nequil, kappa=None, numer='one_rdm', iav=None):
+def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_rdm', iav=None):
   """ extract 1RMD output from AFQMC stat.h5 file
    assume BackPropagated (BP) 'Observables/BackPropagated'
 
@@ -220,7 +220,7 @@ def afobs(fp, obs_name, nequil, kappa=None, numer='one_rdm', iav=None):
   else:
     raise NotImplementedError('WalkerType %d' % itwalker)
   # 2. deal with back propagation (BP)
-  avg_path = os.path.join('Observables', 'BackPropagated', obs_name)
+  avg_path = os.path.join('Observables', group, obs_name)
   if iav is None:  # use longest BP
     avgs = fp[avg_path].keys()
     iavgs = [int(a.replace('Average_', '')) for a in avgs]
