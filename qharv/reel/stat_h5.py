@@ -207,10 +207,14 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
     'walker_type': 'Metadata/WalkerType',
     'nmo': 'Metadata/NMO',
     'dt': 'Metadata/Timestep',
+    'free_projection': 'Metadata/FreeProjection',
   }
   meta = {}
   for key, path in meta_paths.items():
     meta[key] = fp[path][()]
+  if meta['free_projection'] > 0:
+    msg = 'need to consider denominator!'
+    raise NotImplementedError(msg)
   nbas = int(meta['nmo'])
   itwalker = int(meta['walker_type'])
   if itwalker == 1:  # CLOSED
