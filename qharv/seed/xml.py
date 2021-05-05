@@ -275,9 +275,9 @@ def get_axes(doc):
   axes = text2arr(lat_node.text)
   return axes
 
-def get_nelec(doc):
+def get_nelec(doc, groups=['u', 'd']):
   nelec = 0
-  for pname in ['u', 'd']:
+  for pname in groups:
     node = doc.find('.//group[@name="%s"]' % pname)
     if node is not None:
       npos = int(node.get('size'))
