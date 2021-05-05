@@ -126,7 +126,7 @@ def read_efermi(scf_out):
   mm = ascii_out.read(scf_out)
   try:
     eup = ascii_out.name_sep_val(mm, 'the Fermi energy', sep='is')
-    efermi = [eup, eup]
+    efermi = eup
   except RuntimeError as err:
     if 'not found' in str(err):  # look for up/dw
       idx = mm.find(b'Fermi energies')
