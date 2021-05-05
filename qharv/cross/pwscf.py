@@ -124,7 +124,19 @@ def read_bands(scf_out):
 def read_efermi(scf_out):
   from qharv.reel import ascii_out
   mm = ascii_out.read(scf_out)
-  efermi = ascii_out.name_sep_val(mm, 'the Fermi energy', sep='is')
+  try:
+    eup = ascii_out.name_sep_val(mm, 'the Fermi energy', sep='is')
+    efermi = [eup, eup]
+  except RuntimeError as err:
+    if 'not found' in str(err):  # look for up/dw
+      idx = mm.find(b'Fermi energies')
+      mm.seek(idx)
+      line = mm.readline().decode()
+      et = line.split('are')[1]
+      eup, edn, ev = et.split()
+      efermi = [float(eup), float(edn)]
+    else:
+      raise err
   mm.close()
   return efermi
 
