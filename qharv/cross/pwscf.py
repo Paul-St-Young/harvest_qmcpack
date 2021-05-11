@@ -76,6 +76,18 @@ def ktext_frac(kpts):
 
 # ====================== level 1: read output =======================
 
+def get_converged_output(scf_out,
+  conv_tag='End of self-consistent calculation',
+  end_tag='init_run     :'
+):
+  from qharv.reel import ascii_out
+  mm = ascii_out.read(scf_out)
+  idxl = ascii_out.all_lines_with_tag(mm, conv_tag)
+  istart = idxl[-1]
+  mm.seek(istart)
+  iend = mm.find(end_tag.encode())
+  return mm[istart:iend].decode()
+
 def find_lines(lines, label):
   idxl = []
   for i, line in enumerate(lines):
@@ -98,8 +110,7 @@ def parse_occupation_numbers(text):
   return np.array(omat)
 
 def read_occupation_numbers(scf_out):
-  with open(scf_out, 'r') as f:
-    text = f.read()
+  text = get_converged_output(scf_out)
   return parse_occupation_numbers(text)
 
 def parse_bands(text):
@@ -117,28 +128,27 @@ def parse_bands(text):
   return np.array(bmat)
 
 def read_bands(scf_out):
-  with open(scf_out, 'r') as f:
-    text = f.read()
+  text = get_converged_output(scf_out)
   return parse_bands(text)
 
-def read_efermi(scf_out):
-  from qharv.reel import ascii_out
-  mm = ascii_out.read(scf_out)
-  try:
-    eup = ascii_out.name_sep_val(mm, 'the Fermi energy', sep='is')
-    efermi = eup
-  except RuntimeError as err:
-    if 'not found' in str(err):  # look for up/dw
-      idx = mm.find(b'Fermi energies')
-      mm.seek(idx)
-      line = mm.readline().decode()
-      et = line.split('are')[1]
-      eup, edn, ev = et.split()
-      efermi = [float(eup), float(edn)]
-    else:
-      raise err
-  mm.close()
+def parse_efermi(line):
+  if 'the Fermi energy is' in line:
+    efermi = float(line.split('is')[1].split()[0])
+  elif 'Fermi energies are' in line:
+    et = line.split('are')[1]
+    eup, edn, ev = et.split()
+    efermi = [float(eup), float(edn)]
+  else:
+    msg = 'unable to parse "%s"' % line
+    raise RuntimeError(msg)
   return efermi
+
+def read_efermi(scf_out, efermi_tag='the Fermi energ'):
+  text = get_converged_output(scf_out)
+  for line in text.split('\n'):
+    if efermi_tag in line:
+      break
+  return parse_efermi(line)
 
 def parse_kline(line, ik=None):
   from qharv.reel import ascii_out
