@@ -25,3 +25,13 @@ def read_efermi(doc):
   fs = bs.find('.//fermi_energy')
   efermi = text2arr(fs.text, flatten=True)
   return efermi
+
+def read_reciprocal_lattice(doc):
+  from qharv.seed.xml import text2arr
+  rlat = doc.find('.//reciprocal_lattice')
+  bl = []
+  for bnode in rlat:
+    b1 = text2arr(bnode.text)
+    bl.append(b1)
+  raxes = np.array(bl)
+  return raxes
