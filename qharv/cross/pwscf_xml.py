@@ -28,10 +28,13 @@ def read_efermi(doc):
 
 def read_reciprocal_lattice(doc):
   from qharv.seed.xml import text2arr
+  astruct = doc.find('.//atomic_structure')
+  alat = float(astruct.get('alat'))
+  blat = 2*np.pi/alat
   rlat = doc.find('.//reciprocal_lattice')
   bl = []
   for bnode in rlat:
-    b1 = text2arr(bnode.text)
+    b1 = text2arr(bnode.text)*blat
     bl.append(b1)
   raxes = np.array(bl)
   return raxes
