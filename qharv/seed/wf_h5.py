@@ -447,7 +447,7 @@ def write_supercell(fp, axes):
   """
   fp.create_dataset('supercell/primitive_vectors', data=axes)
 
-def write_atoms(fp, elem, pos, pseudized_charge):
+def write_atoms(fp, elem, pos, pseudized_charge, atomic_number_map={'H': 1, 'Li': 3, 'C': 6}):
   """ create and fill the /atoms group
   !!!! QMCPACK does NOT check valence_charge, pseudized_charge matters?
 
@@ -472,7 +472,6 @@ def write_atoms(fp, elem, pos, pseudized_charge):
   # write species info
   species  = np.unique(elem)
   fp.create_dataset('atoms/number_of_species', data=[len(species)])
-  atomic_number = {'H': 1, 'Li': 3, 'C': 6}
   number_of_electrons = {}
   species_map = {}
   for ispec, name in enumerate(species):
@@ -483,8 +482,8 @@ def write_atoms(fp, elem, pos, pseudized_charge):
       raise NotImplementedError('unknown element %s' % name)
     spec_grp.create_dataset('name', data=[name.encode()])
     # write atomic number and valence
-    Zn   = atomic_number[name]
-    spec_grp.create_dataset('atomic_number', data=[Zn])
+    Zn   = atomic_number_map[name]
+    spec_grp.create_dataset('atomic_number_map', data=[Zn])
     Zps  = Zn
     if pseudized_charge is None:  # no pseudopotential, use bare charge
       pass
