@@ -11,13 +11,27 @@ def read_bands(doc):
   from qharv.seed.xml import text2arr
   bs = doc.find('.//band_structure')
   ksl = bs.findall('.//ks_energies')
-  bl = []
+  bl = []  # eval
   for ks in ksl:
     eig = ks.find('.//eigenvalues')
     evals = text2arr(eig.text, flatten=True)
     bl.append(evals)
   bands = np.array(bl)
   return bands
+
+def read_kpoints_and_weights(doc):
+  from qharv.seed.xml import text2arr
+  bs = doc.find('.//band_structure')
+  ksl = bs.findall('.//ks_energies')
+  kl = []  # kpoint
+  wl = []  # weight
+  for ks in ksl:
+    kp = ks.find('.//k_point')
+    kv = text2arr(kp.text)
+    kl.append(kv)
+    wt = float(kp.get('weight'))
+    wl.append(wt)
+  return np.array(kl), np.array(wl)
 
 def read_efermi(doc):
   from qharv.seed.xml import text2arr
