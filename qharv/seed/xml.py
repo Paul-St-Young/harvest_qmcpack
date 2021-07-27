@@ -138,7 +138,7 @@ def append(root, nodes, copy=True):
     for node in nodes:
       root.append(node)
 
-def remove(nodes):
+def remove(*nodes):
   """ remove nodes from the xml tree
 
   Args:
