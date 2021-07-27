@@ -99,6 +99,17 @@ def pbyp_dmc():
    </qmc>'''
   return xml.parse(text)
 
+def pbyp_optimize():
+  text = '''<loop max="8">
+    <qmc method="linear" move="pbyp" checkpoint="-1">
+      <parameter name="blocks">         64 </parameter>
+      <parameter name="warmupsteps">    40 </parameter>
+      <parameter name="timestep">      1.0 </parameter>
+      <parameter name="subSteps">        3 </parameter>
+      <parameter name="samples">     49152  </parameter>
+    </qmc>
+  </loop>'''
+  return xml.parse(text)
 
 def wbyw_optimize():
   text = '''<loop max="8">
@@ -211,7 +222,20 @@ def bcc54_dynamic_backflow():
 
 
 # =========================== <qmcsystem> section ===========================
-def heg_system(rs, nshell_up, polarized):
+def ee_jastrow(nknot=8):
+  uu = xml.etree.Element('correlation', {'speciesA': 'u', 'speciesB': 'u', 'size': str(nknot)})
+  cuu = xml.etree.Element('coefficients', {'id': 'uu', 'type': 'Array'})
+  cuu.text = ' 0 ' * nknot
+  uu.append(cuu)
+  ud = xml.etree.Element('correlation', {'speciesA': 'u', 'speciesB': 'd', 'size': str(nknot)})
+  cud = xml.etree.Element('coefficients', {'id': 'ud', 'type': 'Array'})
+  cud.text = ' 0 ' * nknot
+  ud.append(cud)
+  jas = xml.etree.Element('jastrow', {'type': 'Two-Body', 'function': 'bspline', 'name': 'J2', 'print': 'yes'})
+  xml.append(jas, [uu, ud])
+  return jas
+
+def heg_system(rs, nshell_up, polarized, add_jastrow=False):
   """ construct QMCPACK input xml <qmcsystem> node for the homogeneous
   electron gas (HEG). Momentum shells must be fully filled. The HEG must
   either be fully polarized or fully unpolarized.
@@ -234,6 +258,7 @@ def heg_system(rs, nshell_up, polarized):
     rs (float): Wigner-Seitz radius
     nshell_up (int): number k shells filled by up electrons
     polarized (bool): True: polarized (ndn=0); False: unpolarized (nup=ndn)
+    add_jastrow (bool, optional): add optimizable Jastrows, default False
   Return:
     lxml.etree.Element: qsys_node containing the <qmcsystem> xml node
   """
@@ -314,6 +339,9 @@ def heg_system(rs, nshell_up, polarized):
     , 'shell2':str(nshell_dn)
   })
   wf_node.append(det_node)
+  if add_jastrow:
+    jas = ee_jastrow()
+    xml.append(wf_node, jas)
 
   # build hamiltonian node
   ham_node = ee_ham()
