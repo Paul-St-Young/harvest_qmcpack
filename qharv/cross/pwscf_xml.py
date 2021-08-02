@@ -52,3 +52,14 @@ def read_reciprocal_lattice(doc):
     bl.append(b1)
   raxes = np.array(bl)
   return raxes
+
+# ===================== level 2: KS determinant =====================
+def read_gc_occupation(fpwscf_xml, eps=0):
+  doc = read(fpwscf_xml)
+  omatl = []
+  for ef in read_efermi(doc):
+    bands = read_bands(doc)
+    omat = bands < ef+eps
+    omatl.append(omat.astype(int))
+  return omatl
+
