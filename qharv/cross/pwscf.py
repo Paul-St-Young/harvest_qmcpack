@@ -44,13 +44,20 @@ def change_keyword(text, section, key, val, indent=' '):
     msg = 'section %s not found in %s' % (section, text)
     raise RuntimeError(msg)
   # determine keyword data type
-  fmt = '%s = "%s"'
-  if np.issubdtype(type(val), np.integer):
+  if np.issubdtype(type(val), np.dtype(np.str).type):  # default to string
+    fmt = '%s = "%s"'
+  elif np.issubdtype(type(val), np.dtype(bool).type):
+    fmt = '%s = %s'
+    val = '.true.' if val else '.false.'
+  elif np.issubdtype(type(val), np.integer):
     fmt = '%s = %d'
-  if np.issubdtype(type(val), np.floating):
+  elif np.issubdtype(type(val), np.floating):
     fmt = '%s = %f'
     if val < 1e-4:
       fmt = '%s = %e'
+  else:
+    msg = 'unknown datatype %s for "%s"' % (type(val), key)
+    raise RuntimeError(msg)
   line = indent + fmt % (key, val)
   # edit input
   if key in text:  # change existing keyword
