@@ -23,6 +23,11 @@ def read(fname, **kwargs):
     kwargs['mode'] = 'r'
   return h5py.File(fname, **kwargs)
 
+def write(fname, **kwargs):
+  if not ('mode' in kwargs):
+    kwargs['mode'] = 'w'
+  return h5py.File(fname, **kwargs)
+
 def ls(handle, r=False, level=0, indent="  "):
   """ List directory structure
 
