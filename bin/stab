@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Author: Yubo "Paul" Yang
 # Email: yubo.paul.yang@gmail.com
 #
@@ -36,6 +36,8 @@ def parse_args():
   return args
 
 def read_scalar_table(fdat, append=None):
+  if fdat.endswith('.csv'):
+    return pd.read_csv(fdat)
   from qharv.reel.scalar_dat import read_to_list
   with open(fdat, 'r') as f:
     header = f.readline()
