@@ -72,3 +72,27 @@ def write_csrm(grp, mat):
   grp['jdata_'] = mat.indices
   grp['pointers_begin_'] = mat.indptr[:-1]
   grp['pointers_end_'] = mat.indptr[1:]
+
+# =========================== level 1: FFT ==========================
+def cubic_pos(spaces):
+  ndim = len(spaces)
+  gvecs = np.stack(
+    np.meshgrid(*spaces, indexing='ij'), axis=-1
+  ).reshape(-1, ndim)
+  return gvecs
+
+def get_rvecs(axes, mesh):
+  spaces = [np.arange(nx) for nx in mesh]
+  gvecs = cubic_pos(spaces)
+  fracs = axes/mesh
+  return np.dot(gvecs, fracs)
+
+def get_kvecs(raxes, mesh):
+  spaces = [np.fft.fftfreq(nx)*nx for nx in mesh]
+  gvecs = cubic_pos(spaces)
+  return np.dot(gvecs, raxes)
+
+def calc_eikr(kvecs, rvecs):
+  kdotr = np.einsum('...i,ri->...r', kvecs, rvecs)
+  eikr = np.exp(1j*kdotr)
+  return eikr
