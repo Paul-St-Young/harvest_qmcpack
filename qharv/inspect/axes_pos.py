@@ -132,7 +132,7 @@ def cubic_pos(nx, ndim=3):
     np.array: simple cubic lattice positions, shape (nx**3, ndim)
   """
   try:
-    len(nx) == ndim
+    assert len(nx) == ndim
     nxnynz = [np.arange(n) for n in nx]
   except TypeError:
     nxnynz = [np.arange(nx)]*ndim
