@@ -98,7 +98,24 @@ def calc_eikr(kvecs, rvecs):
   eikr = np.exp(1j*kdotr)
   return eikr
 
-# =========================== level 2: ERI ==========================
+# =========================== level 2: kpt ==========================
+def calc_qk2k(tfracs, rtol=1e-6):
+  nq = len(tfracs)
+  # q+k
+  qks = tfracs[:, np.newaxis]+tfracs[np.newaxis, :]
+  qks -= np.rint(qks)
+  qk2k = -np.ones([nq, nq], dtype=int)
+  for iq, qk in enumerate(qks):
+    # find matching k in BZ
+    dtvecs = qk - tfracs[:, np.newaxis]
+    dtmags = np.linalg.norm(dtvecs, axis=-1)
+    sel = dtmags < rtol
+    # record q+k->k map
+    idx = np.where(sel)[1]
+    qk2k[iq] = idx
+  return qk2k
+
+# =========================== level 3: ERI ==========================
 
 def calc_pair_densities_on_fftgrid(ukl, gvl, raxes, rvecs):
   """ Calculate pair densities given a list of Bloch functions "ukl".
@@ -152,3 +169,122 @@ def calc_pij_on_fftgrid(rvecs, kvecs0, uk0, kvecs1, uk1, use_symm=False):
       if use_symm and (i != j):
         Pij[j, i, :] = val.conj()
   return Pij
+
+def calc_kpij_fftn(Pij, mesh):
+  nstate, nstate1, ngrid = Pij.shape
+  ngrid1 = np.prod(mesh)
+  assert ngrid1 == ngrid
+  kPij = np.zeros((nstate, nstate, ngrid), dtype=np.complex128)
+  for i in range(nstate):
+    for j in range(nstate):
+      p3d = Pij[i, j].reshape(mesh)
+      val3d = np.fft.fftn(p3d)
+      val1d = val3d.ravel()/np.prod(mesh)
+      kPij[i, j] = val1d
+  return kPij
+
+def check_kpij(kvecs, kPij, rvecs, Pij, mesh):
+  ngrid = np.prod(mesh)
+  nstate = len(kPij)
+  eikr = calc_eikr(kvecs, rvecs)
+  for i in range(nstate):
+    for j in range(nstate):
+      pr0 = Pij[i, j]
+      pvec = kPij[i, j]
+      pr1 = np.fft.ifftn(pvec.reshape(mesh)).ravel()*ngrid
+      assert np.allclose(pr0, pr1, atol=1e-8)
+      pr2 = np.dot(pvec, eikr)
+      assert np.allclose(pr0, pr2, atol=1e-8)
+
+def get_vg(kvecs, vol):
+  ndim = kvecs.shape[1]
+  if (ndim < 2) or (ndim > 3):
+    msg = 'ndim %d not supported' % ndim
+    raise RuntimeError(ndim)
+  pre = 4*np.pi
+  k2 = np.einsum('ki,ki->k', kvecs, kvecs)
+  if ndim == 2:
+    pre = 2*np.pi
+    k2 = k2**0.5
+  coulqG = np.zeros(len(kvecs))
+  zsel = abs(k2) > 1e-8
+  coulqG[zsel] = pre/k2[zsel]/vol
+  return coulqG
+
+def assemble_eri(kvecs, kPli, kPjm, vol, q=None):
+  if q is None:
+    q = np.zeros(ndim)
+  nstate00, nstate01, ngrid0 = kPli.shape
+  nstate10, nstate11, ngrid1 = kPjm.shape
+  assert len(kvecs) == ngrid0
+  assert ngrid0 == ngrid1
+  # put 1/r on reciprocal-space grid
+  coulqG = get_vg(kvecs+q, vol)
+  # sandwich between pair densities
+  eri0 = np.zeros((nstate00, nstate01, nstate10, nstate11),
+                  dtype=np.complex128)
+  for i in range(nstate00):
+    for l in range(nstate01):
+      left = kPli[l, i].conj()*coulqG
+      for j in range(nstate10):
+        for m in range(nstate11):
+          kpjm = kPjm[j, m]
+          eri0[i, j, l, m] = np.dot(left, kpjm)
+  npair0 = nstate00*nstate01
+  npair1 = nstate10*nstate11
+  eri0 = eri0.reshape(npair0, npair1)
+  return eri0
+
+def calc_kp_eri(iQl, tfracs, raxes, gvl, ukl, mesh, show_progress=False):
+  nbndl = [len(uk) for uk in ukl]
+  nbnd = nbndl[0]  # !!!! assume same nbnd at all kpts
+  if not np.allclose(nbndl, nbnd):
+    msg = 'kp eri for varying nbnd'
+    raise NotImplementedError(msg)
+  ndim = len(raxes)
+  assert len(mesh) == ndim
+  qktok2 = calc_qk2k(tfracs)
+  nkpt = len(tfracs)
+  # volume given by supercell
+  axes = 2*np.pi*np.linalg.inv(raxes).T
+  vol = abs(np.linalg.det(axes))*nkpt
+  # unit cell defines FFT grid
+  kvecs = get_kvecs(raxes, mesh)
+  rvecs = get_rvecs(axes, mesh)
+  ngrid = len(rvecs)
+  # pre-compute all pair densities in real space
+  Pijs = calc_pair_densities_on_fftgrid(ukl, gvl, raxes, rvecs)
+
+  npair = nbnd**2
+  tvecs = np.dot(tfracs, raxes)
+  nQ = len(iQl)
+  kperi = np.zeros([nQ, nkpt, nkpt, npair, npair], dtype=np.complex128)
+  if show_progress:
+    from qharv.field import sugar
+    icalc = 0
+    bar = sugar.get_progress_bar(nQ*nkpt*2)
+  for iQ in iQl:
+    for ik, lk in enumerate(qktok2[iQ]):
+      Qvec = tvecs[ik]-tvecs[lk]
+      kvi = np.dot(gvl[ik], raxes)
+      kvl = np.dot(gvl[lk], raxes)
+      # put pair density on real-space FFT grid
+      Pli = Pijs[lk, ik]
+      # transform pair density to reciprocal-space FFT grid
+      kPli = calc_kpij_fftn(Pli, mesh)
+      #check_kpij(kvecs, kPli, rvecs, Pli, mesh)
+      for mk, jk in enumerate(qktok2[iQ]):
+        dQ = tvecs[mk]-tvecs[jk]-Qvec
+        phase_jm = calc_eikr(dQ, rvecs)
+        kvm = np.dot(gvl[mk], raxes)
+        kvj = np.dot(gvl[jk], raxes)
+        Pjm = Pijs[jk, mk]
+        # compute Pij Fourier coefficients
+        kPjm = calc_kpij_fftn(Pjm*phase_jm, mesh)
+        # calculate ERIs
+        eri0 = assemble_eri(kvecs, kPli, kPjm, vol, q=Qvec)
+        kperi[iQ, ik, mk, :, :] = eri0
+        if show_progress:
+          bar.update(icalc)
+          icalc += 1
+  return kperi
