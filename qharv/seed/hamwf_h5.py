@@ -97,3 +97,58 @@ def calc_eikr(kvecs, rvecs):
   kdotr = np.einsum('...i,ri->...r', kvecs, rvecs)
   eikr = np.exp(1j*kdotr)
   return eikr
+
+# =========================== level 2: ERI ==========================
+
+def calc_pair_densities_on_fftgrid(ukl, gvl, raxes, rvecs):
+  """ Calculate pair densities given a list of Bloch functions "ukl".
+  Each u(k) should be given by PW Miller indices "gv" and rec. latt. "raxes".
+  Currently require user provided real-space FFT grid points.
+
+  Example:
+  >>> gvl = [np.array([[0, 0, 0], [0, 0, 1]])]*2
+  >>> ukl = [[np.array([1+0j, 0]]), np.array([[0.5, 0.5+0.1j]])]
+  >>> axes = alat*np.eye(3)
+  >>> mesh = (15, 15, 15)
+  >>> rvecs = get_rvecs(axes, mesh)
+  >>> raxes = 2*np.pi*np.linalg.inv(axes).T
+  >>> Pij = calc_pair_densities_on_fftgrid(ukl, gvl, raxes, rvecs)
+  """
+  nbndl = [len(uk) for uk in ukl]
+  nbnd = nbndl[0]  # !!!! assume same nbnd at all kpts
+  if not np.allclose(nbndl, nbnd):
+    msg = 'pair densities for varying nbnd'
+    raise NotImplementedError(msg)
+  ngrid = len(rvecs)  # np.prod(mesh)
+  nkpt = len(gvl)
+  Pijs = np.zeros([nkpt, nkpt, nbnd, nbnd, ngrid], dtype=np.complex128)
+  for ik in range(nkpt):
+    kvi = np.dot(gvl[ik], raxes)
+    for jk in range(ik, nkpt):
+      kvj = np.dot(gvl[jk], raxes)
+      use_symm = ik == jk
+      # put pair density on real-space FFT grid
+      Pij = calc_pij_on_fftgrid(rvecs, kvi, ukl[ik], kvj, ukl[jk],
+                                use_symm=use_symm)
+      Pijs[ik, jk] = Pij
+      if not use_symm:  # off diagonal in kpts, copy to hermitian
+        Pijs[jk, ik] = Pij.conj().transpose([1, 0, 2])
+  return Pijs
+
+def calc_pij_on_fftgrid(rvecs, kvecs0, uk0, kvecs1, uk1, use_symm=False):
+  ngrid = len(rvecs)
+  nstate0, npw0 = uk0.shape
+  nstate1, npw1 = uk1.shape
+  eikr0 = calc_eikr(kvecs0, rvecs)
+  eikr1 = calc_eikr(kvecs1, rvecs)
+  Pij = np.zeros([nstate0, nstate1, ngrid], dtype=np.complex128)
+  for i in range(nstate0):
+    uuic = np.dot(uk0[i], eikr0).conj()
+    j0 = i if use_symm else 0
+    for j in range(j0, nstate1):
+      uuj = np.dot(uk1[j], eikr1)
+      val = uuic*uuj
+      Pij[i, j, :] = val
+      if use_symm and (i != j):
+        Pij[j, i, :] = val.conj()
+  return Pij
