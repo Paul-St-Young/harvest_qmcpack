@@ -99,15 +99,22 @@ def calc_eikr(kvecs, rvecs):
   return eikr
 
 # =========================== level 2: kpt ==========================
+def disp_in_box(drij, lbox=1):
+  # for +/- 1 cell
+  sel = drij <= lbox/2
+  drij[sel] += lbox
+  sel = drij > lbox/2
+  drij[sel] -= lbox
+  return drij
+
 def calc_qk2k(tfracs, rtol=1e-6):
   nq = len(tfracs)
   # q+k
-  qks = tfracs[:, np.newaxis]+tfracs[np.newaxis, :]
-  qks -= np.rint(qks)
+  qks = disp_in_box(tfracs[:, np.newaxis]+tfracs[np.newaxis, :])
   qk2k = -np.ones([nq, nq], dtype=int)
   for iq, qk in enumerate(qks):
     # find matching k in BZ
-    dtvecs = qk - tfracs[:, np.newaxis]
+    dtvecs = disp_in_box(qk - tfracs[:, np.newaxis])
     dtmags = np.linalg.norm(dtvecs, axis=-1)
     sel = dtmags < rtol
     # record q+k->k map
