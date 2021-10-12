@@ -124,7 +124,8 @@ def calc_qk2k(tfracs, rtol=1e-6):
 
 # =========================== level 3: ERI ==========================
 
-def calc_pair_densities_on_fftgrid(ukl, gvl, raxes, rvecs):
+def calc_pair_densities_on_fftgrid(ukl, gvl, raxes, rvecs,
+                                   show_progress=False):
   """ Calculate pair densities given a list of Bloch functions "ukl".
   Each u(k) should be given by PW Miller indices "gv" and rec. latt. "raxes".
   Currently require user provided real-space FFT grid points.
@@ -146,6 +147,11 @@ def calc_pair_densities_on_fftgrid(ukl, gvl, raxes, rvecs):
   ngrid = len(rvecs)  # np.prod(mesh)
   nkpt = len(gvl)
   Pijs = np.zeros([nkpt, nkpt, nbnd, nbnd, ngrid], dtype=np.complex128)
+  if show_progress:
+    from qharv.field import sugar
+    icalc = 0
+    bar = sugar.get_progress_bar(nkpt*(nkpt-1)//2+nkpt)
+    print('storing pair densities')
   for ik in range(nkpt):
     kvi = np.dot(gvl[ik], raxes)
     for jk in range(ik, nkpt):
@@ -157,6 +163,9 @@ def calc_pair_densities_on_fftgrid(ukl, gvl, raxes, rvecs):
       Pijs[ik, jk] = Pij
       if not use_symm:  # off diagonal in kpts, copy to hermitian
         Pijs[jk, ik] = Pij.conj().transpose([1, 0, 2])
+      if show_progress:
+        bar.update(icalc)
+        icalc += 1
   return Pijs
 
 def calc_pij_on_fftgrid(rvecs, kvecs0, uk0, kvecs1, uk1, use_symm=False):
@@ -260,7 +269,8 @@ def calc_kp_eri(iQl, tfracs, raxes, gvl, ukl, mesh, show_progress=False):
   rvecs = get_rvecs(axes, mesh)
   ngrid = len(rvecs)
   # pre-compute all pair densities in real space
-  Pijs = calc_pair_densities_on_fftgrid(ukl, gvl, raxes, rvecs)
+  Pijs = calc_pair_densities_on_fftgrid(ukl, gvl, raxes, rvecs,
+                                        show_progress=show_progress)
 
   npair = nbnd**2
   tvecs = np.dot(tfracs, raxes)
@@ -269,7 +279,8 @@ def calc_kp_eri(iQl, tfracs, raxes, gvl, ukl, mesh, show_progress=False):
   if show_progress:
     from qharv.field import sugar
     icalc = 0
-    bar = sugar.get_progress_bar(nQ*nkpt*2)
+    bar = sugar.get_progress_bar(nQ*nkpt**2)
+    print('assembling KP ERI')
   for iQ in iQl:
     for ik, lk in enumerate(qktok2[iQ]):
       Qvec = tvecs[ik]-tvecs[lk]
