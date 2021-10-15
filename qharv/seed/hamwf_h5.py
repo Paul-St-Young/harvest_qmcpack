@@ -5,6 +5,7 @@
 #  complex numbers handled by extra trailing dimension in hdf array
 
 import numpy as np
+from itertools import product
 from scipy.sparse import csr_matrix as csrm
 
 # ======================== level 0: basic io ========================
@@ -191,35 +192,34 @@ def calc_kpij_fftn(Pij, mesh):
   ngrid1 = np.prod(mesh)
   assert ngrid1 == ngrid
   kPij = np.zeros((nstate, nstate, ngrid), dtype=np.complex128)
-  for i in range(nstate):
-    for j in range(nstate):
-      p3d = Pij[i, j].reshape(mesh)
-      val3d = np.fft.fftn(p3d)
-      val1d = val3d.ravel()/np.prod(mesh)
-      kPij[i, j] = val1d
+  for i, j in product(range(nstate), repeat=2):
+    p3d = Pij[i, j].reshape(mesh)
+    val3d = np.fft.fftn(p3d)
+    val1d = val3d.ravel()/np.prod(mesh)
+    kPij[i, j] = val1d
   return kPij
 
 def check_kpij(kvecs, kPij, rvecs, Pij, mesh):
   ngrid = np.prod(mesh)
   nstate = len(kPij)
   eikr = calc_eikr(kvecs, rvecs)
-  for i in range(nstate):
-    for j in range(nstate):
-      pr0 = Pij[i, j]
-      pvec = kPij[i, j]
-      pr1 = np.fft.ifftn(pvec.reshape(mesh)).ravel()*ngrid
-      assert np.allclose(pr0, pr1, atol=1e-8)
-      pr2 = np.dot(pvec, eikr)
-      assert np.allclose(pr0, pr2, atol=1e-8)
+  for i, j in product(range(nstate), repeat=2):
+    pr0 = Pij[i, j]
+    pvec = kPij[i, j]
+    pr1 = np.fft.ifftn(pvec.reshape(mesh)).ravel()*ngrid
+    assert np.allclose(pr0, pr1, atol=1e-8)
+    pr2 = np.dot(pvec, eikr)
+    assert np.allclose(pr0, pr2, atol=1e-8)
 
 def get_vg(kvecs, vol):
   ndim = kvecs.shape[1]
   if (ndim < 2) or (ndim > 3):
     msg = 'ndim %d not supported' % ndim
     raise RuntimeError(ndim)
+  # 3D: 4\pi/k^2
   pre = 4*np.pi
   k2 = np.einsum('ki,ki->k', kvecs, kvecs)
-  if ndim == 2:
+  if ndim == 2:  # 2\pi/k
     pre = 2*np.pi
     k2 = k2**0.5
   coulqG = np.zeros(len(kvecs))
@@ -306,3 +306,27 @@ def calc_kp_eri(iQl, tfracs, raxes, gvl, ukl, mesh, show_progress=False):
           bar.update(icalc)
           icalc += 1
   return kperi
+
+def decompress_kp_eri(kperi, qk2k, nmo_pk):
+  nkpt = len(nmo_pk)
+  offsets = np.cumsum(nmo_pk)-nmo_pk[0]
+  ntot = sum(nmo_pk)
+  eri = np.zeros((ntot,)*4, dtype=kperi.dtype)
+  for iq, ki, kl in product(range(nkpt), repeat=3):
+    kk = qk2k[iq,ki]
+    kj = qk2k[iq,kl]
+    ipair = 0
+    for i in range(nmo_pk[ki]):
+      I = i + offsets[ki]
+      for j in range(nmo_pk[kj]):
+        J = j + offsets[kj]
+        jpair = 0
+        for k in range(nmo_pk[kk]):
+          K = k + offsets[kk]
+          for l in range(nmo_pk[kl]):
+            L = l + offsets[kl]
+            val = kperi[iq, ki, kl, ipair, jpair]
+            eri[I, J, K, L] = val
+        jpair += 1
+    ipair += 1
+  return eri
