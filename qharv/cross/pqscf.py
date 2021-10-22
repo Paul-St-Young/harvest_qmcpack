@@ -3,7 +3,7 @@
 # Routines to manipulate pyscf results for use in QMCPACK
 import numpy as np
 
-# ======================== level 0: basic pyscf =========================
+# ======================= level 0: basic pyscf ======================
 
 def mf_from_chkfile(chkfile, scf_class=None, pbc=True):
   if pbc:
@@ -111,9 +111,35 @@ def atom_text(elem, pos):
       lines.append(line)
   atext = ';\n'.join(lines)
   return atext
-# end def
 
-# ======================== level 1: structure =========================
+# ======================= level 1: model hamil ======================
+
+def define_model(nelec, h1, eri, h0=0, ovlp=None, restore=False, scf_class=None):
+  from scipy.linalg import block_diag
+  from pyscf import gto, scf, ao2mo
+  nmo = len(h1)
+  if ovlp is None:
+    ovlp = np.eye(nmo)
+  if scf_class is None:
+    scf_class = scf.UHF
+  # define nelec
+  mol = gto.M()
+  mol.incore_anyway = True
+  mol.nelec = nelec  # (nup, ndn)
+  mol.tot_electrons = lambda *args: sum(nelec)
+  mol.energy_nuc = lambda *args: h0
+  # define model
+  mf = scf_class(mol)
+  mf._eri = ao2mo.restore(1, eri, nmo) if restore else eri
+  if isinstance(mf, scf.ghf.GHF):
+    mf.get_hcore = lambda *args: block_diag(h1, h1)
+    mf.get_ovlp = lambda *args: block_diag(ovlp, ovlp)
+  else:
+    mf.get_hcore = lambda *args: h1
+    mf.get_ovlp = lambda *args: ovlp
+  return mf
+
+# ======================== level 1: structure =======================
 
 def ase_tile(cell, tmat):
   """Create supercell from primitive cell and tiling matrix
