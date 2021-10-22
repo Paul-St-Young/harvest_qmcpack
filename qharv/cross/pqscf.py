@@ -139,6 +139,17 @@ def define_model(nelec, h1, eri, h0=0, ovlp=None, restore=False, scf_class=None)
     mf.get_ovlp = lambda *args: ovlp
   return mf
 
+def smear_to_converge(mf, dm0, smears=None, method="fermi"):
+  from pyscf.pbc.scf.addons import smearing_
+  if smears is None:
+    smears = [1e-1, 1e-3, 1e-5]
+  for smear in smears:
+    mf1 = smearing_(mf, sigma=smear, method=method)
+    mf1.run(dm0)
+    dm1 = mf1.make_rdm1()
+    dm0 = dm1
+  return mf1
+
 # ======================== level 1: structure =======================
 
 def ase_tile(cell, tmat):
