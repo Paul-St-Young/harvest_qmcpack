@@ -266,3 +266,52 @@ def r_to_pw(moR0, grid_shape, gvecs=None):
   for ipw in range(npw):
     psig[ipw] = moG[tuple(gvecs[ipw])]
   return gvecs, psig
+
+# ========================== level 2: spin ==========================
+
+def calc_spin_sph(swf):
+  snorm = np.dot(swf.conj(), swf)**0.5
+  chi = swf/snorm
+  rho1, rho2 = (chi.conj()*chi)**0.5
+  theta = 2*np.arccos(rho1)
+  assert np.isclose(rho1, np.cos(theta/2))
+  assert np.isclose(rho2, np.sin(theta/2))
+  phi1, phi2 = np.angle(chi)
+  phi = phi2-phi1
+  return snorm, theta, phi
+
+def rotate_spin(theta, phi):
+  # Shankar (14.3.47)
+  #  rotate from \hat{z} = (0, 0) to \hat{n} = (\theta, \phi)
+  rmat = np.array([
+    [np.cos(theta/2), -np.sin(theta/2)*np.exp(-1j*phi)],
+    [np.sin(theta/2)*np.exp(1j*phi), np.cos(theta/2)],
+  ])
+  return rmat
+
+def calc_sz(mf):
+  from pyscf import scf
+  sigz = np.array([[1, 0], [0, -1]])/2
+  if isinstance(mf, scf.hf.RHF):
+    nup = sum(mf.mo_occ > 0)
+    ndn = sum(mf.mo_occ > 1)
+    sz = (nup-ndn)/2
+  elif isinstance(mf, scf.uhf.UHF):
+    mo_a, mo_b = [mf.mo_coeff[i][:, mf.mo_occ[i]>0] for i in range(2)]
+    nup = mo_a.shape[1]
+    ndn = mo_b.shape[1]
+    sz = (nup-ndn)/2
+  elif isinstance(mf, scf.ghf.GHF):
+    nao = mf.mol.nao_nr()
+    mo1 = mf.mo_coeff[:, mf.mo_occ>0]
+    nmo = mo1.shape[1]
+    sz = 0
+    for imo in range(nmo):
+      swf = np.array([mo1[:nao, imo].sum(), mo1[nao:, imo].sum()])
+      snorm = np.dot(swf.conj(), swf)**0.5
+      sz1 = swf.conj().T@sigz@swf
+      sz += sz1
+  else:
+    msg = 'unknown type "%s"' % type(mf)
+    raise RuntimeError(msg)
+  return sz
