@@ -114,6 +114,23 @@ def atom_text(elem, pos):
 
 # ======================= level 1: model hamil ======================
 
+def read_model(fh5):
+  import h5py
+  fp = h5py.File(fh5, 'r')
+  h0 = fp['h0'][()][0]
+  h1 = fp['h1'][()]
+  h2 = fp['h2'][()]
+  order = fp['h2_index_order'][()][0].decode()
+  fp.close()
+  if order == "physicist":
+    eri = h2.transpose(0, 2, 1, 3).copy()
+  elif order == "chemist":
+    eri = h2
+  else:
+    msg = 'unknown ERI index order "%s"' % order
+    raise RuntimeError(msg)
+  return h0, h1, eri
+
 def define_model(nelec, h1, eri, h0=0, ovlp=None, restore=False, scf_class=None):
   from scipy.linalg import block_diag
   from pyscf import gto, scf, ao2mo
