@@ -127,7 +127,7 @@ def define_model(nelec, h1, eri, h0=0, ovlp=None, restore=False, scf_class=None)
   mol.incore_anyway = True
   mol.nelec = nelec  # (nup, ndn)
   mol.tot_electrons = lambda *args: sum(nelec)
-  mol.energy_nuc = lambda *args: h0
+  mol.energy_nuc = lambda *args: float(h0)
   # define model
   mf = scf_class(mol)
   mf._eri = ao2mo.restore(1, eri, nmo) if restore else eri
@@ -302,7 +302,7 @@ def calc_sz(mf):
     ndn = mo_b.shape[1]
     sz = (nup-ndn)/2
   elif isinstance(mf, scf.ghf.GHF):
-    nao = mf.mol.nao_nr()
+    nao = len(mf.mo_coeff)//2
     mo1 = mf.mo_coeff[:, mf.mo_occ>0]
     nmo = mo1.shape[1]
     sz = 0
