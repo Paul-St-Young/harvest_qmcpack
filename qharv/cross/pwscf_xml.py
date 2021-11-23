@@ -8,6 +8,7 @@ from qharv.seed.xml import read, write, parse
 
 # ======================== level 1: KS bands ========================
 def read_bands(doc):
+  # !!!! this concatenates up- and dn-spin bands
   from qharv.seed.xml import text2arr
   bs = doc.find('.//band_structure')
   ksl = bs.findall('.//ks_energies')
@@ -18,6 +19,17 @@ def read_bands(doc):
     bl.append(evals)
   bands = np.array(bl)
   return bands
+
+def read_occupations(doc):
+  from qharv.seed.xml import text2arr
+  bs = doc.find('.//band_structure')
+  ocl = bs.findall('.//occupations')
+  ol = []
+  for oc in ocl:
+    o1 = text2arr(oc.text)
+    ol.append(o1)
+  omat = np.array(ol)
+  return omat
 
 def read_kpoints_and_weights(doc):
   from qharv.seed.xml import text2arr
@@ -52,6 +64,15 @@ def read_reciprocal_lattice(doc):
     bl.append(b1)
   raxes = np.array(bl)
   return raxes
+
+# ======================= level 1: meta data ========================
+def read_fft_mesh(doc):
+  node = doc.find('.//fft_grid')
+  nr1 = int(node.get('nr1'))
+  nr2 = int(node.get('nr2'))
+  nr3 = int(node.get('nr3'))
+  mesh = np.array([nr1, nr2, nr3])
+  return mesh
 
 # ===================== level 2: KS determinant =====================
 def read_gc_occupation(fpwscf_xml, eps=0):
