@@ -78,7 +78,7 @@ def sum_band(bgrp):
     egrp = ks.find('.//eigenvalues')
     evals = text2arr(egrp.text, flatten=True)
     ogrp = ks.find('.//occupations')
-    occs = text2arr(ogrp.text)
+    occs = text2arr(ogrp.text, flatten=True)
     eks = np.dot(evals, occs)
     e1 += eks
   return e1
