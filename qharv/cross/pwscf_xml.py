@@ -4,12 +4,11 @@
 import numpy as np
 
 # ========================== level 0: read ==========================
-from qharv.seed.xml import read, write, parse
+from qharv.seed.xml import read, write, parse, text2arr
 
 # ======================== level 1: KS bands ========================
 def read_bands(doc):
   # !!!! this concatenates up- and dn-spin bands
-  from qharv.seed.xml import text2arr
   bs = doc.find('.//band_structure')
   ksl = bs.findall('.//ks_energies')
   bl = []  # eval
@@ -21,7 +20,6 @@ def read_bands(doc):
   return bands
 
 def read_occupations(doc):
-  from qharv.seed.xml import text2arr
   bs = doc.find('.//band_structure')
   ocl = bs.findall('.//occupations')
   ol = []
@@ -32,7 +30,6 @@ def read_occupations(doc):
   return omat
 
 def read_kpoints_and_weights(doc):
-  from qharv.seed.xml import text2arr
   bs = doc.find('.//band_structure')
   ksl = bs.findall('.//ks_energies')
   kl = []  # kpoint
@@ -46,14 +43,12 @@ def read_kpoints_and_weights(doc):
   return np.array(kl), np.array(wl)
 
 def read_efermi(doc):
-  from qharv.seed.xml import text2arr
   bs = doc.find('.//band_structure')
   fs = bs.find('.//fermi_energy')
   efermi = text2arr(fs.text, flatten=True)
   return efermi
 
 def read_reciprocal_lattice(doc):
-  from qharv.seed.xml import text2arr
   astruct = doc.find('.//atomic_structure')
   alat = float(astruct.get('alat'))
   blat = 2*np.pi/alat
@@ -64,6 +59,29 @@ def read_reciprocal_lattice(doc):
     bl.append(b1)
   raxes = np.array(bl)
   return raxes
+
+def sum_band(bgrp):
+  """Sum eigenvalues of occupied orbitals
+
+  Args:
+    bgrp (etree.Element): <band_structure>
+  Return:
+    float: one-body energy
+  Example:
+    >>> doc = pwscf_xml.read('pwscf.xml')
+    >>> doc.find('.//band_structure')
+    >>> e1 = pwscf_xml.sum_band(bgrp)
+  """
+  ksl = bgrp.findall('.//ks_energies')
+  e1 = 0
+  for ks in ksl:
+    egrp = ks.find('.//eigenvalues')
+    evals = text2arr(egrp.text, flatten=True)
+    ogrp = ks.find('.//occupations')
+    occs = text2arr(ogrp.text)
+    eks = np.dot(evals, occs)
+    e1 += eks
+  return e1
 
 # ======================= level 1: meta data ========================
 def read_fft_mesh(doc):
