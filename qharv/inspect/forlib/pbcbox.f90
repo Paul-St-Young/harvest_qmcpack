@@ -27,6 +27,7 @@ module pbcbox
     do iat=1,jat-1
     do j=1,ndim
       drij(iat, jat, j) = disp_in_box(pos(iat, j)-pos(jat, j), box(j))
+      drij(jat, iat, j) = -drij(iat, jat, j)
     enddo
     enddo
     enddo
