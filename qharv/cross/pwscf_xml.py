@@ -19,7 +19,35 @@ def read_true_false(node, name):
     raise RuntimeError(msg)
   return tf
 
-# ======================== level 1: KS bands ========================
+# ==================== level 1: atomic structure ====================
+def read_alat(doc):
+  astruct = doc.find('.//atomic_structure')
+  alat = float(astruct.get('alat'))
+  return alat
+
+def read_cell(doc):
+  astruct = doc.find('.//atomic_structure')
+  alat = float(astruct.get('alat'))
+  cell = astruct.find('.//cell')
+  al = []
+  for anode in cell:
+    a1 = text2arr(anode.text)
+    al.append(a1)
+  axes = np.array(al)
+  return alat*axes
+
+def read_reciprocal_lattice(doc):
+  alat = read_alat(doc)
+  blat = 2*np.pi/alat
+  rlat = doc.find('.//reciprocal_lattice')
+  bl = []
+  for bnode in rlat:
+    b1 = text2arr(bnode.text)*blat
+    bl.append(b1)
+  raxes = np.array(bl)
+  return raxes
+
+# ======================== level 2: KS bands ========================
 def read_bands(doc):
   # !!!! this concatenates up- and dn-spin bands
   bs = doc.find('.//band_structure')
@@ -60,22 +88,6 @@ def read_efermi(doc):
   fs = bs.find('.//fermi_energy')
   efermi = text2arr(fs.text, flatten=True)
   return efermi
-
-def read_alat(doc):
-  astruct = doc.find('.//atomic_structure')
-  alat = float(astruct.get('alat'))
-  return alat
-
-def read_reciprocal_lattice(doc):
-  alat = read_alat(doc)
-  blat = 2*np.pi/alat
-  rlat = doc.find('.//reciprocal_lattice')
-  bl = []
-  for bnode in rlat:
-    b1 = text2arr(bnode.text)*blat
-    bl.append(b1)
-  raxes = np.array(bl)
-  return raxes
 
 def read_kfractions(doc):
   kpts, wts = read_kpoints_and_weights(doc)
