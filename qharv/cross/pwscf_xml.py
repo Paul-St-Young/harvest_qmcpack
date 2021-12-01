@@ -6,6 +6,19 @@ import numpy as np
 # ========================== level 0: read ==========================
 from qharv.seed.xml import read, write, parse, text2arr
 
+def read_true_false(node, name):
+  child = node.find('.//%s' % name)
+  text = child.text
+  tf = None
+  if text == 'true':
+    tf = True
+  elif text == 'false':
+    tf = False
+  else:
+    msg = '"%s" is neither true nor false' % text
+    raise RuntimeError(msg)
+  return tf
+
 # ======================== level 1: KS bands ========================
 def read_bands(doc):
   # !!!! this concatenates up- and dn-spin bands
