@@ -76,3 +76,27 @@ def read_wfc(fxml):
   return gvl, evl
 
 # ========================= level 1: orbital ========================
+
+def kinetic_energy(raxes, kfracs, gvl, evl, wtl):
+  nk = len(kfracs)
+  tkin_per_kpt = np.zeros(nk)
+  for ik, (kfrac, gvs, evc, wts) in enumerate(zip(kfracs, gvl, evl, wtl)):
+    kvecs = np.dot(gvs+kfrac, raxes)
+    k2 = np.einsum('ij,ij->i', kvecs, kvecs)
+    p2 = (evc.conj()*evc).real
+    nk = np.dot(wts, p2)  # sum occupied bands for n(k)
+    tkin_per_kpt[ik] = np.dot(k2, nk)
+  return tkin_per_kpt
+
+def calc_kinetic(fxml, gvl=None, evl=None, lam=0.5):
+  #lam = 1./2  # Hartree atomic units T = -lam*\nabla^2
+  from qharv.cross import pwscf_xml
+  if (gvl is None) or (evl is None):
+    gvl, evl = read_wfc(fxml)
+  doc = pwscf_xml.read(fxml)
+  raxes = pwscf_xml.read_reciprocal_lattice(doc)
+  kfracs = pwscf_xml.read_kfractions(doc)
+  omat = pwscf_xml.read_occupations(doc)
+  tkin_per_kpt = kinetic_energy(raxes, kfracs, gvl, evl, omat)
+  tkin = lam*tkin_per_kpt.sum()
+  return tkin
