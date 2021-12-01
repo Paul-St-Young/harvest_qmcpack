@@ -96,7 +96,7 @@ def rwsc(axes, dn=1):
   return rimg/2.
 
 def tmat(axes0, axes1):
-  """ calculate the tiling matrix that takes axes0 to axes
+  """ calculate the tiling matrix that takes axes0 to axes1
 
   Args:
     axes0 (np.array): primitive cell lattice vectors in row-major
@@ -105,6 +105,18 @@ def tmat(axes0, axes1):
     np.array: tmat, such that axes1 = np.dot(tmat, axes0)
   """
   return np.dot(axes1, np.linalg.inv(axes0))
+
+def rtmat(raxes0, raxes1):
+  """ calculate the tiling matrix that takes reciprocal raxes0 to raxes1
+
+  Args:
+    raxes0 (np.array): primitive cell reciprocal lattice vectors in row-major
+    raxes1 (np.array): supercell reciprocal lattice vectors in row-major
+  Return:
+    np.array: tilematrix responsible for lattices with rec. raxes0 to raxes1
+  """
+  return np.dot(raxes0, np.linalg.inv(raxes1)).T
+
 
 # ======================== level 1: axes pos =========================
 def pos_in_axes(axes, pos, ztol=1e-10):
