@@ -48,9 +48,13 @@ def read_efermi(doc):
   efermi = text2arr(fs.text, flatten=True)
   return efermi
 
-def read_reciprocal_lattice(doc):
+def read_alat(doc):
   astruct = doc.find('.//atomic_structure')
   alat = float(astruct.get('alat'))
+  return alat
+
+def read_reciprocal_lattice(doc):
+  alat = read_alat(doc)
   blat = 2*np.pi/alat
   rlat = doc.find('.//reciprocal_lattice')
   bl = []
@@ -59,6 +63,14 @@ def read_reciprocal_lattice(doc):
     bl.append(b1)
   raxes = np.array(bl)
   return raxes
+
+def read_kfractions(doc):
+  kpts, wts = read_kpoints_and_weights(doc)
+  alat = read_alat(doc)
+  blat = 2*np.pi/alat
+  raxes = read_reciprocal_lattice(doc)
+  kfracs = np.dot(kpts*blat, np.linalg.inv(raxes))
+  return kfracs
 
 def sum_band(bgrp):
   """Sum eigenvalues of occupied orbitals
