@@ -88,15 +88,47 @@ def kinetic_energy(raxes, kfracs, gvl, evl, wtl):
     tkin_per_kpt[ik] = np.dot(k2, nk)
   return tkin_per_kpt
 
-def calc_kinetic(fxml, gvl=None, evl=None, lam=0.5):
+def calc_kinetic(fxml, gvl=None, evl=None, wtl=None, lam=0.5):
   #lam = 1./2  # Hartree atomic units T = -lam*\nabla^2
   from qharv.cross import pwscf_xml
-  if (gvl is None) or (evl is None):
-    gvl, evl = read_wfc(fxml)
   doc = pwscf_xml.read(fxml)
   raxes = pwscf_xml.read_reciprocal_lattice(doc)
   kfracs = pwscf_xml.read_kfractions(doc)
-  omat = pwscf_xml.read_occupations(doc)
-  tkin_per_kpt = kinetic_energy(raxes, kfracs, gvl, evl, omat)
+  if wtl is None:
+    wtl = pwscf_xml.read_occupations(doc)
+  if (gvl is None) or (evl is None):
+    gvl, evl = read_wfc(fxml)
+  tkin_per_kpt = kinetic_energy(raxes, kfracs, gvl, evl, wtl)
   tkin = lam*tkin_per_kpt.sum()
   return tkin
+
+def rho_of_r(mesh, gvl, evl, wtl, volume, wt_tol=1e-8):
+  ngrid = np.prod(mesh)
+  rhor = np.zeros(mesh)
+  psik = np.zeros(mesh, dtype=np.complex128)
+  psir = np.zeros(mesh, dtype=np.complex128)
+  for gvs, evc, wts in zip(gvl, evl, wtl):  # kpt loop
+    psik.fill(0)
+    for ev, wt in zip(evc, wts):  # bnd loop
+      if wt < wt_tol: continue
+      for g, e in zip(gvs, ev):
+        psik[tuple(g)] = e
+      psir = np.fft.ifftn(psik)*ngrid
+      r1 = (psir.conj()*psir).real
+      rhor += wt*r1
+  return rhor/volume
+
+def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, volume=None):
+  from qharv.cross import pwscf_xml
+  doc = pwscf_xml.read(fxml)
+  if mesh is None:
+    mesh = pwscf_xml.read_fft_mesh(doc)
+  if wtl is None:
+    wtl = pwscf_xml.read_occupations(doc)
+  if volume is None:
+    axes = pwscf_xml.read_cell(doc)
+    volume = abs(np.linalg.det(axes))
+  if (gvl is None) or (evl is None):
+    gvl, evl = read_wfc(fxml)
+  rhor = rho_of_r(mesh, gvl, evl, wtl, volume)
+  return rhor
