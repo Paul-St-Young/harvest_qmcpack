@@ -65,7 +65,7 @@ def read_occupations(doc):
   ocl = bs.findall('.//occupations')
   ol = []
   for oc in ocl:
-    o1 = text2arr(oc.text)
+    o1 = text2arr(oc.text, flatten=True)
     ol.append(o1)
   omat = np.array(ol)
   return omat
