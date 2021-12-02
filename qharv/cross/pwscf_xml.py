@@ -51,6 +51,8 @@ def read_reciprocal_lattice(doc):
 def read_bands(doc):
   # !!!! this concatenates up- and dn-spin bands
   bs = doc.find('.//band_structure')
+  if bs is None:
+    bs = doc
   ksl = bs.findall('.//ks_energies')
   bl = []  # eval
   for ks in ksl:
@@ -62,6 +64,8 @@ def read_bands(doc):
 
 def read_occupations(doc):
   bs = doc.find('.//band_structure')
+  if bs is None:
+    bs = doc
   lsda = read_true_false(bs, 'lsda')
   noncolin = read_true_false(bs, 'noncolin')
   if lsda or noncolin:
@@ -78,6 +82,8 @@ def read_occupations(doc):
 
 def read_kpoints_and_weights(doc):
   bs = doc.find('.//band_structure')
+  if bs is None:
+    bs = doc
   ksl = bs.findall('.//ks_energies')
   kl = []  # kpoint
   wl = []  # weight
@@ -91,6 +97,8 @@ def read_kpoints_and_weights(doc):
 
 def read_efermi(doc):
   bs = doc.find('.//band_structure')
+  if bs is None:
+    bs = doc
   fs = bs.find('.//fermi_energy')
   efermi = text2arr(fs.text, flatten=True)
   return efermi
@@ -103,28 +111,30 @@ def read_kfractions(doc):
   kfracs = np.dot(kpts*blat, np.linalg.inv(raxes))
   return kfracs
 
-def sum_band(bgrp):
+def sum_band(doc, read=False):
   """Sum eigenvalues of occupied orbitals
 
   Args:
-    bgrp (etree.Element): <band_structure>
+    doc (etree.Element): <qes:espresso> or anything with <band_structure>
   Return:
-    float: one-body energy
+    float: sum of weighted eigenvalues
   Example:
     >>> doc = pwscf_xml.read('pwscf.xml')
     >>> doc.find('.//band_structure')
     >>> e1 = pwscf_xml.sum_band(bgrp)
   """
-  ksl = bgrp.findall('.//ks_energies')
-  e1 = 0
-  for ks in ksl:
-    egrp = ks.find('.//eigenvalues')
-    evals = text2arr(egrp.text, flatten=True)
-    ogrp = ks.find('.//occupations')
-    occs = text2arr(ogrp.text, flatten=True)
-    eks = np.dot(evals, occs)
-    e1 += eks
-  return e1
+  bgrp = doc.find('.//band_structure')
+  if bgrp is None:
+    bgrp = doc
+  if read:
+    enode = doc.find('.//eband')
+    eband = float(enode.text)
+  else:
+    bands = read_bands(bgrp)
+    omat = read_occupations(bgrp)
+    nkpt, nbnd = omat.shape
+    eband = np.dot(bands.ravel(), omat.ravel())/nkpt
+  return eband
 
 # ======================= level 1: meta data ========================
 def read_fft_mesh(doc):
