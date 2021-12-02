@@ -48,7 +48,7 @@ def find_wfc(fxml):
   nk = int(bgrp.find('.//nks').text)
   wfcs = []
   if lsda:
-    for spin in ['up', 'dn']:
+    for spin in ['up', 'dw']:
       wfcs += [os.path.join(dsave, 'wfc%s%d.hdf5' % (spin, ik+1))
         for ik in range(nk)]
   else:
