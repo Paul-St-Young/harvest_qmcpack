@@ -69,10 +69,28 @@ def find_wfc(fxml):
   return wfcs
 
 def read_wfc(fxml):
+  from qharv.cross import pwscf_xml
+  doc = pwscf_xml.read(fxml)
+  bgrp = doc.find('.//band_structure')
+  lsda = pwscf_xml.read_true_false(doc, 'lsda')
   flist = find_wfc(fxml)
   rets = [read_save_hdf(floc) for floc in flist]
-  gvl = [ret[0] for ret in rets]
-  evl = [ret[1] for ret in rets]
+  if lsda:
+    nkpt = len(flist)//2
+    gvl = []
+    evl = []
+    for ik in range(nkpt):
+      iup = ik
+      idn = nkpt+ik
+      gvup, evup = rets[iup]
+      gvdn, evdn = rets[idn]
+      assert np.allclose(gvup, gvdn)
+      gvl.append(gvup)
+      ev = np.concatenate([evup, evdn], axis=0)
+      evl.append(ev)
+  else:
+    gvl = [ret[0] for ret in rets]
+    evl = [ret[1] for ret in rets]
   return gvl, evl
 
 # ========================= level 1: orbital ========================
