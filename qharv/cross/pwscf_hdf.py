@@ -99,7 +99,7 @@ def calc_kinetic(fxml, gvl=None, evl=None, wtl=None, lam=0.5):
   if (gvl is None) or (evl is None):
     gvl, evl = read_wfc(fxml)
   tkin_per_kpt = kinetic_energy(raxes, kfracs, gvl, evl, wtl)
-  tkin = lam*tkin_per_kpt.sum()
+  tkin = lam*tkin_per_kpt.mean()
   return tkin
 
 def rho_of_r(mesh, gvl, evl, wtl, volume, wt_tol=1e-8):
