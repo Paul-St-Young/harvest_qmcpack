@@ -327,6 +327,6 @@ def decompress_kp_eri(kperi, qk2k, nmo_pk):
             L = l + offsets[kl]
             val = kperi[iq, ki, kl, ipair, jpair]
             eri[I, J, K, L] = val
-        jpair += 1
-    ipair += 1
+            jpair += 1
+        ipair += 1
   return eri
