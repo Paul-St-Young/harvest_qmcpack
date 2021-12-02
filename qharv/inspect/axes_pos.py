@@ -276,12 +276,27 @@ def dimer_rep(atoms, rmax=np.inf, rmin=0.0,
      half-bond vector, one for each dimer
   """
   assert len(np.unique(atoms.get_chemical_symbols())) == 1
-  drij = atoms.get_all_distances(mic=True, vector=True)
+  pos = atoms.get_positions()
+  # check orthorhombic
+  axes = atoms.get_cell()
+  box = np.diag(axes)
+  is_orthorhombic = np.allclose(np.diag(box), axes)
+  use_fortran = False
+  if is_orthorhombic:  # try use FORTRAN routine for displacements
+    try:
+      from qharv.inspect.forlib.pbcbox import pbcbox
+      use_fortran = True
+    except ImportError as err:
+      msg = 'please compile pbcbox using f2py for fast implementation'
+      print(msg)
+  if use_fortran:
+    drij = -pbcbox.displacement_table(pos, box)
+  else:
+    drij = atoms.get_all_distances(mic=True, vector=True)
   rij = np.linalg.norm(drij, axis=-1)
   pairs = find_dimers(rij, rmax=rmax, rmin=rmin, sort_id=sort_id)
   # a vector points from particle 0 towards 1
   avecs = 0.5*drij[pairs[:, 0], pairs[:, 1]]
-  pos = atoms.get_positions()
   com = pos[pairs[:, 0]] + avecs
   if return_pairs:
     ret = (com, avecs, pairs)
