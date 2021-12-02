@@ -55,7 +55,7 @@ def get_key_value_pairs(mm, sep='='):
   return entry
 
 @stay
-def name_sep_val(mm, name, sep='=', dtype=float, pos=1):
+def name_sep_val(mm, name, sep='=', dtype=float, pos=1, ival=0):
   """ read key-value pair such as "name = value"
   e.g.
   name_sep_val(mm, 'a'): 'a = 2.4'
@@ -69,7 +69,8 @@ def name_sep_val(mm, name, sep='=', dtype=float, pos=1):
     name (str): name of variable; used to find value line
     sep (str, optional): separator, default '='
     dtype (type, optional): variable data type, default float
-    pos (int, optiona): position of value in line, default last (-1)
+    pos (int, optional): position of value in line, default 1 (after sep)
+    ival (int, optional): index of chosen value in line, default 0 (first)
   Return:
     dtype: value of requested variable
   """
@@ -81,7 +82,7 @@ def name_sep_val(mm, name, sep='=', dtype=float, pos=1):
   tokens = line.split(sep)
 
   # assume the text immediately next to the separator is the desired value
-  val_text = tokens[pos].split()[0]
+  val_text = tokens[pos].split()[ival]
   val = dtype(val_text)
   return val
 
