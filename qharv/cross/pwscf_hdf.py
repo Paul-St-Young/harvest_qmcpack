@@ -73,6 +73,10 @@ def read_wfc(fxml):
   doc = pwscf_xml.read(fxml)
   bgrp = doc.find('.//band_structure')
   lsda = pwscf_xml.read_true_false(doc, 'lsda')
+  noncolin = pwscf_xml.read_true_false(doc, 'noncolin')
+  if noncolin:
+    msg = 'have not decided on noncolin format yet'
+    raise RuntimeError(msg)
   flist = find_wfc(fxml)
   rets = [read_save_hdf(floc) for floc in flist]
   if lsda:
