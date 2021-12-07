@@ -86,7 +86,7 @@ def cubic_pos(spaces):
 def get_rvecs(axes, mesh):
   spaces = [np.arange(nx) for nx in mesh]
   gvecs = cubic_pos(spaces)
-  fracs = axes/mesh
+  fracs = axes/mesh[:, np.newaxis]  # axes is row-major
   return np.dot(gvecs, fracs)
 
 def get_kvecs(raxes, mesh):
