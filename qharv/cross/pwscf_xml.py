@@ -27,14 +27,13 @@ def read_alat(doc):
 
 def read_cell(doc):
   astruct = doc.find('.//atomic_structure')
-  alat = float(astruct.get('alat'))
   cell = astruct.find('.//cell')
   al = []
   for anode in cell:
     a1 = text2arr(anode.text)
     al.append(a1)
   axes = np.array(al)
-  return alat*axes
+  return axes
 
 def read_reciprocal_lattice(doc):
   alat = read_alat(doc)
