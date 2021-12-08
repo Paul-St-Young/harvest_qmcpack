@@ -19,6 +19,12 @@ def read_true_false(node, name):
     raise RuntimeError(msg)
   return tf
 
+def read_value(node, name, dtype=float):
+  child = node.find('.//%s' % name)
+  text = child.text
+  val = dtype(text)
+  return val
+
 # ==================== level 1: atomic structure ====================
 def read_alat(doc):
   astruct = doc.find('.//atomic_structure')
@@ -45,6 +51,22 @@ def read_reciprocal_lattice(doc):
     bl.append(b1)
   raxes = np.array(bl)
   return raxes
+
+# ====================== level 1: basic outputs =====================
+def read_magnetization(doc):
+  node = doc.find('.//magnetization')
+  ret = dict()
+  for name in ['total', 'absolute']:
+    ret[name] = read_value(node, name)
+  return ret
+
+def read_total_energy(doc):
+  node = doc.find('.//total_energy')
+  names = ['etot', 'eband', 'ehart', 'vtxc', 'etxc', 'ewald', 'demet']
+  ret = dict()
+  for name in names:
+    ret[name] = read_value(node, name)
+  return ret
 
 # ======================== level 2: KS bands ========================
 def read_bands(doc):
