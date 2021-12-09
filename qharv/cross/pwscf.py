@@ -195,6 +195,20 @@ def read_kpoints(scf_out):
   mm.close()
   return data
 
+def read_polar_mag(scf_out):
+  from qharv.reel import ascii_out
+  mm = ascii_out.read(scf_out)
+  natom = ascii_out.name_sep_val(mm, 'number of atoms/cell', dtype=int)
+  idx = ascii_out.all_lines_with_tag(mm, 'polar coord.:')
+  lines = ascii_out.all_lines_at_idx(mm, idx)
+  mm.close()
+  data = []
+  for line in lines:
+    tokens = line.split(':')[-1].split()
+    data.append(list(map(float, tokens)))
+  polars = np.array(data).reshape(-1, natom, 3)
+  return polars
+
 # ========================= level 2: cross ==========================
 
 def copy_charge_density(scf_dir, nscf_dir, execute=True):
