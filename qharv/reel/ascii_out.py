@@ -134,14 +134,14 @@ def all_lines_at_idx(mm, idx_list):
   for idx in idx_list:
     mm.seek(idx)
     # row back to beginning of line
-    ibegin = mm.rfind('\n')
+    ibegin = mm.rfind(b'\n', 0, idx)
     if ibegin == -1:
       ibegin = 0
     mm.seek(ibegin)
     mm.readline()
     # read desired line
     line = mm.readline()
-    lines.append(line)
+    lines.append(line.decode())
   return lines
 
 @stay
