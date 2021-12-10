@@ -209,6 +209,24 @@ def read_polar_mag(scf_out):
   polars = np.array(data).reshape(-1, natom, 3)
   return polars
 
+def read_mag_per_site(scf_out):
+  from qharv.reel import ascii_out
+  mm = ascii_out.read(scf_out)
+  natom = ascii_out.name_sep_val(mm, 'number of atoms/cell', dtype=int)
+  idx = ascii_out.all_lines_with_tag(mm, "Magnetic moment per site")
+  mags = np.empty([len(idx), natom])
+  for iscf, i in enumerate(idx):
+    mm.seek(i)
+    mm.readline()
+    for iatom in range(natom):
+      line = mm.readline().decode()
+      ct = line.split("charge=")[1].split()[0]
+      mt = line.split("magn=")[1].split()[0]
+      chg = float(ct)
+      mag = float(mt)
+      mags[iscf, iatom] = mag/chg
+  return mags
+
 # ========================= level 2: cross ==========================
 
 def copy_charge_density(scf_dir, nscf_dir, execute=True):
