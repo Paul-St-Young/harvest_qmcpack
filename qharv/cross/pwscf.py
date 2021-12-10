@@ -223,6 +223,7 @@ def read_mag_per_site(scf_out):
       ct = line.split("charge=")[1].split()[0]
       mt = line.split("magn=")[1].split()[0]
       chg = float(ct)
+      if np.isclose(chg, 0): continue
       mag = float(mt)
       mags[iscf, iatom] = mag/chg
   return mags
