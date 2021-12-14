@@ -209,6 +209,21 @@ def read_polar_mag(scf_out):
   polars = np.array(data).reshape(-1, natom, 3)
   return polars
 
+def polar2cart(polar):
+  """Example:
+  >>> polars = read_polar_mag(scf_out)
+  >>> vels = [polar2cart(pol) for pol in polars]
+  """
+  r, theta, phi = polar.T
+  theta *= np.pi/180
+  phi *= np.pi/180
+  z = r*np.cos(theta)
+  xy = r*np.sin(theta)
+  x = xy*np.cos(phi)
+  y = xy*np.sin(phi)
+  xyz = np.c_[x, y, z]
+  return xyz
+
 def read_polar_chg(scf_out):
   from qharv.reel import ascii_out
   mm = ascii_out.read(scf_out)
