@@ -209,11 +209,29 @@ def read_polar_mag(scf_out):
   polars = np.array(data).reshape(-1, natom, 3)
   return polars
 
-def read_mag_per_site(scf_out):
+def read_polar_chg(scf_out):
+  from qharv.reel import ascii_out
+  mm = ascii_out.read(scf_out)
+  natom = ascii_out.name_sep_val(mm, 'number of atoms/cell', dtype=int)
+  idx = ascii_out.all_lines_with_tag(mm, 'relative position')
+  data = []
+  for i in idx:
+    mm.seek(i)
+    mm.readline()
+    line = mm.readline().decode()
+    assert 'charge' in line
+    valt = line.split(':')[1].split()[0]
+    val = float(valt)
+    data.append(val)
+  chgs = np.array(data).reshape(-1, natom)
+  return chgs
+
+def read_chgmag_per_site(scf_out):
   from qharv.reel import ascii_out
   mm = ascii_out.read(scf_out)
   natom = ascii_out.name_sep_val(mm, 'number of atoms/cell', dtype=int)
   idx = ascii_out.all_lines_with_tag(mm, "Magnetic moment per site")
+  chgs = np.empty([len(idx), natom])
   mags = np.empty([len(idx), natom])
   for iscf, i in enumerate(idx):
     mm.seek(i)
@@ -223,10 +241,10 @@ def read_mag_per_site(scf_out):
       ct = line.split("charge=")[1].split()[0]
       mt = line.split("magn=")[1].split()[0]
       chg = float(ct)
-      if np.isclose(chg, 0): continue
+      chgs[iscf, iatom] = chg
       mag = float(mt)
-      mags[iscf, iatom] = mag/chg
-  return mags
+      mags[iscf, iatom] = mag
+  return chgs, mags
 
 # ========================= level 2: cross ==========================
 
