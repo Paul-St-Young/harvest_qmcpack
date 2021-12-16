@@ -2,7 +2,8 @@ module pbcbox
   implicit none
   private
 
-  public :: displacement_table, disp_in_box, pos_in_box, displacement_ab
+  public :: displacement_table, disp_in_box, pos_in_box
+  public :: displacement_ab, displacement12
 
   contains
 
@@ -44,10 +45,23 @@ module pbcbox
     do iat=1,na
     do j=1,ndim
       drij(iat, jat, j) = disp_in_box(posa(iat, j)-posb(jat, j), box(j))
-      drij(jat, iat, j) = -drij(iat, jat, j)
     enddo
     enddo
     enddo
   end subroutine displacement_ab
+
+  subroutine displacement12(posa, posb, box, drij, na, ndim)
+    double precision, intent(in) :: posa(na, ndim), posb(na, ndim), box(ndim)
+    double precision, intent(out) :: drij(na, ndim)
+    integer, intent(in) :: na, ndim
+    ! local variables
+    integer :: j, iat
+    drij(:,:) = 0.d0
+    do iat=1,na
+    do j=1,ndim
+      drij(iat, j) = disp_in_box(posa(iat, j)-posb(iat, j), box(j))
+    enddo
+    enddo
+  end subroutine displacement12
 
 end module pbcbox
