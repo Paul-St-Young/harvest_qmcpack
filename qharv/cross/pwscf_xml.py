@@ -52,6 +52,18 @@ def read_reciprocal_lattice(doc):
   raxes = np.array(bl)
   return raxes
 
+def read_elem_pos(doc):
+  astruct = doc.find('.//atomic_structure')
+  atoms = astruct.findall('.//atom')
+  elem = []
+  pos = []
+  for atom in atoms:
+    e = atom.get('name')
+    elem.append(e)
+    p = text2arr(atom.text)
+    pos.append(p)
+  return np.array(elem), np.array(pos)
+
 # ====================== level 1: basic outputs =====================
 def read_magnetization(doc):
   node = doc.find('.//magnetization')
