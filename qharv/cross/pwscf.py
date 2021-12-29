@@ -18,7 +18,9 @@ def input_keywords(scf_in):
     for line in f:
       if '=' in line:
         key, val = line.split('=')
-        keywords[key.strip()] = val.strip('\n')
+        val1 = val.strip('\n').strip()
+        val2 = val1.strip("'").strip('"')
+        keywords[key.strip()] = val2
   return keywords
 
 # ========================= level 1: modify =========================
