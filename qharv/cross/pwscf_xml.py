@@ -101,15 +101,16 @@ def read_occupations(doc):
     bs = doc
   lsda = read_true_false(bs, 'lsda')
   noncolin = read_true_false(bs, 'noncolin')
-  if lsda or noncolin:
-    ymult = 1
-  else:  # RKS
-    ymult = 2
   ocl = bs.findall('.//occupations')
   ol = []
   for oc in ocl:
     o1 = text2arr(oc.text, flatten=True)
-    ol.append(ymult*o1)
+    if noncolin:
+      ol.append(o1)
+    elif lsda:
+      ol.append(o1.reshape(2, -1))
+    else:  # restricted
+      ol.append([o1, o1])
   omat = np.array(ol)
   return omat
 
