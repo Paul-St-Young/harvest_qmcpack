@@ -86,11 +86,14 @@ def read_bands(doc):
   bs = doc.find('.//band_structure')
   if bs is None:
     bs = doc
+  lsda = read_true_false(bs, 'lsda')
   ksl = bs.findall('.//ks_energies')
   bl = []  # eval
   for ks in ksl:
     eig = ks.find('.//eigenvalues')
     evals = text2arr(eig.text, flatten=True)
+    if lsda:
+      evals = evals.reshape(2, -1)
     bl.append(evals)
   bands = np.array(bl)
   return bands
