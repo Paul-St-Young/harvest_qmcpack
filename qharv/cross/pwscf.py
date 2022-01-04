@@ -76,7 +76,7 @@ def ktext_frac(kpts):
   Return:
     str: ktext to be fed into pw.x input
   """
-  line_fmt = '%8.6f %8.6f %8.6f 1'
+  line_fmt = '%16.10f %16.10f %16.10f 1'
   nk = len(kpts)
   header = 'K_POINTS crystal\n%d\n' % nk
   lines = [line_fmt % (kpt[0], kpt[1], kpt[2]) for kpt in kpts]
