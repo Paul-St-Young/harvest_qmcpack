@@ -83,6 +83,34 @@ def ktext_frac(kpts):
   ktext = header + '\n'.join(lines)
   return ktext
 
+# ===================== level 1: file locations =====================
+
+def get_prefix_outdir(scf_in):
+  inps = input_keywords(scf_in)
+  prefix = inps.pop("prefix", "pwscf")
+  outdir = inps.pop("outdir", ".")
+  return prefix, outdir
+
+def find_xml(scf_inp):
+  import os
+  prefix, outdir = get_prefix_outdir(scf_inp)
+  path = os.path.dirname(scf_inp)
+  fxml = os.path.join(path, outdir, prefix) + ".xml"
+  if not os.path.isfile(fxml):
+    msg = "%s not found" % fxml
+    raise RuntimeError(msg)
+  return fxml
+
+def find_save(scf_inp):
+  import os
+  prefix, outdir = get_prefix_outdir(scf_inp)
+  path = os.path.dirname(scf_inp)
+  dsave = os.path.join(path, outdir, prefix) + ".save"
+  if not os.path.isdir(dsave):
+    msg = "%s not found" % dsave
+    raise RuntimeError(msg)
+  return dsave
+
 # ====================== level 1: read output =======================
 
 def get_converged_output(scf_out,
