@@ -284,44 +284,29 @@ def get_nelec(doc, groups=['u', 'd']):
       nelec += npos
   return nelec
 
-def get_pos(doc, pset='ion0', all_pos=True, group=None):
+def get_pos(doc, pset='ion0', group=None):
   # find <particleset>
   pset_node = doc.find('.//particleset[@name="%s"]' % pset)
   if pset_node is None:
     raise RuntimeError('%s not found' % pset)
-
+  pos = dict()
   # find <group> if necessary
   groups = pset_node.findall('.//group')
-  names = [grp.get('name') for grp in groups]
-  if (group is None):  # no group give, requesting all particle positions?
-    if (not all_pos):
-      warn_msg = '%d groups found, please specify particle group from %s' % (
-        len(groups), str(names)
-      )
-      raise RuntimeError(warn_msg)
-  else:  # group given, see if it is available
-    msg = 'specified group will be over-written with all_pos!\n'
-    msg += 'Please set all_pos=False.'
-    if (all_pos):
-      raise RuntimeError(msg)
-    if (group not in names):
-      raise RuntimeError('no group with name "%s" in %s' % (group, str(names)))
-
-  pos_text = ''
-  if not all_pos:  # get requested group positions
-    grp = pset_node.find('.//group[@name="%s"]' % group)
-    pos_node = grp.find('.//attrib[@name="position"]')
-    pos_text = pos_node.text
-  else:
-    for grp in groups:
-      pos_node  = grp.find('.//attrib[@name="position"]')
-      if pos_node is None:  # look in parent (old-style input)
-        pset_node = grp.getparent()
-        pos_node = pset_node.find('.//attrib[@name="position"]')
-      pos_text += pos_node.text.strip('\n')+'\n'
-
+  names = []
+  for grp in groups:
+    name = grp.get('name')
+    names.append(name)
+    pos_node  = grp.find('.//attrib[@name="position"]')
+    if pos_node is None:  # look in parent (old-style input)
+      pset_node = grp.getparent()
+      pos_node = pset_node.find('.//attrib[@name="position"]')
+    pos_text = pos_node.text.strip('\n')+'\n'
+    pos[name] = text2arr(pos_text.strip('\n'))
   # get requestsed particle positions
-  pos = text2arr(pos_text.strip('\n'))
+  if group is not None:
+    pos = pos[group]
+  if len(names) == 1:  # !!!! maintain backwards compatibility
+    return pos[names[0]]
   return pos
 
 # ================= level 3: QMCPACK specialized construct =================
