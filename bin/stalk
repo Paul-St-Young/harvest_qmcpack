@@ -15,8 +15,6 @@ if __name__ == '__main__':
   parser.add_argument('fname',type=str,help='xml input file name')
   parser.add_argument('--pset_name','-pset',type=str,default='ion0'
     ,help='name of static/source/classical particle set')
-  parser.add_argument('--super','-s',action='store_true'
-    ,help='draw 2x2x2 supercell')
   parser.add_argument('--text','-t',action='store_true'
     ,help='print axes,pos of the crystal structure instead of plotting')
   args = parser.parse_args()
@@ -49,8 +47,11 @@ if __name__ == '__main__':
     fig = plt.figure()
     ax  = fig.add_subplot(1,1,1,projection='3d')
 
-    crystal.draw_crystal(ax,axes,pos,draw_super=(args.super))
-
+    prop_cycle = plt.rcParams['axes.prop_cycle']
+    colors = prop_cycle.by_key()['color']
+    for (elem, p1), myc in zip(pos.items(), colors):
+      crystal.draw_cell(ax, axes)
+      ax.plot(*p1.T, c=myc, ls='', marker='.')
     plt.show()
   # end if
 
