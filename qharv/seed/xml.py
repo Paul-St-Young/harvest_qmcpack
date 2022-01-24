@@ -275,6 +275,13 @@ def get_axes(doc):
   axes = text2arr(lat_node.text)
   return axes
 
+def get_pbc(doc):
+  node = doc.find('.//parameter[@name="bconds"]')
+  bct = node.text.strip("\n").strip()
+  bcl = bct.split()
+  pbc = [b=='p' for b in bcl]
+  return pbc
+
 def get_nelec(doc, groups=['u', 'd']):
   nelec = 0
   for pname in groups:
@@ -308,6 +315,23 @@ def get_pos(doc, pset='ion0', group=None):
   if len(names) == 1:  # !!!! maintain backwards compatibility
     return pos[names[0]]
   return pos
+
+def to_ase(doc, pset='ion0'):
+  from ase import Atoms
+  from ase.units import Bohr
+  axes = get_axes(doc)
+  pbc = get_pbc(doc)
+  pdict = get_pos(doc, pset=pset)
+  # construct elem, pos
+  elem = []
+  posl = []
+  for e1, p1 in pdict.items():
+    elem += [e1]*len(p1)
+    posl.append(p1)
+  pos = np.concatenate(posl, axis=0)
+  # construct ASE Atoms
+  atoms = Atoms(''.join(elem), cell=axes*Bohr, positions=pos*Bohr, pbc=pbc)
+  return atoms
 
 # ================= level 3: QMCPACK specialized construct =================
 def build_coeff(knots, **attribs):
