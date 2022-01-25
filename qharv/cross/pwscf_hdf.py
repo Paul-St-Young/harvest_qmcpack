@@ -79,7 +79,7 @@ def read_wfc(fxml):
     raise RuntimeError(msg)
   flist = find_wfc(fxml)
   rets = [read_save_hdf(floc) for floc in flist]
-  if lsda:
+  if lsda:  # concatenate spin up, spin dn wfc
     nkpt = len(flist)//2
     gvl = []
     evl = []
