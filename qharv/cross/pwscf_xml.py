@@ -111,9 +111,10 @@ def read_occupations(doc):
     if noncolin:
       ol.append(o1)
     elif lsda:
-      ol.append(o1.reshape(2, -1))
+      #o1.reshape(2, -1)
+      ol.append(o1)
     else:  # restricted
-      ol.append([o1, o1])
+      ol.append(2*o1)
   omat = np.array(ol)
   return omat
 
