@@ -330,3 +330,26 @@ def decompress_kp_eri(kperi, qk2k, nmo_pk):
             jpair += 1
         ipair += 1
   return eri
+
+def calc_ejex(chemist_eri, wts, wt_tol=1e-8, imag_tol=1e-12, force=False):
+  nmo = len(chemist_eri)
+  nwt = len(wts)
+  if nmo != nwt:
+    msg = "%d occupation weights cannot match %d MOs" %  (nwt, nmo)
+    raise RuntimeError(msg)
+  ej = 0
+  ex = 0
+  for i, wi in enumerate(wts):
+    if wi < wt_tol: continue
+    for j, wj in enumerate(wts):
+      if wj < wt_tol: continue
+      ej += wi*wj*chemist_eri[i, i, j, j]
+      ex += wi*wj*chemist_eri[i, j, j, i]
+  ej *= 0.5
+  ex *= -0.25
+  if not force:  # check before return
+    for name, val in zip(['EJ', 'EX'], [ej, ex]):
+      if (abs(val.imag) > imag_tol):
+        msg = '%s is imaginary' % name
+        raise RuntimeError(msg)
+  return ej.real, ex.real
