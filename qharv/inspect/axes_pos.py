@@ -45,7 +45,9 @@ def rs(axes, natom):
   """
   vol = volume(axes)
   vol_pp = vol/natom  # volume per particle
-  rs  = ((3*vol_pp)/(4*np.pi))**(1./3)  # radius for spherical vol_pp
+  ndim = len(axes)
+  # PRB 84, 115115 (2011).
+  rs = ((2*(ndim-1)*np.pi)/(ndim*vol_pp))**(-1./ndim)
   return rs
 
 def rins(axes):
