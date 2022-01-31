@@ -313,7 +313,7 @@ def get_pos(doc, pset='ion0', group=None):
   if group is not None:
     pos = pos[group]
   if len(names) == 1:  # !!!! maintain backwards compatibility
-    return pos[names[0]]
+    return pos[names[0]].reshape(-1, 3)
   return pos
 
 def to_ase(doc, pset='ion0'):

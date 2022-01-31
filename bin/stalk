@@ -49,9 +49,12 @@ if __name__ == '__main__':
 
     prop_cycle = plt.rcParams['axes.prop_cycle']
     colors = prop_cycle.by_key()['color']
-    for (elem, p1), myc in zip(pos.items(), colors):
-      crystal.draw_cell(ax, axes)
-      ax.plot(*p1.T, c=myc, ls='', marker='.')
+    if type(pos) is dict:
+      for (elem, p1), myc in zip(pos.items(), colors):
+        crystal.draw_cell(ax, axes)
+        ax.plot(*p1.T, c=myc, ls='', marker='.')
+    else:
+      ax.plot(*pos.T, c=colors[0], ls='', marker='.')
     plt.show()
   # end if
 
