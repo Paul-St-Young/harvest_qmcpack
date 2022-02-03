@@ -235,7 +235,7 @@ def ee_jastrow(nknot=8):
   xml.append(jas, [uu, ud])
   return jas
 
-def heg_system(rs, nshell_up, polarized, add_jastrow=False):
+def heg_system(rs, nshell_up, polarized, add_jastrow=True):
   """ construct QMCPACK input xml <qmcsystem> node for the homogeneous
   electron gas (HEG). Momentum shells must be fully filled. The HEG must
   either be fully polarized or fully unpolarized.
@@ -340,7 +340,8 @@ def heg_system(rs, nshell_up, polarized, add_jastrow=False):
   })
   wf_node.append(det_node)
   if add_jastrow:
-    jas = ee_jastrow()
+    #jas = ee_jastrow()
+    jas = xml.make_node("jastrow", {"name": "J2", "type": "Two-Body", "function": "rpa"})
     xml.append(wf_node, jas)
 
   # build hamiltonian node
