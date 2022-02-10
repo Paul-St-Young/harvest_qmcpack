@@ -73,10 +73,6 @@ def read_wfc(fxml):
   doc = pwscf_xml.read(fxml)
   bgrp = doc.find('.//band_structure')
   lsda = pwscf_xml.read_true_false(doc, 'lsda')
-  noncolin = pwscf_xml.read_true_false(doc, 'noncolin')
-  if noncolin:
-    msg = 'have not decided on noncolin format yet'
-    raise RuntimeError(msg)
   flist = find_wfc(fxml)
   rets = [read_save_hdf(floc) for floc in flist]
   if lsda:  # concatenate spin up, spin dn wfc
@@ -100,14 +96,18 @@ def read_wfc(fxml):
 # ========================= level 1: orbital ========================
 
 def kinetic_energy(raxes, kfracs, gvl, evl, wtl):
-  nk = len(kfracs)
-  tkin_per_kpt = np.zeros(nk)
+  nkpt = len(kfracs)
+  tkin_per_kpt = np.zeros(nkpt)
   for ik, (kfrac, gvs, evc, wts) in enumerate(zip(kfracs, gvl, evl, wtl)):
     kvecs = np.dot(gvs+kfrac, raxes)
+    npw = len(kvecs)
     k2 = np.einsum('ij,ij->i', kvecs, kvecs)
     p2 = (evc.conj()*evc).real
     nk = np.dot(wts, p2)  # sum occupied bands for n(k)
-    tkin_per_kpt[ik] = np.dot(k2, nk)
+    if len(nk) == 2*npw:  # noncolin
+      tkin_per_kpt[ik] = np.dot(k2, nk[:npw]) + np.dot(k2, nk[npw:])
+    else:
+      tkin_per_kpt[ik] = np.dot(k2, nk)
   return tkin_per_kpt
 
 def calc_kinetic(fxml, gvl=None, evl=None, wtl=None, lam=0.5):
