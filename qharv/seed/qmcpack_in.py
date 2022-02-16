@@ -61,6 +61,22 @@ def simulationcell_from_axes(axes, bconds='p p p', rckc=15.):
   sc_node.append(lr_node)
   return sc_node
 
+def pos_attrib(pos):
+  """ consturct <attrib name="positions">
+
+  Args:
+    pos (np.array): positions, shape (nptcl, ndim)
+  Return:
+     etree.Element: <attrib name="positions">
+  """
+  pa = xml.etree.Element('attrib', dict(
+    name = 'position',
+    datatype = 'posArray',
+    condition = str(0)
+  ))
+  pa.text = xml.arr2text(pos)
+  return pa
+
 def particle_group_from_pos(pos, name, charge, **kwargs):
   """ construct a <group> in the <particleset> xml element
 
@@ -82,13 +98,8 @@ def particle_group_from_pos(pos, name, charge, **kwargs):
   ))
   for key, val in kwargs.items():
     xml.set_param(group, key, str(val), new=True)
-  pos_attrib = xml.etree.Element('attrib', dict(
-    name = 'position',
-    datatype = 'posArray',
-    condition = str(0)
-  ))
-  pos_attrib.text = xml.arr2text(pos)
-  group.append(pos_attrib)
+  pa = pos_attrib(pos)
+  group.append(pa)
   return group
 
 def ud_electrons(nup, ndown):
