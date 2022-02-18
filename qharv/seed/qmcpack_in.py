@@ -135,16 +135,18 @@ def all_electron_hamiltonian(elec_name='e', ion_name='ion0'):
     'type': 'coulomb',  'name': 'ElecElec',
     'source': elec_name, 'target': elec_name
   })
-  ei = xml.make_node('pairpot', {
-    'type': 'coulomb',  'name': 'ElecIon',
-    'source': ion_name, 'target': elec_name
-  })
-  ii = xml.make_node('pairpot', {
-    'type': 'coulomb',  'name': 'IonIon',
-    'source': ion_name, 'target': ion_name
-  })
   ham = xml.make_node('hamiltonian')
-  xml.append(ham, [ee, ei, ii])
+  ham.append(ee)
+  if ion_name is not None:
+    ei = xml.make_node('pairpot', {
+      'type': 'coulomb',  'name': 'ElecIon',
+      'source': ion_name, 'target': elec_name
+    })
+    ii = xml.make_node('pairpot', {
+      'type': 'coulomb',  'name': 'IonIon',
+      'source': ion_name, 'target': ion_name
+    })
+    xml.append(ham, [ei, ii])
   return ham
 
 def bspline_qmcsystem(fh5, tmat=None):
