@@ -129,6 +129,7 @@ def rho_of_r(mesh, gvl, evl, wtl, volume, wt_tol=1e-8):
   rhor = np.zeros(mesh)
   psik = np.zeros(mesh, dtype=np.complex128)
   psir = np.zeros(mesh, dtype=np.complex128)
+  nkpt = len(gvl)
   for gvs, evc, wts in zip(gvl, evl, wtl):  # kpt loop
     psik.fill(0)
     for ev, wt in zip(evc, wts):  # bnd loop
@@ -138,7 +139,7 @@ def rho_of_r(mesh, gvl, evl, wtl, volume, wt_tol=1e-8):
       psir = np.fft.ifftn(psik)*ngrid
       r1 = (psir.conj()*psir).real
       rhor += wt*r1
-  return rhor/volume
+  return rhor/nkpt/volume
 
 def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, volume=None):
   from qharv.cross import pwscf_xml
