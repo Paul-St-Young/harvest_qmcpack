@@ -144,7 +144,7 @@ def rho_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8):
   psir = np.zeros(mesh, dtype=np.complex128)
   nkpt = len(gvl)
   for gvs, evc, wts in zip(gvl, evl, wtl):  # kpt loop
-    sel = wt >= wt_tol
+    sel = wts >= wt_tol
     for ev, wt in zip(evc[sel], wts[sel]):  # bnd loop
       psir = fft.invfft(gvs, ev)
       r1 = (psir.conj()*psir).real
@@ -162,6 +162,7 @@ def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, spin_resolved=False
     gvl, evl = read_wfc(fxml)
   if spin_resolved:
     lsda = pwscf_xml.read_true_false(doc, 'lsda')
+    noncolin = pwscf_xml.read_true_false(doc, 'noncolin')
     if lsda:
       evupl = [ev[:len(ev)//2] for ev in evl]
       wtupl = [wt[:len(wt)//2] for wt in wtl]
@@ -170,8 +171,37 @@ def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, spin_resolved=False
       wtdnl = [wt[len(wt)//2:] for wt in wtl]
       rhor_dn = rho_of_r(mesh, gvl, evdnl, wtdnl)
       return rhor_up, rhor_dn
+    elif noncolin:
+      mags = mag_of_r(mesh, gvl, evl, wtl)
+      return mags
     else:
       msg = 'cannot calculate spin-resolved density for lsda=%s' % lsda
+      msg += ' and noncolin=%s' % noncolin
       raise RuntimeError(msg)
   rhor = rho_of_r(mesh, gvl, evl, wtl)
   return rhor
+
+def mag_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8):
+  mags = np.zeros([3, *mesh])
+  fft = FFTMesh(mesh)
+  nkpt = len(gvl)
+  for gvs, evc, wts in zip(gvl, evl, wtl):  # kpt loop
+    npw = len(gvs)
+    npol = evc.shape[1]//npw
+    sel = wts >= wt_tol
+    for ev, wt in zip(evc[sel], wts[sel]):  # bnd loop
+      psia = ev[:npw]
+      psib = ev[npw:]
+      pra = fft.invfft(gvs, psia)
+      prb = fft.invfft(gvs, psib)
+      mags += wt*mag3d(pra, prb)
+  return mags/nkpt
+
+def mag3d(pra, prb):
+  mags = np.zeros([3, *pra.shape])
+  ab = pra.conj()*prb
+  ba = prb.conj()*pra
+  mags[0] = (ab+ba).real
+  mags[1] = (1j*(ba-ab)).real
+  mags[2] = (pra.conj()*pra-prb.conj()*prb).real
+  return mags
