@@ -124,19 +124,29 @@ def calc_kinetic(fxml, gvl=None, evl=None, wtl=None, lam=0.5):
   tkin = lam*tkin_per_kpt.mean()
   return tkin
 
+# ========================== level 2: FFT ===========================
+
+class FFTMesh:
+  def __init__(self, mesh, dtype=np.complex128):
+    self.mesh = mesh
+    self.ngrid = np.prod(mesh)
+    self.psik = np.zeros(mesh, dtype=dtype)
+  def invfft(self, gvectors, eigenvector):
+    self.psik.fill(0)
+    for g, e in zip(gvectors, eigenvector):
+      self.psik[tuple(g)] = e
+    psir = np.fft.ifftn(self.psik)*self.ngrid
+    return psir
+
 def rho_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8):
-  ngrid = np.prod(mesh)
   rhor = np.zeros(mesh)
-  psik = np.zeros(mesh, dtype=np.complex128)
+  fft = FFTMesh(mesh)
   psir = np.zeros(mesh, dtype=np.complex128)
   nkpt = len(gvl)
   for gvs, evc, wts in zip(gvl, evl, wtl):  # kpt loop
-    psik.fill(0)
-    for ev, wt in zip(evc, wts):  # bnd loop
-      if wt < wt_tol: continue
-      for g, e in zip(gvs, ev):
-        psik[tuple(g)] = e
-      psir = np.fft.ifftn(psik)*ngrid
+    sel = wt >= wt_tol
+    for ev, wt in zip(evc[sel], wts[sel]):  # bnd loop
+      psir = fft.invfft(gvs, ev)
       r1 = (psir.conj()*psir).real
       rhor += wt*r1
   return rhor/nkpt
