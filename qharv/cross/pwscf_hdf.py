@@ -124,7 +124,7 @@ def calc_kinetic(fxml, gvl=None, evl=None, wtl=None, lam=0.5):
   tkin = lam*tkin_per_kpt.mean()
   return tkin
 
-def rho_of_r(mesh, gvl, evl, wtl, volume, wt_tol=1e-8):
+def rho_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8):
   ngrid = np.prod(mesh)
   rhor = np.zeros(mesh)
   psik = np.zeros(mesh, dtype=np.complex128)
@@ -139,18 +139,15 @@ def rho_of_r(mesh, gvl, evl, wtl, volume, wt_tol=1e-8):
       psir = np.fft.ifftn(psik)*ngrid
       r1 = (psir.conj()*psir).real
       rhor += wt*r1
-  return rhor/nkpt/volume
+  return rhor/nkpt
 
-def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, volume=None, spin_resolved=False):
+def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, spin_resolved=False):
   from qharv.cross import pwscf_xml
   doc = pwscf_xml.read(fxml)
   if mesh is None:
     mesh = pwscf_xml.read_fft_mesh(doc)
   if wtl is None:
     wtl = pwscf_xml.read_occupations(doc)
-  if volume is None:
-    axes = pwscf_xml.read_cell(doc)
-    volume = abs(np.linalg.det(axes))
   if (gvl is None) or (evl is None):
     gvl, evl = read_wfc(fxml)
   if spin_resolved:
@@ -158,13 +155,13 @@ def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, volume=None, spin_r
     if lsda:
       evupl = [ev[:len(ev)//2] for ev in evl]
       wtupl = [wt[:len(wt)//2] for wt in wtl]
-      rhor_up = rho_of_r(mesh, gvl, evupl, wtupl, volume)
+      rhor_up = rho_of_r(mesh, gvl, evupl, wtupl)
       evdnl = [ev[len(ev)//2:] for ev in evl]
       wtdnl = [wt[len(wt)//2:] for wt in wtl]
-      rhor_dn = rho_of_r(mesh, gvl, evdnl, wtdnl, volume)
+      rhor_dn = rho_of_r(mesh, gvl, evdnl, wtdnl)
       return rhor_up, rhor_dn
     else:
       msg = 'cannot calculate spin-resolved density for lsda=%s' % lsda
       raise RuntimeError(msg)
-  rhor = rho_of_r(mesh, gvl, evl, wtl, volume)
+  rhor = rho_of_r(mesh, gvl, evl, wtl)
   return rhor
