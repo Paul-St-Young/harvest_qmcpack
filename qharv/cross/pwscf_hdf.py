@@ -141,7 +141,7 @@ def rho_of_r(mesh, gvl, evl, wtl, volume, wt_tol=1e-8):
       rhor += wt*r1
   return rhor/nkpt/volume
 
-def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, volume=None):
+def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, volume=None, spin_resolved=False):
   from qharv.cross import pwscf_xml
   doc = pwscf_xml.read(fxml)
   if mesh is None:
@@ -153,5 +153,18 @@ def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, volume=None):
     volume = abs(np.linalg.det(axes))
   if (gvl is None) or (evl is None):
     gvl, evl = read_wfc(fxml)
+  if spin_resolved:
+    lsda = pwscf_xml.read_true_false(doc, 'lsda')
+    if lsda:
+      evupl = [ev[:len(ev)//2] for ev in evl]
+      wtupl = [wt[:len(wt)//2] for wt in wtl]
+      rhor_up = rho_of_r(mesh, gvl, evupl, wtupl, volume)
+      evdnl = [ev[len(ev)//2:] for ev in evl]
+      wtdnl = [wt[len(wt)//2:] for wt in wtl]
+      rhor_dn = rho_of_r(mesh, gvl, evdnl, wtdnl, volume)
+      return rhor_up, rhor_dn
+    else:
+      msg = 'cannot calculate spin-resolved density for lsda=%s' % lsda
+      raise RuntimeError(msg)
   rhor = rho_of_r(mesh, gvl, evl, wtl, volume)
   return rhor
