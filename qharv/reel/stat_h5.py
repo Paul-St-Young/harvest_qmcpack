@@ -218,11 +218,11 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
   nbas = int(meta['nmo'])
   itwalker = int(meta['walker_type'])
   if itwalker == 1:  # CLOSED
-    rdm_shape = (nbas, nbas)
+    rdm_shape = (1, nbas, nbas)
   elif itwalker == 2:  # COLLINEAR
     rdm_shape = (2, nbas, nbas)
   else:
-    raise NotImplementedError('WalkerType %d' % itwalker)
+    rdm_shape = (4, nbas, nbas)
   # 2. deal with back propagation (BP)
   avg_path = os.path.join('Observables', group, obs_name)
   if iav is None:  # use longest BP
@@ -253,12 +253,4 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
   ym, ye = me2d(mat)
   dm = ym.reshape(rdm_shape)
   de = ye.reshape(rdm_shape)
-  rdms = {}
-  if itwalker == 1:  # CLOSED
-    rdms['u'] = (dm, de)
-  elif itwalker == 2:  # COLLINEAR
-    rdms['u'] = (dm[0], de[0])
-    rdms['d'] = (dm[1], de[1])
-  else:
-    raise NotImplementedError('WalkerType %d' % itwalker)
-  return rdms
+  return dm, de
