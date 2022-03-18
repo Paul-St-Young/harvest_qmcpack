@@ -164,12 +164,10 @@ def bspline_qmcsystem(fh5, tmat=None):
   fp = wf_h5.read(fh5)
   axes, elem, charge_map, pos = wf_h5.axes_elem_charges_pos(fp)
   nelecs = wf_h5.get(fp, 'nelecs')
+  nspin = wf_h5.get(fp, 'nspin')[0]
   fp.close()
   natom, ndim = pos.shape
   assert ndim == ndim0
-  nup, ndn = nelecs
-  if nup != ndn:  # hard-code for unpolarized for now
-    raise RuntimeError('nup != ndn')
   if tmat is None:  # use primitive cell by default
     tmat = np.eye(3, dtype=int)
   else:  # tile supercell
@@ -203,27 +201,32 @@ def bspline_qmcsystem(fh5, tmat=None):
       'twistnum': '0',
       'source': ion_name,  # "Einspline needs the source particleset"
   })
-  spo = xml.make_node('sposet', {
-    'type': 'bspline',
-    'name': spoup,
-    'size': str(nup),
-    'spindataset': '0'}
-  )
-  sb.append(spo)
-
-  # determinantset
-  updet = xml.make_node('determinant', {
-    'id': 'updet',
-    'size': str(nup),
-    'sposet': spoup
-  })
-  dndet = xml.make_node('determinant', {
-    'id': 'dndet',
-    'size': str(ndn),
-    'sposet': spodn
-  })
   sdet = xml.make_node('slaterdeterminant')
-  xml.append(sdet, [updet, dndet])
+  for ispo, npart in zip(range(nspin), nelecs): 
+    spo_name = 'spo%d' % ispo
+    spo = xml.make_node('sposet', {
+      'type': 'bspline',
+      'name': spo_name,
+      'size': str(npart),
+      'spindataset': '0'}
+    )
+    sb.append(spo)
+
+    # determinantset
+    det = xml.make_node('determinant', {
+      'id': 'updet',
+      'size': str(npart),
+      'sposet': spo_name,
+    })
+    sdet.append(det)
+    if nspin == 1:  # reuse sposet in dndet
+      assert np.allclose(nelecs, npart)
+      dndet = xml.make_node('determinant', {
+        'id': 'dndet',
+        'size': str(npart),
+        'sposet': spo_name,
+      })
+      sdet.append(det)
   dset = xml.make_node('determinantset')
   dset.append(sdet)
 
