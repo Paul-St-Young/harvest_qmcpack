@@ -186,6 +186,7 @@ def bspline_qmcsystem(fh5, tmat=None):
   ions = xml.make_node('particleset', {'name': ion_name})
   for name, charge in charge_map.items():
     sel = elem == name
+    if len(pos[sel]) < 1: continue
     ion_grp = particle_group_from_pos(pos[sel], name, charge)
     ions.append(ion_grp)
   nodes.append(ions)
@@ -208,7 +209,7 @@ def bspline_qmcsystem(fh5, tmat=None):
       'type': 'bspline',
       'name': spo_name,
       'size': str(npart),
-      'spindataset': '0'}
+      'spindataset': str(ispo)}
     )
     sb.append(spo)
 
