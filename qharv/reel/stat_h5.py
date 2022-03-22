@@ -200,7 +200,7 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
     numer (str, optional): numerator to extract, default 'one_rdm'
     iav (int, optional): BP level (Average_$iav), default is last level
   Return:
-    dict: a dictionary of 1RDMs, one for each species (eg. u, d)
+    tuple: (mean, error) arrays
   """
   # 1. gather meta data
   meta_paths = {
@@ -221,8 +221,11 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
     rdm_shape = (1, nbas, nbas)
   elif itwalker == 2:  # COLLINEAR
     rdm_shape = (2, nbas, nbas)
+  elif itwalker == 3:  # non-collinear
+    rdm_shape = (1, 2*nbas, 2*nbas)
   else:
-    rdm_shape = (4, nbas, nbas)
+    msg = 'unknown walker type %d' % itwalker
+    raise RuntimeError(msg)
   # 2. deal with back propagation (BP)
   avg_path = os.path.join('Observables', group, obs_name)
   if iav is None:  # use longest BP
@@ -253,4 +256,13 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
   ym, ye = me2d(mat)
   dm = ym.reshape(rdm_shape)
   de = ye.reshape(rdm_shape)
+  if itwalker == 3:  # non-collinear
+    dm = np.array([
+      dm[0, :nbas, :nbas], dm[0, nbas:, nbas:],
+      dm[0, :nbas, nbas:], dm[0, nbas:, :nbas],
+    ])
+    de = np.array([
+      de[0, :nbas, :nbas], de[0, nbas:, nbas:],
+      de[0, :nbas, nbas:], de[0, nbas:, :nbas],
+    ])
   return dm, de
