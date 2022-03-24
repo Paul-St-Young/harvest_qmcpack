@@ -100,6 +100,16 @@ def calc_eikr(kvecs, rvecs):
   return eikr
 
 # =========================== level 2: kpt ==========================
+
+def uniform_grid(mesh):
+  ndim = len(mesh)
+  gvecs = get_kvecs(np.eye(ndim), mesh)
+  tvecs = gvecs/mesh
+  return tvecs
+
+def monkhorst_pack_grid(mesh):
+  return uniform_grid(mesh)
+
 def disp_in_box(drij, lbox=1):
   # for +/- 1 cell
   sel = drij <= lbox/2
