@@ -254,6 +254,19 @@ def polar2cart(polar):
   xyz = np.c_[x, y, z]
   return xyz
 
+def cart2polar(cart):
+  """Inverse of polar2cart
+  """
+  x, y, z = cart.T
+  r = np.linalg.norm(cart, axis=-1)
+  theta = np.arccos(z/r)
+  phi = np.arctan2(y, x)
+  # convert to degree
+  theta = theta/np.pi*180
+  phi = phi/np.pi*180
+  pol = np.c_[r, theta, phi]
+  return pol
+
 def read_polar_chg(scf_out):
   from qharv.reel import ascii_out
   mm = ascii_out.read(scf_out)
