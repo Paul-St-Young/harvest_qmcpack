@@ -224,6 +224,12 @@ def swap_node(node0, node1):
   parent.insert(idx, node1)
 
 # ================= level 2: QMCPACK specialized read =================
+def get_id_series(node):
+  proj = node.find('.//project')
+  myid = proj.get('id')
+  iser = proj.get('series', 0)
+  return myid, iser
+
 def get_param(node, pname):
   """ retrieve the str representation of a parameter from:
     <parameter name="pname"> str_rep </parameter>
