@@ -15,12 +15,17 @@ def input_keywords(scf_in):
   """
   keywords = dict()
   with open(scf_in, 'r') as f:
-    for line in f:
-      if '=' in line:
-        key, val = line.split('=')
-        val1 = val.strip('\n').strip()
-        val2 = val1.strip("'").strip('"')
-        keywords[key.strip()] = val2
+    text = f.read()
+  return parse_keywords(text)
+
+def parse_keywords(text):
+  keywords = dict()
+  for line in text.split('\n'):
+    if '=' in line:
+      key, val = line.split('=')
+      val1 = val.strip('\n').strip()
+      val2 = val1.strip("'").strip('"')
+      keywords[key.strip()] = val2
   return keywords
 
 # ========================= level 1: modify =========================
@@ -305,6 +310,29 @@ def read_chgmag_per_site(scf_out):
   return chgs, mags
 
 # ========================= level 2: cross ==========================
+def link_save(scf_inp, path):
+  """Link {prefix}.save folder from pwscf run to new folder
+
+  Args:
+    scf_inp (str): pwscf input file
+    path (str): path to new folder
+  Example:
+    >>> link_save('scf.inp', '../convert/p2q')
+  """
+  # find wf save
+  prefix, outdir = get_prefix_outdir(scf_inp)
+  dsave = find_save(scf_inp)
+  # link to converter save location
+  outpath = os.path.join(path, outdir)
+  hsave = os.path.join(outpath, '%s.save' % prefix)
+  if not (os.path.abspath(hsave) == dsave):
+    rpath = os.path.relpath(dsave, outpath)
+    if os.path.isdir(outpath):
+      msg = '%s exists' % outpath
+      raise RuntimeError(msg)
+    sp.check_call(['mkdir', outpath])
+    cmd = 'cd %s; ln -s %s %s.save' % (outpath, rpath, prefix)
+    sp.check_call(cmd, shell=True)
 
 def copy_charge_density(scf_dir, nscf_dir, execute=True):
   """Copy charge density files from scf folder to nscf folder.
