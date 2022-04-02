@@ -221,13 +221,13 @@ def bspline_qmcsystem(fh5, tmat=None):
     })
     sdet.append(det)
     if nspin == 1:  # reuse sposet in dndet
-      assert np.allclose(nelecs, npart)
+      spo.set('size', str(max(nelecs)))
       dndet = xml.make_node('determinant', {
         'id': 'dndet',
-        'size': str(npart),
+        'size': str(nelecs[1]),
         'sposet': spo_name,
       })
-      sdet.append(det)
+      sdet.append(dndet)
   dset = xml.make_node('determinantset')
   dset.append(sdet)
 
