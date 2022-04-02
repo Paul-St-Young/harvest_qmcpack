@@ -7,6 +7,30 @@ from lxml import etree
 from qharv.reel import mole
 from qharv.seed import xml, xml_examples
 
+# ================== level 0: parse existing input ==================
+def meta_from_parameters(node):
+  """Extract metadata from an xml entry with <parameter/>s
+
+  Args:
+    node (etree.Element): xml node
+  Return:
+    dict: metadata as a dictionary of str
+  Example:
+    >>> qmc = parse('''<qmc method="vmc">
+ <parameter name="blocks">      400 </parameter>
+ <parameter name="timestep">    0.5 </parameter>
+ <parameter name="steps">         2 </parameter>
+</qmc>''')
+    >>> meta_from_parameters(qmc)
+    {'method': 'vmc', 'blocks': '400', 'timestep': '0.5', 'steps': '2'}
+  """
+  meta = dict(node.attrib)
+  for param in node.findall('.//parameter'):
+    name = param.get('name')
+    val = param.text.strip()
+    meta[name] = val
+  return meta
+
 # =============== level 0: build input from scratch ===============
 def assemble_project(nodel, name='qmc', series=0):
   """ assemble QMCPACK input using a list of xml nodes
