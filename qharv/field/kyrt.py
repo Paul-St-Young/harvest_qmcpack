@@ -184,7 +184,7 @@ def yright(ax):
 
 # ======================= level 1: advanced ax edits ========================
 
-def cox(ax, x, xtlabels):
+def cox(ax, x, xtlabels, **kwargs):
   """Add co-xticklabels at top of the plot, e.g., with a different unit
 
   Args:
@@ -196,7 +196,7 @@ def cox(ax, x, xtlabels):
   ax1.set_xlim(ax.get_xlim())
   ax.set_xticks(x)
   ax1.set_xticks(x)
-  ax1.set_xticklabels(xtlabels)
+  ax1.set_xticklabels(xtlabels, **kwargs)
   xtop(ax1)
   return ax1
 
@@ -285,7 +285,7 @@ def errorshade(ax, x, ym, ye, **kwargs):
   return line, eline
 
 # ===================== level 1: fit line ======================
-def show_fit(ax, line, model, sel=None, nx=64, popt=None,
+def show_fit(ax, line, model=None, sel=None, nx=64, popt=None,
   xmin=None, xmax=None, circle=True, circle_style=None,
   cross=False, cross_style=None, **kwargs):
   """ fit a segment of (x, y) data and show fit
@@ -295,7 +295,7 @@ def show_fit(ax, line, model, sel=None, nx=64, popt=None,
   Args:
     ax (Axes): matplotlib axes
     line (Line2D): line with data
-    model (callable): model function
+    model (callable, optional): model function, default linear function
     sel (np.array, optional): boolean selector array
     nx (int, optional): grid size, default 64
     xmin (float, optional): grid min
@@ -310,6 +310,10 @@ def show_fit(ax, line, model, sel=None, nx=64, popt=None,
   # get and select data to fit
   myx = line.get_xdata()
   myy = line.get_ydata()
+  # default to linear fit
+  if model is None:
+    def model(x, a, b):
+      return a+b*x
   # show selected data
   if sel is None:
     sel = np.ones(len(myx), dtype=bool)
