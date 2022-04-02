@@ -26,9 +26,8 @@ def get_bin_edges(axes, rmin=0., rmax=None, nr=32):
 def get_gofr_norm(axes, bin_edges, n1, n2=None):
   from qharv.inspect.axes_pos import volume
   ndim, ndim = axes.shape
-  assert ndim == 3  # assume 3 dimensions
   # calculate volume of bins
-  vnorm = np.diff(4*np.pi/3*bin_edges**ndim)
+  vnorm = np.diff(2*(ndim-1)/ndim*np.pi*bin_edges**ndim)
   # calculate density normalization
   if n2 is None:
     npair = n1*(n1-1)/2
