@@ -370,3 +370,42 @@ def ase_get_spacegroup_id(axes, elem, pos, **kwargs):
   s1 = Atoms(elem, pos, cell=axes)
   sg = get_spacegroup(s1, **kwargs)
   return sg.no
+
+# ======================== level 2: wrapping ========================
+def linecut(axes, r0, dr, mr=10000, sort=True, fractional=True):
+  """ generate a line across the cell
+
+  Args:
+    axes (np.array): lattice vectors, shape (ndim, ndim)
+    r0 (np.array): starting position, shape (ndim,)
+    dr (np.array): line direction, shape (ndim,)
+    mr (int, optional): maximum number of points along line, default 10000
+    sort (bool, optional): sort points along line, default True
+    fractional (bool, optional): r0 and dr are in fractional coordinates
+  Return:
+    np.array: a list of points on the line, shape (npt, ndim)
+  """
+  if fractional:
+    r0 = np.dot(r0, axes)
+    dr = np.dot(dr, axes)
+  ainv = np.linalg.inv(axes)
+  line = []
+  iline = []
+  for pm in [1, -1]:
+    for ir in range(mr):
+      if (ir == 0) and (pm == -1): continue
+      r = r0+pm*ir*dr
+      f = np.dot(r, ainv)
+      if np.any(f>1) or np.any(f<0):
+        break
+      line.append(r)
+      iline.append(ir*pm)
+    if ir >= mr-1:
+      msg = 'not enough points to reach edge of cell'
+      msg += ' increase dr=%f or mr=%d' % (dr, mr)
+      raise RuntimeError(msg)
+  rline = np.array(line)
+  if sort:
+    idx = np.argsort(iline)
+    rline = rline[idx]
+  return rline
