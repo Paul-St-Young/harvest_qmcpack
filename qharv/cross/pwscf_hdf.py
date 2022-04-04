@@ -138,17 +138,19 @@ class FFTMesh:
     psir = np.fft.ifftn(self.psik)*self.ngrid
     return psir
 
-def rho_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8):
+def rho_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8, npol=1):
   rhor = np.zeros(mesh)
   fft = FFTMesh(mesh)
   psir = np.zeros(mesh, dtype=np.complex128)
   nkpt = len(gvl)
   for gvs, evc, wts in zip(gvl, evl, wtl):  # kpt loop
     sel = wts >= wt_tol
+    npw = len(gvs)
     for ev, wt in zip(evc[sel], wts[sel]):  # bnd loop
-      psir = fft.invfft(gvs, ev)
-      r1 = (psir.conj()*psir).real
-      rhor += wt*r1
+      for ipol in range(npol):
+        psir = fft.invfft(gvs, ev[ipol*npw:(ipol+1)*npw])
+        r1 = (psir.conj()*psir).real
+        rhor += wt*r1
   return rhor/nkpt
 
 def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, spin_resolved=False):
@@ -178,7 +180,12 @@ def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, spin_resolved=False
       msg = 'cannot calculate spin-resolved density for lsda=%s' % lsda
       msg += ' and noncolin=%s' % noncolin
       raise RuntimeError(msg)
-  rhor = rho_of_r(mesh, gvl, evl, wtl)
+  noncolin = pwscf_xml.read_true_false(doc, 'noncolin')
+  if noncolin:
+    npol = 2
+  else:
+    npol = 1
+  rhor = rho_of_r(mesh, gvl, evl, wtl, npol=npol)
   return rhor
 
 def mag_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8):
