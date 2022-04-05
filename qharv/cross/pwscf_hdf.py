@@ -222,3 +222,26 @@ def mag3d(pra, prb):
   mags[1] = (1j*(ba-ab)).real
   mags[2] = (pra.conj()*pra-prb.conj()*prb).real
   return mags
+
+def site_resolved_magnetization(rho, pointlist, factlist):
+  """Compute site-resolved magnetization for each magnetic site.
+  Essentially reimplements get_locals.f90
+
+  Args:
+    rho (array): shape (nspin, *mesh), mesh is the FFT mesh w/ nnr grid points.
+    pointlist (array): shape (nnr,), integers from 0 to nat+1. pointlist
+     assigns each FFT grid point to an atom. 0 means not assigned.
+    factlist (array): shape (nnr,), floats from 0 to 1. Weight of each point.
+  Return:
+    array: shape (nat, nspin), magnetization on each site
+  """
+  nat = np.unique(pointlist).max()
+  nspin = len(rho)
+  mesh = rho.shape[1:]
+  nnr = np.prod(mesh)
+  mags = np.zeros([nat, nspin])
+  for iat in range(1, nat+1):
+    sel = pointlist == iat
+    rsum = [np.dot(factlist[sel], rho[ispin, sel])/nnr for ispin in range(nspin)]
+    mags[iat-1, :] = rsum
+  return mags
