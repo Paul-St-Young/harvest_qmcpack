@@ -205,6 +205,16 @@ def mag_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8):
   return mags/nkpt
 
 def mag3d(pra, prb):
+  """Compute magnetization of spinor by contracting alpha and beta components
+   with Pauli matrices. Each component has one complex value per grid point.
+  Essentially reimplements sum_band.f90::get_rho_domag.
+
+  Args:
+    pra (array): shape (nnr,), up i.e. alpha component
+    prb (array): shape (nnr,), dn i.e. beta component
+  Return:
+    array: shape (3, nnr), x, y, z components of magnetization
+  """
   mags = np.zeros([3, *pra.shape])
   ab = pra.conj()*prb
   ba = prb.conj()*pra
