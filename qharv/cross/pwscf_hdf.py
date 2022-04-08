@@ -138,17 +138,19 @@ class FFTMesh:
     psir = np.fft.ifftn(self.psik)*self.ngrid
     return psir
 
-def rho_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8):
+def rho_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8, npol=1):
   rhor = np.zeros(mesh)
   fft = FFTMesh(mesh)
   psir = np.zeros(mesh, dtype=np.complex128)
   nkpt = len(gvl)
   for gvs, evc, wts in zip(gvl, evl, wtl):  # kpt loop
     sel = wts >= wt_tol
+    npw = len(gvs)
     for ev, wt in zip(evc[sel], wts[sel]):  # bnd loop
-      psir = fft.invfft(gvs, ev)
-      r1 = (psir.conj()*psir).real
-      rhor += wt*r1
+      for ipol in range(npol):
+        psir = fft.invfft(gvs, ev[ipol*npw:(ipol+1)*npw])
+        r1 = (psir.conj()*psir).real
+        rhor += wt*r1
   return rhor/nkpt
 
 def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, spin_resolved=False):
@@ -178,7 +180,12 @@ def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, spin_resolved=False
       msg = 'cannot calculate spin-resolved density for lsda=%s' % lsda
       msg += ' and noncolin=%s' % noncolin
       raise RuntimeError(msg)
-  rhor = rho_of_r(mesh, gvl, evl, wtl)
+  noncolin = pwscf_xml.read_true_false(doc, 'noncolin')
+  if noncolin:
+    npol = 2
+  else:
+    npol = 1
+  rhor = rho_of_r(mesh, gvl, evl, wtl, npol=npol)
   return rhor
 
 def mag_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8):
@@ -198,10 +205,43 @@ def mag_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8):
   return mags/nkpt
 
 def mag3d(pra, prb):
+  """Compute magnetization of spinor by contracting alpha and beta components
+   with Pauli matrices. Each component has one complex value per grid point.
+  Essentially reimplements sum_band.f90::get_rho_domag.
+
+  Args:
+    pra (array): shape (nnr,), up i.e. alpha component
+    prb (array): shape (nnr,), dn i.e. beta component
+  Return:
+    array: shape (3, nnr), x, y, z components of magnetization
+  """
   mags = np.zeros([3, *pra.shape])
   ab = pra.conj()*prb
   ba = prb.conj()*pra
   mags[0] = (ab+ba).real
   mags[1] = (1j*(ba-ab)).real
   mags[2] = (pra.conj()*pra-prb.conj()*prb).real
+  return mags
+
+def site_resolved_magnetization(rho, pointlist, factlist):
+  """Compute site-resolved magnetization for each magnetic site.
+  Essentially reimplements get_locals.f90
+
+  Args:
+    rho (array): shape (nspin, *mesh), mesh is the FFT mesh w/ nnr grid points.
+    pointlist (array): shape (nnr,), integers from 0 to nat+1. pointlist
+     assigns each FFT grid point to an atom. 0 means not assigned.
+    factlist (array): shape (nnr,), floats from 0 to 1. Weight of each point.
+  Return:
+    array: shape (nat, nspin), magnetization on each site
+  """
+  nat = np.unique(pointlist).max()
+  nspin = len(rho)
+  mesh = rho.shape[1:]
+  nnr = np.prod(mesh)
+  mags = np.zeros([nat, nspin])
+  for iat in range(1, nat+1):
+    sel = pointlist == iat
+    rsum = [np.dot(factlist[sel], rho[ispin, sel])/nnr for ispin in range(nspin)]
+    mags[iat-1, :] = rsum
   return mags

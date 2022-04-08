@@ -7,6 +7,66 @@ from lxml import etree
 from qharv.reel import mole
 from qharv.seed import xml, xml_examples
 
+# ================== level 0: parse existing input ==================
+def output_prefix_meta(doc, group=None):
+  """Construct a map from output prefix to its metadata
+
+  Output files are named in pattern {prefix}.{suffix}, where typical
+   {suffix} are scalar.dat, stat.h5, config.h5, cont.xml.
+  Each input can generate multiple {prefix}s, and complete metadata
+    cannot be reconstructed from the output files alone.
+  This function extracts complete metadata from an input, then map them
+    to the resultant outputs defined by {prefix}.
+
+  Args:
+    fxml (str): QMCPACK input xml
+    group (int, optional): QMCPACK group index
+  Return:
+    dict: one metadata entry per output prefix
+  Examples:
+    >>> output_prefix_meta(read('vmc.xml'))  # 1 series
+    {'vmc.s000': {'timestep': 0.5}}
+    >>> output_prefix_meta(read('dmc.xml'))  # 2 series
+    {'dmc.s000': {'timestep': 0.02, 'target_walkers': 512},
+     'dmc.s001': {'timestep': 0.01, 'target_walkers': 512}}
+    >>> output_prefix_meta(read('vmc.xml'), group=1)   # second twist (group)
+    {'vmc.g001.s000': {'timestep': 0.5}}
+  """
+  myid, iser0 = xml.get_id_series(doc)
+  qmcs = doc.findall('.//qmc')
+  pm = {}
+  for icalc, qmc in enumerate(qmcs):
+    iser = iser0+icalc
+    prefix = '%s.s%03d' % (myid, iser)
+    if group is not None:
+      prefix = '%s.g%03d.s%03d' % (myid, group, iser)
+    meta = meta_from_parameters(qmc)
+    pm[prefix] = meta
+  return pm
+
+def meta_from_parameters(node):
+  """Extract metadata from an xml entry with <parameter/>s
+
+  Args:
+    node (etree.Element): xml node
+  Return:
+    dict: metadata as a dictionary of str
+  Example:
+    >>> qmc = parse('''<qmc method="vmc">
+ <parameter name="blocks">      400 </parameter>
+ <parameter name="timestep">    0.5 </parameter>
+ <parameter name="steps">         2 </parameter>
+</qmc>''')
+    >>> meta_from_parameters(qmc)
+    {'method': 'vmc', 'blocks': '400', 'timestep': '0.5', 'steps': '2'}
+  """
+  meta = dict(node.attrib)
+  for param in node.findall('.//parameter'):
+    name = param.get('name')
+    val = param.text.strip()
+    meta[name] = val
+  return meta
+
 # =============== level 0: build input from scratch ===============
 def assemble_project(nodel, name='qmc', series=0):
   """ assemble QMCPACK input using a list of xml nodes
