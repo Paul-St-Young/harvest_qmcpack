@@ -101,6 +101,30 @@ def xyye(df, xname, yname, sel=None, xerr=False, yerr=True, sort=False):
     idx = np.argsort(xm)
   return [ret[idx] for ret in rets if ret is not None]
 
+def group_min(df, labels, yname, find_max=False):
+  """Select the row that minimizes column "yname" in each group.
+  The groups are organized by "labels"
+
+  Args:
+    df (pd.DataFrame): must have labels + [yname] in columns
+    labels (list): a list of columns to use as group labels
+    yname (str): column to minimize
+    find_max (bool, optional): maximize "yname", default False
+  Return:
+    pd.DataFrame: a subset of rows from original df
+  Example:
+    >>> # extract smallest timestep runs
+    >>> smalldf = group_min(df, ['nelec', 'nwalker'], 'timestep')
+    >>> # find ground state at each density and magnetization
+    >>> gsdf = group_min(df, ['rs', 'magnetization'], 'energy')
+  """
+  groups = df.groupby(labels)
+  if find_max:
+    idx = groups.apply(lambda x: x[yname].idxmax()).values
+  else:
+    idx = groups.apply(lambda x: x[yname].idxmin()).values
+  return df.iloc[idx]
+
 # ======================== level 2: propagate error =======================
 def resample(marr, earr, nsample, seed=None):
   shape = marr.shape
