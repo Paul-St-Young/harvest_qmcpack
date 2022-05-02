@@ -30,7 +30,7 @@ def parse_keywords(text):
 
 # ========================= level 1: modify =========================
 
-def change_keyword(text, section, key, val, indent=' '):
+def change_keyword(text, section, key, val, indent=' ', float_fmt='%e'):
   """Change input keyword
 
   Args:
@@ -59,9 +59,7 @@ def change_keyword(text, section, key, val, indent=' '):
   elif np.issubdtype(type(val), np.integer):
     fmt = '%s = %d'
   elif np.issubdtype(type(val), np.floating):
-    fmt = '%s = %f'
-    if val < 1e-4:
-      fmt = '%s = %e'
+    fmt = '%s = ' + float_fmt
   else:
     msg = 'unknown datatype %s for "%s"' % (type(val), key)
     raise RuntimeError(msg)
