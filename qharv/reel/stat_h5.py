@@ -122,7 +122,7 @@ def rhok_from_skall(fp, obs_name, nequil, kappa=None):
   rkim, rkie = mean_and_err(fp, rhoki_path, nequil, kappa)
   rhokm = rkrm + 1j*rkim
   rhoke = rkre + 1j*rkie
-  return kvecs, rhokm.view(float), rhoke.view(float)
+  return kvecs, rhokm, rhoke
 
 def gofr(fp, obs_name, nequil, kappa=None, force=False):
   """ extract pair correlation function g(r) from stat.h5 file
