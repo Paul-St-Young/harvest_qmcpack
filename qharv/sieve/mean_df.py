@@ -184,7 +184,7 @@ def dfme(df, cols, no_error=False, weight_name=None):
     entry[col] = y1
   return pd.Series(entry)
 
-# ======================== level 2: extrap. =========================
+# ======================== level 3: extrap. =========================
 def linex(df_in, vseries, dseries, names, labels=None,
   sorted_df=False, sort_col=None):
   """ Linearly extrapolate to 2*DMC-VMC
