@@ -63,5 +63,5 @@ def scalar_dat(fxml, nequil, group=None, suffix='scalar.dat'):
     for key, val in meta.items():
       mdf[key] = val
     dfl.append(mdf)
-  df = pd.concat(dfl, axis=0)
+  df = pd.concat(dfl, axis=0).reset_index(drop=True)
   return df
