@@ -32,9 +32,10 @@ def output_prefix_meta(doc, group=None):
     >>> output_prefix_meta(read('vmc.xml'), group=1)   # second twist (group)
     {'vmc.g001.s000': {'timestep': 0.5}}
   """
+  from collections import OrderedDict
   myid, iser0 = xml.get_id_series(doc)
   qmcs = doc.findall('.//qmc')
-  pm = {}
+  pm = OrderedDict()
   for icalc, qmc in enumerate(qmcs):
     iser = iser0+icalc
     prefix = '%s.s%03d' % (myid, iser)
