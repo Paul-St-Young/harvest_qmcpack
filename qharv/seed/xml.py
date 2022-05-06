@@ -51,6 +51,13 @@ def parse(text):
   root = read(node).getroot()
   return root
 
+def root(func):
+  def new_func(node, *args, **kwargs):
+    if type(node) is etree._ElementTree:
+      node = node.getroot()
+    return func(node, *args, **kwargs)
+  return new_func
+
 def str_rep(node):
   """ return the string representation of an xml node
 
@@ -64,6 +71,7 @@ def str_rep(node):
 def show(node):
   print(str_rep(node))
 
+@root
 def ls(node, r=False, level=0, indent="  "):
   """ List directory structure
 
@@ -77,8 +85,6 @@ def ls(node, r=False, level=0, indent="  "):
    Return:
      str: mystr, a string representation of the directory structure
   """
-  if type(node) is etree._ElementTree:
-    node = node.getroot()
   mystr = ''
   children = node.getchildren()
   if len(children) > 0:
@@ -92,6 +98,7 @@ def ls(node, r=False, level=0, indent="  "):
     return ''
   return mystr
 
+@root
 def todict(node):
   """ convert to dictionary
 
@@ -100,8 +107,6 @@ def todict(node):
   Return:
     dict: dictionary representation of the xml tree
   """
-  if type(node) is etree._ElementTree:
-    node = node.getroot()
   mydict = {node.tag: {'_attrib': dict(node.attrib), '_text': node.text}}
   children = node.getchildren()
   if len(children) > 0:
@@ -287,6 +292,18 @@ def get_pbc(doc):
   bcl = bct.split()
   pbc = [b=='p' for b in bcl]
   return pbc
+
+@root
+def get_nelecs(epset, ename='e'):
+  if epset.tag != 'particleset':
+    epset = epset.find('.//particleset[@name="%s"]' % ename)
+  assert epset.get('name') == ename
+  nelecs = dict()
+  for grp in epset.findall('.//group'):
+    pname = grp.get('name')
+    npart = int(grp.get('size'))
+    nelecs[pname] = npart
+  return nelecs
 
 def get_nelec(doc, groups=['u', 'd']):
   nelec = 0
