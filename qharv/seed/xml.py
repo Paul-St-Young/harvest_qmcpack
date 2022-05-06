@@ -288,6 +288,17 @@ def get_pbc(doc):
   pbc = [b=='p' for b in bcl]
   return pbc
 
+def get_nelecs(epset, ename='e'):
+  if epset.tag != 'particleset':
+    epset = epset.find('.//particleset[@name="%s"]' % ename)
+  assert epset.get('name') == ename
+  nelecs = dict()
+  for grp in epset.findall('.//group'):
+    pname = grp.get('name')
+    npart = int(grp.get('size'))
+    nelecs[pname] = npart
+  return nelecs
+
 def get_nelec(doc, groups=['u', 'd']):
   nelec = 0
   for pname in groups:
