@@ -69,17 +69,29 @@ def mix_estimator(df, ynames):
       # set entry
       df.iloc[idx, icol] = mydf[col].values
 
-def ts_extrap(df, yname, xname='timestep'):
+def ts_extrap(df, yname, xname='timestep', plot=False):
   from qharv.sieve import mean_df
   x, ym, ye = mean_df.xyye(df, xname, yname)
-  y0m, y0e = polyextrap(x, ym, ye)
+  y0fit = polyextrap(x, ym, ye, return_fit=plot)
+  if plot:
+    y0, popt, perr = y0fit
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots(1, 1)
+    line = ax.errorbar(x, ym, ye, ls='', marker='.')
+    finex = np.linspace(1e-3, x.max())
+    finey = np.poly1d(popt)(finex)
+    ax.plot(finex, finey, c=line[0].get_color())
+    plt.show()
+  else:
+    y0 = y0fit
+  y0m, y0e = y0
   ret = pd.Series({
     '%s_mean' % yname: y0m,
     '%s_error' % yname: y0e,
   })
   return ret
 
-def timestep(df, labels, ynames, xname='timestep'):
+def timestep(df, labels, ynames, xname='timestep', plot=False):
   sufs = ['_mean', '_error']
   # keep one entry per group
   df1 = df.groupby(labels).first()
@@ -88,7 +100,7 @@ def timestep(df, labels, ynames, xname='timestep'):
   for yname in ynames:
     # extrapolate
     mydf = df.groupby(labels).apply(
-      ts_extrap, yname, xname=xname)
+      ts_extrap, yname, xname=xname, plot=plot)
     # replace
     for suf in sufs:
       col = '%s%s' % (yname, suf)
