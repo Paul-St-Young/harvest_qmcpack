@@ -1,6 +1,6 @@
 # Author: Yubo "Paul" Yang
 # Email: yubo.paul.yang@gmail.com
-# Routines to perform extrapolations with dataframes.
+# Routines to gather dataframes.
 import numpy as np
 import pandas as pd
 
