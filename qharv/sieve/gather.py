@@ -4,6 +4,37 @@
 import numpy as np
 import pandas as pd
 
+def check_complete(fxml, group=None):
+  """Check if a run has finished.
+
+  Input:
+    fxml (str): input file
+    group (int, optional): group index
+  Return:
+    bool: True if run is complete
+  """
+  import os
+  from qharv.seed import xml, qmcpack_in
+  path = os.path.dirname(fxml)
+  doc = xml.read(fxml)
+  pm = qmcpack_in.output_prefix_meta(doc, group=group)
+  qmcs = doc.findall('.//qmc')
+  series_complete = np.zeros(len(qmcs), dtype=bool)
+  for iq, (prefix, meta) in enumerate(pm.items()):
+    # expected number of blocks
+    qmc = qmcs[iq]
+    nblock0 = int(xml.get_param(qmc, 'blocks'))
+    # check number of printed blocks
+    fname = '%s.scalar.dat' % prefix
+    fsca = os.path.join(path, fname)
+    if not os.path.isfile(fsca):
+      break
+    nblock = sum(1 for line in open(fsca, 'r'))-1
+    # decide if this series was complete
+    series_complete[iq] = nblock == nblock0
+  is_complete = np.all(series_complete)
+  return is_complete
+
 def scalar_dat(fxml, nequil, group=None, suffix='scalar.dat'):
   """Gather scalar.dat files produced by input fxml.
 
@@ -64,4 +95,18 @@ def scalar_dat(fxml, nequil, group=None, suffix='scalar.dat'):
       mdf[key] = val
     dfl.append(mdf)
   df = pd.concat(dfl, axis=0).reset_index(drop=True)
+  convert_known_metadata_types(df)
   return df
+
+def convert_known_metadata_types(df):
+  # known metadata type
+  col_types = dict(
+    timestep = float,
+    target_walkers = int,
+    samples = int,
+  )
+  for col in df.columns:
+    sel = ~df[col].isnull()
+    if col in col_types:
+      dtype = col_types[col]
+      df.loc[sel, col] = df.loc[sel, col].astype(dtype)
