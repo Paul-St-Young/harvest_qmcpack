@@ -37,12 +37,18 @@ def output_prefix_meta(doc, group=None):
   qmcs = doc.findall('.//qmc')
   pm = OrderedDict()
   for icalc, qmc in enumerate(qmcs):
-    iser = iser0+icalc
-    prefix = '%s.s%03d' % (myid, iser)
-    if group is not None:
-      prefix = '%s.g%03d.s%03d' % (myid, group, iser)
     meta = meta_from_parameters(qmc)
-    pm[prefix] = meta
+    up = qmc.getparent()
+    if up.tag == 'loop':
+      nloop = int(up.get('max'))
+    else:
+      nloop = 1
+    for iloop in range(nloop):
+      iser = iser0+icalc*nloop+iloop
+      prefix = '%s.s%03d' % (myid, iser)
+      if group is not None:
+        prefix = '%s.g%03d.s%03d' % (myid, group, iser)
+      pm[prefix] = meta
   return pm
 
 def meta_from_parameters(node):
