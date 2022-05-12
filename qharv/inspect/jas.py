@@ -66,6 +66,15 @@ def get_coeff(doc, coef_id):
   coefs = np.array(cnode.text.split(), dtype=float)
   return coefs
 
+def set_coeff(doc, coef_id, coefs):
+  """ set coefficients for a <coefficients> node
+  Args:
+    doc (etree.Element): <coefficient> node
+    coef_id (str): coefficient name (id), e.g. 'uu', 'ud', 'cG2'
+    coefs (array): coefficients to write
+  """
+  cnode = doc.find('.//coefficients[@id="%s"]' % coef_id)
+  cnode.text = xml.arr2text(coefs)
 
 def bspline_on_rgrid(doc, cid, rgrid=None, rcut=None, cusp=None):
   """ evaluate QMCPACK Basis spline on a real-space grid
