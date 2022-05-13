@@ -76,9 +76,7 @@ def draw_dimers(ax, com, bonds, **kwargs):
   r2 = com + 0.5*bonds
   kwargs['c'] = 'r'
   dots2  = ax.plot(*r2.T, **kwargs)
-  x, y, z = r1.T
-  vx, vy, vz = bonds.T
-  qv = ax.quiver(x, y, z, vx, vy, vz)
+  qv = ax.quiver(*r1.T, *bonds.T)
   return dots1, dots2, qv
 
 def draw_forces(ax, pos, vel, **kwargs):
