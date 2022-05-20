@@ -33,7 +33,7 @@ def write(dat_fname, df, header_pad='# ', end='\n', **kwargs):
   """
   default_kws = {
     'index': False,
-    'float_format': '%8.6f'
+    'float_format': '%12.8f'
   }
   for k, v in default_kws.items():
     if k not in kwargs:
