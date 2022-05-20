@@ -225,6 +225,26 @@ def auto_distance_table(axes, pos, dn=1):
     dtable[i, j] = dtable[j, i] = dist
   return dtable
 
+def displacement_table(axes, pos1, pos0):
+  """Calculate the distance table between two sets of particles
+
+  Args:
+    axes (np.array): lattice vectors in row-major
+    pos1 (np.array): particle positions in row-major
+    pos0 (np.array): reference particle positions in row-major
+  Return:
+    np.array: dtable shape (npart1, npart0), entry [i, j] is pos1[i]-pos0[j]
+  """
+  drij = pos1[:, np.newaxis] - pos0[np.newaxis]
+  # apply PBC
+  box = np.diag(axes)
+  if not np.allclose(np.diag(box), axes):
+    raise NotImplementedError()
+  else:
+    nint = np.around(drij)/box
+    drij -= nint*box
+  return drij
+
 def find_dimers(rij, rmax=np.inf, rmin=0, sort_id=False):
   """ find all dimers within a separtion of (rmin, rmax)
 
