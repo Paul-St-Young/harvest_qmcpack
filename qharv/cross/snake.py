@@ -42,3 +42,30 @@ def hybrid_expand(regex, zips, **regs):
   small = expand(regex, zip, **zips, allow_missing=True)
   big = expand(small, **regs)
   return big
+
+def run_cmd(floc, CMD, osuf='.out', esuf='.err'):
+  """
+  Create bash command to run input file to output and error
+
+  Args:
+    floc (str): input file location
+    CMD (str): execute command
+  Return:
+    str: bash command
+  Example:
+    >>> cmd = run_cmd('lih/scf.inp', 'mpirun -np 8 pw.x -nk 8 -in')
+    >>> shell(cmd)
+  """
+  import os
+  path = os.path.dirname(floc)
+  finp = os.path.basename(floc)
+
+  suf = finp[finp.rfind('.'):]
+  cmd = 'cd %s; %s -in ' % (path, CMD)
+  fout = finp.replace(suf, osuf)
+  if fout == finp:
+    msg = 'refuse to overwrite %s' % finp
+    raise RuntimeError(msg)
+  ferr = finp.replace(suf, esuf)
+  cmd += '%s > %s 2> %s' % (finp, fout, ferr)
+  return cmd
