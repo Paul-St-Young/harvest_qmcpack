@@ -4,6 +4,26 @@
 import numpy as np
 import pandas as pd
 
+def polyfit(x, ym, ye, order):
+  """Fit noisy data to polynomial, i.e. np.polyfit but with error bar
+
+  Inputs:
+    x (np.array): shape (npt,), x values
+    ym (np.array): shape (npt,), y values
+    ye (np.array, optional): shape (npt,), y errors, default 0
+    order (int, optional): polynomial order, default 1
+  Return:
+    popt, perr: fit parameters and their uncertainties
+  """
+  from scipy.optimize import curve_fit
+  # first use deterministic fit to estimate parameters
+  popt0 = np.polyfit(x, ym, order)
+  # estimate fit error
+  popt, pcov = curve_fit(lambda x, *p: np.poly1d(p)(x),
+    x, ym, sigma=ye, absolute_sigma=True, p0=popt0)
+  perr = np.sqrt(np.diag(pcov))
+  return popt, perr
+
 def polyextrap(x, ym, ye=None, order=1, xtarget=0, return_fit=False):
   """Extrapolate y to x->0 limit using a polynomial fit.
 
@@ -15,18 +35,12 @@ def polyextrap(x, ym, ye=None, order=1, xtarget=0, return_fit=False):
     xtarget (x.dtype): target value of extrapolation, default 0
     return_fit (bool, optional): return fit parameters, default False
   """
-  from scipy.optimize import curve_fit
-  # first use deterministic fit to estimate parameters
-  popt0 = np.polyfit(x, ym, order)
   if ye is None:
     y0 = np.poly1d(popt0)(xtarget)
     if return_fit:
       return (y0, popt0)
     return y0
-  # estimate fit error
-  popt, pcov = curve_fit(lambda x, *p: np.poly1d(p)(x),
-    x, ym, sigma=ye, absolute_sigma=True, p0=popt0)
-  perr = np.sqrt(np.diag(pcov))
+  popt, perr = polyfit(x, ym, ye, order=order)
   y0m = np.poly1d(popt)(xtarget)
   if xtarget == 0:
     y0e = perr[-1]
