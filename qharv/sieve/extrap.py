@@ -108,13 +108,19 @@ def ts_extrap(df, yname, xname='timestep', plot=False):
 def timestep(df, labels, ynames, xname='timestep', plot=False):
   sufs = ['_mean', '_error']
   # keep one entry per group
-  df1 = df.groupby(labels).first()
+  if len(labels) == 0:
+    df1 = pd.DataFrame([df.iloc[0]])
+  else:
+    df1 = df.groupby(labels).first()
   df1.drop(columns=xname, inplace=True)
   # replace targeted columns with extrapolated data
   for yname in ynames:
     # extrapolate
-    mydf = df.groupby(labels).apply(
-      ts_extrap, yname, xname=xname, plot=plot)
+    if len(labels) == 0:
+      mydf = ts_extrap(df, yname, xname=xname, plot=plot)
+    else:
+      mydf = df.groupby(labels).apply(
+        ts_extrap, yname, xname=xname, plot=plot)
     # replace
     for suf in sufs:
       col = '%s%s' % (yname, suf)
