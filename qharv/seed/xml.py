@@ -5,7 +5,6 @@
 #  The central object is lxml.etree.ElementTree, which is usually named "doc".
 import os
 import numpy as np
-from copy import deepcopy
 from lxml import etree
 from io import StringIO
 
@@ -358,7 +357,7 @@ def to_ase(doc, pset='ion0'):
 
 # ================= level 3: QMCPACK specialized construct =================
 def build_coeff(knots, **attribs):
-  """ construct an <coefficients/>
+  """ construct a <coefficients/>
 
   example:
     build_coeff([1,2]):
@@ -383,17 +382,22 @@ def build_coeff(knots, **attribs):
   coeff_node.text = ' ' + ' '.join(map(str, knots)) + ' '  # 1D arr2text
   return coeff_node
 
+def build_corr(knots, spa, spb, cpre='', cusp=None):
+  """ construct a <correlation/>
+  """
+  myid = cpre+spa+spb
+  coeff = build_coeff(knots, id=myid)
+  corr = etree.Element('correlation',
+    {'speciesA': spa, 'speciesB': spb, 'size': str(len(knots))}
+  )
+  if cusp is not None:
+    corr.set('cusp', str(cusp))
+  corr.append(coeff)
+  return corr
+
 def build_jr2(uuc, udc):
-  uu_node = build_coeff(uuc, **{'id': 'uu'})
-  cuu = etree.Element('correlation',
-    {'speciesA': 'u', 'speciesB': 'u', 'size': str(len(uuc))}
-  )
-  cuu.append(uu_node)
-  ud_node = build_coeff(udc, **{'id': 'ud'})
-  cud = etree.Element('correlation',
-    {'speciesA': 'u', 'speciesB': 'd', 'size': str(len(udc))}
-  )
-  cud.append(ud_node)
+  cuu = build_corr(uuc, 'u', 'u')
+  cud = build_corr(udc, 'u', 'd')
   j2_node = etree.Element('jastrow',
     {'name': 'J2', 'type': 'Two-Body', 'function': 'Bspline'}
   )
@@ -431,7 +435,7 @@ def build_jk2_iso(coeffs, kc):
 
 # ================= level 4: QMCPACK specialized advanced =================
 def turn_off_jas_opt(wf_node):
-  mywf = deepcopy(wf_node)
+  mywf = wf_node
   all_jas = mywf.findall('.//jastrow')
   for jas in all_jas:
     for coeff in jas.findall('.//coefficients'):
@@ -444,7 +448,7 @@ def add_backflow(wf_node, bf_node):
   assert bf_node.tag == 'backflow'
 
   # make a copy of wavefunction
-  mywf = deepcopy(wf_node)
+  mywf = wf_node
 
   # insert backflow block
   dset = mywf.find('.//determinantset')
