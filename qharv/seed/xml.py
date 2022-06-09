@@ -304,6 +304,17 @@ def get_nelecs(epset, ename='e'):
     nelecs[pname] = npart
   return nelecs
 
+@root
+def get_species(epset, ename='e'):
+  if epset.tag != 'particleset':
+    epset = epset.find('.//particleset[@name="%s"]' % ename)
+  assert epset.get('name') == ename
+  groups = []
+  for grp in epset.findall('.//group'):
+    name = grp.get('name')
+    groups.append(name)
+  return groups
+
 def get_nelec(doc, groups=['u', 'd']):
   nelec = 0
   for pname in groups:
