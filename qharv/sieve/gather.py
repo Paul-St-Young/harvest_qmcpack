@@ -68,7 +68,9 @@ def scalar_dat(fxml, nequil, group=None, suffix='scalar.dat'):
     neql = [nequil]*len(pm)
   else:  # one equilibration length for each series
     neql = nequil
-    assert len(neql) == len(pm)
+    if len(neql) != len(pm):
+      msg = '%d nequil provided for %d series' % (len(neql), len(pm))
+      raise RuntimeError(msg)
   # add more metadata
   myid, s0 = xml.get_id_series(doc)
   nelecs = xml.get_nelecs(doc.getroot())
