@@ -61,7 +61,7 @@ def run_cmd(floc, CMD, osuf='.out', esuf='.err'):
   finp = os.path.basename(floc)
 
   suf = finp[finp.rfind('.'):]
-  cmd = 'cd %s; %s -in ' % (path, CMD)
+  cmd = 'cd %s; %s ' % (path, CMD)
   fout = finp.replace(suf, osuf)
   if fout == finp:
     msg = 'refuse to overwrite %s' % finp
