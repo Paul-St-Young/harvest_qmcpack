@@ -423,6 +423,23 @@ def gpr_errorshade(ax, x, ym, ye,
   eline = ax.fill_between(finex, ylm-yle, yhm+yhe, **fb_kwargs)
   return line[0], eline
 
+# ===================== level 2: contour ======================
+def contour_from_scatter(ax, xyz, xlim, ylim=None, npt=32, interp_method='linear', **kwargs):
+  import numpy as np
+  from scipy.interpolate import griddata
+  if ylim is None:
+    ylim = xlim
+  # create regular grid
+  finex = np.linspace(xlim[0], xlim[1], npt)
+  finey = np.linspace(ylim[0], ylim[1], npt)
+  fine_points = [[(x,y) for y in finey] for x in finex]
+  # interpolate scatter on regular grid
+  interp_data = griddata(xyz[:, :2], xyz[:, 2], fine_points, method=interp_method)
+  finez = interp_data.reshape(npt, npt).T
+  # make contour plot
+  cs = ax.contourf(finex, finey, finez, **kwargs)
+  return cs
+
 # ===================== level 2: insets ======================
 def inset_zoom(fig, ax_box, xlim, ylim, draw_func, xy_label=False):
   """ show an inset that zooms into a given part of the figure
