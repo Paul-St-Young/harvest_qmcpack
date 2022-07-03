@@ -155,6 +155,25 @@ def cubic_pos(nx, ndim=3):
   ).reshape(-1, ndim)
   return pos
 
+def pos_in_bz(kvecs, raxes, nsh=3):
+  """ put kvectors into the first Brillouin zone
+
+  Args:
+    kvecs (np.array): shape (nkpt, ndim), kpoints
+    raxes (np.array): shape (ndim, ndim), reciprocal cell
+  Return:
+    np.array: shape (nkpt, ndim), kpoints in BZ
+  """
+  ndim = len(raxes)
+  # create 1 shell of reciprocal lattice
+  gvecs = np.dot(cubic_pos(nsh, ndim=ndim)-nsh//2, raxes)
+  # assign kpoints to rec. latt.
+  drkg = kvecs[np.newaxis]-gvecs[:, np.newaxis]
+  rkg = np.linalg.norm(drkg, axis=-1)
+  idx = np.argmin(rkg, axis=0)
+  # move to first BZ
+  return kvecs - gvecs[idx]
+
 def get_nvecs(axes, pos, atol=1e-10):
   """ find integer vectors of lattice positions from unit cell
 
