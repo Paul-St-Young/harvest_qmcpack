@@ -64,7 +64,6 @@ def rins(axes):
     a12 = np.cross(axes[1], axes[2])
     a20 = np.cross(axes[2], axes[0])
     face_areas = [np.linalg.norm(x) for x in [a01, a12, a20]]
-    volpre = 2.*max(face_areas)
   elif ndim == 2:
     face_areas = abc(axes)
   else:
@@ -392,7 +391,7 @@ def ase_get_spacegroup_id(axes, elem, pos, **kwargs):
   return sg.no
 
 # ======================== level 2: wrapping ========================
-def linecut(axes, r0, dr, mr=10000, sort=True, fractional=True):
+def linecut(axes, r0, dr, mr=10000, sort=True, fraction=True):
   """ generate a line across the cell
 
   Args:
@@ -401,11 +400,11 @@ def linecut(axes, r0, dr, mr=10000, sort=True, fractional=True):
     dr (np.array): line direction, shape (ndim,)
     mr (int, optional): maximum number of points along line, default 10000
     sort (bool, optional): sort points along line, default True
-    fractional (bool, optional): r0 and dr are in fractional coordinates
+    fraction (bool, optional): r0 and dr are in fractional coordinates
   Return:
     np.array: a list of points on the line, shape (npt, ndim)
   """
-  if fractional:
+  if fraction:
     r0 = np.dot(r0, axes)
     dr = np.dot(dr, axes)
   ainv = np.linalg.inv(axes)
