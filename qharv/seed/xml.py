@@ -393,7 +393,7 @@ def build_coeff(knots, **attribs):
   coeff_node.text = ' ' + ' '.join(map(str, knots)) + ' '  # 1D arr2text
   return coeff_node
 
-def build_corr(knots, spa, spb, cpre='', cusp=None):
+def build_corr(knots, spa, spb, cpre='', cusp=None, rcut=None):
   """ construct a <correlation/>
   """
   myid = cpre+spa+spb
@@ -403,6 +403,8 @@ def build_corr(knots, spa, spb, cpre='', cusp=None):
   )
   if cusp is not None:
     corr.set('cusp', str(cusp))
+  if rcut is not None:
+    corr.set('rcut', str(rcut))
   corr.append(coeff)
   return corr
 
