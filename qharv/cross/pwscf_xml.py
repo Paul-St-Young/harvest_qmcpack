@@ -119,6 +119,10 @@ def read_occupations(doc):
   return omat
 
 def read_kpoints_and_weights(doc):
+  # get unit
+  alat = read_alat(doc)
+  blat = 2*np.pi/alat
+  # read kpoints
   bs = doc.find('.//band_structure')
   if bs is None:
     bs = doc
@@ -128,7 +132,7 @@ def read_kpoints_and_weights(doc):
   for ks in ksl:
     kp = ks.find('.//k_point')
     kv = text2arr(kp.text)
-    kl.append(kv)
+    kl.append(kv*blat)
     wt = float(kp.get('weight'))
     wl.append(wt)
   return np.array(kl), np.array(wl)
@@ -143,10 +147,8 @@ def read_efermi(doc):
 
 def read_kfractions(doc):
   kpts, wts = read_kpoints_and_weights(doc)
-  alat = read_alat(doc)
-  blat = 2*np.pi/alat
   raxes = read_reciprocal_lattice(doc)
-  kfracs = np.dot(kpts*blat, np.linalg.inv(raxes))
+  kfracs = np.dot(kpts, np.linalg.inv(raxes))
   return kfracs
 
 def sum_band(doc, read=False):
