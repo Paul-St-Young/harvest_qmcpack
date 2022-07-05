@@ -5,8 +5,8 @@ import os
 import tables
 import numpy as np
 
-def open_read(fname):
-  fp = tables.open_file(fname, mode='r')
+def open_read(fname, mode='r'):
+  fp = tables.open_file(fname, mode=mode)
   return fp
 
 def open_write(fname):
