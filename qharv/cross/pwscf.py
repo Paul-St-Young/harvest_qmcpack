@@ -348,7 +348,10 @@ def copy_charge_density(scf_dir, nscf_dir, execute=True):
   from qharv.reel import mole
   from qharv.field.sugar import mkdir
   # find charge density
-  fcharge = mole.find('*charge-density.dat', scf_dir)
+  try:
+    fcharge = mole.find('*charge-density.hdf5', scf_dir)
+  except RuntimeError:
+    fcharge = mole.find('*charge-density.dat', scf_dir)
   save_dir = os.path.dirname(fcharge)
   # find xml file with gvector description
   fxml = mole.find('*data-file*.xml', save_dir)  # QE 5 & 6 compatible
