@@ -19,6 +19,17 @@ def read_true_false(node, name):
     raise RuntimeError(msg)
   return tf
 
+def read_nspin(node):
+  noncolin = read_true_false(node, 'noncolin')
+  lsda = read_true_false(node, 'lsda')
+  if noncolin:
+    nspin = 4
+  elif lsda:
+    nspin = 2
+  else:
+    nspin = 1
+  return nspin
+
 def read_value(node, name, dtype=float):
   child = node.find('.//%s' % name)
   text = child.text
