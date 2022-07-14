@@ -317,6 +317,8 @@ def link_save(scf_inp, path):
   Example:
     >>> link_save('scf.inp', '../convert/p2q')
   """
+  import os
+  import subprocess as sp
   # find wf save
   prefix, outdir = get_prefix_outdir(scf_inp)
   dsave = find_save(scf_inp)
