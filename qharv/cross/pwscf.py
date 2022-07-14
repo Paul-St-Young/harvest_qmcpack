@@ -86,6 +86,14 @@ def ktext_frac(kpts):
   ktext = header + '\n'.join(lines)
   return ktext
 
+def cell_parameters(axes, unit='bohr', fmt='%24.16f'):
+  cell_text = '\nCELL_PARAMETERS %s\n' % unit
+  ndim = len(axes)
+  for a in axes:
+    line = (fmt*ndim + '\n') % tuple(a)
+    cell_text += line
+  return cell_text
+
 # ===================== level 1: file locations =====================
 
 def get_prefix_outdir(scf_in):
