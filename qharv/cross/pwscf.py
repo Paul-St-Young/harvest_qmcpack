@@ -3,7 +3,7 @@
 # Routines to manipulate QE pwscf results for use in QMCPACK
 import numpy as np
 
-# ========================== level 0: read ==========================
+# ======================= level 0: read input =======================
 
 def input_keywords(scf_in):
   """Extract all keywords from a quantum espresso input file
@@ -28,9 +28,22 @@ def parse_keywords(text):
       keywords[key.strip()] = val2
   return keywords
 
+def parse_cell_parameters(text, ndim=3):
+  lines = text.split('\n')
+  for i, line in enumerate(lines):
+    if 'CELL_PARAMETERS' in line:
+      unit = line.split()[1]
+      break
+  mat = []
+  for line in lines[i+1:i+1+ndim]:
+    vec = np.array(line.split(), dtype=float)
+    mat.append(vec)
+  axes = np.array(mat)
+  return axes, unit
+
 # ========================= level 1: modify =========================
 
-def change_keyword(text, section, key, val, indent=' ', float_fmt='%e'):
+def change_keyword(text, section, key, val, indent=' ', float_fmt='%.16f'):
   """Change input keyword
 
   Args:
@@ -90,7 +103,7 @@ def cell_parameters(axes, unit='bohr', fmt='%24.16f'):
   cell_text = '\nCELL_PARAMETERS %s\n' % unit
   ndim = len(axes)
   for a in axes:
-    line = (fmt*ndim + '\n') % tuple(a)
+    line = ((fmt+' ')*ndim + '\n') % tuple(a)
     cell_text += line
   return cell_text
 
