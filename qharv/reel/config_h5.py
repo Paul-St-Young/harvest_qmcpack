@@ -9,6 +9,14 @@ def open_read(fname, mode='r'):
   fp = tables.open_file(fname, mode=mode)
   return fp
 
+def load_dict(fname):
+  data = dict()
+  with open_read(fname) as h5file:
+    for grp in h5file.root:
+      data[grp.name] = grp.read()
+    h5file.close()
+  return data
+
 def open_write(fname):
   filters = tables.Filters(complevel=5, complib='zlib')
   fp = tables.open_file(fname, mode='w', filters=filters)
