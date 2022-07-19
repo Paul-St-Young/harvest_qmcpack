@@ -4,15 +4,27 @@ def ft_iso3d(myk, myr, frm):
   fkm = [np.trapz(myr*np.sin(k*myr)/k*frm, myr) for k in myk]
   return 4*np.pi*np.array(fkm)
 
-def ift_iso3d(myr, myk, fkm):
-  return ft_iso3d(myr, myk, fkm)/(2*np.pi)**3
+def ft_iso2d(myk, myr, frm):
+  from scipy.special import jv
+  fkm = [np.trapz(jv(0, k*myr)*myr*frm, myr) for k in myk]
+  return 2*np.pi*np.array(fkm)
 
-def gr2sk(myk, myr, grm, rho):
-  skm = 1+rho*ft_iso3d(myk, myr, grm-1)
+def gr2sk(myk, myr, grm, rho, ndim=3):
+  if ndim == 3:
+    skm = 1+rho*ft_iso3d(myk, myr, grm-1)
+  elif ndim == 2:
+    skm = 1+rho*ft_iso2d(myk, myr, grm-1)
+  else:
+    raise RuntimeError('ndim = %d' % ndim)
   return skm
 
-def sk2gr(myr, myk, skm, rho):
-  grm = 1+ft_iso3d(myr, myk, skm-1)/rho/(2*np.pi)**3
+def sk2gr(myr, myk, skm, rho, ndim=3):
+  if ndim == 3:
+    grm = 1+ft_iso3d(myr, myk, skm-1)/rho/(2*np.pi)**ndim
+  elif ndim == 2:
+    grm = 1+ft_iso2d(myr, myk, skm-1)/rho/(2*np.pi)**ndim
+  else:
+    raise RuntimeError('ndim = %d' % ndim)
   return grm
 
 def get_bin_edges(axes, rmin=0., rmax=None, nr=32):
