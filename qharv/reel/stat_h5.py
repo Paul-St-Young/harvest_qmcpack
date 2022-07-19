@@ -145,9 +145,11 @@ def gofr(fp, obs_name, nequil, kappa=None, force=False):
   dr   = path_loc(fp, '%s/delta' % obs_name)[0]
 
   # guess bin locations
-  myr  = np.arange(0, rmax, dr)
+  myr  = np.arange(0, rmax-dr/10, dr)
   if (len(myr) != len(grm)) and (not force):
-    raise RuntimeError('num_bin mismatch; try read from input?')
+    msg = 'guess %d, but found %d bins\n' % (len(myr), len(grm))
+    msg += ' need to fix guess.'
+    raise RuntimeError(msg)
   return myr, grm, gre
 
 def nofk(fp, obs_name, nequil, kappa=None):
