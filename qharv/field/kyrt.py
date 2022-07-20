@@ -96,7 +96,7 @@ def scalar_colorbar(vmin, vmax, name='viridis', **kwargs):
   return cbar
 
 # ======================== level 0: basic ax edits =========================
-def figaxad(labelsize=12):
+def figaxad(labelsize=12, sharex=True):
   """ construct a absolute/difference (ad) figure
    top 3/4 of the plot will be comparison at an absolute scale
    bottom 1/4 of the plot will be comparison at a relative scale
@@ -110,7 +110,10 @@ def figaxad(labelsize=12):
   gs = GridSpec(4, 4)
   fig = plt.figure()
   axa = fig.add_subplot(gs[0:3, :])
-  axd = fig.add_subplot(gs[3, :], sharex=axa)
+  kws = dict()
+  if sharex:
+    kws['sharex'] = axa
+  axd = fig.add_subplot(gs[3, :], **kws)
   plt.setp(axa.get_xticklabels(), visible=False)
   axa.tick_params(axis='y', labelsize=labelsize)
   axd.tick_params(labelsize=labelsize)
