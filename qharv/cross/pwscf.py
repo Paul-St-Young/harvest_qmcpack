@@ -41,6 +41,33 @@ def parse_cell_parameters(text, ndim=3):
   axes = np.array(mat)
   return axes, unit
 
+def parse_kpoints(text, ndim=3):
+  lines = text.split('\n')
+  for i, line in enumerate(lines):
+    if 'K_POINTS' in line:
+      unit = line.split()[1]
+      break
+  if unit.lower() in ['bohr', 'angstrom', 'crystal']:
+    nkpt = int(lines[i+1])
+    kl = []
+    wl = []
+    for line in lines[i+2:i+2+nkpt]:
+      tokens = line.split()
+      kvec = np.array(tokens[:ndim], dtype=float)
+      wt = int(tokens[-1])
+      kl.append(kvec)
+      wl.append(wt)
+    kvecs = np.array(kl)
+    wts = np.array(wl)
+    data = dict(kvecs=kvecs, weights=wts)
+  elif unit.lower() == 'automatic':
+    tokens = lines[i+1].split()
+    dims = np.array(tokens, dtype-int)
+    data = dict(dims=dims)
+  else:
+    raise NotImplementedError(unit)
+  return unit, data
+
 # ========================= level 1: modify =========================
 
 def change_keyword(text, section, key, val, indent=' ', float_fmt='%.16f'):
