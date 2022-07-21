@@ -287,6 +287,17 @@ def errorshade(ax, x, ym, ye, **kwargs):
   eline = ax.fill_between(x, ym-ye, ym+ye, color=myc, alpha=alpha)
   return line, eline
 
+# ======================== level 0: basic patches =========================
+def show_circle(ax, radius, center=None, **kwargs):
+  if 'fill' not in kwargs:
+    kwargs['fill'] = False
+  if 'color' not in kwargs:
+    kwargs['color'] = 'k'
+  if center is None:
+    center = (0, 0)
+  circ = plt.Circle(center, radius, **kwargs)
+  ax.add_patch(circ)
+
 # ===================== level 1: fit line ======================
 def show_fit(ax, line, model=None, sel=None, nx=64, popt=None,
   xmin=None, xmax=None, circle=True, circle_style=None,
