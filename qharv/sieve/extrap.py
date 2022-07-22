@@ -91,10 +91,15 @@ def ts_extrap(df, yname, xname='timestep', plot=False):
     y0, popt, perr = y0fit
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(1, 1)
+    ax.set_xlabel(xname)
+    ax.set_ylabel(yname)
+
     line = ax.errorbar(x, ym, ye, ls='', marker='.')
     finex = np.linspace(1e-3, x.max())
     finey = np.poly1d(popt)(finex)
     ax.plot(finex, finey, c=line[0].get_color())
+
+    fig.tight_layout()
     plt.show()
   else:
     y0 = y0fit
