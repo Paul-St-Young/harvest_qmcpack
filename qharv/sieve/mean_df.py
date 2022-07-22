@@ -40,7 +40,7 @@ def create(mydf):
   jdf = df1.join(df2, lsuffix='_mean', rsuffix='_error')
   return jdf
 
-def categorize_columns(cols, msuffix='_mean', esuffix='_error'):
+def categorize_columns(cols, nosuf=False, msuffix='_mean', esuffix='_error'):
   """Categorize the column names of a mean dataframe.
 
   Args:
@@ -52,12 +52,17 @@ def categorize_columns(cols, msuffix='_mean', esuffix='_error'):
       ecols are error columns
   Examples:
     >>> rcol, mcol, ecol = categorize_columns(mdf.columns)
-    >>> xyye(df, 'Pressure', 'LocalEnergy', xerr=True)
+    >>> rcol, names = categorize_columns(mdf.columns, nosuf=True)
+    >>> np.allclose([name+'_mean' for name in names], mcol)
+    True
   """
   mcol = [col for col in cols if col.endswith(msuffix)]
   ecol = [col for col in cols if col.endswith(esuffix)]
   rcol = [col for col in cols if
           (not col.endswith(msuffix)) and (not col.endswith(esuffix))]
+  if nosuf:
+    names = [col.replace(msuffix, '') for col in mcol]
+    return rcol, names
   return rcol, mcol, ecol
 
 def xyye(df, xname, yname, sel=None, xerr=False, yerr=True, sort=False):
