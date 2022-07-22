@@ -99,6 +99,23 @@ def calc_eikr(kvecs, rvecs):
   eikr = np.exp(1j*kdotr)
   return eikr
 
+def get_ksphere(raxes, kc, margin=0.2):
+  from itertools import product
+  ndim = len(raxes)
+  nmax = 0
+  for direction in product(range(-1, 1+1), repeat=ndim):
+    vec = np.dot(direction, raxes)
+    vmag = np.linalg.norm(vec)
+    if vmag < 1e-8:
+      continue
+    n1 = int(np.ceil((1+margin)*kc/vmag))
+    nmax = max(nmax, n1)
+  mesh = (2*nmax,)*ndim
+  kvecs = get_kvecs(raxes, mesh)
+  kmags = np.linalg.norm(kvecs, axis=-1)
+  ksel = kmags<kc
+  return kvecs[ksel]
+
 # =========================== level 2: kpt ==========================
 
 def uniform_grid(mesh):
