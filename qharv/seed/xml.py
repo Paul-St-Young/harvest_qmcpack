@@ -315,14 +315,10 @@ def get_species(epset, ename='e'):
     groups.append(name)
   return groups
 
-def get_nelec(doc, groups=['u', 'd']):
-  nelec = 0
-  for pname in groups:
-    node = doc.find('.//group[@name="%s"]' % pname)
-    if node is not None:
-      npos = int(node.get('size'))
-      nelec += npos
-  return nelec
+def get_nelec(doc, ename='e'):
+  nelecs = get_nelecs(doc, ename=ename)
+  ntot = sum(nelecs.values())
+  return ntot
 
 def get_pos(doc, pset='ion0', group=None):
   # find <particleset>
