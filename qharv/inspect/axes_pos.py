@@ -118,6 +118,47 @@ def rtmat(raxes0, raxes1):
   """
   return np.dot(raxes0, np.linalg.inv(raxes1)).T
 
+def sum_lattice(f, raxes, kc):
+  from qharv.seed.hamwf_h5 import get_ksphere
+  kvecs = get_ksphere(raxes, kc)[1:]  # exclude 0
+  k = np.linalg.norm(kvecs, axis=-1)
+  fk = f(k)
+  return fk.sum()
+
+def madelung(axes, nr=3, rckc=30.0):
+  from scipy.special import erfc
+  amat = axes
+  ndim = len(amat)
+  rc = rwsc(amat)*nr
+  kc = rckc/rc
+  alpha = (kc/(2*rc))**0.5
+  ndim = len(axes)
+  # direct-space part is independent of spatial dimensions
+  def vsr_of_r(r):
+    return erfc(alpha*r)/r
+  vlr_r0 = 2*alpha/np.pi**0.5
+  # reciprocal-space part changes with dimension
+  if ndim == 2:
+    vsr_k0 = 2*np.pi**0.5/alpha
+    def vlr_of_k(k):
+      return 2*np.pi/k*erfc(k/(2*alpha))
+  elif ndim == 3:
+    vsr_k0 = np.pi/(alpha*alpha)
+    def vlr_of_k(k):
+      k2 = k*k
+      return 4*np.pi/k2*np.exp(-k2/(4*alpha*alpha))
+  else:
+    msg = 'unknown ndim = %d' % ndim
+    raise RuntimeError(msg)
+  # perform Ewald sums
+  bmat = raxes(amat)
+  vsr = sum_lattice(vsr_of_r, amat, rc)
+  vlr = sum_lattice(vlr_of_k, bmat, kc)
+  vol = volume(amat)
+  vsr = (vsr-vlr_r0)/2
+  vlr = (vlr-vsr_k0)/vol/2
+  vmad = vsr+vlr
+  return vmad
 
 # ======================== level 1: axes pos =========================
 def pos_in_axes(axes, pos, ztol=1e-10):
