@@ -45,9 +45,9 @@ def parse_kpoints(text, ndim=3):
   lines = text.split('\n')
   for i, line in enumerate(lines):
     if 'K_POINTS' in line:
-      unit = line.split()[1]
+      unit = line.split()[1].lower()
       break
-  if unit.lower() in ['bohr', 'angstrom', 'crystal']:
+  if unit in ['bohr', 'angstrom', 'crystal']:
     nkpt = int(lines[i+1])
     kl = []
     wl = []
@@ -60,9 +60,9 @@ def parse_kpoints(text, ndim=3):
     kvecs = np.array(kl)
     wts = np.array(wl)
     data = dict(kvecs=kvecs, weights=wts)
-  elif unit.lower() == 'automatic':
+  elif unit == 'automatic':
     tokens = lines[i+1].split()
-    dims = np.array(tokens, dtype-int)
+    dims = np.array(tokens, dtype=int)
     data = dict(dims=dims)
   else:
     raise NotImplementedError(unit)
