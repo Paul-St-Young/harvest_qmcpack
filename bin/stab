@@ -112,13 +112,19 @@ if __name__ == '__main__':
   import pandas as pd
   from qharv.reel import scalar_dat
   args = parse_args()
+  if args.list:
+    with open(args.fname, 'r') as f:
+      header = f.readline()
+    if header.startswith(args.shebang):
+      cols = header[len(args.shebang):].split()
+      print(cols)
+    else:
+      print('no header')
+    sys.exit(0)
   df = read_scalar_table(args.fname, append=args.append)
   # check or override "df" here
 
   # interpret inputs
-  if args.list:
-    print(df.columns)
-    sys.exit(0)
   if (args.column == 'LocalEnergy') and ('LocalEnergy' not in df.columns):
     args.column = df.columns[0]  # change default
   if args.column not in df.columns:

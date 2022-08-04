@@ -46,12 +46,12 @@ if __name__ == '__main__':
 
     fig = plt.figure()
     ax  = fig.add_subplot(1,1,1,projection='3d')
+    crystal.draw_cell(ax, axes)
 
     prop_cycle = plt.rcParams['axes.prop_cycle']
     colors = prop_cycle.by_key()['color']
     if type(pos) is dict:
       for (elem, p1), myc in zip(pos.items(), colors):
-        crystal.draw_cell(ax, axes)
         ax.plot(*p1.T, c=myc, ls='', marker='.')
     else:
       ax.plot(*pos.T, c=colors[0], ls='', marker='.')

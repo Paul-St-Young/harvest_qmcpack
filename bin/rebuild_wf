@@ -65,9 +65,10 @@ if __name__ == '__main__':
     qlist = [args.iqmc]
   # end if
 
-  spo_node0 = get_bb_node(doc,args)
   if args.jastrow_only:
     spo_node0 = None
+  else:
+    spo_node0 = get_bb_node(doc,args)
 
   # make dummy input files using optimized w.f. at each loop
   for iqmc in qlist:
