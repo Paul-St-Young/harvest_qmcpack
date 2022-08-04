@@ -30,6 +30,16 @@ def cache(write_file):
     return skip_exist_file(write_file)(fout, *args, **kwargs)
   return wrapper
 
+def time(func):
+  from time import time
+  def wrapper(*args, **kwargs):
+    tick = time()
+    ret = func(*args, **kwargs)
+    tock = time()
+    dt = tock-tick
+    return dt, ret
+  return wrapper
+
 def get_progress_bar(maxval):
   from progressbar import ProgressBar
   bar = ProgressBar(maxval=maxval)
