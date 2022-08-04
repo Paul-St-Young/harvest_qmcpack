@@ -65,7 +65,7 @@ def categorize_columns(cols, nosuf=False, msuffix='_mean', esuffix='_error'):
     return rcol, names
   return rcol, mcol, ecol
 
-def xyye(df, xname, yname, sel=None, xerr=False, yerr=True, sort=False):
+def xyye(df, xname, yname, sel=None, xerr=False, yerr=True, sort=False, msuffix='_mean', esuffix='_error'):
   """Get x vs. y data from a mean data frame.
 
   Args:
@@ -88,16 +88,16 @@ def xyye(df, xname, yname, sel=None, xerr=False, yerr=True, sort=False):
     sel = np.ones(len(df), dtype=bool)
   xe = None
   if xerr:
-    xmn = '%s_mean' % xname
-    xen = '%s_error' % xname
+    xmn = '%s%s' % (xname, msuffix)
+    xen = '%s%s' % (xname, esuffix)
     xm = df.loc[sel, xmn].values
     xe = df.loc[sel, xen].values
   else:
     xm = df.loc[sel, xname].values
   ye = None
   if yerr:
-    ymn = '%s_mean' % yname
-    yen = '%s_error' % yname
+    ymn = '%s%s' % (yname, msuffix)
+    yen = '%s%s' % (yname, esuffix)
     ym = df.loc[sel, ymn].values
     ye = df.loc[sel, yen].values
   else:
