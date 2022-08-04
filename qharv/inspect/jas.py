@@ -125,4 +125,4 @@ def bspline_on_rgrid(doc, cid, rgrid=None, rcut=None, cusp=None):
   coefs = get_coeff(doc, cid)
   fspl = jastrow.create_jastrow_from_param(coefs, cusp, rcut)
   vals = [fspl.evaluate_v(r) for r in rgrid]
-  return vals
+  return rgrid, vals
