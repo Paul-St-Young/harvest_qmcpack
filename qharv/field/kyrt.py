@@ -438,42 +438,74 @@ def gpr_errorshade(ax, x, ym, ye,
   return line[0], eline
 
 # ===================== level 2: contour ======================
-def contour_from_scatter(ax, xyz, xlim, ylim=None, npt=32, interp_method='linear', **kwargs):
+def contour_scatter(ax, xy, z, zlim=None, nz=16, cmap='viridis',
+  interp_method='linear', mesh=(32, 32), lims=None, **kwargs):
+  """View sampled scalar field using contours
+
+  Args:
+    ax (plt.Axes or Axes3D): matplotlib axes
+    xy (np.array): scatter points, a list of 2D vectors
+    z (np.array): scatter values, one at each scatter point
+    zlim (list, optional): value (min, max) for colormap
+    cmap (str, optional): color map name, default is 'viridis'
+    nz (int, optional): number of contour lines for when zlim is set
+    interp_method (str, optional): griddata, default 'linear'
+    mesh (tuple, optional): regular grid shape, default (32, 32)
+    kwargs (dict, optional): keyword arguments to be passed to ax.scatter
+  Returns:
+    matplotlib.contour.QuadContourSet: filled contour plot
+  Example:
+    >>> kxy = kvecs[:, :2]
+    >>> nkxy = nofk[:, :, 0]
+    >>> cs = contour_scatter(ax, kxy, nkxy, zlim=(0, 2), mesh=(256, 256))
+  """
   import numpy as np
   from scipy.interpolate import griddata
-  if ylim is None:
-    ylim = xlim
+  # interpret inputs and set defaults
+  if zlim is not None:
+    levels = np.linspace(*zlim, nz)
+    if 'levels' in kwargs:
+      msg = 'multiple values for keyward argument \'levels\''
+      raise TypeError(msg)
+    kwargs['levels'] = levels
+  if lims is None:
+    xarr = xy[:, 0]
+    xmin = xarr.min()
+    xmax = xarr.max()
+    yarr = xy[:, 1]
+    ymin = yarr.min()
+    ymax = yarr.max()
+    lims = ((xmin, xmax), (ymin, ymax))
   # create regular grid
-  finex = np.linspace(xlim[0], xlim[1], npt)
-  finey = np.linspace(ylim[0], ylim[1], npt)
-  fine_points = [[(x,y) for y in finey] for x in finex]
+  finex = np.linspace(lims[0][0], lims[0][1], mesh[0])
+  finey = np.linspace(lims[1][0], lims[1][1], mesh[1])
+  fine_points = [[(x, y) for y in finey] for x in finex]
   # interpolate scatter on regular grid
-  interp_data = griddata(xyz[:, :2], xyz[:, 2], fine_points, method=interp_method)
-  finez = interp_data.reshape(npt, npt).T
+  interp_data = griddata(xy, z, fine_points, method=interp_method)
+  finez = interp_data.reshape(*mesh).T
   # make contour plot
-  cs = ax.contourf(finex, finey, finez, **kwargs)
+  cs = ax.contourf(finex, finey, finez, cmap=cmap, **kwargs)
   return cs
 
-def color_scatter(ax, xy, z, zmin=None, zmax=None, cmap='viridis',
+def color_scatter(ax, xy, z, zlim=None, cmap='viridis',
   **kwargs):
   """View sampled scalar field using value as color
 
   Args:
-    ax (plt.Axes3D): ax = fig.add_subplot(1,1,1,projection="3d")
+    ax (plt.Axes or Axes3D): matplotlib axes
     xy (np.array): scatter points, a list of 2D or 3D vectors
     z (np.array): scatter values, one at each scatter point
-    zmin (float, optional): colormap min
-    zmin (float, optional): colormap max
+    zlim (list, optional): value (min, max) for colormap
     cmap (str, optional): color map name, default is 'viridis'
     kwargs (dict, optional): keyword arguments to be passed to ax.scatter
   Returns:
     mpl_toolkits.mplot3d.art3d.Path3DCollection: scatter plot
   Example:
-    >>> s = color_scatter(ax, kvecs, nofk, zmin=0, zmax=2)
+    >>> s = color_scatter(ax, kvecs, nofk, zlim=(0, 2))
   """
-  zmin = z.min() if zmin is None else zmin
-  zmax = z.max() if zmax is None else zmax
-  v2c = scalar_colormap(zmin, zmax, cmap)
+  if zlim is None:
+    zlim = (z.min(), z.max())
+  v2c = scalar_colormap(*zlim, cmap)
   s = ax.scatter(*xy.T, c=v2c(z), **kwargs)
   return s
 
