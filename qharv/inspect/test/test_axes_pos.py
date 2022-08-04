@@ -157,6 +157,16 @@ def test_get_nvecs():
   nvecs = axes_pos.get_nvecs(axes, pos)
   assert np.allclose(nvecs, nvecs0)
 
+def test_madelung():
+  cubic_vmad = {
+    2: -1.9501325,
+    3: -1.4186487,
+  }
+  for ndim in [2, 3]:
+    axes = np.eye(ndim)
+    vmad = axes_pos.madelung(axes)
+    assert np.isclose(vmad, cubic_vmad[ndim], atol=1e-6)
+
 def test_find_dimers():
   axes = np.array([
     [5.7, 0.0, 0.0],
@@ -316,5 +326,5 @@ def test_find_dimers():
   assert np.allclose(pairs, pairs_ref)
 
 #if __name__ == '__main__':
-#  test_find_dimers()
+#  test_madelung()
 ## end __main__
