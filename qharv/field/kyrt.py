@@ -454,6 +454,29 @@ def contour_from_scatter(ax, xyz, xlim, ylim=None, npt=32, interp_method='linear
   cs = ax.contourf(finex, finey, finez, **kwargs)
   return cs
 
+def color_scatter(ax, xy, z, zmin=None, zmax=None, cmap='viridis',
+  **kwargs):
+  """View sampled scalar field using value as color
+
+  Args:
+    ax (plt.Axes3D): ax = fig.add_subplot(1,1,1,projection="3d")
+    xy (np.array): scatter points, a list of 2D or 3D vectors
+    z (np.array): scatter values, one at each scatter point
+    zmin (float, optional): colormap min
+    zmin (float, optional): colormap max
+    cmap (str, optional): color map name, default is 'viridis'
+    kwargs (dict, optional): keyword arguments to be passed to ax.scatter
+  Returns:
+    mpl_toolkits.mplot3d.art3d.Path3DCollection: scatter plot
+  Example:
+    >>> s = color_scatter(ax, kvecs, nofk, zmin=0, zmax=2)
+  """
+  zmin = z.min() if zmin is None else zmin
+  zmax = z.max() if zmax is None else zmax
+  v2c = scalar_colormap(zmin, zmax, cmap)
+  s = ax.scatter(*xy.T, c=v2c(z), **kwargs)
+  return s
+
 # ===================== level 2: insets ======================
 def inset_zoom(fig, ax_box, xlim, ylim, draw_func, xy_label=False):
   """ show an inset that zooms into a given part of the figure

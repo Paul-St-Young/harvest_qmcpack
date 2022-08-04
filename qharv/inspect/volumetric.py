@@ -2,6 +2,7 @@
 # Email: yubo.paul.yang@gmail.com
 # Routines to visualize volumetric data
 import numpy as np
+from qharv.field.kyrt import color_scatter
 
 def figax3d(show_axis=True, label_axis=True, **kwargs):
   """ get a pair of fig and Axes3D
@@ -65,32 +66,6 @@ def isosurf(ax, vol, level_frac=0.25):
     ax.set_ylabel('y')
     ax.set_zlabel('z')
     return mesh
-
-def color_scatter(ax, xyz, vals=None, cmap_name='viridis', **kwargs):
-  """ view sampled 3D scalar function using value as color
-
-  Args:
-    ax (plt.Axes3D): ax = fig.add_subplot(1,1,1,projection="3d")
-    xyz  (np.array): a list of 3D vectors [(x1,y1,z1), (x2,y2,z2), ...]
-    vals (np.array, optional): f(x,y,z) one for each xyz vector,
-      default is all ones
-    cmap_name (str, optional): color map name, default is 'viridis'
-    kwargs (dict, optional): keyword arguments to be passed to ax.scatter
-  Returns:
-    mpl_toolkits.mplot3d.art3d.Path3DCollection: scatter plot
-  """
-  x, y, z = xyz.T
-  # choose vals if None given
-  if vals is None:
-    vals = np.ones(len(x))
-  # design color scheme, if none given
-  if ('c' not in kwargs.keys()) and ('color' not in kwargs.keys()):
-    from qharv.field import kyrt
-    v2c = kyrt.scalar_colormap(min(vals), max(vals), cmap_name)
-    kwargs['c'] = v2c(vals)
-  # scatter
-  s = ax.scatter(x, y, z, **kwargs)
-  return s
 
 def spline_volumetric(val3d):
   """ spline 3D volumetric data onto a unit cube
