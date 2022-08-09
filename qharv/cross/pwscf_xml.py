@@ -153,6 +153,8 @@ def read_efermi(doc):
   if bs is None:
     bs = doc
   fs = bs.find('.//fermi_energy')
+  if fs is None:
+    fs = bs.find('.//two_fermi_energies')
   efermi = text2arr(fs.text, flatten=True)
   return efermi
 
