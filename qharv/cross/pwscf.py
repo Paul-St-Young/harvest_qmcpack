@@ -39,7 +39,28 @@ def parse_cell_parameters(text, ndim=3):
     vec = np.array(line.split(), dtype=float)
     mat.append(vec)
   axes = np.array(mat)
-  return axes, unit
+  return unit, axes
+
+def parse_atomic_positions(text, ndim=3):
+  inps = parse_keywords(text)
+  nat = int(inps['nat'])
+  lines = text.split('\n')
+  elem = []
+  pos = np.zeros([nat, ndim])
+  for i, line in enumerate(lines):
+    if 'ATOMIC_POSITIONS' in line:
+      unit = line.split()[1].lower()
+      break
+  for iat, line in enumerate(lines[i+1:i+1+nat]):
+    tokens = line.split()
+    e1 = tokens[0]
+    elem.append(e1)
+    pos[iat, :] = list(map(float, tokens[1:1+ndim]))
+  data = dict(
+    elements = elem,
+    positions = pos,
+  )
+  return unit, data
 
 def parse_kpoints(text, ndim=3):
   lines = text.split('\n')
