@@ -17,6 +17,8 @@ def parse_args():
     help='xaxis in plot, default is to use row index')
   parser.add_argument('--nequil', '-e', type=float, default=0,
     help='number of equilibration blocks to throw out')
+  parser.add_argument('--estimate_equil', '-ee', action='store_true',
+    help='estimate the number of equilibration blocks to throw out')
   parser.add_argument('--column', '-c', type=str, default='LocalEnergy',
     help='name of column to analyze, to list all columns use the -l flag')
   parser.add_argument('--reblock', '-rb', type=int, default=1,
@@ -121,14 +123,15 @@ if __name__ == '__main__':
     else:
       print('no header')
     sys.exit(0)
+  column = args.column
   df = read_scalar_table(args.fname, append=args.append)
   # check or override "df" here
 
   # interpret inputs
-  if (args.column == 'LocalEnergy') and ('LocalEnergy' not in df.columns):
-    args.column = df.columns[0]  # change default
-  if args.column not in df.columns:
-    msg = 'requested column "%s" not found\n' % args.column
+  if (column == 'LocalEnergy') and ('LocalEnergy' not in df.columns):
+    column = df.columns[0]  # change default
+  if column not in df.columns:
+    msg = 'requested column "%s" not found\n' % column
     msg += ' available: %s' % str(df.columns.values)
     raise RuntimeError(msg)
 
@@ -138,31 +141,36 @@ if __name__ == '__main__':
     df = reblock_scalar_df(df, args.reblock)
   # dump column if requested
   if args.dump:
-    scalar_dat.write(args.dump_fname, df[[args.column]])
+    scalar_dat.write(args.dump_fname, df[[column]])
   # throw out equilibration
   xaxis = args.xaxis
   if xaxis is None:
     myx = df.index
   else:
     myx = df[xaxis]
-  sel = myx > args.nequil
-  ymean, yerr, ycorr = scalar_dat.single_column(df.loc[sel], args.column, 0)
+  nequil = args.nequil
+  if args.estimate_equil:
+    nequil = scalar_dat.nequil_std(df[column].values)
+    nequil = myx.values[nequil]
+  sel = myx > nequil
+  ymean, yerr, ycorr = scalar_dat.single_column(df.loc[sel], column, 0)
 
   # print statistics
-  prt_format = "{name:14s} {mean:10.6f} +/- {error:10.6f} {corr:4.2f}"
+  prt_format = "{name:14s} {mean:10.6f} +/- {error:10.6f} {corr:4.2f} {nequil:4.1f}/{ndat:4.1f}"
   output = prt_format.format(
-    name = str(args.column),
+    name = str(column),
     mean = ymean,
     error= yerr,
-    corr = ycorr
+    corr = ycorr,
+    nequil = nequil,
+    ndat = myx.max(),
   )
   print(output)
 
   if args.trace:  # plot column
     import matplotlib.pyplot as plt
-    column = args.column
     myy0 = df[column].values
-    fig, ax_arr = plot_trace(myx, myy0, args.nequil, xaxis, column)
+    fig, ax_arr = plot_trace(myx, myy0, nequil, xaxis, column)
     if args.save:
       fig.savefig(args.save_fig_name, dpi=args.save_fig_dpi)
     else:

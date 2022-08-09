@@ -204,3 +204,42 @@ def single_column(df, column, nequil):
   ycorr = corr(myy)
   yerr  = error(myy, ycorr)
   return ymean, yerr, ycorr
+
+def nequil_std(y, conv_frac=0.25, nsig=3, ntol=3):
+  """Estimate number of equilibration blocks based on standard deviation
+
+  Args:
+    y (list): should be a 1D iterable array of floating point numbers
+    conv_frac (float, optional): final fraction of trace that's assumed
+      to be converged, default 0.25
+    nsig (int, optional): number of sigmas (standard deviation) for a
+      sample to be not equilibrated, default 3
+    ntol (int, optional): number of consecutive samples to deviate for a
+      trace to be not equilibrated, default 3
+  Return:
+    int: number of equilibration blocks
+  """
+  x = np.arange(len(y))
+  ndat = len(x)
+  # mean and stddev of converged portion
+  nconv = int(round(ndat*conv_frac))
+  if nconv < 4:
+    msg = '%d/%d points is not enough' % (nconv, ndat)
+    raise RuntimeError(msg)
+  yc = y[:ndat-nconv]
+  ym = np.mean(yc)
+  ysig = np.std(yc, ddof=1)
+  # find first block of points that exceeds nsig*ysig
+  ytol = nsig*ysig
+  nequil = nconv
+  ngood = 0
+  for y1 in y[0:ndat-nconv:-1]:
+    dy = abs(y1-ym)
+    if dy > ytol:
+      ngood += 1
+    else:
+      ngood = 0
+    if ngood >= ntol:
+      break
+    nequil -= 1
+  return nequil
