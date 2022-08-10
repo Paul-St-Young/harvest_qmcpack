@@ -176,12 +176,10 @@ def resample(marr, earr, nsample, seed=None):
 def taw(ym, ye, weights):
   """ twist average with weights """
   wtot = weights.sum()
-  try:
+  if ym.ndim < 2:
     aym = np.dot(ym, weights)/wtot
     aye = np.dot(ye**2, weights**2)**0.5/wtot
-  except ValueError as err:
-    if 'not aligned' not in str(err):
-      raise err
+  else:
     aym = (weights[:, np.newaxis]*ym).sum(axis=0)/wtot
     aye = (weights[:, np.newaxis]**2*ye**2).sum(axis=0)**0.5/wtot
   return aym, aye
