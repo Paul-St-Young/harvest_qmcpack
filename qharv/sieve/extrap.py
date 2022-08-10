@@ -36,6 +36,7 @@ def polyextrap(x, ym, ye=None, order=1, xtarget=0, return_fit=False):
     return_fit (bool, optional): return fit parameters, default False
   """
   if ye is None:
+    popt0 = np.polyfit(x, ym, order)
     y0 = np.poly1d(popt0)(xtarget)
     if return_fit:
       return (y0, popt0)
