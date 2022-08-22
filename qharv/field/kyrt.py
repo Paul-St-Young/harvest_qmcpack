@@ -96,7 +96,7 @@ def scalar_colorbar(vmin, vmax, name='viridis', **kwargs):
   return cbar
 
 # ======================== level 0: basic ax edits =========================
-def figaxad(labelsize=12, sharex=True):
+def figaxad(figsize=None, labelsize=12, sharex=True):
   """ construct a absolute/difference (ad) figure
    top 3/4 of the plot will be comparison at an absolute scale
    bottom 1/4 of the plot will be comparison at a relative scale
@@ -108,7 +108,7 @@ def figaxad(labelsize=12, sharex=True):
   """
   from matplotlib.gridspec import GridSpec
   gs = GridSpec(4, 4)
-  fig = plt.figure()
+  fig = plt.figure(figsize=figsize)
   axa = fig.add_subplot(gs[0:3, :])
   kws = dict()
   if sharex:
@@ -443,7 +443,7 @@ def contour_scatter(ax, xy, z, zlim=None, nz=8, cmap='viridis',
   """View sampled scalar field using contours
 
   Args:
-    ax (plt.Axes or Axes3D): matplotlib axes
+    ax (plt.Axes): matplotlib axes
     xy (np.array): scatter points, a list of 2D vectors
     z (np.array): scatter values, one at each scatter point
     zlim (list, optional): value (min, max) for colormap
