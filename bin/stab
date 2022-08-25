@@ -31,9 +31,7 @@ def parse_args():
     help='additional Scalar TABle (stab) file to be appended')
   parser.add_argument('--dump', action='store_true', help='dump column')
   parser.add_argument('--dump_fname', type=str, default='trace.dat')
-  parser.add_argument('--save', action='store_true', help='save figure')
-  parser.add_argument('--save_fig_name', type=str, default='trace.png')
-  parser.add_argument('--save_fig_dpi', type=int, default=320)
+  parser.add_argument('--savefig')
   args = parser.parse_args()
   return args
 
@@ -171,8 +169,8 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
     myy0 = df[column].values
     fig, ax_arr = plot_trace(myx, myy0, nequil, xaxis, column)
-    if args.save:
-      fig.savefig(args.save_fig_name, dpi=args.save_fig_dpi)
+    if args.savefig:
+      fig.savefig(args.savefig, dpi=320)
     else:
       plt.show()
   # end if trace
