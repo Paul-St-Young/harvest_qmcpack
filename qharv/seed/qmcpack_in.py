@@ -216,17 +216,22 @@ def all_electron_hamiltonian(elec_name='e', ion_name='ion0'):
     xml.append(ham, [ei, ii])
   return ham
 
-def bspline_qmcsystem(fh5, tmat=None):
+def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
   """Create Slater-Jastrow system input from pw2qmcpack.x h5 file
 
   Args:
     fh5 (str): path to wf h5 file
-    tmat (np.array): tile matrix
+    tmat (np.array, optional): tile matrix, default is identity
+    run_dir (str, optional): run directory, default is script directory
   Return:
     qsys (etree.Element): <qmcsystem>
   """
   import numpy as np
   from qharv.seed import wf_h5
+  if run_dir is not None:
+    fh5_loc = os.path.relpath(fh5, run_dir)
+  else:
+    fh5_loc = fh5
   ndim0 = 3  # !!!! hard-code for three dimensions
   fp = wf_h5.read(fh5)
   axes, elem, charge_map, pos = wf_h5.axes_elem_charges_pos(fp)
@@ -264,7 +269,7 @@ def bspline_qmcsystem(fh5, tmat=None):
   tmat_str = ('%d ' * 9) % tuple(tmat.ravel())
   sb = xml.make_node('sposet_builder', {
       'type': 'bspline',
-      'href': fh5,
+      'href': fh5_loc,
       'tilematrix': tmat_str,
       'twistnum': '0',
       'source': ion_name,  # "Einspline needs the source particleset"
@@ -282,7 +287,7 @@ def bspline_qmcsystem(fh5, tmat=None):
 
     # determinantset
     det = xml.make_node('determinant', {
-      'id': 'updet',
+      'id': 'det%d' % ispo,
       'size': str(npart),
       'sposet': spo_name,
     })
@@ -311,6 +316,27 @@ def bspline_qmcsystem(fh5, tmat=None):
   return qsys
 
 # ================== level 1: use existing input ===================
+
+# --------------------------- wavefunction --------------------------
+def last_opt_xml(doc):
+  """Construct filename of the last optimized wavefunction
+
+  Example:
+    >>> doc = xml.read('opt.xml')
+    >>> find_opt_xml(doc)
+    'opt.s007.opt.xml'
+  """
+  proj = doc.find(".//project")
+  myid = proj.get("id")
+  i0 = int(proj.get("series"))
+  loop = doc.find(".//loop")
+  nopt = int(loop.get("max"))
+  iopt = i0+nopt-1
+  # filename
+  flast = '.'.join([myid, 's%03d' % iopt, 'opt', 'xml'])
+  return flast
+
+# ------------------------------ twists -----------------------------
 def expand_twists(example_in_xml, twist_list, calc_dir, force=False):
   """ expand example input xml to all twists in twist_list
 
