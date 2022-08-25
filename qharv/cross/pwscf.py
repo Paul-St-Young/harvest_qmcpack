@@ -36,7 +36,7 @@ def parse_cell_parameters(text, ndim=3):
       break
   mat = []
   for line in lines[i+1:i+1+ndim]:
-    vec = np.array(line.split(), dtype=float)
+    vec = np.array(line.split()[:ndim], dtype=float)
     mat.append(vec)
   axes = np.array(mat)
   return unit, axes
