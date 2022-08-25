@@ -84,12 +84,14 @@ def cubic_pos(spaces):
   return gvecs
 
 def get_rvecs(axes, mesh):
+  """Regular grid in positive quadrant"""
   spaces = [np.arange(nx) for nx in mesh]
   gvecs = cubic_pos(spaces)
   fracs = axes/np.array(mesh)[:, np.newaxis]  # axes is row-major
   return np.dot(gvecs, fracs)
 
 def get_kvecs(raxes, mesh):
+  """Regular grid centered around 0"""
   spaces = [np.fft.fftfreq(nx)*nx for nx in mesh]
   gvecs = cubic_pos(spaces)
   return np.dot(gvecs, raxes)
