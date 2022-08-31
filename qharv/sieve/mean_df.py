@@ -65,6 +65,23 @@ def categorize_columns(cols, nosuf=False, msuffix='_mean', esuffix='_error'):
     return rcol, names
   return rcol, mcol, ecol
 
+def select_parameters(df, params):
+  """Create a boolean array to select a subset of rows from a DataFrame,
+    using specific parameter values from the specified columns.
+
+  Args:
+    df (pd.DataFrame): mean dataframe
+    params (dict): a dictionary of parameter values to select
+  Return:
+    np.array: a 1D array of True/False with the same length as input df
+  Example:
+    >>> sel = select_parameters(df, {'rs': 3, 'nelec': 54})
+  """
+  sel = np.zeros(len(df), dtype=bool)
+  for key, val in params.items():
+    sel = sel & (df[key] == val)
+  return sel
+
 def xyye(df, xname, yname, sel=None, xerr=False, yerr=True, sort=False, msuffix='_mean', esuffix='_error'):
   """Get x vs. y data from a mean data frame.
 
