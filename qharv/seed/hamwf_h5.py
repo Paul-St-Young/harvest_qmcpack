@@ -118,19 +118,12 @@ def get_ksphere(raxes, kc, margin=0.2):
   ksel = kmags<kc
   return kvecs[ksel]
 
-def kgrid(mesh):
-  from qharv.seed.hamwf_h5 import get_kvecs
-  axes = np.eye(len(mesh))
-  qvecs = get_kvecs(axes, mesh)/np.array(mesh)
-  return qvecs
-
 # =========================== level 2: kpt ==========================
 
 def uniform_grid(mesh):
-  ndim = len(mesh)
-  gvecs = get_kvecs(np.eye(ndim), mesh)
-  tvecs = gvecs/mesh
-  return tvecs
+  axes = np.eye(len(mesh))
+  qvecs = get_kvecs(axes, mesh)/np.array(mesh)
+  return qvecs
 
 def monkhorst_pack_grid(mesh):
   return uniform_grid(mesh)
