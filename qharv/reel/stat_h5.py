@@ -237,7 +237,7 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
   else:  # use user request
     mav = iav
   matrix_path = os.path.join(avg_path, 'Average_%d' % mav)
-  # 3. get 1RDM at all equilibrated blocks
+  # 3. get 1RDM, spin z, and charge at all equilibrated blocks
   blocks = fp[matrix_path].keys()
   rdm_blocks = [key for key in blocks if key.startswith(numer)]
   nblock = len(rdm_blocks)
@@ -245,12 +245,20 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
     msg = 'cannot discard %d/%d blocks' % (nequil, nblock)
     raise RuntimeError(msg)
   data = []
+  spin_z = []
+  charge = []
   for block in rdm_blocks[nequil:]:
     path = os.path.join(matrix_path, block)
     rdm = fp[path][()].view(np.complex128)
     dpath = os.path.join(matrix_path, block.replace(numer, 'denominator'))
     deno = fp[dpath][()].view(np.complex128)
     data.append(rdm/deno)
+    if itwalker == 2:  # COLLINEAR
+      #store the density matrix in each equilibrated block for spin and charge calculation
+      #currently only implemented for COLLINEAR(UHF) type of walker
+      dm_1 = np.array(rdm/deno).reshape(2, nbas, nbas)
+      spin_z.append( (np.diag(dm_1[0,:,:]) - np.diag(dm_1[1,:,:]))/2 )
+      charge.append( np.diag(dm_1[0,:,:]) + np.diag(dm_1[1,:,:]) )
   assert np.prod(rdm_shape) == np.prod(rdm.shape)
   # 4. get mean and standard error
   mat = np.array(data, dtype=np.complex128).reshape(
@@ -258,6 +266,11 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
   ym, ye = me2d(mat)
   dm = ym.reshape(rdm_shape)
   de = ye.reshape(rdm_shape)
+  if itwalker == 2:
+      spin_z = np.array(spin_z, dtype=np.complex128).reshape(-1,nbas)
+      charge = np.array(charge, dtype=np.complex128).reshape(-1,nbas)
+      spin_z_m, spin_z_e = me2d(spin_z)
+      charge_m, charge_e = me2d(charge)
   if itwalker == 3:  # non-collinear
     dm = np.array([
       dm[0, :nbas, :nbas], dm[0, nbas:, nbas:],
@@ -267,4 +280,4 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
       de[0, :nbas, :nbas], de[0, nbas:, nbas:],
       de[0, :nbas, nbas:], de[0, nbas:, :nbas],
     ])
-  return dm, de
+  return dm, de, spin_z_m, spin_z_e, charge_m, charge_e
