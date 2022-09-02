@@ -35,6 +35,33 @@ def check_complete(fxml, group=None):
   is_complete = np.all(series_complete)
   return is_complete
 
+def equilibration_list(nequil, prefix_meta):
+  pm = prefix_meta
+  if np.issubdtype(type(nequil), np.integer):
+    neql = [nequil]*len(pm)
+  else:  # one equilibration length for each series
+    neql = nequil
+    if len(neql) != len(pm):
+      msg = '%d nequil provided for %d series' % (len(neql), len(pm))
+      raise RuntimeError(msg)
+  return neql
+
+def expand_metadata(fxml, nequil, group):
+  from qharv.seed import xml, qmcpack_in
+  doc = xml.read(fxml)
+  pm = qmcpack_in.output_prefix_meta(doc, group=group)
+  # decide equilibration length from input
+  neql = equilibration_list(nequil, pm)
+  # add more metadata
+  myid, s0 = xml.get_id_series(doc)
+  nelecs = xml.get_nelecs(doc.getroot())
+  nelec = sum(nelecs.values())
+  for (prefix, meta), nequil in zip(pm.items(), neql):
+    meta['id'] = myid
+    meta['nequil'] = nequil
+    meta['nelec'] = nelec
+  return pm
+
 def scalar_dat(fxml, nequil, group=None, suffix='scalar.dat'):
   """Gather scalar.dat files produced by input fxml.
 
@@ -57,28 +84,10 @@ def scalar_dat(fxml, nequil, group=None, suffix='scalar.dat'):
     >>> scalar_dat('twist1.xml', [8, 16], group=1)
   """
   import os
-  from qharv.seed import xml, qmcpack_in
   from qharv.reel import scalar_dat, mole
   from qharv.sieve import mean_df
   path = os.path.dirname(fxml)
-  doc = xml.read(fxml)
-  pm = qmcpack_in.output_prefix_meta(doc, group=group)
-  # decide equilibration length from input
-  if np.issubdtype(type(nequil), np.integer):
-    neql = [nequil]*len(pm)
-  else:  # one equilibration length for each series
-    neql = nequil
-    if len(neql) != len(pm):
-      msg = '%d nequil provided for %d series' % (len(neql), len(pm))
-      raise RuntimeError(msg)
-  # add more metadata
-  myid, s0 = xml.get_id_series(doc)
-  nelecs = xml.get_nelecs(doc.getroot())
-  nelec = sum(nelecs.values())
-  for (prefix, meta), nequil in zip(pm.items(), neql):
-    meta['id'] = myid
-    meta['nequil'] = nequil
-    meta['nelec'] = nelec
+  pm = expand_metadata(fxml, nequil, group=group)
   # gather each series
   dfl = []
   for prefix, meta in pm.items():
@@ -87,9 +96,9 @@ def scalar_dat(fxml, nequil, group=None, suffix='scalar.dat'):
     floc = os.path.join(path, fsca_dat)
     df1 = scalar_dat.read(floc)
     # calculate equilibration length
-    nequil = meta['nequil']
+    neq = meta['nequil']
     # discard equilibration and average over projection trajectory
-    mdf = mean_df.create(df1.iloc[nequil:])
+    mdf = mean_df.create(df1.iloc[neq:])
     # add metadata
     mdf['path'] = mole.clean_path(path)
     mdf['nblock'] = len(df1)
@@ -99,6 +108,61 @@ def scalar_dat(fxml, nequil, group=None, suffix='scalar.dat'):
   df = pd.concat(dfl, axis=0).reset_index(drop=True)
   convert_known_metadata_types(df)
   return df
+
+def stat_h5(fxml, nequil, group=None, suffix='stat.h5', func=None, **kwargs):
+  """Gather scalar.dat files produced by input fxml.
+
+  Inputs:
+    fxml (str): input file
+    nequil (int or list): if list, then must have one int per series
+    group (int, optional): if provided, then add '.g%03d' % group to prefix
+    suffix (str, optional): default 'scalar.dat'
+  Output:
+    pd.DataFrame: statistics of each run
+  """
+  import os
+  from qharv.reel import mole
+  from qharv.sieve import mean_df
+  path = os.path.dirname(fxml)
+  pm = expand_metadata(fxml, nequil, group=group)
+  # gather S(k) by default
+  if func is None:
+    func = read_skall
+  # gather each series
+  dfl = []
+  for prefix, meta in pm.items():
+    neq = meta['nequil']
+    # read data table file
+    fstat_h5 = '%s.%s' % (prefix, suffix)
+    floc = os.path.join(path, fstat_h5)
+    mdf = func(floc, neq, **kwargs)
+    # add metadata
+    mdf['path'] = mole.clean_path(path)
+    for key, val in meta.items():
+      mdf[key] = val
+    dfl.append(mdf)
+  df = pd.concat(dfl, axis=0).reset_index(drop=True)
+  convert_known_metadata_types(df)
+  return df
+
+def read_skall(fh5, nequil, name='skall'):
+  from qharv.reel import stat_h5
+  fp = stat_h5.read(fh5)
+  # S(k)
+  kvecs, dskm, dske = stat_h5.dsk_from_skall(fp, name, nequil)
+  # rho(k)
+  kvecs, rhokm, rhoke = stat_h5.rhok_from_skall(fp, name, nequil)
+  fp.close()
+  # collect results
+  data = dict(
+    kvecs = kvecs,
+    dsk_mean = dskm,
+    dsk_error = dske,
+    rhok_mean = rhokm,
+    rhok_error = rhoke,
+  )
+  df1 = pd.DataFrame([data])
+  return df1
 
 def convert_known_metadata_types(df):
   # known metadata type
