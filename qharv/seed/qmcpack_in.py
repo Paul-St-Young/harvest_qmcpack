@@ -186,12 +186,15 @@ def ud_electrons(nup, ndown):
     'size': str(nup),
     'mass': '1.0'
   })
-  dn_group = etree.Element('group', {
-    'name': 'd',
-    'size': str(ndown),
-    'mass': '1.0'
-  })
-  for egroup in [up_group, dn_group]:
+  groups = [up_group]
+  if ndown > 0:
+    dn_group = etree.Element('group', {
+      'name': 'd',
+      'size': str(ndown),
+      'mass': '1.0'
+    })
+    groups.append(dn_group)
+  for egroup in groups:
     xml.set_param(egroup, 'charge', ' -1 ', new=True)
     epset.append(egroup)
 
@@ -245,6 +248,11 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
   else:  # tile supercell
     from qharv.inspect.axes_elem_pos import ase_tile
     axes, elem, pos = ase_tile(axes, elem, pos, tmat)
+  ntile = int(abs(np.linalg.det(tmat)))
+  nelecs *= ntile
+  if nspin == 1:
+    nelecs[1] = nelecs[0]/2
+    nelecs[0] /= 2
   spoup = spodn = 'spo_ud'
   psi_name = 'psi0'
   ion_name = 'ion0'
