@@ -53,7 +53,7 @@ def test_get_nelec():
     <group name="p" size="7"/>
   </particleset></root>'''
   node = xml.parse(text)
-  assert xml.get_nelec(node) == 12
+  assert xml.get_nelec(node) == 19
 
 def test_make_node():
   from qharv.seed.xml import make_node, str_rep

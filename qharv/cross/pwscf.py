@@ -25,7 +25,7 @@ def parse_keywords(text):
       key, val = line.split('=')
       val1 = val.strip('\n').strip()
       val2 = val1.strip("'").strip('"')
-      keywords[key.strip()] = val2
+      keywords[key.strip()] = val2.strip(',')
   return keywords
 
 def parse_cell_parameters(text, ndim=3):
@@ -394,6 +394,8 @@ def link_save(scf_inp, path):
   # link to converter save location
   outpath = os.path.join(path, outdir)
   hsave = os.path.join(outpath, '%s.save' % prefix)
+  if os.path.islink(hsave):
+    return
   if not (os.path.abspath(hsave) == dsave):
     rpath = os.path.relpath(dsave, outpath)
     if os.path.isdir(outpath):

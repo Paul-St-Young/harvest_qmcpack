@@ -41,6 +41,6 @@ def test_parse_cell():
   axes[1, 0] = -0.5
   unit = 'angstrom'
   text = cell_parameters(axes, unit=unit, fmt='%.2f')
-  axes1, unit1 = parse_cell_parameters(text)
+  unit1, axes1 = parse_cell_parameters(text)
   assert np.allclose(axes1, axes)
   assert unit1 == unit
