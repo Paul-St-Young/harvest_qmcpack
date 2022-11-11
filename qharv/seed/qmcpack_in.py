@@ -427,7 +427,7 @@ def bundle_twists(calc_dir, fregex='*twistnum_*.in.xml'):
   return text
 
 def random_twists(npts, ndim=3, method='Sobol', seed=42,
-  nskip=0, nevery=1, scramble=False, center=True):
+  nskip=0, nevery=1, scramble=False, center=False):
   """ Generate random twists
 
   Args:
@@ -438,7 +438,7 @@ def random_twists(npts, ndim=3, method='Sobol', seed=42,
     seed (int, optional): random seed, default 42
     nskip (int, optional): number of first twists to skip, default 0
     nevery (int, optional): take every 'nevery' twist, default 1
-    center (bool, optional): center twist grid around 0, default True
+    center (bool, optional): center twist grid around 0, default False
       twist[i, l] \in [-0.5, 0.5) if center else [0, 1)
   Return:
     np.array: shape (npts, ndim), random twists
@@ -460,6 +460,8 @@ def random_twists(npts, ndim=3, method='Sobol', seed=42,
     raise RuntimeError(msg)
   ntot = nskip+nevery*npts
   sequence = sampler.random(n=ntot)[nskip::nevery]
+  if center:
+    sequence = (sequence + 0.5) % 1 - 0.5
   return sequence
 
 def disperse(ginp_loc, calc_dir, execute=False, overwrite=False):

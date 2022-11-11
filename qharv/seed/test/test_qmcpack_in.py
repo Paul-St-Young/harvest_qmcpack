@@ -43,17 +43,17 @@ def test_output_prefix_meta():
 
 def test_random_twists():
   import numpy as np
-  twists = qmcpack_in.random_twists(3, ndim=2, method='Halton')
+  twists = qmcpack_in.random_twists(3, ndim=2, method='Halton', center=True)
   refs = [
     [0.  ,       0.        ],
-    [0.5 ,       0.33333333],
-    [0.25,       0.66666667]
+    [-0.5 ,      0.33333333],
+    [0.25,      -0.33333333]
   ]
   assert np.allclose(twists, refs)
-  twists = qmcpack_in.random_twists(2, ndim=3, method='Sobol')
+  twists = qmcpack_in.random_twists(2, ndim=3, method='Sobol', center=True)
   refs = [
     [0, 0, 0],
-    [0.5, 0.5, 0.5],
+    [-0.5, -0.5, -0.5],
   ]
   assert np.allclose(twists, refs)
   twists = qmcpack_in.random_twists(2, ndim=3, method='Sobol',
