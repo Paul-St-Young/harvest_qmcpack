@@ -40,3 +40,26 @@ def test_output_prefix_meta():
   pres = sorted(pm.keys())
   expect = ['dmc.g002.s000', 'dmc.g002.s001', 'dmc.g002.s002']
   assert pres == expect
+
+def test_random_twists():
+  import numpy as np
+  twists = qmcpack_in.random_twists(3, ndim=2, method='Halton')
+  refs = [
+    [0.  ,       0.        ],
+    [0.5 ,       0.33333333],
+    [0.25,       0.66666667]
+  ]
+  assert np.allclose(twists, refs)
+  twists = qmcpack_in.random_twists(2, ndim=3, method='Sobol')
+  refs = [
+    [0, 0, 0],
+    [0.5, 0.5, 0.5],
+  ]
+  assert np.allclose(twists, refs)
+  twists = qmcpack_in.random_twists(2, ndim=3, method='Sobol',
+    nskip=8, nevery=4)
+  refs = [
+    [0.1875, 0.3125, 0.9375],
+    [0.3125, 0.1875, 0.3125]
+  ]
+  assert np.allclose(twists, refs)

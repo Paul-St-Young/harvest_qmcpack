@@ -452,17 +452,14 @@ def random_twists(npts, ndim=3, method='Sobol', seed=42,
   if method == 'Sobol':
     from scipy.stats.qmc import Sobol
     sampler = Sobol(d=ndim, scramble=scramble, seed=seed)
-    mexpo = np.log2(npts)
-    if int(mexpo) != int(round(mexpo)):
-      msg = 'Sobol sequence may be unbalanced, see scipy.stats.qmc.Sobol.random_base2'
-      raise RuntimeError(msg)
   elif method == 'Halton':  # base-n for n^{th} dimension
     from scipy.stats.qmc import Halton
     sampler = Halton(d=ndim, scramble=scramble, seed=seed)
   else:
     msg = 'unknown sequence "%s"' % method
     raise RuntimeError(msg)
-  sequence = sampler.random(n=npts)[nskip::nevery]
+  ntot = nskip+nevery*npts
+  sequence = sampler.random(n=ntot)[nskip::nevery]
   return sequence
 
 def disperse(ginp_loc, calc_dir, execute=False, overwrite=False):
