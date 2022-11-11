@@ -325,6 +325,21 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
 
 # ================== level 1: use existing input ===================
 
+# ------------------------------- qmc -------------------------------
+def set_nwalker(doc, nwalker):
+  """ set the number of walkers to use in DMC
+
+  Args:
+    doc (lxml.Element): xml node containing <qmc>
+    nwalker (int): number of walkers
+  """
+  nodes = doc.findall('.//qmc[@method="vmc"]')
+  for node in nodes:
+    xml.set_param(node, 'samples', str(nwalker))
+  nodes = doc.findall('.//qmc[@method="dmc"]')
+  for node in nodes:
+    xml.set_param(node, 'targetwalkers', str(nwalker))
+
 # --------------------------- wavefunction --------------------------
 def last_opt_xml(doc):
   """Construct filename of the last optimized wavefunction
@@ -505,17 +520,3 @@ def set_gc_occ(norbl, calc_dir, fregex_fmt='*twistnum_{itwist:d}.in.xml'):
     doc = xml.read(fxml)
     set_norb(doc, norb)
     xml.write(fxml, doc)
-
-def set_nwalker(doc, nwalker):
-  """ set the number of walkers to use in DMC
-
-  Args:
-    doc (lxml.Element): xml node containing <qmc>
-    nwalker (int): number of walkers
-  """
-  nodes = doc.findall('.//qmc[@method="vmc"]')
-  for node in nodes:
-    xml.set_param(node, 'samples', str(nwalker))
-  nodes = doc.findall('.//qmc[@method="dmc"]')
-  for node in nodes:
-    xml.set_param(node, 'targetwalkers', str(nwalker))
