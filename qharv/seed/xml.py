@@ -324,7 +324,10 @@ def get_pos(doc, pset='ion0', group=None):
   # find <particleset>
   pset_node = doc.find('.//particleset[@name="%s"]' % pset)
   if pset_node is None:
-    raise RuntimeError('%s not found' % pset)
+    if doc.tag == 'particleset':
+      pset_node = doc
+    else:
+      raise RuntimeError('%s not found' % pset)
   pos = dict()
   # find <group> if necessary
   groups = pset_node.findall('.//group')
