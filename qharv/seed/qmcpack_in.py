@@ -426,6 +426,44 @@ def bundle_twists(calc_dir, fregex='*twistnum_*.in.xml'):
     text += fname + '\n'
   return text
 
+def random_twists(npts, ndim=3, method='Sobol', seed=42,
+  nskip=0, nevery=1, scramble=False, center=True):
+  """ Generate random twists
+
+  Args:
+    npts (int): number of twists
+    ndim (int, optional): number of spatial dimensions, default 3
+    method (str, optional): random sequence method ['Sobol', 'Halton'],
+      default is 'Sobol'
+    seed (int, optional): random seed, default 42
+    nskip (int, optional): number of first twists to skip, default 0
+    nevery (int, optional): take every 'nevery' twist, default 1
+    center (bool, optional): center twist grid around 0, default True
+      twist[i, l] \in [-0.5, 0.5) if center else [0, 1)
+  Return:
+    np.array: shape (npts, ndim), random twists
+  Example:
+    >>> random_twists(3, ndim=2, method='Halton')
+    [[0.         0.        ]
+     [0.5        0.33333333]
+     [0.25       0.66666667]]
+  """
+  import numpy as np
+  if method == 'Sobol':
+    from scipy.stats.qmc import Sobol
+    sampler = Sobol(d=ndim, scramble=scramble, seed=seed)
+    mexpo = np.log2(npts)
+    if int(mexpo) != int(round(mexpo)):
+      msg = 'Sobol sequence may be unbalanced, see scipy.stats.qmc.Sobol.random_base2'
+      raise RuntimeError(msg)
+  elif method == 'Halton':  # base-n for n^{th} dimension
+    from scipy.stats.qmc import Halton
+    sampler = Halton(d=ndim, scramble=scramble, seed=seed)
+  else:
+    msg = 'unknown sequence "%s"' % method
+    raise RuntimeError(msg)
+  sequence = sampler.random(n=npts)[nskip::nevery]
+  return sequence
 
 def disperse(ginp_loc, calc_dir, execute=False, overwrite=False):
   """ disperse inputs bundled up in a grouped input
