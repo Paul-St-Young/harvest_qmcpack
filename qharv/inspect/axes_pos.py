@@ -284,6 +284,36 @@ def auto_distance_table(axes, pos, dn=1):
     dtable[i, j] = dtable[j, i] = dist
   return dtable
 
+def minimum_image_displacements(axes, pos, rj=None, mnx=-1, mxx=1):
+  """Calculate minimum-image displacement vectors between two sets of particles
+
+  Args:
+    axes (np.array): lattice vectors in row-major
+    pos  (np.array): particle positions in row-major
+  Return:
+    tuple: (displacements, distances) shapes are
+      (ni, nj, ndim) and (ni, nj), respectively
+  """
+  from itertools import product
+  ri = pos
+  if rj is None:
+    rj = ri
+  ni = ri.shape[0]; ndim = ri.shape[-1]
+  assert rj.shape[-1] == ndim
+  nj = len(rj)
+  disps = np.zeros([ni, nj, ndim])
+  dists = np.inf*np.ones([ni, nj])
+  for l in range(ndim):
+    for g in product(range(mnx, mxx+1), repeat=ndim):
+      a = np.dot(g, axes)
+      rj1 = rj+a
+      drij = ri[:, np.newaxis] - rj1[np.newaxis, :]
+      rij = np.linalg.norm(drij, axis=-1)
+      sel = rij < dists
+      dists[sel] = rij[sel]
+      disps[sel] = drij[sel]
+  return disps, dists
+
 def displacement_table(axes, pos1, pos0):
   """Calculate the distance table between two sets of particles
 
@@ -298,7 +328,7 @@ def displacement_table(axes, pos1, pos0):
   # apply PBC
   box = np.diag(axes)
   if not np.allclose(np.diag(box), axes):
-    raise NotImplementedError()
+    drij, rij = minimum_image_displacements(axes, pos1, pos0)
   else:
     nint = np.around(drij)/box
     drij -= nint*box
