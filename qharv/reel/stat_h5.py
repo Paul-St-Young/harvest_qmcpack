@@ -141,8 +141,14 @@ def gofr(fp, obs_name, nequil, kappa=None, force=False):
     raise RuntimeError(msg)
 
   grm, gre = mean_and_err(fp, '%s/value' % obs_name, nequil, kappa)
-  rmax = path_loc(fp, '%s/cutoff' % obs_name)[0]
-  dr   = path_loc(fp, '%s/delta' % obs_name)[0]
+  try:
+    rmax = path_loc(fp, '%s/cutoff' % obs_name)[0]
+  except IndexError:
+    rmax = path_loc(fp, '%s/cutoff' % obs_name)
+  try:
+    dr   = path_loc(fp, '%s/delta' % obs_name)[0]
+  except IndexError:
+    dr   = path_loc(fp, '%s/delta' % obs_name)
 
   # guess bin locations
   myr  = np.arange(0, rmax-dr/10, dr)
