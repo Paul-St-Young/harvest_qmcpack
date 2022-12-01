@@ -9,6 +9,11 @@ def open_read(fname, mode='r'):
   fp = tables.open_file(fname, mode=mode)
   return fp
 
+def open_write(fname):
+  filters = tables.Filters(complevel=5, complib='zlib')
+  fp = tables.open_file(fname, mode='w', filters=filters)
+  return fp
+
 def load_dict(fname):
   data = dict()
   with open_read(fname) as h5file:
@@ -17,10 +22,9 @@ def load_dict(fname):
     h5file.close()
   return data
 
-def open_write(fname):
-  filters = tables.Filters(complevel=5, complib='zlib')
-  fp = tables.open_file(fname, mode='w', filters=filters)
-  return fp
+def write_dict(fname, data):
+  with open_write(fname) as h5file:
+    save_dict(data, h5file)
 
 def saveh5(fname, mat, name='data'):
   """ save matrix at root of h5 file, mimic call signature of np.savetxt
