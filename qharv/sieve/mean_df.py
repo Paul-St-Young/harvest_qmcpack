@@ -125,7 +125,7 @@ def xyye(df, xname, yname, sel=None, xerr=False, yerr=True, sort=False, msuffix=
     idx = np.argsort(xm)
   return [ret[idx] for ret in rets if ret is not None]
 
-def dxyye(xy1, xy0):
+def dxyye(xy1, xy0, add=False):
   """Calculate y1-y0 at points that exist in both x1 and x0
 
   Args:
@@ -142,18 +142,28 @@ def dxyye(xy1, xy0):
     x1, ym1, ye1 = xy1
     x0, ym0, ye0 = xy0
     x, sel1, sel0 = np.intersect1d(x1, x0, return_indices=True)
-    ym = ym1[sel1]-ym0[sel0]
+    if add:
+      ym = ym1[sel1]+ym0[sel0]
+    else:
+      ym = ym1[sel1]-ym0[sel0]
     ye = (ye1[sel1]**2+ye0[sel0]**2)**0.5
     return x, ym, ye
   elif len(xy1) == 2:  # no errorbar
     x1, y1 = xy1
     x0, y0 = xy0
     x, sel1, sel0 = np.intersect1d(x1, x0, return_indices=True)
-    y = y1[sel1]-y0[sel0]
+    if add:
+      y = y1[sel1]+y0[sel0]
+    else:
+      y = y1[sel1]-y0[sel0]
     return x, y
   else:
     msg = 'unknown case'
     raise RuntimeError(msg)
+
+def sxyye(xy1, xy0):
+  print('obsolete alias')
+  return dxyye(xy1, xy0, add=True)
 
 def group_min(df, labels, yname, find_max=False):
   """Select the row that minimizes column "yname" in each group.
