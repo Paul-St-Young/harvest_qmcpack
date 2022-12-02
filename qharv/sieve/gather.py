@@ -100,7 +100,10 @@ def scalar_dat(fxml, nequil, group=None, suffix='scalar.dat'):
     # discard equilibration and average over projection trajectory
     mdf = mean_df.create(df1.iloc[neq:])
     # add metadata
-    mdf['path'] = mole.clean_path(path)
+    cpath = mole.clean_path(path)
+    if len(cpath) < 1:
+      cpath = '.'
+    mdf['path'] = cpath
     mdf['nblock'] = len(df1)
     for key, val in meta.items():
       mdf[key] = val
