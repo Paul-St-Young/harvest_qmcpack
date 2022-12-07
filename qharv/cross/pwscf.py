@@ -163,6 +163,32 @@ def atomic_positions(elem_pos, unit='crystal', fmt='%16.8f'):
     text += line
   return text
 
+def change_block(text, block, block_text):
+  if block not in ['ATOMIC_POSITIONS', 'CELL_PARAMETERS']:
+    raise NotImplementedError(block)
+  if block == 'ATOMIC_POSITIONS':
+    ncol = 4
+  elif block == 'CELL_PARAMETERS':
+    ncol = 3
+  new_text = ''
+  lines = text.split('\n')
+  # copy everything before
+  for i, line in enumerate(lines):
+    if block in line:
+      break
+    new_text += line + '\n'
+  # insert new block
+  new_text += block_text + '\n'
+  # skip old block
+  for j, line in enumerate(lines[i+1:]):
+    toks = line.split()
+    if len(toks) != ncol:
+      break
+  # copy everything after
+  for line in lines[i+j+1:]:
+    new_text += line + '\n'
+  return new_text
+
 # ===================== level 1: file locations =====================
 
 def get_prefix_outdir(scf_in):
