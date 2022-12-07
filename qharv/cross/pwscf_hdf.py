@@ -93,6 +93,33 @@ def read_wfc(fxml):
     evl = [ret[1] for ret in rets]
   return gvl, evl
 
+def split_evc(evc, nspin):
+  """Extract spin up and dn components
+
+  Args:
+    evc (np.array): shape (nbnd, npw), (2*nbnd, npw), (nbnd, 2*npw) for
+      nspin = 1, 2, 4, respectively
+    nspin (int): 1 (restricted), 2 (collinear), 4 (noncolin)
+  Return:
+    tuple: (evup, evdn), both have shape (nbnd, npw)
+  """
+  if nspin == 4:
+    nbnd, npw2 = evc.shape
+    npw = npw2//2
+    evup = evc[:, :npw]
+    evdn = evc[:, npw:]
+  elif nspin == 2:
+    nbnd2, npw = evc.shape
+    nbnd = nbnd2//2
+    evup = evc[:nbnd, :]
+    evdn = evc[nbnd:, :]
+  elif nspin == 1:
+    evup = evdn = evc
+  else:
+    msg = 'unknown nspin=%d' % nspin
+    raise RuntimeError(msg)
+  return evup, evdn
+
 # ========================= level 1: orbital ========================
 
 def kinetic_energy(raxes, kfracs, gvl, evl, wtl):
@@ -245,3 +272,24 @@ def site_resolved_magnetization(rho, pointlist, factlist):
     rsum = [np.dot(factlist[sel], rho[ispin, sel])/nnr for ispin in range(nspin)]
     mags[iat-1, :] = rsum
   return mags
+
+def site_resolve(rho, pointlist, factlist=None):
+  """Compute density integrals for each site
+
+  Args:
+    rho (array): shape (nspin, *mesh), mesh is the FFT mesh w/ nnr grid points.
+    pointlist (array): shape (nnr,), integers from 0 to nsite. pointlist
+     assigns each FFT grid point to an atom. 0 means not assigned.
+    factlist (array): shape (nnr,), floats from 0 to 1. Weight of each point.
+  Return:
+    array: shape (nsite,), integral on each site
+  """
+  if factlist is None:
+    factlist = np.ones(len(pointlist))
+  nsite = pointlist.max()
+  nnr = len(pointlist)
+  mags = np.zeros(nsite)
+  for i in range(nsite):
+    sel = pointlist == i+1
+    mags[i] = np.dot(factlist[sel], rho[sel])
+  return mags/nnr
