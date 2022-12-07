@@ -155,6 +155,14 @@ def cell_parameters(axes, unit='bohr', fmt='%24.16f'):
     cell_text += line
   return cell_text
 
+def atomic_positions(elem_pos, unit='crystal', fmt='%16.8f'):
+  nat, ndim = elem_pos['positions'].shape
+  text = '\nATOMIC_POSITIONS %s\n' % unit
+  for elem, pos in zip(elem_pos['elements'], elem_pos['positions']):
+    line = ('%5s ' % elem) + ((fmt+' ')*ndim + '\n') % tuple(pos)
+    text += line
+  return text
+
 # ===================== level 1: file locations =====================
 
 def get_prefix_outdir(scf_in):
