@@ -183,6 +183,11 @@ def rho_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8, npol=1):
 def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, spin_resolved=False):
   from qharv.cross import pwscf_xml
   doc = pwscf_xml.read(fxml)
+  noncolin = pwscf_xml.read_true_false(doc, 'noncolin')
+  if noncolin:
+    npol = 2
+  else:
+    npol = 1
   if mesh is None:
     mesh = pwscf_xml.read_fft_mesh(doc)
   if wtl is None:
@@ -191,7 +196,6 @@ def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, spin_resolved=False
     gvl, evl = read_wfc(fxml)
   if spin_resolved:
     lsda = pwscf_xml.read_true_false(doc, 'lsda')
-    noncolin = pwscf_xml.read_true_false(doc, 'noncolin')
     if lsda:
       evupl = [ev[:len(ev)//2] for ev in evl]
       wtupl = [wt[:len(wt)//2] for wt in wtl]
@@ -201,17 +205,13 @@ def calc_rhor(fxml, mesh=None, gvl=None, evl=None, wtl=None, spin_resolved=False
       rhor_dn = rho_of_r(mesh, gvl, evdnl, wtdnl)
       return rhor_up, rhor_dn
     elif noncolin:
+      rhor = rho_of_r(mesh, gvl, evl, wtl, npol=npol)
       mags = mag_of_r(mesh, gvl, evl, wtl)
-      return mags
+      return np.r_[rhor[np.newaxis], mags]
     else:
       msg = 'cannot calculate spin-resolved density for lsda=%s' % lsda
       msg += ' and noncolin=%s' % noncolin
       raise RuntimeError(msg)
-  noncolin = pwscf_xml.read_true_false(doc, 'noncolin')
-  if noncolin:
-    npol = 2
-  else:
-    npol = 1
   rhor = rho_of_r(mesh, gvl, evl, wtl, npol=npol)
   return rhor
 
