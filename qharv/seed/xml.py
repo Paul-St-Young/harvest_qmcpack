@@ -281,7 +281,8 @@ def get_axes(doc):
     raise RuntimeError('<simulationcell> not found')
   lat_node = sc_node.find('.//parameter[@name="lattice"]')
   unit = lat_node.get('units')
-  assert unit == 'bohr'
+  if unit is not None:
+    assert unit == 'bohr'
   axes = text2arr(lat_node.text)
   return axes
 
