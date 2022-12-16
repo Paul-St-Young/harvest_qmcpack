@@ -23,9 +23,9 @@ def parse_keywords(text):
   for line in text.split('\n'):
     if '=' in line:
       key, val = line.split('=')
-      val1 = val.strip('\n').strip()
+      val1 = val.strip('\n').strip().strip(',')
       val2 = val1.strip("'").strip('"')
-      keywords[key.strip()] = val2.strip(',')
+      keywords[key.strip()] = val2
   return keywords
 
 def parse_cell_parameters(text, ndim=3):
