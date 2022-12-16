@@ -264,7 +264,7 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
   ym, ye = me2d(mat)
   dm = ym.reshape(rdm_shape)
   de = ye.reshape(rdm_shape)
-  if itwalker == 3:  # non-collinear
+  if itwalker == 3:  # non-collinear [up-up, dn-dn, up-dn, dn-up]
     dm = np.array([
       dm[0, :nbas, :nbas], dm[0, nbas:, nbas:],
       dm[0, :nbas, nbas:], dm[0, nbas:, :nbas],
