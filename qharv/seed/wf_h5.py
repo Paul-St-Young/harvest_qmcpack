@@ -101,7 +101,9 @@ def axes_elem_charges_pos(fp):
   elem_id  = fp['atoms/species_ids'][()]
   elem_map = {}  # atom label
   vchg_map = {}  # valence charge
-  nelem = fp['atoms/number_of_species'][()][0]
+  nelem = fp['atoms/number_of_species'][()]
+  if hasattr(nelem, '__iter__'):
+    nelem = nelem[0]
   for ielem in range(nelem):
     path = 'atoms/species_%d' % ielem
     elem_name = fp['%s/name' % path][()][0].decode()
