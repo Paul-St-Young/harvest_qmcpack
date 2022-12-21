@@ -185,7 +185,7 @@ def change_block(text, block, block_text):
     if len(toks) != ncol:
       break
   # copy everything after
-  for line in lines[i+j+1:]:
+  for line in lines[i+1+j+1:]:
     new_text += line + '\n'
   return new_text
 
