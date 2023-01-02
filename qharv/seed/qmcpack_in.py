@@ -239,7 +239,17 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
   fp = wf_h5.read(fh5)
   axes, elem, charge_map, pos = wf_h5.axes_elem_charges_pos(fp)
   nelecs = wf_h5.get(fp, 'nelecs')
-  nspin = wf_h5.get(fp, 'nspin')[0]
+  lspinor = False
+  if 'has_spinors' in fp['electrons']:
+    lspinor = fp['electrons']['has_spinors'][()]
+    nspin = 4
+  if not lspinor:
+    nspin = wf_h5.get(fp, 'nspin')
+    try:
+      iter(nspin)
+      nspin = nspin[0]
+    except TypeError:
+      pass
   fp.close()
   natom, ndim = pos.shape
   assert ndim == ndim0
@@ -248,11 +258,14 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
   else:  # tile supercell
     from qharv.inspect.axes_elem_pos import ase_tile
     axes, elem, pos = ase_tile(axes, elem, pos, tmat)
+    elem = np.array(elem)
   ntile = int(abs(np.linalg.det(tmat)))
   nelecs *= ntile
   if nspin == 1:
     nelecs[1] = nelecs[0]/2
     nelecs[0] /= 2
+  if lspinor:
+    nelecs[1] = 0
   spoup = spodn = 'spo_ud'
   psi_name = 'psi0'
   ion_name = 'ion0'
@@ -284,6 +297,7 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
   })
   sdet = xml.make_node('slaterdeterminant')
   for ispo, npart in zip(range(nspin), nelecs): 
+    if npart < 1: continue
     spo_name = 'spo%d' % ispo
     spo = xml.make_node('sposet', {
       'type': 'bspline',
