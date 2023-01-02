@@ -89,7 +89,7 @@ def ase_tile(axes, elem, pos, tmat):
   from ase import Atoms
   from ase.build import make_supercell
   pbc = [True]*3  # assume PBC if tiling
-  s0 = Atoms(''.join(elem), cell=axes, positions=pos, pbc=pbc)
+  s0 = Atoms(elem, cell=axes, positions=pos, pbc=pbc)
   s1 = make_supercell(s0, tmat)
   axes1 = s1.get_cell()
   elem1 = s1.get_chemical_symbols()
