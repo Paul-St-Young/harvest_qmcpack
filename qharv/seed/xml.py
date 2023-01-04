@@ -316,6 +316,29 @@ def get_species(epset, ename='e'):
     groups.append(name)
   return groups
 
+@root
+def get_group(doc, pset='e', group='u'):
+  pset = doc.find('.//particleset[@name="%s"]' % pset)
+  grp = pset.find('.//group[@name="%s"]' % group)
+  return grp
+
+def set_pos(grp, pos, name='position', dtype='posArray'):
+  text = arr2text(pos)
+  node = grp.find('.//attrib[@name="%s"]' % name)
+  if node is None:
+    node = make_node('attrib', dict(name=name, type=dtype), text=text)
+    grp.append(node)
+  else:
+    node.text = text
+
+def get_spins(grp):
+  node = grp.find('.//attrib[@name="spins"]')
+  spins = text2arr(node.text)
+  return spins
+
+def set_spins(grp, spins):
+  set_pos(grp, spins, name='spins', dtype='scalarArray')
+
 def get_nelec(doc, ename='e'):
   nelecs = get_nelecs(doc, ename=ename)
   ntot = sum(nelecs.values())
