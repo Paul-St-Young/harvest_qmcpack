@@ -70,6 +70,7 @@ def wbyw_vmc():
 
 def pbyp_vmc():
   text = '''<qmc method="vmc" move="pbyp" checkpoint="0">
+      <parameter name="blocks_between_recompute"> 8 </parameter>
       <parameter name="blocks"              >    64              </parameter>
       <parameter name="steps"               >    4               </parameter>
       <parameter name="subSteps"            >    2               </parameter>
@@ -92,6 +93,7 @@ def wbyw_dmc():
 
 def pbyp_dmc():
   text = '''<qmc method="dmc" move="pbyp" checkpoint="0">
+      <parameter name="blocks_between_recompute"> 8 </parameter>
       <parameter name="blocks"              >    16              </parameter>
       <parameter name="steps"               >    2               </parameter>
       <parameter name="timestep"            >    0.4             </parameter>
@@ -102,6 +104,7 @@ def pbyp_dmc():
 def pbyp_optimize():
   text = '''<loop max="8">
     <qmc method="linear" move="pbyp" checkpoint="-1">
+      <parameter name="blocks_between_recompute"> 8 </parameter>
       <parameter name="blocks">         64 </parameter>
       <parameter name="warmupsteps">    40 </parameter>
       <parameter name="timestep">      1.0 </parameter>
@@ -135,6 +138,7 @@ def pbyp_var_optimize():
       <cost name="energy">               0.05  </cost>
       <cost name="unreweightedvariance"> 0.95  </cost>
       <cost name="reweightedvariance">   0.00  </cost>
+      <parameter name="blocks_between_recompute"> 8 </parameter>
       <parameter name="blocks">         64 </parameter>
       <parameter name="warmupsteps">    40 </parameter>
       <parameter name="timestep">      3.5 </parameter>
