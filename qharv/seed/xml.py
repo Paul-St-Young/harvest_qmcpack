@@ -326,7 +326,7 @@ def set_pos(grp, pos, name='position', dtype='posArray'):
   text = arr2text(pos)
   node = grp.find('.//attrib[@name="%s"]' % name)
   if node is None:
-    node = make_node('attrib', dict(name=name, type=dtype), text=text)
+    node = make_node('attrib', dict(name=name, datatype=dtype), text=text)
     grp.append(node)
   else:
     node.text = text
