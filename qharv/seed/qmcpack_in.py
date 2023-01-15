@@ -259,7 +259,7 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
     from qharv.inspect.axes_elem_pos import ase_tile
     axes, elem, pos = ase_tile(axes, elem, pos, tmat)
     elem = np.array(elem)
-  ntile = int(abs(np.linalg.det(tmat)))
+  ntile = int(round(abs(np.linalg.det(tmat))))
   nelecs *= ntile
   if nspin == 1:
     nelecs[1] = nelecs[0]/2
