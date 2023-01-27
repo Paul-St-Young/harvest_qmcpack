@@ -523,10 +523,7 @@ def linecut(axes, r0, dr, mr=10000, sort=True, fraction=True):
 
 def rcut_partition(axes, pos, rvecs, rcut=None):
   if rcut is None:
-    disps, dists = minimum_image_displacements(axes, pos)
-    natom = len(pos)
-    idx = np.triu_indices(natom, k=1)
-    dist_min = dists[idx].min()
+    dist_min = minimum_separation(axes, pos)
     rcut = dist_min/2
   pointlist = np.zeros(len(rvecs), dtype=int)
   for i, p in enumerate(pos):
@@ -534,6 +531,13 @@ def rcut_partition(axes, pos, rvecs, rcut=None):
     sel = rij[0] < rcut
     pointlist[sel] = i+1
   return pointlist
+
+def minimum_separation(axes, pos):
+  disps, dists = minimum_image_displacements(axes, pos)
+  natom = len(pos)
+  idx = np.triu_indices(natom, k=1)
+  dist_min = dists[idx].min()
+  return dist_min
 
 def voronoi_partition(axes, pos, rvecs):
   pointlist = np.zeros(len(rvecs), dtype=int)
