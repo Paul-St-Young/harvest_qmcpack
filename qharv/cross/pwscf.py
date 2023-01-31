@@ -481,3 +481,29 @@ def copy_charge_density(scf_dir, nscf_dir, execute=True):
         msg += ' and %s ' % fpsp
     msg += '\n to %s' % save_new
     print(msg)
+
+def link_ace(scf_inp, nscf_dir, execute=True):
+  """Link exact exchange ace*.hdf5 files for restart or nscf
+
+  Args:
+    scf_inp (str): path to input file
+    nscf_dir (str): nscf folder
+    execute (bool, optional): perform file system operations, default True
+      if execute is False, then description of operations will be printed.
+  """
+  import os
+  import subprocess as sp
+  from qharv.field.sugar import mkdir
+  save_dir = find_save(scf_inp)
+  scf_dir = os.path.dirname(scf_inp)
+  if scf_dir == nscf_dir:
+    return  # do nothing
+  save_rel = os.path.relpath(save_dir, scf_dir)
+  save_new = os.path.join(nscf_dir, save_rel)
+  rpath = os.path.relpath(save_dir, save_new)
+  cmd = 'cd %s; ln -s %s/ace*.hdf5 .' % (save_new, rpath)
+  if execute:
+    mkdir(save_new)
+    sp.check_call(cmd, shell=True)
+  else:
+    print(cmd)
