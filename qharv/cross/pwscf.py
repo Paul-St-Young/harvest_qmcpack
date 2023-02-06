@@ -520,17 +520,20 @@ def dft_convergence_fig(ynames, xnames=None):
   assert ncol == 2
   nrow = len(ynames)
   fig, axa = plt.subplots(nrow, ncol)
+  axa = axa.reshape(nrow, ncol)
   for irow, ax_row in enumerate(axa):
-    ax1, ax2 = ax_row
-    ax1.get_shared_y_axes().join(ax1, ax2)
+    yname = ynames[irow]
+    for ax in ax_row:
+      ax.set_ylabel(yname)
+    ax1 = ax_row[0]
+    for ax2 in ax_row[1:]:
+      ax1.get_shared_y_axes().join(ax1, ax2)
     if irow != nrow-1:
       for ax in ax_row:
         ax.get_xaxis().set_ticklabels([])
     else:
       for ax, xname in zip(ax_row, xnames):
         ax.set_xlabel(xname)
-    for ax, yname in zip(ax_row, ynames):
-      ax.set_ylabel(yname)
   for icol in range(ncol):
     ax_col = axa[:, icol]
     ax1 = ax_col[0]
@@ -540,4 +543,21 @@ def dft_convergence_fig(ynames, xnames=None):
     yaxis = ax.get_yaxis()
     yaxis.tick_right()
     yaxis.set_label_position('right')
+  return fig, axa
+
+
+def dft_convergence_plot(df, xnames, xfixes, ynames, relative=False):
+  fig, axa = dft_convergence_fig(ynames, xnames=xnames)
+  ncol = len(xnames)
+  for icol, xname in enumerate(xnames):
+    axl = axa[:, icol]
+    jcol = (icol+1) % ncol
+    sel = df[xnames[jcol]] == xfixes[jcol]
+    df.sort_values(xname, inplace=True)
+    for ax, yname in zip(axl, ynames):
+      x = df.loc[sel, xname].values
+      y = df.loc[sel, yname].values
+      if relative:
+        y -= y[-1]
+      ax.plot(x, y, marker='.')
   return fig, axa
