@@ -164,12 +164,14 @@ def atomic_positions(elem_pos, unit='crystal', fmt='%16.8f'):
   return text
 
 def change_block(text, block, block_text):
-  if block not in ['ATOMIC_POSITIONS', 'CELL_PARAMETERS']:
+  if block not in ['ATOMIC_POSITIONS', 'CELL_PARAMETERS', 'K_POINTS']:
     raise NotImplementedError(block)
   if block == 'ATOMIC_POSITIONS':
     ncol = 4
   elif block == 'CELL_PARAMETERS':
     ncol = 3
+  elif block == 'K_POINTS':
+    ncol = 4
   new_text = ''
   lines = text.split('\n')
   # copy everything before
@@ -177,6 +179,14 @@ def change_block(text, block, block_text):
     if block in line:
       break
     new_text += line + '\n'
+  # process block header
+  if block == 'K_POINTS':
+    header = line
+    tag, unit = header.split()
+    if unit == 'automatic':
+      ncol = 6
+    else:
+      i += 1
   # insert new block
   new_text += block_text + '\n'
   # skip old block
