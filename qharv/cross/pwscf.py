@@ -507,3 +507,37 @@ def link_ace(scf_inp, nscf_dir, execute=True):
     sp.check_call(cmd, shell=True)
   else:
     print(cmd)
+
+# ========================== level 2: plot ==========================
+def dft_convergence_fig(ynames, xnames=None):
+  """ Example:
+  >>> fig, axa = dft_convergence_fig(['etot', 'mabs'])
+  """
+  import matplotlib.pyplot as plt
+  if xnames is None:
+    xnames = ['nkx', 'ecut']
+  ncol = len(xnames)
+  assert ncol == 2
+  nrow = len(ynames)
+  fig, axa = plt.subplots(nrow, ncol)
+  for irow, ax_row in enumerate(axa):
+    ax1, ax2 = ax_row
+    ax1.get_shared_y_axes().join(ax1, ax2)
+    if irow != nrow-1:
+      for ax in ax_row:
+        ax.get_xaxis().set_ticklabels([])
+    else:
+      for ax, xname in zip(ax_row, xnames):
+        ax.set_xlabel(xname)
+    for ax, yname in zip(ax_row, ynames):
+      ax.set_ylabel(yname)
+  for icol in range(ncol):
+    ax_col = axa[:, icol]
+    ax1 = ax_col[0]
+    for ax2 in ax_col[1:]:
+      ax1.get_shared_x_axes().join(ax1, ax2)
+  for ax in ax_col:
+    yaxis = ax.get_yaxis()
+    yaxis.tick_right()
+    yaxis.set_label_position('right')
+  return fig, axa
