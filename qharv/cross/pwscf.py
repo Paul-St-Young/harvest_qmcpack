@@ -213,8 +213,7 @@ def find_xml(scf_inp):
   path = os.path.dirname(scf_inp)
   fxml = os.path.join(path, outdir, prefix) + ".xml"
   if not os.path.isfile(fxml):
-    msg = "%s not found" % fxml
-    raise RuntimeError(msg)
+    fxml = None
   return fxml
 
 def find_save(scf_inp):
