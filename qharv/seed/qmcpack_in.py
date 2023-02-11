@@ -231,7 +231,7 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
   """
   import numpy as np
   from qharv.seed import wf_h5
-  if run_dir is not None:
+  if (run_dir is not None) and (len(run_dir) > 0):
     fh5_loc = os.path.relpath(fh5, run_dir)
   else:
     fh5_loc = fh5
@@ -239,6 +239,8 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
   fp = wf_h5.read(fh5)
   axes, elem, charge_map, pos = wf_h5.axes_elem_charges_pos(fp)
   nelecs = wf_h5.get(fp, 'nelecs')
+  if np.allclose(nelecs, 0):
+    nelecs[0] = 1  # !!!! HACK for 1e unit cell
   lspinor = False
   if 'has_spinors' in fp['electrons']:
     lspinor = fp['electrons']['has_spinors'][()]
