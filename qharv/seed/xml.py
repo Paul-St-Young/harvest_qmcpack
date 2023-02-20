@@ -245,6 +245,8 @@ def get_param(node, pname):
     str: string representation of the parameter value
   """
   pnode = node.find('.//parameter[@name="%s"]' % pname)
+  if pnode is None:
+    return pnode
   return pnode.text
 
 def set_param(node, pname, pval, new=False, pad=' '):
