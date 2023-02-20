@@ -542,10 +542,22 @@ def set_norb(doc, norb):
     doc is modified
   """
   epset = doc.find('.//particleset[@name="e"]')
+  randt = epset.get('random')
+  lpos = randt == 'no'  # manually change particle positions
   for group in epset.findall('.//group'):  # 'u' and 'd'
+    n0 = int(group.get('size'))
+    if lpos and (n0 != norb):
+      msg = 'edit position'
+      raise NotImplementedError(msg)
     group.set('size', str(norb))
 
-  sposet = doc.find('.//sposet[@name="spo_ud"]')
+  bbl = doc.findall('.//sposet_builder')
+  if len(bbl) != 1:
+    raise RuntimeError('found %d builders' % len(bbl))
+  spol = doc.findall('.//sposet')
+  if len(spol) != 1:
+    raise RuntimeError('found %d SPO sets' % len(spol))
+  sposet = spol[0]
   sposet.set('size', str(norb))
 
   detset = doc.find('.//determinantset')
