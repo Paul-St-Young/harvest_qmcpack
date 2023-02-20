@@ -341,6 +341,16 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
 
 # ================== level 1: use existing input ===================
 
+# ------------------------------- cell ------------------------------
+def get_ndim(doc):
+  sc = doc.find('.//simulationcell')
+  handler = xml.get_param(sc, 'LR_handler')
+  ndim = 3
+  if handler is not None:
+    if '2d' in handler:
+      ndim = 2
+  return ndim
+
 # ------------------------------- qmc -------------------------------
 def set_nwalker(doc, nwalker):
   """ set the number of walkers to use in DMC
@@ -546,9 +556,23 @@ def set_norb(doc, norb):
   lpos = randt == 'no'  # manually change particle positions
   for group in epset.findall('.//group'):  # 'u' and 'd'
     n0 = int(group.get('size'))
-    if lpos and (n0 != norb):
-      msg = 'edit position'
-      raise NotImplementedError(msg)
+    if lpos and (n0 != norb):  # edit positions
+      import numpy as np
+      pa0 = group.find('.//attrib[@name="position"]')
+      pos0 = xml.text2arr(pa0.text)
+      pos1 = pos0.copy()
+      if norb < n0:  # remove last few
+        pos1 = pos1[:norb]
+      elif norb < 2*n0-1:  # add new particles between old ones
+        for i in range(norb-n0):
+          rmid = (pos1[i]+pos1[i+1])/2
+          pos1 = np.r_[pos1, [rmid]]
+      else:
+        msg = 'too many %d to add to %d' % (norb-n0, n0)
+        raise NotImplementedError(msg)
+      assert len(pos1) == norb
+      pa1 = pos_attrib(pos1)
+      xml.swap_node(pa0, pa1)
     group.set('size', str(norb))
 
   bbl = doc.findall('.//sposet_builder')
