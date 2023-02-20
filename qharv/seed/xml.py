@@ -344,6 +344,15 @@ def get_nelec(doc, ename='e'):
   ntot = sum(nelecs.values())
   return ntot
 
+def get_group_pos(grp):
+  pos_node  = grp.find('.//attrib[@name="position"]')
+  if pos_node is None:  # look in parent (old-style input)
+    pset_node = grp.getparent()
+    pos_node = pset_node.find('.//attrib[@name="position"]')
+  pos_text = pos_node.text.strip('\n')+'\n'
+  pos = text2arr(pos_text.strip('\n'))
+  return pos
+
 def get_pos(doc, pset='ion0', group=None):
   # find <particleset>
   pset_node = doc.find('.//particleset[@name="%s"]' % pset)
@@ -359,12 +368,7 @@ def get_pos(doc, pset='ion0', group=None):
   for grp in groups:
     name = grp.get('name')
     names.append(name)
-    pos_node  = grp.find('.//attrib[@name="position"]')
-    if pos_node is None:  # look in parent (old-style input)
-      pset_node = grp.getparent()
-      pos_node = pset_node.find('.//attrib[@name="position"]')
-    pos_text = pos_node.text.strip('\n')+'\n'
-    pos[name] = text2arr(pos_text.strip('\n'))
+    pos[name] = get_group_pos(grp)
   # get requestsed particle positions
   if group is not None:
     pos = pos[group]
