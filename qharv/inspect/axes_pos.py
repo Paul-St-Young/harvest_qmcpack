@@ -481,7 +481,7 @@ def ase_get_spacegroup_id(axes, elem, pos, **kwargs):
   return sg.no
 
 # ======================== level 2: wrapping ========================
-def linecut(axes, r0, dr, mr=10000, sort=True, fraction=True):
+def linecut(axes, r0, dr, mr=100000, sort=True, fraction=True):
   """ generate a line across the cell
 
   Args:
@@ -511,7 +511,7 @@ def linecut(axes, r0, dr, mr=10000, sort=True, fraction=True):
       iline.append(ir*pm)
     if ir >= mr-1:
       msg = 'not enough points to reach edge of cell'
-      msg += ' increase dr=%f or mr=%d' % (dr, mr)
+      msg += ' increase dr=%s or mr=%d' % (str(dr), mr)
       raise RuntimeError(msg)
   rline = np.array(line)
   if sort:
