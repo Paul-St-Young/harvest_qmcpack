@@ -254,7 +254,7 @@ def create_legend(ax, styles, labels, **kwargs):
 def set_style(style='ticks', context='talk', **kwargs):
   import seaborn as sns
   if (context=='talk') and ('font_scale' not in kwargs):
-    kwargs['font_scale'] = 0.7
+    kwargs['font_scale'] = 0.9
   sns.set_style(style)
   sns.set_context(context, **kwargs)
 
@@ -403,7 +403,7 @@ def show_spline(ax, line, spl_kws=dict(), sel=None, **kwargs):
   return line1
 
 def krig(finex, x0, y0, length_scale, noise_level):
-  from sklearn.gaussian_process.gpr import GaussianProcessRegressor
+  from sklearn.gaussian_process import GaussianProcessRegressor
   from sklearn.gaussian_process.kernels import DotProduct, RBF
   from sklearn.gaussian_process.kernels import WhiteKernel
   kernel = DotProduct() + RBF(length_scale=length_scale)
