@@ -187,7 +187,7 @@ def group_min(df, labels, yname, find_max=False):
     idx = groups.apply(lambda x: x[yname].idxmax()).values
   else:
     idx = groups.apply(lambda x: x[yname].idxmin()).values
-  return df.iloc[idx]
+  return df.loc[idx]
 
 # ======================== level 2: propagate error =======================
 def resample(marr, earr, nsample, seed=None):
