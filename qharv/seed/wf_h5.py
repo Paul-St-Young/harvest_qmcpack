@@ -57,6 +57,7 @@ def ls(handle, r=False, level=0, indent="  "):
 
 # ====== level 1: QMCPACK wavefunction hdf5 fixed locations ======
 locations = {
+  'mesh': 'electrons/density/mesh',
   'gvectors': 'electrons/kpoint_0/gvectors',
   'nkpt': 'electrons/number_of_kpoints',
   'nelecs': 'electrons/number_of_electrons',
