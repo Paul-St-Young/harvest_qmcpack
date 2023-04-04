@@ -91,7 +91,7 @@ def assemble_project(nodel, name='qmc', series=0):
   doc = etree.ElementTree(qsim)
   return doc
 
-def simulationcell_from_axes(axes, bconds='p p p', rckc=15.):
+def simulationcell_from_axes(axes_in, bconds=None, rckc=15., lr_handler=None):
   """ construct the <simulationcell> xml element from axes
 
    Args:
@@ -102,9 +102,27 @@ def simulationcell_from_axes(axes, bconds='p p p', rckc=15.):
    Return:
      etree.Element: representing <simulationcell>
   """
+  ndim = len(axes_in)
+  if ndim == 3:
+    axes = axes_in
+    if bconds is None:
+      bconds = 'p p p'
+  elif ndim == 2:
+    import numpy as np
+    from qharv.inspect import axes_pos
+    rcut = axes_pos.rwsc(axes_in)
+    axes = 2*rcut*np.eye(3)
+    axes[:ndim, :ndim] = axes_in
+    if bconds is None:
+      bconds = 'p p n'
+    if lr_handler is None:
+      lr_handler = 'ewald_strict2d'
+  else:
+    msg = 'simulationcell_from_axes ndim = %d' % ndim
+    raise RuntimeError(msg)
 
-  def pad_line(line):  # allow content to be selected by double clicked
-    return ' ' + line + ' '
+  # build <simulationcell>
+  sc_node = etree.Element('simulationcell')
 
   # write primitive lattice vectors
   lat_node = etree.Element('parameter', attrib={
@@ -112,20 +130,16 @@ def simulationcell_from_axes(axes, bconds='p p p', rckc=15.):
     'units': 'bohr'
   })
   lat_node.text = xml.arr2text(axes)
+  sc_node.append(lat_node)
 
   # write boundary conditions
-  bconds_node = etree.Element('parameter', {'name': 'bconds'})
-  bconds_node.text = pad_line(bconds)
+  xml.set_param(sc_node, 'bconds', bconds, new=True)
 
   # write long-range cutoff parameter
-  lr_node = etree.Element('parameter', {'name': 'LR_dim_cutoff'})
-  lr_node.text = pad_line(str(rckc))
+  xml.set_param(sc_node, 'LR_dim_cutoff', str(rckc), new=True)
+  if lr_handler is not None:
+    xml.set_param(sc_node, 'LR_handler', lr_handler, new=True)
 
-  # build <simulationcell>
-  sc_node = etree.Element('simulationcell')
-  sc_node.append(lat_node)
-  sc_node.append(bconds_node)
-  sc_node.append(lr_node)
   return sc_node
 
 def pos_attrib(pos):
