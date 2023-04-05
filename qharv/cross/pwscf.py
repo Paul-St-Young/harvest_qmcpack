@@ -75,7 +75,7 @@ def parse_kpoints(text, ndim=3):
     for line in lines[i+2:i+2+nkpt]:
       tokens = line.split()
       kvec = np.array(tokens[:ndim], dtype=float)
-      wt = int(tokens[-1])
+      wt = float(tokens[-1])
       kl.append(kvec)
       wl.append(wt)
     kvecs = np.array(kl)
