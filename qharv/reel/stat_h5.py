@@ -10,6 +10,14 @@ from qharv.seed.wf_h5 import read, ls
 def path_loc(handle, path):
   return handle[path][()]
 
+def fout_from_fstat(fstat, name):
+  fout = fstat.replace('stat.h5', '%s.h5' % name)
+  if os.path.abspath(fout) == os.path.abspath(fstat):
+    msg = 'refuse to override file'
+    raise RuntimeError(msg)
+  return fout
+
+
 def me2d(edata, kappa=None, axis=0):
   """ Calculate mean and error of a table of columns
 
@@ -174,6 +182,13 @@ def nofk(fp, obs_name, nequil, kappa=None):
   kvecs = fp[obs_name]['kpoints'][()]
   nkm, nke = mean_and_err(fp, '%s/value' % obs_name, nequil, kappa)
   return kvecs, nkm, nke
+
+def spindensity(fp, obs_name, nequil, kappa=None):
+  sdens = dict()
+  for group in fp[obs_name]:
+    rhom, rhoe = mean_and_err(fp, '%s/%s/value' % (obs_name, group), nequil, kappa)
+    sdens[group] = (rhom, rhoe)
+  return sdens
 
 def rdm1(fp, obs_name, nequil, kappa=None):
   """ extract 1RMD output from stat.h5 file
