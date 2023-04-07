@@ -82,7 +82,7 @@ def name_sep_val(mm, name, sep='=', dtype=float, pos=1, ival=0):
   tokens = line.split(sep)
 
   # assume the text immediately next to the separator is the desired value
-  val_text = tokens[pos].split()[ival]
+  val_text = tokens[pos] if ival is None else tokens[pos].split()[ival]
   val = dtype(val_text)
   return val
 
