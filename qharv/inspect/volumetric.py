@@ -155,7 +155,7 @@ def read_xsf_datagrid_3d_density(
   iline = 0
   for line in lines:
     if iline == 0:
-      grid_shape = map(int, lines[0].split())
+      grid_shape = list(map(int, lines[0].split()))
       iline += 1
       continue
     tokens = line.split()
