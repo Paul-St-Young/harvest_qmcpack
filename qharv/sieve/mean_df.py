@@ -211,7 +211,7 @@ def taw(ym, ye, weights):
     aye = (weights[:, np.newaxis]**2*ye**2).sum(axis=0)**0.5/wtot
   return aym, aye
 
-def dfme(df, cols, no_error=False, weight_name=None):
+def dfme(df, cols, no_error=False, weight_name=None, stddev=False):
   """ Average scalar quantities over a set of calculations.
 
   Args:
@@ -219,6 +219,8 @@ def dfme(df, cols, no_error=False, weight_name=None):
     cols (list): a list of column names, e.g. ['E_tot', 'KE_tot']
     weight_name (str, optional): name of weight column, default None, i.e.
      every entry has the same weight
+    stddev (bool, optional): return the standard deviation rather than
+     the standard error. Default is False.
   Return:
     pd.DataFrame: averaged database
   """
@@ -240,6 +242,8 @@ def dfme(df, cols, no_error=False, weight_name=None):
     datm = df[mcols].values
     date = df[ecols].values
     ym, ye = taw(datm, date, wts)
+    if stddev:
+      ye *= wts.sum()**0.5
     for col, y1 in zip(ecols, ye):
       entry[col] = y1
   for col, y1 in zip(mcols, ym):
