@@ -303,15 +303,14 @@ def minimum_image_displacements(axes, pos, rj=None, mnx=-1, mxx=1):
   nj = len(rj)
   disps = np.zeros([ni, nj, ndim])
   dists = np.inf*np.ones([ni, nj])
-  for l in range(ndim):
-    for g in product(range(mnx, mxx+1), repeat=ndim):
-      a = np.dot(g, axes)
-      rj1 = rj+a
-      drij = ri[:, np.newaxis] - rj1[np.newaxis, :]
-      rij = np.linalg.norm(drij, axis=-1)
-      sel = rij < dists
-      dists[sel] = rij[sel]
-      disps[sel] = drij[sel]
+  for g in product(range(mnx, mxx+1), repeat=ndim):
+    a = np.dot(g, axes)
+    rj1 = rj+a
+    drij = ri[:, np.newaxis] - rj1[np.newaxis, :]
+    rij = np.linalg.norm(drij, axis=-1)
+    sel = rij < dists
+    dists[sel] = rij[sel]
+    disps[sel] = drij[sel]
   return disps, dists
 
 def displacement_table(axes, pos1, pos0):
