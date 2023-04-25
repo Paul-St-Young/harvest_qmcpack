@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from qharv.field import sugar
 
-def text_mean_error(ym, ye, nshow=1, mndig=8):
+def text_mean_error(ym_in, ye_in, nshow=1, mndig=8):
   """ convert data such as 1.23 +/- 0.01 to strings such as 1.23(1)
 
   Args:
@@ -14,6 +14,13 @@ def text_mean_error(ym, ye, nshow=1, mndig=8):
   Return:
     np.array: an array of strings
   """
+  # handle number of list inputs
+  if np.issubdtype(type(ym_in), np.number):
+    ym = np.array([ym_in])
+    ye = np.array([ye_in])
+  else:
+    ym = np.array(ym_in)
+    ye = np.array(ye_in)
   # find the number of digits to print
   ndig = mndig*np.ones(len(ye), dtype=int)
   sel = abs(ye) >= 10**(-mndig)
@@ -31,7 +38,9 @@ def text_mean_error(ym, ye, nshow=1, mndig=8):
   ye_val = np.around(abs(ye)*10**(ndig+nshow-1))
   yet = ['('+e.astype(int).astype(str)+')' if e > 0 else '' for e in ye_val]
   # append error in parenteses
-  yt = [m+e for (m, e) in zip(ymt, yet)]
+  yt = [(m+e).strip() for (m, e) in zip(ymt, yet)]
+  if len(yt) == 1:
+    return yt[0]
   return np.array(yt)
 
 def mean_error_text(texts):

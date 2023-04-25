@@ -65,6 +65,23 @@ def categorize_columns(cols, nosuf=False, msuffix='_mean', esuffix='_error'):
     return rcol, names
   return rcol, mcol, ecol
 
+def select_parameters(df, params):
+  """Create a boolean array to select a subset of rows from a DataFrame,
+    using specific parameter values from the specified columns.
+
+  Args:
+    df (pd.DataFrame): mean dataframe
+    params (dict): a dictionary of parameter values to select
+  Return:
+    np.array: a 1D array of True/False with the same length as input df
+  Example:
+    >>> sel = select_parameters(df, {'rs': 3, 'nelec': 54})
+  """
+  sel = np.zeros(len(df), dtype=bool)
+  for key, val in params.items():
+    sel = sel & (df[key] == val)
+  return sel
+
 def xyye(df, xname, yname, sel=None, xerr=False, yerr=True, sort=False, msuffix='_mean', esuffix='_error'):
   """Get x vs. y data from a mean data frame.
 
@@ -108,7 +125,7 @@ def xyye(df, xname, yname, sel=None, xerr=False, yerr=True, sort=False, msuffix=
     idx = np.argsort(xm)
   return [ret[idx] for ret in rets if ret is not None]
 
-def dxyye(xy1, xy0):
+def dxyye(xy1, xy0, add=False, ndig=6):
   """Calculate y1-y0 at points that exist in both x1 and x0
 
   Args:
@@ -124,19 +141,29 @@ def dxyye(xy1, xy0):
   if len(xy1) == 3:  # with errorbar
     x1, ym1, ye1 = xy1
     x0, ym0, ye0 = xy0
-    x, sel1, sel0 = np.intersect1d(x1, x0, return_indices=True)
-    ym = ym1[sel1]-ym0[sel0]
+    x, sel1, sel0 = np.intersect1d(x1.round(ndig), x0.round(ndig), return_indices=True)
+    if add:
+      ym = ym1[sel1]+ym0[sel0]
+    else:
+      ym = ym1[sel1]-ym0[sel0]
     ye = (ye1[sel1]**2+ye0[sel0]**2)**0.5
     return x, ym, ye
   elif len(xy1) == 2:  # no errorbar
     x1, y1 = xy1
     x0, y0 = xy0
-    x, sel1, sel0 = np.intersect1d(x1, x0, return_indices=True)
-    y = y1[sel1]-y0[sel0]
+    x, sel1, sel0 = np.intersect1d(x1.round(ndig), x0.round(ndig), return_indices=True)
+    if add:
+      y = y1[sel1]+y0[sel0]
+    else:
+      y = y1[sel1]-y0[sel0]
     return x, y
   else:
     msg = 'unknown case'
     raise RuntimeError(msg)
+
+def sxyye(xy1, xy0):
+  print('obsolete alias')
+  return dxyye(xy1, xy0, add=True)
 
 def group_min(df, labels, yname, find_max=False):
   """Select the row that minimizes column "yname" in each group.
@@ -160,7 +187,7 @@ def group_min(df, labels, yname, find_max=False):
     idx = groups.apply(lambda x: x[yname].idxmax()).values
   else:
     idx = groups.apply(lambda x: x[yname].idxmin()).values
-  return df.iloc[idx]
+  return df.loc[idx]
 
 # ======================== level 2: propagate error =======================
 def resample(marr, earr, nsample, seed=None):
@@ -184,7 +211,7 @@ def taw(ym, ye, weights):
     aye = (weights[:, np.newaxis]**2*ye**2).sum(axis=0)**0.5/wtot
   return aym, aye
 
-def dfme(df, cols, no_error=False, weight_name=None):
+def dfme(df, cols, no_error=False, weight_name=None, stddev=False):
   """ Average scalar quantities over a set of calculations.
 
   Args:
@@ -192,6 +219,8 @@ def dfme(df, cols, no_error=False, weight_name=None):
     cols (list): a list of column names, e.g. ['E_tot', 'KE_tot']
     weight_name (str, optional): name of weight column, default None, i.e.
      every entry has the same weight
+    stddev (bool, optional): return the standard deviation rather than
+     the standard error. Default is False.
   Return:
     pd.DataFrame: averaged database
   """
@@ -213,6 +242,8 @@ def dfme(df, cols, no_error=False, weight_name=None):
     datm = df[mcols].values
     date = df[ecols].values
     ym, ye = taw(datm, date, wts)
+    if stddev:
+      ye *= wts.sum()**0.5
     for col, y1 in zip(ecols, ye):
       entry[col] = y1
   for col, y1 in zip(mcols, ym):

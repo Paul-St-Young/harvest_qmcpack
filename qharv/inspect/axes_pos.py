@@ -284,6 +284,36 @@ def auto_distance_table(axes, pos, dn=1):
     dtable[i, j] = dtable[j, i] = dist
   return dtable
 
+def minimum_image_displacements(axes, pos, rj=None, mnx=-1, mxx=1):
+  """Calculate minimum-image displacement vectors between two sets of particles
+
+  Args:
+    axes (np.array): lattice vectors in row-major
+    pos  (np.array): particle positions in row-major
+  Return:
+    tuple: (displacements, distances) shapes are
+      (ni, nj, ndim) and (ni, nj), respectively
+  """
+  from itertools import product
+  ri = pos
+  if rj is None:
+    rj = ri
+  ni = ri.shape[0]; ndim = ri.shape[-1]
+  assert rj.shape[-1] == ndim
+  nj = len(rj)
+  disps = np.zeros([ni, nj, ndim])
+  dists = np.inf*np.ones([ni, nj])
+  for l in range(ndim):
+    for g in product(range(mnx, mxx+1), repeat=ndim):
+      a = np.dot(g, axes)
+      rj1 = rj+a
+      drij = ri[:, np.newaxis] - rj1[np.newaxis, :]
+      rij = np.linalg.norm(drij, axis=-1)
+      sel = rij < dists
+      dists[sel] = rij[sel]
+      disps[sel] = drij[sel]
+  return disps, dists
+
 def displacement_table(axes, pos1, pos0):
   """Calculate the distance table between two sets of particles
 
@@ -298,7 +328,7 @@ def displacement_table(axes, pos1, pos0):
   # apply PBC
   box = np.diag(axes)
   if not np.allclose(np.diag(box), axes):
-    raise NotImplementedError()
+    drij, rij = minimum_image_displacements(axes, pos1, pos0)
   else:
     nint = np.around(drij)/box
     drij -= nint*box
@@ -451,7 +481,7 @@ def ase_get_spacegroup_id(axes, elem, pos, **kwargs):
   return sg.no
 
 # ======================== level 2: wrapping ========================
-def linecut(axes, r0, dr, mr=10000, sort=True, fraction=True):
+def linecut(axes, r0, dr, mr=100000, sort=True, fraction=True):
   """ generate a line across the cell
 
   Args:
@@ -481,10 +511,37 @@ def linecut(axes, r0, dr, mr=10000, sort=True, fraction=True):
       iline.append(ir*pm)
     if ir >= mr-1:
       msg = 'not enough points to reach edge of cell'
-      msg += ' increase dr=%f or mr=%d' % (dr, mr)
+      msg += ' increase dr=%s or mr=%d' % (str(dr), mr)
       raise RuntimeError(msg)
   rline = np.array(line)
   if sort:
     idx = np.argsort(iline)
     rline = rline[idx]
   return rline
+
+# ==================== level 2: space partitions ====================
+
+def rcut_partition(axes, pos, rvecs, rcut=None):
+  if rcut is None:
+    dist_min = minimum_separation(axes, pos)
+    rcut = dist_min/2
+  pointlist = np.zeros(len(rvecs), dtype=int)
+  for i, p in enumerate(pos):
+    drij, rij = minimum_image_displacements(axes, p[np.newaxis], rvecs)
+    sel = rij[0] < rcut
+    pointlist[sel] = i+1
+  return pointlist
+
+def minimum_separation(axes, pos):
+  disps, dists = minimum_image_displacements(axes, pos)
+  natom = len(pos)
+  idx = np.triu_indices(natom, k=1)
+  dist_min = dists[idx].min()
+  return dist_min
+
+def voronoi_partition(axes, pos, rvecs):
+  pointlist = np.zeros(len(rvecs), dtype=int)
+  for i, r1 in enumerate(rvecs):
+    disps, dists = minimum_image_displacements(axes, r1[np.newaxis], pos)
+    pointlist[i] = np.argmin(dists[0])+1
+  return pointlist

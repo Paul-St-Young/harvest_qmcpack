@@ -245,6 +245,8 @@ def get_param(node, pname):
     str: string representation of the parameter value
   """
   pnode = node.find('.//parameter[@name="%s"]' % pname)
+  if pnode is None:
+    return pnode
   return pnode.text
 
 def set_param(node, pname, pval, new=False, pad=' '):
@@ -281,7 +283,8 @@ def get_axes(doc):
     raise RuntimeError('<simulationcell> not found')
   lat_node = sc_node.find('.//parameter[@name="lattice"]')
   unit = lat_node.get('units')
-  assert unit == 'bohr'
+  if unit is not None:
+    assert unit == 'bohr'
   axes = text2arr(lat_node.text)
   return axes
 
@@ -315,16 +318,51 @@ def get_species(epset, ename='e'):
     groups.append(name)
   return groups
 
+@root
+def get_group(doc, pset='e', group='u'):
+  pset = doc.find('.//particleset[@name="%s"]' % pset)
+  grp = pset.find('.//group[@name="%s"]' % group)
+  return grp
+
+def set_pos(grp, pos, name='position', dtype='posArray'):
+  text = arr2text(pos)
+  node = grp.find('.//attrib[@name="%s"]' % name)
+  if node is None:
+    node = make_node('attrib', dict(name=name, datatype=dtype), text=text)
+    grp.append(node)
+  else:
+    node.text = text
+
+def get_spins(grp):
+  node = grp.find('.//attrib[@name="spins"]')
+  spins = text2arr(node.text)
+  return spins
+
+def set_spins(grp, spins):
+  set_pos(grp, spins, name='spins', dtype='scalarArray')
+
 def get_nelec(doc, ename='e'):
   nelecs = get_nelecs(doc, ename=ename)
   ntot = sum(nelecs.values())
   return ntot
 
+def get_group_pos(grp):
+  pos_node  = grp.find('.//attrib[@name="position"]')
+  if pos_node is None:  # look in parent (old-style input)
+    pset_node = grp.getparent()
+    pos_node = pset_node.find('.//attrib[@name="position"]')
+  pos_text = pos_node.text.strip('\n')+'\n'
+  pos = text2arr(pos_text.strip('\n'))
+  return pos
+
 def get_pos(doc, pset='ion0', group=None):
   # find <particleset>
   pset_node = doc.find('.//particleset[@name="%s"]' % pset)
   if pset_node is None:
-    raise RuntimeError('%s not found' % pset)
+    if doc.tag == 'particleset':
+      pset_node = doc
+    else:
+      raise RuntimeError('%s not found' % pset)
   pos = dict()
   # find <group> if necessary
   groups = pset_node.findall('.//group')
@@ -332,12 +370,7 @@ def get_pos(doc, pset='ion0', group=None):
   for grp in groups:
     name = grp.get('name')
     names.append(name)
-    pos_node  = grp.find('.//attrib[@name="position"]')
-    if pos_node is None:  # look in parent (old-style input)
-      pset_node = grp.getparent()
-      pos_node = pset_node.find('.//attrib[@name="position"]')
-    pos_text = pos_node.text.strip('\n')+'\n'
-    pos[name] = text2arr(pos_text.strip('\n'))
+    pos[name] = get_group_pos(grp)
   # get requestsed particle positions
   if group is not None:
     pos = pos[group]

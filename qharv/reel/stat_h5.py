@@ -10,6 +10,14 @@ from qharv.seed.wf_h5 import read, ls
 def path_loc(handle, path):
   return handle[path][()]
 
+def fout_from_fstat(fstat, name):
+  fout = fstat.replace('stat.h5', '%s.h5' % name)
+  if os.path.abspath(fout) == os.path.abspath(fstat):
+    msg = 'refuse to override file'
+    raise RuntimeError(msg)
+  return fout
+
+
 def me2d(edata, kappa=None, axis=0):
   """ Calculate mean and error of a table of columns
 
@@ -141,8 +149,14 @@ def gofr(fp, obs_name, nequil, kappa=None, force=False):
     raise RuntimeError(msg)
 
   grm, gre = mean_and_err(fp, '%s/value' % obs_name, nequil, kappa)
-  rmax = path_loc(fp, '%s/cutoff' % obs_name)[0]
-  dr   = path_loc(fp, '%s/delta' % obs_name)[0]
+  try:
+    rmax = path_loc(fp, '%s/cutoff' % obs_name)[0]
+  except IndexError:
+    rmax = path_loc(fp, '%s/cutoff' % obs_name)
+  try:
+    dr   = path_loc(fp, '%s/delta' % obs_name)[0]
+  except IndexError:
+    dr   = path_loc(fp, '%s/delta' % obs_name)
 
   # guess bin locations
   myr  = np.arange(0, rmax-dr/10, dr)
@@ -168,6 +182,13 @@ def nofk(fp, obs_name, nequil, kappa=None):
   kvecs = fp[obs_name]['kpoints'][()]
   nkm, nke = mean_and_err(fp, '%s/value' % obs_name, nequil, kappa)
   return kvecs, nkm, nke
+
+def spindensity(fp, obs_name, nequil, kappa=None):
+  sdens = dict()
+  for group in fp[obs_name]:
+    rhom, rhoe = mean_and_err(fp, '%s/%s/value' % (obs_name, group), nequil, kappa)
+    sdens[group] = (rhom, rhoe)
+  return sdens
 
 def rdm1(fp, obs_name, nequil, kappa=None):
   """ extract 1RMD output from stat.h5 file
@@ -271,7 +292,7 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
       charge = np.array(charge, dtype=np.complex128).reshape(-1,nbas)
       spin_z_m, spin_z_e = me2d(spin_z)
       charge_m, charge_e = me2d(charge)
-  if itwalker == 3:  # non-collinear
+  if itwalker == 3:  # non-collinear [up-up, dn-dn, up-dn, dn-up]
     dm = np.array([
       dm[0, :nbas, :nbas], dm[0, nbas:, nbas:],
       dm[0, :nbas, nbas:], dm[0, nbas:, :nbas],

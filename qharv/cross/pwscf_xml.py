@@ -4,7 +4,7 @@
 import numpy as np
 
 # ========================== level 0: read ==========================
-from qharv.seed.xml import read, write, parse, text2arr
+from qharv.seed.xml import read, write, parse, text2arr, show
 
 def read_true_false(node, name):
   child = node.find('.//%s' % name)
@@ -32,6 +32,8 @@ def read_nspin(node):
 
 def read_value(node, name, dtype=float):
   child = node.find('.//%s' % name)
+  if child is None:
+    return child
   text = child.text
   val = dtype(text)
   return val
@@ -79,7 +81,14 @@ def read_elem_pos(doc):
 def read_magnetization(doc):
   node = doc.find('.//magnetization')
   ret = dict()
-  for name in ['total', 'absolute']:
+  val = read_value(node, 'total')
+  if val is None:
+    val = read_value(node, 'total_vec', dtype=str)
+    if val is not None:
+      val = text2arr(val)
+  if val is not None:
+    ret['total'] = val
+  for name in ['absolute']:
     ret[name] = read_value(node, name)
   return ret
 
@@ -90,6 +99,14 @@ def read_total_energy(doc):
   for name in names:
     ret[name] = read_value(node, name)
   return ret
+
+def read_forces(doc):
+  from qharv.seed.xml import text2arr
+  node = doc.find('.//forces[@rank="2"]')
+  dims = np.array(node.get('dims').split(), dtype=int)
+  text = node.text
+  forces = text2arr(text)
+  return forces
 
 # ======================== level 2: KS bands ========================
 def read_bands(doc):

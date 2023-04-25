@@ -122,12 +122,18 @@ if __name__ == '__main__':
       print('no header')
     sys.exit(0)
   column = args.column
-  df = read_scalar_table(args.fname, append=args.append)
+  if args.fname.endswith('.csv'):
+    df = pd.read_csv(args.fname)
+  else:  # read space-separated table
+    df = read_scalar_table(args.fname, append=args.append)
   # check or override "df" here
 
   # interpret inputs
   if (column == 'LocalEnergy') and ('LocalEnergy' not in df.columns):
-    column = df.columns[0]  # change default
+    # change default
+    column = 'EnergyEstim__nume_real'
+    if column not in df.columns:
+      column = df.columns[0]
   if column not in df.columns:
     msg = 'requested column "%s" not found\n' % column
     msg += ' available: %s' % str(df.columns.values)

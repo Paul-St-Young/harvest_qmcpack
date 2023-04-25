@@ -103,3 +103,49 @@ def ase_gofr(atoms, bin_edges, gr_norm):
       gr1 = hist*gr_norm
       gr1_map[(ia, ja)] = gr1
   return gr1_map
+
+def kshell_sels(kmags, zoom):
+  """Select k-shells by magnitute
+
+  Args:
+    kmags (np.array): k-vector magnitutes
+    zoom (float): zoom-in to resolve more shells, e.g.
+      zoom=100 considers the second digit
+  Return:
+    list: a list of boolean masks, one for each shell.
+  Example:
+    >>> kshell_sels(np.array([1.231, 1.232, 1.233, 1.30]), 100)
+    [[True, True, True, False], [False, False, False, True]]
+    >>> kshell_sels(np.array([1.231, 1.232, 1.233, 1.30]), 1000)
+    [[True, False, False, False],
+     [False, True, False, False],
+     [False, False, True, False],
+     [False, False, False, True]]
+  """
+  kints = np.round(kmags*zoom).astype(int)
+  unique_kints = np.unique(kints)
+  nsh = len(unique_kints)
+  sels = []
+  for ish in range(nsh):
+    kint = unique_kints[ish]  # shell integer label
+    sel = kints == kint       # select this shell
+    sels.append(sel)
+  return sels
+
+def shell_average(kvecs, ym, ye=None, zoom=100):
+  kmags = np.linalg.norm(kvecs, axis=-1)
+  sels = kshell_sels(kmags, zoom)
+  nsh = len(sels)
+  # loop over each shell and average
+  uk = np.zeros(nsh)
+  uym = np.zeros(nsh)
+  if ye is not None:
+    uye = np.zeros(nsh)
+  for ish, sel in enumerate(sels):
+    uk[ish] = np.mean(kmags[sel])
+    uym[ish] = np.mean(ym[sel])
+    if ye is not None:
+      uye[ish] = np.sum(ye[sel]**2)**0.5/sel.sum()
+  if ye is not None:
+    return uk, uym, uye
+  return uk, uym

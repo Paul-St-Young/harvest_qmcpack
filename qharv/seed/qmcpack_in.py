@@ -91,7 +91,7 @@ def assemble_project(nodel, name='qmc', series=0):
   doc = etree.ElementTree(qsim)
   return doc
 
-def simulationcell_from_axes(axes, bconds='p p p', rckc=15.):
+def simulationcell_from_axes(axes_in, bconds=None, rckc=15., lr_handler=None):
   """ construct the <simulationcell> xml element from axes
 
    Args:
@@ -102,9 +102,27 @@ def simulationcell_from_axes(axes, bconds='p p p', rckc=15.):
    Return:
      etree.Element: representing <simulationcell>
   """
+  ndim = len(axes_in)
+  if ndim == 3:
+    axes = axes_in
+    if bconds is None:
+      bconds = 'p p p'
+  elif ndim == 2:
+    import numpy as np
+    from qharv.inspect import axes_pos
+    rcut = axes_pos.rwsc(axes_in)
+    axes = 2*rcut*np.eye(3)
+    axes[:ndim, :ndim] = axes_in
+    if bconds is None:
+      bconds = 'p p n'
+    if lr_handler is None:
+      lr_handler = 'ewald_strict2d'
+  else:
+    msg = 'simulationcell_from_axes ndim = %d' % ndim
+    raise RuntimeError(msg)
 
-  def pad_line(line):  # allow content to be selected by double clicked
-    return ' ' + line + ' '
+  # build <simulationcell>
+  sc_node = etree.Element('simulationcell')
 
   # write primitive lattice vectors
   lat_node = etree.Element('parameter', attrib={
@@ -112,20 +130,16 @@ def simulationcell_from_axes(axes, bconds='p p p', rckc=15.):
     'units': 'bohr'
   })
   lat_node.text = xml.arr2text(axes)
+  sc_node.append(lat_node)
 
   # write boundary conditions
-  bconds_node = etree.Element('parameter', {'name': 'bconds'})
-  bconds_node.text = pad_line(bconds)
+  xml.set_param(sc_node, 'bconds', bconds, new=True)
 
   # write long-range cutoff parameter
-  lr_node = etree.Element('parameter', {'name': 'LR_dim_cutoff'})
-  lr_node.text = pad_line(str(rckc))
+  xml.set_param(sc_node, 'LR_dim_cutoff', str(rckc), new=True)
+  if lr_handler is not None:
+    xml.set_param(sc_node, 'LR_handler', lr_handler, new=True)
 
-  # build <simulationcell>
-  sc_node = etree.Element('simulationcell')
-  sc_node.append(lat_node)
-  sc_node.append(bconds_node)
-  sc_node.append(lr_node)
   return sc_node
 
 def pos_attrib(pos):
@@ -186,12 +200,15 @@ def ud_electrons(nup, ndown):
     'size': str(nup),
     'mass': '1.0'
   })
-  dn_group = etree.Element('group', {
-    'name': 'd',
-    'size': str(ndown),
-    'mass': '1.0'
-  })
-  for egroup in [up_group, dn_group]:
+  groups = [up_group]
+  if ndown > 0:
+    dn_group = etree.Element('group', {
+      'name': 'd',
+      'size': str(ndown),
+      'mass': '1.0'
+    })
+    groups.append(dn_group)
+  for egroup in groups:
     xml.set_param(egroup, 'charge', ' -1 ', new=True)
     epset.append(egroup)
 
@@ -228,7 +245,7 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
   """
   import numpy as np
   from qharv.seed import wf_h5
-  if run_dir is not None:
+  if (run_dir is not None) and (len(run_dir) > 0):
     fh5_loc = os.path.relpath(fh5, run_dir)
   else:
     fh5_loc = fh5
@@ -236,7 +253,19 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
   fp = wf_h5.read(fh5)
   axes, elem, charge_map, pos = wf_h5.axes_elem_charges_pos(fp)
   nelecs = wf_h5.get(fp, 'nelecs')
-  nspin = wf_h5.get(fp, 'nspin')[0]
+  if np.allclose(nelecs, 0):
+    nelecs[0] = 1  # !!!! HACK for 1e unit cell
+  lspinor = False
+  if 'has_spinors' in fp['electrons']:
+    lspinor = fp['electrons']['has_spinors'][()]
+    nspin = 4
+  if not lspinor:
+    nspin = wf_h5.get(fp, 'nspin')
+    try:
+      iter(nspin)
+      nspin = nspin[0]
+    except TypeError:
+      pass
   fp.close()
   natom, ndim = pos.shape
   assert ndim == ndim0
@@ -245,6 +274,14 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
   else:  # tile supercell
     from qharv.inspect.axes_elem_pos import ase_tile
     axes, elem, pos = ase_tile(axes, elem, pos, tmat)
+    elem = np.array(elem)
+  ntile = int(round(abs(np.linalg.det(tmat))))
+  nelecs *= ntile
+  if nspin == 1:
+    nelecs[1] = nelecs[0]/2
+    nelecs[0] /= 2
+  if lspinor:
+    nelecs[1] = 0
   spoup = spodn = 'spo_ud'
   psi_name = 'psi0'
   ion_name = 'ion0'
@@ -276,6 +313,7 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
   })
   sdet = xml.make_node('slaterdeterminant')
   for ispo, npart in zip(range(nspin), nelecs): 
+    if npart < 1: continue
     spo_name = 'spo%d' % ispo
     spo = xml.make_node('sposet', {
       'type': 'bspline',
@@ -316,6 +354,31 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
   return qsys
 
 # ================== level 1: use existing input ===================
+
+# ------------------------------- cell ------------------------------
+def get_ndim(doc):
+  sc = doc.find('.//simulationcell')
+  handler = xml.get_param(sc, 'LR_handler')
+  ndim = 3
+  if handler is not None:
+    if '2d' in handler:
+      ndim = 2
+  return ndim
+
+# ------------------------------- qmc -------------------------------
+def set_nwalker(doc, nwalker):
+  """ set the number of walkers to use in DMC
+
+  Args:
+    doc (lxml.Element): xml node containing <qmc>
+    nwalker (int): number of walkers
+  """
+  nodes = doc.findall('.//qmc[@method="vmc"]')
+  for node in nodes:
+    xml.set_param(node, 'samples', str(nwalker))
+  nodes = doc.findall('.//qmc[@method="dmc"]')
+  for node in nodes:
+    xml.set_param(node, 'targetwalkers', str(nwalker))
 
 # --------------------------- wavefunction --------------------------
 def last_opt_xml(doc):
@@ -403,6 +466,43 @@ def bundle_twists(calc_dir, fregex='*twistnum_*.in.xml'):
     text += fname + '\n'
   return text
 
+def random_twists(npts, ndim=3, method='Sobol', seed=42,
+  nskip=0, nevery=1, scramble=False, center=False):
+  """ Generate random twists
+
+  Args:
+    npts (int): number of twists
+    ndim (int, optional): number of spatial dimensions, default 3
+    method (str, optional): random sequence method ['Sobol', 'Halton'],
+      default is 'Sobol'
+    seed (int, optional): random seed, default 42
+    nskip (int, optional): number of first twists to skip, default 0
+    nevery (int, optional): take every 'nevery' twist, default 1
+    center (bool, optional): center twist grid around 0, default False
+      twist[i, l] \in [-0.5, 0.5) if center else [0, 1)
+  Return:
+    np.array: shape (npts, ndim), random twists
+  Example:
+    >>> random_twists(3, ndim=2, method='Halton')
+    [[0.         0.        ]
+     [0.5        0.33333333]
+     [0.25       0.66666667]]
+  """
+  import numpy as np
+  if method == 'Sobol':
+    from scipy.stats.qmc import Sobol
+    sampler = Sobol(d=ndim, scramble=scramble, seed=seed)
+  elif method == 'Halton':  # base-n for n^{th} dimension
+    from scipy.stats.qmc import Halton
+    sampler = Halton(d=ndim, scramble=scramble, seed=seed)
+  else:
+    msg = 'unknown sequence "%s"' % method
+    raise RuntimeError(msg)
+  ntot = nskip+nevery*npts
+  sequence = sampler.random(n=ntot)[nskip::nevery]
+  if center:
+    sequence = (sequence + 0.5) % 1 - 0.5
+  return sequence
 
 def disperse(ginp_loc, calc_dir, execute=False, overwrite=False):
   """ disperse inputs bundled up in a grouped input
@@ -466,10 +566,36 @@ def set_norb(doc, norb):
     doc is modified
   """
   epset = doc.find('.//particleset[@name="e"]')
+  randt = epset.get('random')
+  lpos = randt == 'no'  # manually change particle positions
   for group in epset.findall('.//group'):  # 'u' and 'd'
+    n0 = int(group.get('size'))
+    if lpos and (n0 != norb):  # edit positions
+      import numpy as np
+      pa0 = group.find('.//attrib[@name="position"]')
+      pos0 = xml.text2arr(pa0.text)
+      pos1 = pos0.copy()
+      if norb < n0:  # remove last few
+        pos1 = pos1[:norb]
+      elif norb < 2*n0-1:  # add new particles between old ones
+        for i in range(norb-n0):
+          rmid = (pos1[i]+pos1[i+1])/2
+          pos1 = np.r_[pos1, [rmid]]
+      else:
+        msg = 'too many %d to add to %d' % (norb-n0, n0)
+        raise NotImplementedError(msg)
+      assert len(pos1) == norb
+      pa1 = pos_attrib(pos1)
+      xml.swap_node(pa0, pa1)
     group.set('size', str(norb))
 
-  sposet = doc.find('.//sposet[@name="spo_ud"]')
+  bbl = doc.findall('.//sposet_builder')
+  if len(bbl) != 1:
+    raise RuntimeError('found %d builders' % len(bbl))
+  spol = doc.findall('.//sposet')
+  if len(spol) != 1:
+    raise RuntimeError('found %d SPO sets' % len(spol))
+  sposet = spol[0]
   sposet.set('size', str(norb))
 
   detset = doc.find('.//determinantset')
@@ -497,17 +623,3 @@ def set_gc_occ(norbl, calc_dir, fregex_fmt='*twistnum_{itwist:d}.in.xml'):
     doc = xml.read(fxml)
     set_norb(doc, norb)
     xml.write(fxml, doc)
-
-def set_nwalker(doc, nwalker):
-  """ set the number of walkers to use in DMC
-
-  Args:
-    doc (lxml.Element): xml node containing <qmc>
-    nwalker (int): number of walkers
-  """
-  nodes = doc.findall('.//qmc[@method="vmc"]')
-  for node in nodes:
-    xml.set_param(node, 'samples', str(nwalker))
-  nodes = doc.findall('.//qmc[@method="dmc"]')
-  for node in nodes:
-    xml.set_param(node, 'targetwalkers', str(nwalker))

@@ -23,7 +23,7 @@ def parse_keywords(text):
   for line in text.split('\n'):
     if '=' in line:
       key, val = line.split('=')
-      val1 = val.strip('\n').strip()
+      val1 = val.strip('\n').strip().strip(',')
       val2 = val1.strip("'").strip('"')
       keywords[key.strip()] = val2
   return keywords
@@ -75,7 +75,7 @@ def parse_kpoints(text, ndim=3):
     for line in lines[i+2:i+2+nkpt]:
       tokens = line.split()
       kvec = np.array(tokens[:ndim], dtype=float)
-      wt = int(tokens[-1])
+      wt = float(tokens[-1])
       kl.append(kvec)
       wl.append(wt)
     kvecs = np.array(kl)
@@ -155,6 +155,50 @@ def cell_parameters(axes, unit='bohr', fmt='%24.16f'):
     cell_text += line
   return cell_text
 
+def atomic_positions(elem_pos, unit='crystal', fmt='%16.8f'):
+  nat, ndim = elem_pos['positions'].shape
+  text = '\nATOMIC_POSITIONS %s\n' % unit
+  for elem, pos in zip(elem_pos['elements'], elem_pos['positions']):
+    line = ('%5s ' % elem) + ((fmt+' ')*ndim + '\n') % tuple(pos)
+    text += line
+  return text
+
+def change_block(text, block, block_text):
+  if block not in ['ATOMIC_POSITIONS', 'CELL_PARAMETERS', 'K_POINTS']:
+    raise NotImplementedError(block)
+  if block == 'ATOMIC_POSITIONS':
+    ncol = 4
+  elif block == 'CELL_PARAMETERS':
+    ncol = 3
+  elif block == 'K_POINTS':
+    ncol = 4
+  new_text = ''
+  lines = text.split('\n')
+  # copy everything before
+  for i, line in enumerate(lines):
+    if block in line:
+      break
+    new_text += line + '\n'
+  # process block header
+  if block == 'K_POINTS':
+    header = line
+    tag, unit = header.split()
+    if unit == 'automatic':
+      ncol = 6
+    else:
+      i += 1
+  # insert new block
+  new_text += block_text + '\n'
+  # skip old block
+  for j, line in enumerate(lines[i+1:]):
+    toks = line.split()
+    if len(toks) != ncol:
+      break
+  # copy everything after
+  for line in lines[i+1+j+1:]:
+    new_text += line + '\n'
+  return new_text
+
 # ===================== level 1: file locations =====================
 
 def get_prefix_outdir(scf_in):
@@ -169,8 +213,7 @@ def find_xml(scf_inp):
   path = os.path.dirname(scf_inp)
   fxml = os.path.join(path, outdir, prefix) + ".xml"
   if not os.path.isfile(fxml):
-    msg = "%s not found" % fxml
-    raise RuntimeError(msg)
+    fxml = None
   return fxml
 
 def find_save(scf_inp):
@@ -394,6 +437,8 @@ def link_save(scf_inp, path):
   # link to converter save location
   outpath = os.path.join(path, outdir)
   hsave = os.path.join(outpath, '%s.save' % prefix)
+  if os.path.islink(hsave):
+    return
   if not (os.path.abspath(hsave) == dsave):
     rpath = os.path.relpath(dsave, outpath)
     if os.path.isdir(outpath):
@@ -445,3 +490,91 @@ def copy_charge_density(scf_dir, nscf_dir, execute=True):
         msg += ' and %s ' % fpsp
     msg += '\n to %s' % save_new
     print(msg)
+
+def link_ace(scf_inp, nscf_dir, execute=True):
+  """Link exact exchange ace*.hdf5 files for restart or nscf
+
+  Args:
+    scf_inp (str): path to input file
+    nscf_dir (str): nscf folder
+    execute (bool, optional): perform file system operations, default True
+      if execute is False, then description of operations will be printed.
+  """
+  import os
+  import subprocess as sp
+  from qharv.field.sugar import mkdir
+  save_dir = find_save(scf_inp)
+  scf_dir = os.path.dirname(scf_inp)
+  if scf_dir == nscf_dir:
+    return  # do nothing
+  save_rel = os.path.relpath(save_dir, scf_dir)
+  save_new = os.path.join(nscf_dir, save_rel)
+  rpath = os.path.relpath(save_dir, save_new)
+  cmd = 'cd %s; ln -s %s/ace*.hdf5 .' % (save_new, rpath)
+  if execute:
+    mkdir(save_new)
+    sp.check_call(cmd, shell=True)
+  else:
+    print(cmd)
+
+# ========================== level 2: plot ==========================
+def dft_convergence_fig(ynames, xnames=None):
+  """ Example:
+  >>> fig, axa = dft_convergence_fig(['etot', 'mabs'])
+  """
+  import matplotlib.pyplot as plt
+  if xnames is None:
+    xnames = ['nkx', 'ecut']
+  ncol = len(xnames)
+  assert ncol == 2
+  nrow = len(ynames)
+  fig, axa = plt.subplots(nrow, ncol)
+  axa = axa.reshape(nrow, ncol)
+  for irow, ax_row in enumerate(axa):
+    yname = ynames[irow]
+    for ax in ax_row:
+      ax.set_ylabel(yname)
+    ax1 = ax_row[0]
+    for ax2 in ax_row[1:]:
+      ax1.get_shared_y_axes().join(ax1, ax2)
+    if irow != nrow-1:
+      for ax in ax_row:
+        ax.get_xaxis().set_ticklabels([])
+    else:
+      for ax, xname in zip(ax_row, xnames):
+        ax.set_xlabel(xname)
+  for icol in range(ncol):
+    ax_col = axa[:, icol]
+    ax1 = ax_col[0]
+    for ax2 in ax_col[1:]:
+      ax1.get_shared_x_axes().join(ax1, ax2)
+  for ax in ax_col:
+    yaxis = ax.get_yaxis()
+    yaxis.tick_right()
+    yaxis.set_label_position('right')
+  return fig, axa
+
+
+def dft_convergence_plot(df, xnames, xfixes, ynames, relative=False):
+  fig, axa = dft_convergence_fig(ynames, xnames=xnames)
+  ncol = len(xnames)
+  for icol, xname in enumerate(xnames):
+    axl = axa[:, icol]
+    jcol = (icol+1) % ncol
+    sel = df[xnames[jcol]] == xfixes[jcol]
+    df.sort_values(xname, inplace=True)
+    for ax, yname in zip(axl, ynames):
+      x = df.loc[sel, xname].values
+      y = df.loc[sel, yname].values
+      if relative:
+        y -= y[-1]
+      ax.plot(x, y, marker='.')
+  return fig, axa
+
+# ========================== level 3: guess =========================
+def guess_mesh(ecutwfc, axes):
+  alat = axes[0, 0]
+  abc = np.linalg.norm(axes/alat, axis=-1)
+  gcutm = 4*ecutwfc/(2*np.pi/alat)**2
+  mesh = (gcutm**0.5*abc).astype(int)
+  return 2*mesh+1

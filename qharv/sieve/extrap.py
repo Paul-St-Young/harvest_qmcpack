@@ -58,7 +58,10 @@ def mix_extrap(df, yname):
   assert df.index.is_unique
   # extract VMC value
   sel0 = df.method == 'vmc'
-  assert len(df.loc[sel0]) == 1
+  nvmc = len(df.loc[sel0])
+  if nvmc != 1:
+    msg = 'expected 1 vmc entry, found %d' % nvmc
+    raise RuntimeError(msg)
   ymn = '%s_mean' % yname
   yen = '%s_error' % yname
   y0m = df.loc[sel0, ymn].values.squeeze()
@@ -72,6 +75,10 @@ def mix_extrap(df, yname):
 
 def mix_estimator(df, ynames):
   labels = ['path', 'id']
+  for label in labels:
+    if label not in df.columns:
+      msg = 'missing "%s" column' % label
+      raise RuntimeError(msg)
   sufs = ['_mean', '_error']
   for yname in ynames:
     mydf = df.groupby(labels).apply(
