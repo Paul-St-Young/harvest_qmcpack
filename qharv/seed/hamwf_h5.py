@@ -101,22 +101,23 @@ def calc_eikr(kvecs, rvecs):
   eikr = np.exp(1j*kdotr)
   return eikr
 
+def guess_kmesh(raxes, kc, margin):
+  ndim = len(raxes)
+  pts = get_kvecs(np.eye(ndim), (3, 3))
+  kpts = np.dot(pts, raxes)
+  kmags = np.linalg.norm(kpts[1:], axis=-1)
+  nmax = np.ceil((1+margin)*kc/kmags).astype(int).max()
+  kmesh = (2*nmax,)*ndim
+  return kmesh
+
 def get_ksphere(raxes, kc, margin=0.2, twist=None):
   from itertools import product
   ndim = len(raxes)
   qvec = np.zeros(ndim)
   if twist is not None:
     qvec = np.dot(twist, raxes)
-  nmax = 0
-  for direction in product(range(-1, 1+1), repeat=ndim):
-    vec = np.dot(direction, raxes)
-    vmag = np.linalg.norm(vec)
-    if vmag < 1e-8:
-      continue
-    n1 = int(np.ceil((1+margin)*kc/vmag))
-    nmax = max(nmax, n1)
-  mesh = (2*nmax,)*ndim
-  kvecs = get_kvecs(raxes, mesh)+qvec
+  mesh = guess_kmesh(raxes, kc, margin)
+  kvecs = qvec+get_kvecs(raxes, mesh)
   kmags = np.linalg.norm(kvecs, axis=-1)
   ksel = kmags<kc
   return kvecs[ksel]
