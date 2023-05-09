@@ -126,3 +126,73 @@ def bspline_on_rgrid(doc, cid, rgrid=None, rcut=None, cusp=None):
   fspl = jastrow.create_jastrow_from_param(coefs, cusp, rcut)
   vals = [fspl.evaluate_v(r) for r in rgrid]
   return rgrid, vals
+
+def make_bspline(knots, cusp, rcut):
+  from functools import partial
+  start = 0; stop = rcut; delta = (stop-start)/(len(knots)+1)
+  delta_inv = 1./delta
+  coefs = coefficients_from_knots(knots, cusp, delta)
+  bsp = BsplineFunction({'ncoef': len(coefs), 'grid_start': start, 'delta_inv': delta_inv})
+  return partial(bsp, {'coefs': coefs})
+
+def coefficients_from_knots(knots, cusp, delta):
+  """Prepend one knot for cusp, append three zeros for last [t^3, t^2, t, 0]"""
+  coeffs = np.zeros(len(knots)+4)
+  coeffs[0] = knots[1] - 2.0*delta*cusp
+  coeffs[1:len(knots)+1] = knots[:]
+  return coeffs
+
+def solve_for_knots(bsp, x0, y0):
+  nrow = len(x0)
+  assert len(y0) == nrow
+  nfit = bsp.ncoef-3
+  if nrow < nfit:
+    msg = 'need more than %d pts for %d parameters' % (nrow, nfit)
+    raise RuntimeError(msg)
+  A = np.array([bsp.derivatives(x1)[:-3] for x1 in x0])
+  nrow, ncol = A.shape
+  ret = np.linalg.lstsq(A, y0, rcond=None)
+  coefs = ret[0]
+  delta = 1./bsp.dxinv
+  # convert back
+  knots = coefs[1:]
+  cusp = (knots[1]-coefs[0])/(2*delta)
+  return knots, cusp
+
+class BsplineFunction:
+  def __init__(self, data):
+    self.ncoef = data['ncoef']
+    self.start = data['grid_start']
+    self.dxinv = data['delta_inv']
+    self.coefs = np.zeros(self.ncoef)
+    self.amat = np.array([
+      [-1./6,  3./6, -3./6, 1./6],
+      [ 3./6, -6./6,  0./6, 4./6],
+      [-3./6,  3./6,  3./6, 1./6],
+      [ 1./6,  0./6,  0./6, 0./6],
+    ])
+
+  def get_ticks(self, x1):
+    # location on grid
+    x = x1 - self.start
+    # index on grid
+    u = x1 * self.dxinv
+    i = int(u)  # tick index
+    t = u%1  # remainder
+    # ticks
+    tp = [t**(3-n) for n in range(4)]
+    return tp, i
+
+  def derivatives(self, x1):
+    derivs = np.zeros(self.ncoef)
+    tp, i = self.get_ticks(x1)
+    for j in range(4):
+      derivs[i+j] = np.dot(self.amat[j], tp)
+    return derivs
+
+  def __call__(self, params, x1):
+    self.coefs[:] = params['coefs']
+    tp, i = self.get_ticks(x1)
+    cs = self.coefs[i:i+4]
+    val = cs@(self.amat@tp)
+    return val
