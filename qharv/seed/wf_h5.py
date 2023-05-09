@@ -405,7 +405,7 @@ def write_kpoint(kgrp, ikpt, utvec, evals, cmats):
   kgrp.create_dataset('symgroup', data=[1])
   kgrp.create_dataset('weight', data=[1])
 
-def write_wf(egrp, nup_ndn, utvecs, gvecs, evalsl, cmatsl):
+def write_wf(egrp, nup_ndn, utvecs, gvecs, evalsl, cmatsl, nspin=None):
   """ fill the wf portion of the electrons group in wf h5 file
   !!!! WARNING: this function may require too much memory;
   if so, use write_kpoint directly
@@ -421,7 +421,8 @@ def write_wf(egrp, nup_ndn, utvecs, gvecs, evalsl, cmatsl):
   """
   # metadata
   nkpt = len(cmatsl)
-  nspin = len(cmatsl[0])
+  if nspin is None:
+    nspin = len(cmatsl[0])
   egrp.create_dataset('number_of_kpoints', data=nkpt)
   egrp.create_dataset('number_of_spins', data=nspin)
   egrp.create_dataset('number_of_electrons', data=nup_ndn)
