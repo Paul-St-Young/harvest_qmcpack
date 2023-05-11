@@ -4,7 +4,7 @@
 import numpy as np
 import pandas as pd
 
-def polyfit(x, ym, ye, order):
+def polyfit(x, ym, ye, order, method='trf'):
   """Fit noisy data to polynomial, i.e. np.polyfit but with error bar
 
   Inputs:
@@ -20,7 +20,7 @@ def polyfit(x, ym, ye, order):
   popt0 = np.polyfit(x, ym, order)
   # estimate fit error
   popt, pcov = curve_fit(lambda x, *p: np.poly1d(p)(x),
-    x, ym, sigma=ye, absolute_sigma=True, p0=popt0)
+    x, ym, sigma=ye, absolute_sigma=True, p0=popt0, method=method)
   perr = np.sqrt(np.diag(pcov))
   return popt, perr
 
