@@ -43,13 +43,13 @@ def hybrid_expand(regex, zips, **regs):
   big = expand(small, **regs)
   return big
 
-def run_cmd(floc, CMD, osuf='.out', esuf='.err'):
+def run_cmd(CMD, floc, osuf='.out', esuf='.err'):
   """
   Create bash command to run input file to output and error
 
   Args:
-    floc (str): input file location
     CMD (str): execute command
+    floc (str): input file location
   Return:
     str: bash command
   Example:
