@@ -33,7 +33,7 @@ def extract_twists(fh5, **suffix_kwargs):
   # determine meta, ymean, yerror from first twist
   twist0 = list(fp.keys())[0]
   cols = fp[twist0].keys()
-  labels, mcols, ecols = categorize_columns(cols, **suffix_kwargs)
+  labels, mcols, ecols = categorize_columns(cols, suffix=True, **suffix_kwargs)
   # treat all other entries as metadata
   meta = {}
   for name in labels:
@@ -75,7 +75,7 @@ def twist_average_h5(fh5, weights=None, **suffix_kwargs):
   """
   from qharv.sieve.mean_df import taw, categorize_columns
   data = extract_twists(fh5, **suffix_kwargs)
-  labels, mcols, ecols = categorize_columns(data.keys())
+  labels, mcols, ecols = categorize_columns(data.keys(), suffix=True)
   ntwist = len(data[mcols[0]])
   # twist average with weights
   if weights is None:
