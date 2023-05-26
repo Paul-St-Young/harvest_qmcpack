@@ -103,7 +103,7 @@ def calc_eikr(kvecs, rvecs):
 
 def guess_kmesh(raxes, kc, margin):
   ndim = len(raxes)
-  pts = get_kvecs(np.eye(ndim), (3, 3))
+  pts = get_kvecs(np.eye(ndim), (3,)*ndim)
   kpts = np.dot(pts, raxes)
   kmags = np.linalg.norm(kpts[1:], axis=-1)
   nmax = np.ceil((1+margin)*kc/kmags).astype(int).max()
