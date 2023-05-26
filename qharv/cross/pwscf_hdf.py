@@ -156,14 +156,20 @@ def calc_kinetic(fxml, gvl=None, evl=None, wtl=None, lam=0.5):
 class FFTMesh:
   def __init__(self, mesh, dtype=np.complex128):
     self.mesh = mesh
-    self.ngrid = np.prod(mesh)
-    self.psik = np.zeros(mesh, dtype=dtype)
-  def invfft(self, gvectors, eigenvector):
-    self.psik.fill(0)
-    for g, e in zip(gvectors, eigenvector):
-      self.psik[tuple(g)] = e
-    psir = np.fft.ifftn(self.psik)*self.ngrid
+    self.nnr = np.prod(mesh)
+    self.grid = np.zeros(mesh, dtype=dtype)
+  def invfft(self, gvectors, psik):
+    self.grid.fill(0)
+    for g, e in zip(gvectors, psik):
+      self.grid[tuple(g)] = e
+    psir = np.fft.ifftn(self.grid)*self.nnr
     return psir
+  def fwdfft(self, gvectors, psir):
+    self.grid = np.fft.fftn(psir.reshape(self.mesh))/self.nnr
+    psik = np.zeros(len(gvectors), dtype=self.grid.dtype)
+    for i, g in enumerate(gvectors):
+      psik[i] = self.grid[tuple(g)]
+    return psik
 
 def rho_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8, npol=1):
   rhor = np.zeros(mesh)
