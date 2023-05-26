@@ -248,13 +248,28 @@ def mag3d(pra, prb):
   Return:
     array: shape (3, nnr), x, y, z components of magnetization
   """
-  mags = np.zeros([3, *pra.shape])
   ab = pra.conj()*prb
   ba = prb.conj()*pra
-  mags[0] = (ab+ba).real
-  mags[1] = (1j*(ba-ab)).real
-  mags[2] = (pra.conj()*pra-prb.conj()*prb).real
+  mags = np.array([
+    (ab+ba).real,
+    (1j*(ba-ab)).real,
+    (pra.conj()*pra-prb.conj()*prb).real
+  ])
   return mags
+
+def psi_from_mag3d(psir, theta, phi):
+  """Inverse of mag3d, after choosing gauge such that a=a^*
+
+  Args:
+    psir (float): wavefunction magnitude
+    theta (float): spin polar angle
+    phi (float): spin azimuthal angle
+  Return:
+    (float, float): (pra, prb), Sz up and dn components
+  """
+  pra = psir*np.cos(theta/2)
+  prb = pra*np.sin(theta)*np.exp(1j*phi)
+  return pra, prb
 
 def site_resolved_magnetization(rho, pointlist, factlist):
   """Compute site-resolved magnetization for each magnetic site.
