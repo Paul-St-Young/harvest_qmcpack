@@ -573,8 +573,8 @@ def dft_convergence_plot(df, xnames, xfixes, ynames, relative=False):
 
 # ========================== level 3: guess =========================
 def guess_mesh(ecutwfc, axes):
-  alat = axes[0, 0]
-  abc = np.linalg.norm(axes/alat, axis=-1)
+  abc = np.linalg.norm(axes, axis=-1)
+  alat = abc[0]
   gcutm = 4*ecutwfc/(2*np.pi/alat)**2
-  mesh = (gcutm**0.5*abc).astype(int)
+  mesh = (gcutm**0.5*abc/alat).astype(int)
   return 2*mesh+1
