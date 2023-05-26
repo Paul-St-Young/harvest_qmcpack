@@ -33,7 +33,7 @@ def volume(axes):
   Returns:
     float: volume of cell
   """
-  return abs(np.linalg.det(axes))
+  return np.abs(np.linalg.det(axes))
 
 def rs(axes, natom):
   """ rs density parameter (!!!! axes MUST be in units of bohr)
