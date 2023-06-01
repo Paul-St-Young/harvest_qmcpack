@@ -268,6 +268,7 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
   data = []
   spin_z = []
   charge = []
+  n_up = [] #an array holds the samples of the number of up-spin electrons
   for block in rdm_blocks[nequil:]:
     path = os.path.join(matrix_path, block)
     rdm = fp[path][()].view(np.complex128)
@@ -280,6 +281,10 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
       dm_1 = np.array(rdm/deno).reshape(2, nbas, nbas)
       spin_z.append( (np.diag(dm_1[0,:,:]) - np.diag(dm_1[1,:,:]))/2 )
       charge.append( np.diag(dm_1[0,:,:]) + np.diag(dm_1[1,:,:]) )
+    if itwalker == 3:
+      dm_1 = np.array(rdm/deno).reshape(1, 2*nbas, 2*nbas)
+      n_up.append(np.sum(np.diag(dm_1[0,:nbas,:nbas])))
+  np.savetxt("nup.dat",np.real(n_up))
   assert np.prod(rdm_shape) == np.prod(rdm.shape)
   # 4. get mean and standard error
   mat = np.array(data, dtype=np.complex128).reshape(
@@ -293,12 +298,16 @@ def afobs(fp, obs_name, nequil, kappa=None, group='BackPropagated', numer='one_r
       spin_z_m, spin_z_e = me2d(spin_z)
       charge_m, charge_e = me2d(charge)
   if itwalker == 3:  # non-collinear [up-up, dn-dn, up-dn, dn-up]
-    dm = np.array([
-      dm[0, :nbas, :nbas], dm[0, nbas:, nbas:],
-      dm[0, :nbas, nbas:], dm[0, nbas:, :nbas],
-    ])
-    de = np.array([
-      de[0, :nbas, :nbas], de[0, nbas:, nbas:],
-      de[0, :nbas, nbas:], de[0, nbas:, :nbas],
-    ])
+      spin_z_m = np.zeros((nbas))
+      charge_m = np.zeros((nbas))
+      spin_z_e = np.zeros((nbas))
+      charge_e = np.zeros((nbas))
+      dm = np.array([
+        dm[0, :nbas, :nbas], dm[0, nbas:, nbas:],
+        dm[0, :nbas, nbas:], dm[0, nbas:, :nbas],
+      ])
+      de = np.array([
+        de[0, :nbas, :nbas], de[0, nbas:, nbas:],
+        de[0, :nbas, nbas:], de[0, nbas:, :nbas],
+      ])
   return dm, de, spin_z_m, spin_z_e, charge_m, charge_e

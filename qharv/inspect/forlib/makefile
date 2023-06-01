@@ -1,7 +1,7 @@
 NAME=pbcbox
 export FC=gfortran
 export CC=gcc
-F2PY=f2py
+F2PY=f2py3
 
 all:
 	$(F2PY) -c -m $(NAME) $(NAME).f90
