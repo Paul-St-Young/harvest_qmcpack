@@ -28,6 +28,15 @@ def parse_keywords(text):
       keywords[key.strip()] = val2
   return keywords
 
+def guess_nspin(inps):
+  nspin = 1
+  if 'nspin' in inps:
+    nspin = int(inps['nspin'])
+  if 'noncolin' in inps:
+    if '.true.' in inps['noncolin'].lower():
+      nspin = 4
+  return nspin
+
 def parse_cell_parameters(text, ndim=3):
   lines = text.split('\n')
   for i, line in enumerate(lines):
