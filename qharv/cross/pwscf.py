@@ -71,6 +71,21 @@ def parse_atomic_positions(text, ndim=3):
   )
   return unit, data
 
+def parse_atomic_species(text):
+  inps = parse_keywords(text)
+  ntyp = int(inps['ntyp'])
+  lines = text.split('\n')
+  for i, line in enumerate(lines):
+    if 'ATOMIC_SPECIES' in line:
+      break
+  elem_pseudo = dict()
+  mass_dict = dict()
+  for line in lines[i+1:i+1+ntyp]:
+    elem, mass, pseudo = line.split()
+    elem_pseudo[elem] = pseudo
+    mass_dict[elem] = float(mass)
+  return elem_pseudo, mass_dict
+
 def parse_kpoints(text, ndim=3):
   lines = text.split('\n')
   for i, line in enumerate(lines):
@@ -172,8 +187,17 @@ def atomic_positions(elem_pos, unit='crystal', fmt='%16.8f'):
     text += line
   return text
 
+def atomic_species(elem_pseudo, mass_dict=None):
+  text = '\nATOMIC_SPECIES\n'
+  for elem, pseudo in elem_pseudo.items():
+    mass = 1.0 if mass_dict is None else mass_dict[elem]
+    line = '%5s %.6f %s\n' % (elem, mass, pseudo)
+    text += line
+  return text
+
 def change_block(text, block, block_text):
-  if block not in ['ATOMIC_POSITIONS', 'CELL_PARAMETERS', 'K_POINTS']:
+  blocks = ['ATOMIC_POSITIONS', 'CELL_PARAMETERS', 'K_POINTS', 'ATOMIC_SPECIES']
+  if block not in blocks:
     raise NotImplementedError(block)
   if block == 'ATOMIC_POSITIONS':
     ncol = 4
@@ -181,6 +205,8 @@ def change_block(text, block, block_text):
     ncol = 3
   elif block == 'K_POINTS':
     ncol = 4
+  elif block == 'ATOMIC_SPECIES':
+    ncol = 3
   new_text = ''
   lines = text.split('\n')
   # copy everything before
