@@ -90,3 +90,7 @@ def concat_return(show_progress=True, fault_tolerant=False):
       return data
     return wrapper
   return _concat_return
+
+@cache
+def savefig(fig_loc, fig):
+  fig.savefig(fig_loc, bbox_inches='tight', dpi=320)
