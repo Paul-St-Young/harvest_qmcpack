@@ -82,7 +82,11 @@ def get(fp, name):  # see more advanced get at level 3
     msg += '\n known attributes:\n  ' + '\n  '.join(locations.keys())
     raise RuntimeError(msg)
   loc = locations[name]
-  return fp[loc][()]
+  val = fp[loc][()]
+  if name in ['nkpt', 'nspin', 'nstate']:
+    if hasattr(val, '__iter__'):
+      val = val[0]
+  return val
 
 def axes_elem_charges_pos(fp):
   """ extract lattice vectors, atomic positions, and element names
@@ -268,7 +272,7 @@ def get_twists(fp, ndim=3):
   Returns:
     np.array: tvecs, twist vectors in reciprocal lattice units (nk, ndim)
   """
-  nk = get(fp, 'nkpt')[0]
+  nk = get(fp, 'nkpt')
   ukvecs = np.zeros([nk, ndim])
   for ik in range(nk):
     kpath = kpoint_path(ik)
@@ -285,8 +289,8 @@ def get_bands(fp, ispin=0):
   Returns:
     np.array: tvecs, twist vectors in reciprocal lattice units (nk, nbnd)
   """
-  nk = get(fp, 'nkpt')[0]
-  nbnd = get(fp, 'nstate')[0]
+  nk = get(fp, 'nkpt')
+  nbnd = get(fp, 'nstate')
   bands = np.zeros([nk, nbnd])
   for ik in range(nk):
     kpath = kpoint_path(ik)
