@@ -362,12 +362,11 @@ def write_gvecs(fp, gvecs, kpath='/electrons/kpoint_0'):
   kgrp = fp[kpath]
   kgrp.create_dataset('gvectors', data=gvecs)
 
-def write_kpoint(kgrp, ikpt, utvec, evals, cmats):
-  """ fill the electrons/kpoint_$ikpt group in wf h5 file
+def write_kpoint(kgrp, utvec, evals, cmats):
+  """ fill the electrons/kpoint_ group in wf h5 file
 
   Args:
     kgrp (h5py.Group): kpoint group
-    ikpt (int): twist index
     utvec (np.array): twist vector in reduced units
     evals (list): list of Kohn-Sham eigenvalues to sort orbitals;
       one real np.array of shape (norb) for each spin
@@ -379,7 +378,7 @@ def write_kpoint(kgrp, ikpt, utvec, evals, cmats):
     >>> kgrp = fp.require_group('/electrons/kpoint_0')
     >>> evals = [ np.array([0]) ]  # 1 spin, 1 state
     >>> cmats = [ np.array([[0]], dtype=complex) ]
-    >>> write_kpoint(kgrp, 0, [0, 0, 0], evals, cmats)
+    >>> write_kpoint(kgrp, [0, 0, 0], evals, cmats)
     >>> fp.close()
   """
   # write twist
@@ -445,7 +444,7 @@ def write_wf(egrp, nup_ndn, utvecs, gvecs, evalsl, cmatsl, nspin=None):
     # create and fill kpoint group
     kpath = kp_fmt % ik
     kgrp = egrp.require_group(kpath)
-    write_kpoint(kgrp, ik, utvec, evals, cmats)
+    write_kpoint(kgrp, utvec, evals, cmats)
 
 def write_supercell(fp, axes):
   """ create and fill the /supercell group
