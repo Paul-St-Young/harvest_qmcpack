@@ -165,6 +165,24 @@ def dxyye(xy1, xy0, add=False, ndig=6):
     msg = 'unknown case'
     raise RuntimeError(msg)
 
+def scale(xy, vmult, which='y'):
+  """Scale x or y values.
+
+  Args:
+    xy (tuple): (x, y) or (x, ym, ye)
+    vmult (float): value multiplier
+    which (str, optional): 'x' or 'y'
+  Examples:
+    >>> xy_ev = scale(xy_hf, 27.211386)
+    >>> x2y = scale(xy, 2, 'x')
+  """
+  xmult = vmult if which == 'x' else 1.0
+  ymult = vmult if which == 'y' else 1.0
+  sxy = [xy[0]*xmult]
+  for i in range(1, len(xy)):
+    sxy.append(xy[i]*ymult)
+  return tuple(sxy)
+
 def sxyye(xy1, xy0):
   print('obsolete alias')
   return dxyye(xy1, xy0, add=True)
