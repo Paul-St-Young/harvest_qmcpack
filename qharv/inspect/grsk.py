@@ -130,8 +130,14 @@ def kshell_sels(kmags, zoom):
     sels.append(sel)
   return sels
 
-def shell_average(kvecs, ym, ye=None, zoom=100):
+def shell_average(kvecs, ym, ye=None, zoom=100, cutoff=None):
   kmags = np.linalg.norm(kvecs, axis=-1)
+  if cutoff is not None:
+    ksel = kmags < cutoff
+    kmags = kmags[ksel]
+    ym = ym[ksel]
+    if ye is not None:
+      ye = ye[ksel]
   sels = kshell_sels(kmags, zoom)
   nsh = len(sels)
   # loop over each shell and average
