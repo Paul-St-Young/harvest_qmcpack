@@ -509,6 +509,31 @@ def color_scatter(ax, xy, z, zlim=None, cmap='viridis',
   s = ax.scatter(*xy.T, c=v2c(z), **kwargs)
   return s
 
+def tile_scatter(rvecs, mesht, axes=None):
+  """Tile scatter data
+
+  Args:
+    rvecs (np.array): grid points
+    mesht (tuple): tile mesh
+    axes (np.array, optional): lattice vectors
+  Example:
+    tile charge density data (rvecs, rho) by 2x2
+    >>> axes = np.diag([1.5, 2.0]); mesht = (2, 2)
+    >>> rvecs = tile_scatter(rvecs, mesht, axes)
+    >>> rho = tile_scatter(rho, mesht)
+  """
+  import numpy as np
+  if axes is not None:
+    from qharv.seed.hamwf_h5 import get_kvecs
+    shifts = get_kvecs(axes, mesht)
+    xl = []
+    for shift in shifts:
+      xl.append(rvecs+shift)
+  else:  # no shift
+    xl = [rvecs for i in range(np.prod(mesht))]
+  x = np.concatenate(xl, axis=0)
+  return x
+
 # ===================== level 2: insets ======================
 def inset_zoom(fig, ax_box, xlim, ylim, draw_func, xy_label=False):
   """ show an inset that zooms into a given part of the figure
