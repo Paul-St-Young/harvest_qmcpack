@@ -518,6 +518,11 @@ def linecut(axes, r0, dr, mr=100000, sort=True, fraction=True):
     rline = rline[idx]
   return rline
 
+def simple_linecut(r0, r1, nr=64):
+  ndim = len(r0)
+  rline = np.array([np.linspace(r0[l], r1[l], nr) for l in range(ndim)]).T
+  return rline
+
 # ==================== level 2: space partitions ====================
 
 def rcut_partition(axes, pos, rvecs, rcut=None):
