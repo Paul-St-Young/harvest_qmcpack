@@ -335,6 +335,26 @@ def get_orbs(fp, orbs, truncate=False, tol=1e-8):
 
 # ====== level 4: write wf h5 file from scratch ======
 
+def copy_hdf_groups(source, dest, exclude=None, exclude_prefix=None):
+  """Copy groups from reference hdf file
+
+  Args:
+    source (group): source HDF group
+    dest (group): detination HDF group
+    exclude (list, optional): list of group names to exclude from copy, default None
+    exclude_prefix (str, optional): group name prefix to exclude, default "garbage"
+  Example:
+    >>> fp0 = h5py.File('pwscf.pwscf.h5', 'r')
+    >>> fp1 = h5py.File('mywf.h5', 'w')
+    >>> copy_hdf_groups(fp0, fp1, exclude=['electrons'])
+    >>> copy_hdf_groups(fp0['electrons'], fp1.require_group('electrons'), exclude_prefix='kpoint_')
+  """
+  exclude = [] if exclude is None else exclude
+  exclude_prefix = '*(^&!@#' if exclude_prefix is None else exclude_prefix
+  for name in source:
+    if (name not in exclude) and (not name.startswith(exclude_prefix)):
+      dest.copy(source[name], name)
+
 def write_misc(fp):
   """ fill /format and /version
 
