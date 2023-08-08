@@ -25,7 +25,25 @@ def sk2gr(myr, myk, skm, rho, ndim=3):
   grm = 1+ift_iso(myr, myk, skm-1, ndim=ndim)/rho
   return grm
 
-def get_bin_edges(axes, rmin=0., rmax=None, nr=32):
+def gofr(axes, posl):
+  from qharv.inspect import axes_pos
+  from qharv.reel.stat_h5 import mean_and_error_from_list
+  natom = len(posl[0])
+  bin_edges = gofr_bin_edges(axes)
+  gr_norm = gofr_norm(axes, bin_edges, natom)
+  idx = np.triu_indices(natom, k=1)
+  grl = []
+  for pos in posl:
+    drij, rij = axes_pos.minimum_image_displacements(axes, pos)
+    dists = rij[idx]
+    gr_count = gofr_count(dists, bin_edges)
+    gr1 = gr_count*gr_norm
+    grl.append(gr1)
+  grm, gre = mean_and_error_from_list(grl)
+  r = 0.5*(bin_edges[1:]+bin_edges[:-1])
+  return r, grm, gre
+
+def gofr_bin_edges(axes, rmin=0., rmax=None, nr=32):
   # create linear grid
   if rmax is None:
     from qharv.inspect.axes_pos import rwsc
@@ -33,7 +51,7 @@ def get_bin_edges(axes, rmin=0., rmax=None, nr=32):
   bin_edges = np.linspace(rmin, rmax, nr)
   return bin_edges
 
-def get_gofr_norm(axes, bin_edges, n1, n2=None):
+def gofr_norm(axes, bin_edges, n1, n2=None):
   from qharv.inspect.axes_pos import volume
   ndim, ndim = axes.shape
   # calculate volume of bins
@@ -47,6 +65,24 @@ def get_gofr_norm(axes, bin_edges, n1, n2=None):
   # assemble the norm vector
   gr_norm = 1./(rho*vnorm)
   return gr_norm
+
+def gofr_count(dists, bin_edges):
+  # !!!! assume linear grid
+  dr = bin_edges[1]-bin_edges[0]
+  dr1 = bin_edges[2]-bin_edges[1]
+  if not np.isclose(dr1, dr):
+    raise RuntimeError('not linear grid')
+  # initialize memory
+  nr = len(bin_edges)-1
+  grc = np.zeros(nr, dtype=int)
+  # bin distances
+  rmin = bin_edges.min()
+  rmax = bin_edges.max()
+  ir = (dists[(rmin<dists) & (dists<rmax)]-rmin)//dr
+  # histogram
+  ilist, counts = np.unique(ir.astype(int), return_counts=True)
+  grc[ilist] = counts
+  return grc
 
 def ase_gofr(atoms, bin_edges, gr_norm):
   """Calculate the real-space pair correlation function g(r) among
@@ -63,8 +99,8 @@ def ase_gofr(atoms, bin_edges, gr_norm):
     >>> axes = np.eye(3)
     >>> pos = np.array([[0, 0, 0], [0.5, 0.5, 0.5]])
     >>> atoms = Atoms('H2', cell=axes, positions=pos, pbc=1)
-    >>> bin_edges = get_bin_edges(axes)
-    >>> gr_norm = get_gofr_norm(axes, bin_edges, len(pos))
+    >>> bin_edges = gofr_bin_edges(axes)
+    >>> gr_norm = gofr_norm(axes, bin_edges, len(pos))
     >>> gr1_map = ase_gofr(atoms, bin_edges, gr_norm)
     >>> gr1 = gr1_map[(0, 0)]
     >>> r = 0.5*(bin_edges[1:]+bin_edges[:-1])
