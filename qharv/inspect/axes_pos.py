@@ -125,13 +125,18 @@ def sum_lattice(f, raxes, kc):
   fk = f(k)
   return fk.sum()
 
-def madelung(axes, nr=3, rckc=30.0):
-  from scipy.special import erfc
+def madelung(axes, nr=3, rckc=30.0, dgate=None):
+  from scipy.special import erfc, erf
   amat = axes
   ndim = len(amat)
   rc = rwsc(amat)*nr
   kc = rckc/rc
-  alpha = (kc/(2*rc))**0.5
+  alpha0 = (kc/(2*rc))**0.5
+  if dgate is None:
+    alpha = alpha0
+  else:
+    alphad = 0.61093226575644/dgate
+    alpha = max(alphad, alpha0)
   ndim = len(axes)
   # direct-space part is independent of spatial dimensions
   def vsr_of_r(r):
@@ -140,8 +145,19 @@ def madelung(axes, nr=3, rckc=30.0):
   # reciprocal-space part changes with dimension
   if ndim == 2:
     vsr_k0 = 2*np.pi**0.5/alpha
-    def vlr_of_k(k):
-      return 2*np.pi/k*erfc(k/(2*alpha))
+    if dgate is None:
+      def vlr_of_k(k):
+        return 2*np.pi/k*erfc(k/(2*alpha))
+    else:
+      def vlr_of_k(k):
+        return 2*np.pi/k*(np.tanh(dgate*k)-erf(k/(2*alpha)))
+      kmax_d = 10.0/dgate;
+      kmax_a = 8.3*alpha;
+      kmax = max(kmax_d, kmax_a);
+      finek = np.linspace(1e-3/dgate, kmax, 1024*16)
+      vlr_r0 = np.trapz([
+        np.tanh(dgate*k1)-erf(k1/(2*alpha))
+      for k1 in finek], finek)
   elif ndim == 3:
     vsr_k0 = np.pi/(alpha*alpha)
     def vlr_of_k(k):
