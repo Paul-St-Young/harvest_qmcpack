@@ -1,7 +1,7 @@
 import numpy as np
 
 def test_ft_iso3d():
-  from qharv.inspect.grsk import ft_iso3d
+  from qharv.inspect.grsk import ft_iso, ift_iso
   finex = np.linspace(1e-6, 10, 256)
   sig = 1.
 
@@ -11,9 +11,9 @@ def test_ft_iso3d():
 
   # FT to Gaussian in reciprocal space
   finek = finex
-  yk = ft_iso3d(finek, finex, finey)
+  yk = ft_iso(finek, finex, finey)
 
   # iFT Gaussian back
-  y1 = ft_iso3d(finex, finek, yk)/(2*np.pi)**3
+  y1 = ift_iso(finex, finek, yk)
   assert np.isclose(np.trapz(y1, finex), .5, 1e-5)
   assert np.allclose(y1, finey)

@@ -79,6 +79,23 @@ def mean_and_err(handle, obs_path, nequil, kappa=None):
   val_mean, val_err = me2d(edata)
   return val_mean, val_err
 
+def mean_and_error_from_list(yl, ysql=None):
+  """Calculate mean and error given a list of val and sq
+
+  Args:
+    yl (list): list of values
+    ysql (list, optional): list of squares
+  Return:
+    (np.array, np.array): (ym, ye), (mean, error)
+  """
+  ym = np.mean(yl, axis=0)
+  # calculate stddev
+  if ysql is None:
+    ysql = [y**2 for y in yl]
+  y2m = np.mean(ysql, axis=0)
+  ye = np.sqrt((y2m-ym**2)/(len(yl)-1))
+  return ym, ye
+
 def dsk_from_skall(fp, obs_name, nequil, kappa=None):
   """ extract fluctuating structure factor dS(k) from skall
 

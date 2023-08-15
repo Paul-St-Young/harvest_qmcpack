@@ -40,30 +40,34 @@ def create(mydf):
   jdf = df1.join(df2, lsuffix='_mean', rsuffix='_error')
   return jdf
 
-def categorize_columns(cols, nosuf=False, msuffix='_mean', esuffix='_error'):
+def categorize_columns(cols, suffix=False, msuffix='_mean', esuffix='_error'):
   """Categorize the column names of a mean dataframe.
 
   Args:
     cols (list): a list of column names
   Return:
-    (list, list, list): (excol, mcol, ecol)
+    (list, list): if suffix == False, (excol, cols)
+      excol are columns of exact values with no errorbar (possibly labels)
+      cols are columns names
+    (list, list, list): if suffix == True, (excol, mcol, ecol)
       excol are columns of exact values with no errorbar (possibly labels)
       mcols are mean columns
       ecols are error columns
   Examples:
-    >>> rcol, mcol, ecol = categorize_columns(mdf.columns)
-    >>> rcol, names = categorize_columns(mdf.columns, nosuf=True)
+    >>> rcol, names = categorize_columns(mdf.columns)
+    >>> rcol, mcol, ecol = categorize_columns(mdf.columns, suffix=True)
     >>> np.allclose([name+'_mean' for name in names], mcol)
     True
   """
-  mcol = [col for col in cols if col.endswith(msuffix)]
-  ecol = [col for col in cols if col.endswith(esuffix)]
   rcol = [col for col in cols if
           (not col.endswith(msuffix)) and (not col.endswith(esuffix))]
-  if nosuf:
+  mcol = [col for col in cols if col.endswith(msuffix)]
+  if suffix:  # keep mean/error suffix
+    ecol = [col for col in cols if col.endswith(esuffix)]
+    return rcol, mcol, ecol
+  else:  # strip suffix
     names = [col.replace(msuffix, '') for col in mcol]
     return rcol, names
-  return rcol, mcol, ecol
 
 def select_parameters(df, params):
   """Create a boolean array to select a subset of rows from a DataFrame,
@@ -160,6 +164,24 @@ def dxyye(xy1, xy0, add=False, ndig=6):
   else:
     msg = 'unknown case'
     raise RuntimeError(msg)
+
+def scale(xy, vmult, which='y'):
+  """Scale x or y values.
+
+  Args:
+    xy (tuple): (x, y) or (x, ym, ye)
+    vmult (float): value multiplier
+    which (str, optional): 'x' or 'y'
+  Examples:
+    >>> xy_ev = scale(xy_hf, 27.211386)
+    >>> x2y = scale(xy, 2, 'x')
+  """
+  xmult = vmult if which == 'x' else 1.0
+  ymult = vmult if which == 'y' else 1.0
+  sxy = [xy[0]*xmult]
+  for i in range(1, len(xy)):
+    sxy.append(xy[i]*ymult)
+  return tuple(sxy)
 
 def sxyye(xy1, xy0):
   print('obsolete alias')

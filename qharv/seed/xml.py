@@ -249,7 +249,7 @@ def get_param(node, pname):
     return pnode
   return pnode.text
 
-def set_param(node, pname, pval, new=False, pad=' '):
+def set_param(node, pname, pval, new=False, pad=' ', force=False):
   """ set <parameter> with name 'pname' to 'pval'
   if new=True, then <parameter name="pname"> does not exist. create it
 
@@ -257,25 +257,24 @@ def set_param(node, pname, pval, new=False, pad=' '):
     node (lxml.etree._Element): xml node with children having tag 'parameter'
     pname (str): name of parameter
     pval (str): value of parameter
-    new (bool): create new <paremter> node, default is false
+    new (bool, optional): create new <paremter> node, default is false
+    force (bool, optional): ignore the new keyword, default is false
   Effect:
     the text of <parameter> with 'pname' will be set to 'pval'
   """
+  # make sure the parameter node exists
   pnode = node.find('.//parameter[@name="%s"]' % pname)
+  if pnode is None:
+    if new or force:
+      pnode = etree.Element('parameter', {'name': pname})
+      node.append(pnode)
+    else:
+      msg = '<parameter name="%s"> not found in %s.' % (pname, node.tag)
+      msg += ' please set new=True.'
+      raise RuntimeError(msg)
+  # set new text
   text = pad + str(pval) + pad
-  # 4 paths dependent on (pnode is None) and new
-  if (pnode is None) and (not new):  # unintended input
-    raise RuntimeError('<parameter name="%s"> not found in %s\n\
-      please set new=True' % (pname, node.tag))
-  elif (pnode is not None) and new:  # unintended input
-    raise RuntimeError('<parameter name="%s"> found in %s\n\
-      please set new=False' % (pname, node.tag))
-  elif (pnode is None) and new:
-    pnode = etree.Element('parameter', {'name': pname})
-    pnode.text = text
-    node.append(pnode)
-  else:
-    pnode.text = text
+  pnode.text = text
 
 def get_axes(doc):
   sc_node = doc.find('.//simulationcell')
@@ -355,7 +354,7 @@ def get_group_pos(grp):
   pos = text2arr(pos_text.strip('\n'))
   return pos
 
-def get_pos(doc, pset='ion0', group=None):
+def get_pos(doc, pset='ion0', group=None, concat=False):
   # find <particleset>
   pset_node = doc.find('.//particleset[@name="%s"]' % pset)
   if pset_node is None:
@@ -367,14 +366,25 @@ def get_pos(doc, pset='ion0', group=None):
   # find <group> if necessary
   groups = pset_node.findall('.//group')
   names = []
+  npart = 0
   for grp in groups:
     name = grp.get('name')
     names.append(name)
     pos[name] = get_group_pos(grp)
+    npart += len(pos[name])
+  ndim = pos[name].shape[-1]
   # get requestsed particle positions
   if group is not None:
     pos = pos[group]
   if len(names) == 1:  # !!!! maintain backwards compatibility
+    concat = True
+  if concat:
+    all_pos = np.empty([npart, ndim])
+    i = 0
+    for name, p1 in pos.items():
+      j = i+len(p1)
+      all_pos[i:j] = p1
+      i = j
     return pos[names[0]].reshape(-1, 3)
   return pos
 

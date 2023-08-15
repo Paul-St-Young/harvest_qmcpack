@@ -1,33 +1,49 @@
 import numpy as np
 
-def ft_iso3d(myk, myr, frm):
-  fkm = [np.trapz(myr*np.sin(k*myr)/k*frm, myr) for k in myk]
-  return 4*np.pi*np.array(fkm)
+def ft_iso(myk, r, fr, ndim=3):
+  if ndim == 3:
+    fk = [np.trapz(r*np.sin(k*r)/k*fr, r) for k in myk]
+  elif ndim == 2:
+    from scipy.special import j0
+    fk = [np.trapz(j0(k*r)*r*fr, r) for k in myk]
+  else:
+    msg = 'ndim=%d' % ndim
+    raise RuntimeError(msg)
+  fk = np.array(fk)*2*(ndim-1)*np.pi
+  return fk
 
-def ft_iso2d(myk, myr, frm):
-  from scipy.special import jv
-  fkm = [np.trapz(jv(0, k*myr)*myr*frm, myr) for k in myk]
-  return 2*np.pi*np.array(fkm)
+def ift_iso(myr, k, fk, ndim=3):
+  fr = ft_iso(myr, k, fk, ndim=ndim)
+  fr /= (2*np.pi)**ndim
+  return fr
 
 def gr2sk(myk, myr, grm, rho, ndim=3):
-  if ndim == 3:
-    skm = 1+rho*ft_iso3d(myk, myr, grm-1)
-  elif ndim == 2:
-    skm = 1+rho*ft_iso2d(myk, myr, grm-1)
-  else:
-    raise RuntimeError('ndim = %d' % ndim)
+  skm = 1+rho*ft_iso(myk, myr, grm-1, ndim=ndim)
   return skm
 
 def sk2gr(myr, myk, skm, rho, ndim=3):
-  if ndim == 3:
-    grm = 1+ft_iso3d(myr, myk, skm-1)/rho/(2*np.pi)**ndim
-  elif ndim == 2:
-    grm = 1+ft_iso2d(myr, myk, skm-1)/rho/(2*np.pi)**ndim
-  else:
-    raise RuntimeError('ndim = %d' % ndim)
+  grm = 1+ift_iso(myr, myk, skm-1, ndim=ndim)/rho
   return grm
 
-def get_bin_edges(axes, rmin=0., rmax=None, nr=32):
+def gofr(axes, posl):
+  from qharv.inspect import axes_pos
+  from qharv.reel.stat_h5 import mean_and_error_from_list
+  natom = len(posl[0])
+  bin_edges = gofr_bin_edges(axes)
+  gr_norm = gofr_norm(axes, bin_edges, natom)
+  idx = np.triu_indices(natom, k=1)
+  grl = []
+  for pos in posl:
+    drij, rij = axes_pos.minimum_image_displacements(axes, pos)
+    dists = rij[idx]
+    gr_count = gofr_count(dists, bin_edges)
+    gr1 = gr_count*gr_norm
+    grl.append(gr1)
+  grm, gre = mean_and_error_from_list(grl)
+  r = 0.5*(bin_edges[1:]+bin_edges[:-1])
+  return r, grm, gre
+
+def gofr_bin_edges(axes, rmin=0., rmax=None, nr=32):
   # create linear grid
   if rmax is None:
     from qharv.inspect.axes_pos import rwsc
@@ -35,7 +51,7 @@ def get_bin_edges(axes, rmin=0., rmax=None, nr=32):
   bin_edges = np.linspace(rmin, rmax, nr)
   return bin_edges
 
-def get_gofr_norm(axes, bin_edges, n1, n2=None):
+def gofr_norm(axes, bin_edges, n1, n2=None):
   from qharv.inspect.axes_pos import volume
   ndim, ndim = axes.shape
   # calculate volume of bins
@@ -49,6 +65,24 @@ def get_gofr_norm(axes, bin_edges, n1, n2=None):
   # assemble the norm vector
   gr_norm = 1./(rho*vnorm)
   return gr_norm
+
+def gofr_count(dists, bin_edges):
+  # !!!! assume linear grid
+  dr = bin_edges[1]-bin_edges[0]
+  dr1 = bin_edges[2]-bin_edges[1]
+  if not np.isclose(dr1, dr):
+    raise RuntimeError('not linear grid')
+  # initialize memory
+  nr = len(bin_edges)-1
+  grc = np.zeros(nr, dtype=int)
+  # bin distances
+  rmin = bin_edges.min()
+  rmax = bin_edges.max()
+  ir = (dists[(rmin<dists) & (dists<rmax)]-rmin)//dr
+  # histogram
+  ilist, counts = np.unique(ir.astype(int), return_counts=True)
+  grc[ilist] = counts
+  return grc
 
 def ase_gofr(atoms, bin_edges, gr_norm):
   """Calculate the real-space pair correlation function g(r) among
@@ -65,8 +99,8 @@ def ase_gofr(atoms, bin_edges, gr_norm):
     >>> axes = np.eye(3)
     >>> pos = np.array([[0, 0, 0], [0.5, 0.5, 0.5]])
     >>> atoms = Atoms('H2', cell=axes, positions=pos, pbc=1)
-    >>> bin_edges = get_bin_edges(axes)
-    >>> gr_norm = get_gofr_norm(axes, bin_edges, len(pos))
+    >>> bin_edges = gofr_bin_edges(axes)
+    >>> gr_norm = gofr_norm(axes, bin_edges, len(pos))
     >>> gr1_map = ase_gofr(atoms, bin_edges, gr_norm)
     >>> gr1 = gr1_map[(0, 0)]
     >>> r = 0.5*(bin_edges[1:]+bin_edges[:-1])
@@ -132,8 +166,14 @@ def kshell_sels(kmags, zoom):
     sels.append(sel)
   return sels
 
-def shell_average(kvecs, ym, ye=None, zoom=100):
+def shell_average(kvecs, ym, ye=None, zoom=100, cutoff=None):
   kmags = np.linalg.norm(kvecs, axis=-1)
+  if cutoff is not None:
+    ksel = kmags < cutoff
+    kmags = kmags[ksel]
+    ym = ym[ksel]
+    if ye is not None:
+      ye = ye[ksel]
   sels = kshell_sels(kmags, zoom)
   nsh = len(sels)
   # loop over each shell and average

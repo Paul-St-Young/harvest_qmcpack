@@ -82,7 +82,11 @@ def get(fp, name):  # see more advanced get at level 3
     msg += '\n known attributes:\n  ' + '\n  '.join(locations.keys())
     raise RuntimeError(msg)
   loc = locations[name]
-  return fp[loc][()]
+  val = fp[loc][()]
+  if name in ['nkpt', 'nspin', 'nstate']:
+    if hasattr(val, '__iter__'):
+      val = val[0]
+  return val
 
 def axes_elem_charges_pos(fp):
   """ extract lattice vectors, atomic positions, and element names
@@ -268,7 +272,7 @@ def get_twists(fp, ndim=3):
   Returns:
     np.array: tvecs, twist vectors in reciprocal lattice units (nk, ndim)
   """
-  nk = get(fp, 'nkpt')[0]
+  nk = get(fp, 'nkpt')
   ukvecs = np.zeros([nk, ndim])
   for ik in range(nk):
     kpath = kpoint_path(ik)
@@ -285,8 +289,8 @@ def get_bands(fp, ispin=0):
   Returns:
     np.array: tvecs, twist vectors in reciprocal lattice units (nk, nbnd)
   """
-  nk = get(fp, 'nkpt')[0]
-  nbnd = get(fp, 'nstate')[0]
+  nk = get(fp, 'nkpt')
+  nbnd = get(fp, 'nstate')
   bands = np.zeros([nk, nbnd])
   for ik in range(nk):
     kpath = kpoint_path(ik)
@@ -331,6 +335,26 @@ def get_orbs(fp, orbs, truncate=False, tol=1e-8):
 
 # ====== level 4: write wf h5 file from scratch ======
 
+def copy_hdf_groups(source, dest, exclude=None, exclude_prefix=None):
+  """Copy groups from reference hdf file
+
+  Args:
+    source (group): source HDF group
+    dest (group): detination HDF group
+    exclude (list, optional): list of group names to exclude from copy, default None
+    exclude_prefix (str, optional): group name prefix to exclude, default "garbage"
+  Example:
+    >>> fp0 = h5py.File('pwscf.pwscf.h5', 'r')
+    >>> fp1 = h5py.File('mywf.h5', 'w')
+    >>> copy_hdf_groups(fp0, fp1, exclude=['electrons'])
+    >>> copy_hdf_groups(fp0['electrons'], fp1.require_group('electrons'), exclude_prefix='kpoint_')
+  """
+  exclude = [] if exclude is None else exclude
+  exclude_prefix = '*(^&!@#' if exclude_prefix is None else exclude_prefix
+  for name in source:
+    if (name not in exclude) and (not name.startswith(exclude_prefix)):
+      dest.copy(source[name], name)
+
 def write_misc(fp):
   """ fill /format and /version
 
@@ -358,12 +382,11 @@ def write_gvecs(fp, gvecs, kpath='/electrons/kpoint_0'):
   kgrp = fp[kpath]
   kgrp.create_dataset('gvectors', data=gvecs)
 
-def write_kpoint(kgrp, ikpt, utvec, evals, cmats):
-  """ fill the electrons/kpoint_$ikpt group in wf h5 file
+def write_kpoint(kgrp, utvec, evals, cmats):
+  """ fill the electrons/kpoint_ group in wf h5 file
 
   Args:
     kgrp (h5py.Group): kpoint group
-    ikpt (int): twist index
     utvec (np.array): twist vector in reduced units
     evals (list): list of Kohn-Sham eigenvalues to sort orbitals;
       one real np.array of shape (norb) for each spin
@@ -375,7 +398,7 @@ def write_kpoint(kgrp, ikpt, utvec, evals, cmats):
     >>> kgrp = fp.require_group('/electrons/kpoint_0')
     >>> evals = [ np.array([0]) ]  # 1 spin, 1 state
     >>> cmats = [ np.array([[0]], dtype=complex) ]
-    >>> write_kpoint(kgrp, 0, [0, 0, 0], evals, cmats)
+    >>> write_kpoint(kgrp, [0, 0, 0], evals, cmats)
     >>> fp.close()
   """
   # write twist
@@ -441,7 +464,7 @@ def write_wf(egrp, nup_ndn, utvecs, gvecs, evalsl, cmatsl, nspin=None):
     # create and fill kpoint group
     kpath = kp_fmt % ik
     kgrp = egrp.require_group(kpath)
-    write_kpoint(kgrp, ik, utvec, evals, cmats)
+    write_kpoint(kgrp, utvec, evals, cmats)
 
 def write_supercell(fp, axes):
   """ create and fill the /supercell group

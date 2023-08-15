@@ -258,8 +258,9 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
   lspinor = False
   if 'has_spinors' in fp['electrons']:
     lspinor = fp['electrons']['has_spinors'][()]
+  if lspinor:
     nspin = 4
-  if not lspinor:
+  else:
     nspin = wf_h5.get(fp, 'nspin')
     try:
       iter(nspin)
@@ -267,8 +268,8 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
     except TypeError:
       pass
   fp.close()
-  lferro = (not lspinor) and (nspin == 2) and (nelecs[1] <= 0)
-  lpara = (not lspinor) and (nspin == 1)
+  lferro = (nspin == 2) and (nelecs[1] <= 0)
+  lpara = (nspin == 1)
   natom, ndim = pos.shape
   assert ndim == ndim0
   if tmat is None:  # use primitive cell by default
@@ -279,7 +280,7 @@ def bspline_qmcsystem(fh5, tmat=None, run_dir=None):
     elem = np.array(elem)
   ntile = int(round(abs(np.linalg.det(tmat))))
   nelecs *= ntile
-  if lpara:
+  if lpara and (nelecs[1] <= 0):
     nelecs[1] = nelecs[0]/2
     nelecs[0] /= 2
   if lspinor:
