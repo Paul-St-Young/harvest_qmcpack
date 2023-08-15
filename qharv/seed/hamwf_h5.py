@@ -387,13 +387,12 @@ def calc_ejex(chemist_eri, wts, wt_tol=1e-8, imag_tol=1e-12, force=False):
         raise RuntimeError(msg)
   return ej.real, ex.real
 
-def ideal_coulomb_sum(kvecs, vofq=None, qtol=1e-8):
+def ideal_coulomb_sum(kvecs, vofq=None):
   """1/2*Sum_{k!=k'} v_{k-k'}
 
   Args:
     kvecs (np.array): (npw, ndim)
     vofq (callable, optional): coulomb interaction in k space.
-    qtol (float, optional): zero k spacing, default 1e-8
   Return:
     float: sum of coulomb interaction between all unique pairs of PWs
   Example:
@@ -401,7 +400,6 @@ def ideal_coulomb_sum(kvecs, vofq=None, qtol=1e-8):
     >>> ex = vmad*len(kvecs)-csum/volume
   """
   csum = 0.0
-  nterm = 0
   npw, ndim = kvecs.shape
   if vofq is None:
     if ndim == 2:
@@ -413,13 +411,8 @@ def ideal_coulomb_sum(kvecs, vofq=None, qtol=1e-8):
     else:
       msg = 'need vofq in ndim = %d' % ndim
       raise RuntimeError(msg)
-  for k1 in kvecs:
-    for k2 in kvecs:
-      q = np.linalg.norm(k1-k2)
-      if q < qtol:
-        continue
-      nterm += 1
-      vq = vofq(q)
-      csum += vq
-  assert nterm == (npw-1)*npw
-  return csum/2
+  k12 = np.linalg.norm(kvecs[:, None]-kvecs[None], axis=-1)
+  idx = np.triu_indices(npw, k=1)
+  vq = vofq(k12[idx])
+  csum = vq.sum()
+  return csum
