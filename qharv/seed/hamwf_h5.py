@@ -363,6 +363,7 @@ def decompress_kp_eri(kperi, qk2k, nmo_pk):
         ipair += 1
   return eri
 
+# ====================== level 4: Vee from ERI ======================
 def calc_ejex(chemist_eri, wts, wt_tol=1e-8, imag_tol=1e-12, force=False):
   nmo = len(chemist_eri)
   nwt = len(wts)
@@ -385,3 +386,40 @@ def calc_ejex(chemist_eri, wts, wt_tol=1e-8, imag_tol=1e-12, force=False):
         msg = '%s is imaginary' % name
         raise RuntimeError(msg)
   return ej.real, ex.real
+
+def ideal_coulomb_sum(kvecs, vofq=None, qtol=1e-8):
+  """1/2*Sum_{k!=k'} v_{k-k'}
+
+  Args:
+    kvecs (np.array): (npw, ndim)
+    vofq (callable, optional): coulomb interaction in k space.
+    qtol (float, optional): zero k spacing, default 1e-8
+  Return:
+    float: sum of coulomb interaction between all unique pairs of PWs
+  Example:
+    >>> csum = ideal_coulomb_sum(kvecs)
+    >>> ex = vmad*len(kvecs)-csum/volume
+  """
+  csum = 0.0
+  nterm = 0
+  npw, ndim = kvecs.shape
+  if vofq is None:
+    if ndim == 2:
+      def vofq(q):
+        return 2*np.pi/q
+    elif ndim == 3:
+      def vofq(q):
+        return 4*np.pi/(q*q)
+    else:
+      msg = 'need vofq in ndim = %d' % ndim
+      raise RuntimeError(msg)
+  for k1 in kvecs:
+    for k2 in kvecs:
+      q = np.linalg.norm(k1-k2)
+      if q < qtol:
+        continue
+      nterm += 1
+      vq = vofq(q)
+      csum += vq
+  assert nterm == (npw-1)*npw
+  return csum/2
