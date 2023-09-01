@@ -212,12 +212,12 @@ def cubic_pos(nx, ndim=3):
   ).reshape(-1, ndim)
   return pos
 
-def pos_in_bz(kvecs, raxes, nsh=3):
+def pos_in_bz(raxes, kvecs, nsh=3):
   """ put kvectors into the first Brillouin zone
 
   Args:
-    kvecs (np.array): shape (nkpt, ndim), kpoints
     raxes (np.array): shape (ndim, ndim), reciprocal cell
+    kvecs (np.array): shape (nkpt, ndim), kpoints
   Return:
     np.array: shape (nkpt, ndim), kpoints in BZ
   """
