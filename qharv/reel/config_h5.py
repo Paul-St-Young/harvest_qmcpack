@@ -14,11 +14,20 @@ def open_write(fname):
   fp = tables.open_file(fname, mode='w', filters=filters)
   return fp
 
+def read_group(grp):
+  if type(grp) is tables.group.Group:
+    data = dict()
+    for g1 in grp:
+      data[g1._v_name] = read_group(g1)
+    return data
+  else:
+    return grp.read()
+
 def load_dict(fname):
   data = dict()
   with open_read(fname) as h5file:
     for grp in h5file.root:
-      data[grp.name] = grp.read()
+      data[grp._v_name] = read_group(grp)
     h5file.close()
   return data
 
@@ -67,8 +76,8 @@ def save_vec(vec, h5file, slab, name):
     name (str): name of CArray to create
   """
   try:
-    vec.dtype
-  except AttributeError as err:
+    len(vec)
+  except TypeError as err:
     vec = np.array([vec])
   atom = tables.Atom.from_dtype(vec.dtype)
   ca = h5file.create_carray(slab, name, atom, vec.shape)
