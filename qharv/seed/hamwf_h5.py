@@ -68,7 +68,7 @@ def write_csrm(grp, mat):
     >>> g = fp.create_group('sparse_matrix')
     >>> write_csrm(g, mat)
   """
-  dims = (mat.shape[1], mat.shape[0], mat.nnz)
+  dims = (*mat.shape, mat.nnz)
   grp['data_'] = float_view(mat.data)
   grp['jdata_'] = mat.indices
   grp['pointers_begin_'] = mat.indptr[:-1]
