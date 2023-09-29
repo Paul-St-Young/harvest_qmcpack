@@ -296,6 +296,7 @@ def site_resolved_magnetization(rho, pointlist, factlist):
 
 def site_resolve(rho, pointlist, factlist=None):
   """Compute density integrals for each site
+  supercedes site_resolved_magnetization
 
   Args:
     rho (array): shape (nspin, *mesh), mesh is the FFT mesh w/ nnr grid points.
@@ -314,3 +315,13 @@ def site_resolve(rho, pointlist, factlist=None):
     sel = pointlist == i+1
     mags[i] = np.dot(factlist[sel], rho[sel])
   return mags/nnr
+
+def site_mag(rhos, axes, pos, mesh):
+  from qharv.seed import hamwf_h5
+  from qharv.inspect import axes_pos
+  rvecs = hamwf_h5.get_rvecs(axes, mesh)
+  pointlist = axes_pos.rcut_partition(axes, pos, rvecs)
+  mags = np.array([
+    site_resolve(rhor.ravel(), pointlist)
+  for rhor in rhos])
+  return mags
