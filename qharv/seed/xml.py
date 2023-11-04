@@ -331,6 +331,9 @@ def set_pos(grp, pos, name='position', dtype='posArray'):
     grp.append(node)
   else:
     node.text = text
+  # set size
+  grp.set('size', str(len(pos)))
+  show(grp)
 
 def get_spins(grp):
   node = grp.find('.//attrib[@name="spins"]')
