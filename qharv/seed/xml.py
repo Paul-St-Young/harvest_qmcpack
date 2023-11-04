@@ -323,6 +323,10 @@ def get_group(doc, pset='e', group='u'):
   grp = pset.find('.//group[@name="%s"]' % group)
   return grp
 
+def set_axes(doc, axes):
+  grp = doc.find('.//parameter[@name="lattice"]')
+  grp.text = arr2text(axes)
+
 def set_pos(grp, pos, name='position', dtype='posArray'):
   text = arr2text(pos)
   node = grp.find('.//attrib[@name="%s"]' % name)
@@ -333,7 +337,6 @@ def set_pos(grp, pos, name='position', dtype='posArray'):
     node.text = text
   # set size
   grp.set('size', str(len(pos)))
-  show(grp)
 
 def get_spins(grp):
   node = grp.find('.//attrib[@name="spins"]')
