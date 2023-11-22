@@ -133,10 +133,22 @@ def axes_func_on_grid3d(axes, func, grid_shape):
     grid[i, j, k] = func(uvec)
   return grid
 
+def read_xsf_cell(fxsf, ndim=3):
+  fp = open(fxsf, 'r')
+  for line in fp:
+    if 'PRIMVEC' in line:
+      break
+  data = []
+  for l in range(ndim):
+    line = fp.readline()
+    data.append(line.split()[:ndim])
+  axes = np.array(data, dtype=float)
+  return axes
+
 def read_xsf_datagrid_3d_density(
   fname,
-  header='BEGIN_DATAGRID_3D_density',
-  trailer='END_DATAGRID_3D_density'):
+  header='BEGIN_DATAGRID_3D',
+  trailer='END_DATAGRID_3D'):
   """
   parse DATAGRID_3D block in xsf file
 
@@ -151,24 +163,32 @@ def read_xsf_datagrid_3d_density(
   mm   = ascii_out.read(fname)
   text = ascii_out.block_text(mm, header, trailer)
   lines = text.split('\n')
-  # first advance iline past particle coordinates (!!!! hacky)
+  # first advance iline past metadata
+  ncol_meta = 3
   iline = 0
+  vecs = []
   for line in lines:
-    if iline == 0:
-      grid_shape = list(map(int, lines[0].split()))
-      iline += 1
-      continue
     tokens = line.split()
-    if len(tokens) == 3:  # atom coordinate
-      pass
+    if len(tokens) == ncol_meta:
+      vecs.append(tokens)
     elif len(tokens) >= 4:  # density data
       break
     iline += 1
+  # interpret metadata
+  mesh= np.array(vecs[0], dtype=int)
+  origin = np.array(vecs[1], dtype=float)
+  axes = np.array(vecs[2:], dtype=float)
   # then convert data to density grid, which may be of unequal lengths
   all_numbers = [text.split() for text in lines[iline:-1]]
   # flatten before converting to np.array
   data = np.array([x for numbers in all_numbers for x in numbers], dtype=float)
-  return data.reshape(grid_shape, order='F')
+  ret = dict(
+    axes = axes,
+    mesh = mesh,
+    origin = origin,
+    datagrid = data.reshape(mesh, order='F'),
+  )
+  return ret
 
 def read_gaussian_cube(fcub):
   """
