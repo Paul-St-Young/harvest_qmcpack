@@ -47,6 +47,33 @@ def test_displacement():
   dists = np.linalg.norm(disp_table, axis=1)
   assert np.allclose(dists, dists0)
 
+def test_pbc_displacement():
+  axes = np.array([
+    [6.094801963929327258e+02, 0.0],
+    [-3.047400981964663629e+02, 5.278253331798084673e+02],
+  ])
+  ri, rj = np.array([
+    [-1.163246797843507210e+02, -2.285792792046167961e+02],
+    [-4.806925638073056462e+02, 6.048812508273833828e+02],
+  ])
+  drij, rij = axes_pos.minimum_image_displacements(axes, ri[None], rj[None])
+  assert np.isclose(rij[0, 0], 311.39740911)
+  assert np.allclose(ri-drij[0, 0], rj-axes[1])
+
+def test_newton3rd():
+  axes = np.array([
+    [1, 0],
+    [-0.5, 3**0.5/2],
+  ])
+  fracs = np.array([
+    [0, 0],
+    [2./3, 1./3],
+  ])
+  pos = np.dot(fracs, axes)
+  drij, rij = axes_pos.minimum_image_displacements(axes, pos)
+  s = drij[0, 1] + drij[1, 0]
+  assert np.allclose(s, 0)
+
 def test_auto_distance_table():
   dtable = axes_pos.auto_distance_table(axes0, pos0)
 
