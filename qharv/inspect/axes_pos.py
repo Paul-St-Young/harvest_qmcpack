@@ -329,6 +329,11 @@ def minimum_image_displacements(axes, pos, rj=None, mnx=-1, mxx=1):
     sel = rij < dists
     dists[sel] = rij[sel]
     disps[sel] = drij[sel]
+  # symmetrize displacement table
+  ndim = disps.shape[-1]
+  for l in range(ndim):
+    a = np.triu(disps[:, :, l])
+    disps[:, :, l] = a - a.T*(1-np.eye(len(a)))
   return disps, dists
 
 def displacement_table(axes, pos1, pos0):
