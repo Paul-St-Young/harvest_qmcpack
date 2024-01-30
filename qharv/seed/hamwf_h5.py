@@ -98,7 +98,7 @@ def get_rvecs(axes, mesh, center=False):
   fracs = axes/np.array(mesh)[:, np.newaxis]  # axes is row-major
   rvecs = np.dot(gvecs, fracs)
   if center:
-    c = np.array([0.5, 0.5]) @ (axes/np.array(mesh))
+    c = 0.5*np.ones(len(mesh)) @ (axes/np.array(mesh))
     rvecs += c
   return rvecs
 
