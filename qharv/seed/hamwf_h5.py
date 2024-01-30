@@ -84,7 +84,15 @@ def cubic_pos(spaces):
   return gvecs
 
 def get_rvecs(axes, mesh, center=False):
-  """Regular grid in positive quadrant"""
+  """Regular grid in positive quadrant
+
+  Args:
+    axes (Array): lattice vectors in row major
+    mesh (Array): FFT mesh dimensions
+    center (bool): shift rvecs from corner to center of histogram
+  Return:
+    Array: rvecs, FFT grid points in real space
+  """
   spaces = [np.arange(nx) for nx in mesh]
   gvecs = cubic_pos(spaces)
   fracs = axes/np.array(mesh)[:, np.newaxis]  # axes is row-major
