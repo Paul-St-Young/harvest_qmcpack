@@ -83,12 +83,16 @@ def cubic_pos(spaces):
   ).reshape(-1, ndim)
   return gvecs
 
-def get_rvecs(axes, mesh):
+def get_rvecs(axes, mesh, center=False):
   """Regular grid in positive quadrant"""
   spaces = [np.arange(nx) for nx in mesh]
   gvecs = cubic_pos(spaces)
   fracs = axes/np.array(mesh)[:, np.newaxis]  # axes is row-major
-  return np.dot(gvecs, fracs)
+  rvecs = np.dot(gvecs, fracs)
+  if center:
+    c = np.array([0.5, 0.5]) @ (axes/np.array(mesh))
+    rvecs += c
+  return rvecs
 
 def get_kvecs(raxes, mesh):
   """Regular grid centered around 0"""
@@ -111,7 +115,6 @@ def guess_kmesh(raxes, kc, margin):
   return kmesh
 
 def get_ksphere(raxes, kc, margin=0.2, twist=None):
-  from itertools import product
   ndim = len(raxes)
   qvec = np.zeros(ndim)
   if twist is not None:
