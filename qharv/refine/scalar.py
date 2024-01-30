@@ -80,8 +80,9 @@ def text_df(df, obsl, **kwargs):
     ym = df[mcol].values
     ye = df[ecol].values
     yt = text_mean_error(ym, ye, **kwargs)
+    if type(yt) == str:
+      yt = [yt]
     tdata[obs] = yt
-
   tdf = pd.DataFrame(tdata)
   return tdf
 

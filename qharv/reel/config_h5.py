@@ -77,7 +77,11 @@ def save_vec(vec, h5file, slab, name):
   """
   try:
     len(vec)
-  except TypeError as err:
+  except TypeError:
+    vec = np.array([vec])
+  try:
+    vec.dtype
+  except AttributeError:
     vec = np.array([vec])
   atom = tables.Atom.from_dtype(vec.dtype)
   ca = h5file.create_carray(slab, name, atom, vec.shape)

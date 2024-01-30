@@ -360,6 +360,7 @@ def get_group_pos(grp):
   pos = text2arr(pos_text.strip('\n'))
   return pos
 
+@root
 def get_pos(doc, pset='ion0', group=None, concat=False):
   # find <particleset>
   pset_node = doc.find('.//particleset[@name="%s"]' % pset)
@@ -367,7 +368,7 @@ def get_pos(doc, pset='ion0', group=None, concat=False):
     if doc.tag == 'particleset':
       pset_node = doc
     else:
-      raise RuntimeError('%s not found' % pset)
+      return None
   pos = dict()
   # find <group> if necessary
   groups = pset_node.findall('.//group')

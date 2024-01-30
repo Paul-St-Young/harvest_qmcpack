@@ -217,7 +217,7 @@ def check_grid_shape(grid_shape, gvecs):
   return grid_shape
 
 def pw_to_r(gvecs, psig, grid_shape=None):
-  """ convert a 3D function from plane-wave to real-space basis
+  """ convert a function from plane-wave to real-space basis
 
   plane wave basis is assumed to be in reciprocal-lattice units
   real-space basis will be in grid units axes/grid_shape
@@ -233,7 +233,6 @@ def pw_to_r(gvecs, psig, grid_shape=None):
   gs = check_grid_shape(grid_shape, gvecs)
   # perform Fourier transform
   npw, ndim = gvecs.shape
-  assert ndim == 3
   fftbox = np.zeros(gs, dtype=complex)
   for ig in range(npw):
     fftbox[tuple(gvecs[ig])] = psig[ig]

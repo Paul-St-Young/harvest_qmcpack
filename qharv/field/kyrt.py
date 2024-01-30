@@ -358,7 +358,7 @@ def show_fit(ax, line, model=None, sel=None, nx=64, popt=None,
     line11 = ax.plot(myx11, myy11, **styles)
     lines.append(line11[0])
   if popt is None:  # perform fit
-    popt, pcov = curve_fit(model, myx1, myy1)
+    popt, pcov = curve_fit(model, myx1, myy1, method='trf')
     perr = np.sqrt(np.diag(pcov))
   else:
     perr = None

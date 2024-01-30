@@ -45,8 +45,7 @@ def get_key_value_pairs(mm, sep='='):
   for idx in idxl:
     mm.seek(idx)
     ibegin = mm.rfind(b'\n', 0, idx)
-    mm.seek(ibegin)
-    line = mm.readline()  # skip \n
+    mm.seek(ibegin+1)  # rewind to beginning of line
     line = mm.readline()
     tokens = line.split(sep.encode())
     name = tokens[0].strip()  # strip whitespace
