@@ -135,6 +135,7 @@ def wbyw_optimize():
 def pbyp_var_optimize():
   text = '''<loop max="16">
     <qmc method="linear" move="pbyp" checkpoint="-1">
+      <parameter name="MinMethod"> quartic </parameter>
       <cost name="energy">               0.05  </cost>
       <cost name="unreweightedvariance"> 0.95  </cost>
       <cost name="reweightedvariance">   0.00  </cost>
@@ -144,7 +145,6 @@ def pbyp_var_optimize():
       <parameter name="timestep">      3.5 </parameter>
       <parameter name="subSteps">        3 </parameter>
       <parameter name="samples">    49152  </parameter>
-      <parameter name="MinMethod"> quartic </parameter>
     </qmc>
   </loop>'''
   return xml.parse(text)

@@ -68,7 +68,7 @@ def write_csrm(grp, mat):
     >>> g = fp.create_group('sparse_matrix')
     >>> write_csrm(g, mat)
   """
-  dims = (mat.shape[1], mat.shape[0], mat.nnz)
+  dims = (*mat.shape, mat.nnz)
   grp['data_'] = float_view(mat.data)
   grp['jdata_'] = mat.indices
   grp['pointers_begin_'] = mat.indptr[:-1]
@@ -83,12 +83,24 @@ def cubic_pos(spaces):
   ).reshape(-1, ndim)
   return gvecs
 
-def get_rvecs(axes, mesh):
-  """Regular grid in positive quadrant"""
+def get_rvecs(axes, mesh, center=False):
+  """Regular grid in positive quadrant
+
+  Args:
+    axes (Array): lattice vectors in row major
+    mesh (Array): FFT mesh dimensions
+    center (bool): shift rvecs from corner to center of histogram
+  Return:
+    Array: rvecs, FFT grid points in real space
+  """
   spaces = [np.arange(nx) for nx in mesh]
   gvecs = cubic_pos(spaces)
   fracs = axes/np.array(mesh)[:, np.newaxis]  # axes is row-major
-  return np.dot(gvecs, fracs)
+  rvecs = np.dot(gvecs, fracs)
+  if center:
+    c = 0.5*np.ones(len(mesh)) @ (axes/np.array(mesh))
+    rvecs += c
+  return rvecs
 
 def get_kvecs(raxes, mesh):
   """Regular grid centered around 0"""
@@ -111,7 +123,6 @@ def guess_kmesh(raxes, kc, margin):
   return kmesh
 
 def get_ksphere(raxes, kc, margin=0.2, twist=None):
-  from itertools import product
   ndim = len(raxes)
   qvec = np.zeros(ndim)
   if twist is not None:

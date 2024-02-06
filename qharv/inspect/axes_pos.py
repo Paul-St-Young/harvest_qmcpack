@@ -212,12 +212,12 @@ def cubic_pos(nx, ndim=3):
   ).reshape(-1, ndim)
   return pos
 
-def pos_in_bz(kvecs, raxes, nsh=3):
+def pos_in_bz(raxes, kvecs, nsh=3):
   """ put kvectors into the first Brillouin zone
 
   Args:
-    kvecs (np.array): shape (nkpt, ndim), kpoints
     raxes (np.array): shape (ndim, ndim), reciprocal cell
+    kvecs (np.array): shape (nkpt, ndim), kpoints
   Return:
     np.array: shape (nkpt, ndim), kpoints in BZ
   """
@@ -311,9 +311,11 @@ def minimum_image_displacements(axes, pos, rj=None, mnx=-1, mxx=1):
       (ni, nj, ndim) and (ni, nj), respectively
   """
   from itertools import product
-  ri = pos
+  ri = pos_in_axes(axes, pos)
   if rj is None:
     rj = ri
+  else:
+    rj = pos_in_axes(axes, rj)
   ni = ri.shape[0]; ndim = ri.shape[-1]
   assert rj.shape[-1] == ndim
   nj = len(rj)
@@ -327,6 +329,11 @@ def minimum_image_displacements(axes, pos, rj=None, mnx=-1, mxx=1):
     sel = rij < dists
     dists[sel] = rij[sel]
     disps[sel] = drij[sel]
+  # symmetrize displacement table
+  ndim = disps.shape[-1]
+  for l in range(ndim):
+    a = np.triu(disps[:, :, l])
+    disps[:, :, l] = a - a.T*(1-np.eye(len(a)))
   return disps, dists
 
 def displacement_table(axes, pos1, pos0):
@@ -538,6 +545,33 @@ def simple_linecut(r0, r1, nr=64):
   ndim = len(r0)
   rline = np.array([np.linspace(r0[l], r1[l], nr) for l in range(ndim)]).T
   return rline
+
+def make_path(pts, npts):
+  """ generate a linecut path, e.g., kpath for band structure
+
+  Args:
+    pts (np.array): special points along the path, n=len(pts)
+    npts (np.array): number of points along each segment, len(npts) == n-1
+  Return:
+    (np.array, np.array): (vec, mag)
+      vec is a list of points on the line
+      mag is the distance traversed from beginning of the path
+  """
+  vecl = []
+  magl = []
+  mag0 = 0.0
+  for pt0, pt1, npt in zip(pts, pts[1:], npts):
+    # vector
+    dp = (pt1-pt0)/npt
+    p1 = pt0+np.arange(npt)[:, None]*dp[None, :]
+    vecl.append(p1)
+    # length
+    mag1 = mag0+np.linalg.norm(p1-p1[0], axis=-1)
+    magl.append(mag1)
+    mag0 = mag1.max()+np.linalg.norm(dp)
+  vec = np.concatenate(vecl, axis=0)
+  mag = np.concatenate(magl, axis=0)
+  return vec, mag
 
 # ==================== level 2: space partitions ====================
 
