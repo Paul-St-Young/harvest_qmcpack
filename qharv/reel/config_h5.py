@@ -115,6 +115,12 @@ def extract_checkpoint_walkers(fconfig):
     np.array: a list of walkers of shape (nconf, nptcl, ndim)
   """
   h5file = tables.open_file(fconfig)
-  walkers = h5file.root.state_0.walkers.read()
+  wl = []
+  for grp in h5file.root.state_0:
+    name = grp._v_name
+    if name.startswith('walkers'):
+      w1 = grp.read()
+      wl.append(w1)
   h5file.close()
+  walkers = np.concatenate(wl, axis=0)
   return walkers
