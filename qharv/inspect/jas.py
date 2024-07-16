@@ -105,6 +105,8 @@ def bspline_on_rgrid(doc, cid, rgrid=None, rcut=None, cusp=None):
       raise RuntimeError('found %s expected correlation' % corr.tag)
     if rcut is None:
       rcut = float(corr.get('rcut'))
+      if rcut is None:
+        raise RuntimeError('please provide rcut')
     if cusp is None:
       try:
         cusp = float(corr.get('cusp'))
@@ -133,7 +135,15 @@ def make_bspline(knots, cusp, rcut):
   delta_inv = 1./delta
   coefs = coefficients_from_knots(knots, cusp, delta)
   bsp = BsplineFunction({'ncoef': len(coefs), 'grid_start': start, 'delta_inv': delta_inv})
-  return partial(bsp, {'coefs': coefs})
+
+  def bsp_fn(r):
+    params = {'coefs': coefs}
+    if isinstance(r, float):
+      return bsp(params, r)
+    else:
+      yl = [bsp(params, r1) for r1 in r]
+      return np.array(yl)
+  return bsp_fn
 
 def coefficients_from_knots(knots, cusp, delta):
   """Prepend one knot for cusp, append three zeros for last [t^3, t^2, t, 0]"""
@@ -187,6 +197,9 @@ class BsplineFunction:
     derivs = np.zeros(self.ncoef)
     tp, i = self.get_ticks(x1)
     for j in range(4):
+      if i+j >= self.ncoef:
+        msg = 'x=%f i=%d j=%d' % (x1, i, j)
+        raise IndexError(msg)
       derivs[i+j] = np.dot(self.amat[j], tp)
     return derivs
 

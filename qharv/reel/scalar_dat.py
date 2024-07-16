@@ -42,6 +42,20 @@ def write(dat_fname, df, header_pad='# ', end='\n', **kwargs):
   with open(dat_fname, 'w') as f:
     f.write(header_pad + text + end)
 
+def parse_header(text, shebang):
+  lines = text.split('\n')
+  header = None
+  text1 = ''
+  for line in lines:
+    if line.strip().startswith(shebang):
+      if header is None:
+        header = line
+      else:
+        assert header == line
+        continue
+    text1 += line + '\n'
+  return header, text1
+
 def parse(text, shebang='#'):
   """Parse text of a scalar.dat file, should be table format.
 
@@ -55,13 +69,13 @@ def parse(text, shebang='#'):
     >>>   text = f.read()
     >>>   df = parse(text)
   """
-  fp = get_string_io(text)
-  # try to read header line
-  header = fp.readline().strip()
-  fp.seek(0)
+  header, text1 = parse_header(text, shebang)
+  fp = get_string_io(text1)
   # read data
   sep = r'\s+'
-  if header.startswith(shebang):
+  if header is None:
+    df = pd.read_csv(fp, sep=sep, header=None)
+  elif header.startswith(shebang):
     df = pd.read_csv(fp, sep=sep)
     # drop shebang from column names
     ncol_to_drop = len(shebang.split())
@@ -72,7 +86,8 @@ def parse(text, shebang='#'):
     if ('LocalEnergy' in columns) and ('LocalEnergy_sq' in columns):
       df['Variance'] = df['LocalEnergy_sq']-df['LocalEnergy']**2.
   else:
-    df = pd.read_csv(fp, sep=sep, header=None)
+    msg = 'unexpected header "%s"' % header
+    raise RuntimeError(msg)
   fp.close()
   # column labels should be strings
   df.columns = map(str, df.columns)

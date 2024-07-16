@@ -10,7 +10,7 @@ def read_test_data():
   tar = tarfile.open(ftar, 'r:gz')
   mem = tar.next()  # only 1 member
   f = tar.extractfile(mem)
-  df = parse(f.read())
+  df = parse(f.read().decode())
   return df
 
 def get_test_results():
@@ -45,7 +45,7 @@ def get_test_results():
 def test_categorize_columns():
   from qharv.sieve.mean_df import categorize_columns
   df = read_test_data()
-  ret = categorize_columns(df.columns)
+  ret = categorize_columns(df.columns, suffix=True)
   # check exact columns
   names = ret[0]
   ref_names = ['series', 'group', 'nelec', 'weights', 'timestep', 'acc']
