@@ -171,7 +171,18 @@ class FFTMesh:
       psik[i] = self.grid[tuple(g)]
     return psik
 
+def read_rhor(fchg, mesh):
+  """ Read charge density from charge-density.hdf5 file """
+  # read charge density in k-space
+  gvc, evc = read_save_hdf(fchg, name='rhotot_g')
+  # compute charge density in real space
+  fft = FFTMesh(mesh)
+  ndim = len(mesh)
+  rhor = fft.invfft(gvc[:, :ndim], evc).real
+  return rhor
+
 def rho_of_r(mesh, gvl, evl, wtl, wt_tol=1e-8, npol=1):
+  """ Calculdate charge density from orbitals (wfc*.hdf5) """
   rhor = np.zeros(mesh)
   fft = FFTMesh(mesh)
   psir = np.zeros(mesh, dtype=np.complex128)
