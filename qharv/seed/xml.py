@@ -374,12 +374,12 @@ def get_pos(doc, pset='ion0', group=None, concat=False):
   groups = pset_node.findall('.//group')
   names = []
   npart = 0
+  ndim = 3  # !!!! HACK: always read 3D coordinates #pos[name].shape[-1]
   for grp in groups:
     name = grp.get('name')
     names.append(name)
     pos[name] = get_group_pos(grp)
-    npart += len(pos[name])
-  ndim = pos[name].shape[-1]
+    npart += len(pos[name].ravel())//ndim
   # get requestsed particle positions
   if group is not None:
     pos = pos[group]
@@ -389,10 +389,10 @@ def get_pos(doc, pset='ion0', group=None, concat=False):
     all_pos = np.empty([npart, ndim])
     i = 0
     for name, p1 in pos.items():
-      j = i+len(p1)
+      j = i+len(p1.ravel())//ndim
       all_pos[i:j] = p1
       i = j
-    return pos[names[0]].reshape(-1, 3)
+    return all_pos
   return pos
 
 def to_ase(doc, pset='ion0'):
