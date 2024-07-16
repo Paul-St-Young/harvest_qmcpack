@@ -438,7 +438,7 @@ def gpr_errorshade(ax, x, ym, ye,
   return line[0], eline
 
 # ===================== level 2: contour ======================
-def contour_scatter(ax, xy, z, zlim=None, nz=8, cmap='viridis',
+def contour_scatter(ax, xy, z, zlim=None, nz=8, cmap='viridis', fill=True,
   interp_method='linear', mesh=(32, 32), lims=None, **kwargs):
   """View sampled scalar field using contours
 
@@ -484,7 +484,10 @@ def contour_scatter(ax, xy, z, zlim=None, nz=8, cmap='viridis',
   interp_data = griddata(xy, z, fine_points, method=interp_method)
   finez = interp_data.reshape(*mesh).T
   # make contour plot
-  cs = ax.contourf(finex, finey, finez, cmap=cmap, **kwargs)
+  if fill:
+    cs = ax.contourf(finex, finey, finez, cmap=cmap, **kwargs)
+  else:
+    cs = ax.contour(finex, finey, finez, cmap=cmap, **kwargs)
   return cs
 
 def color_scatter(ax, xy, z, zlim=None, cmap='viridis',
