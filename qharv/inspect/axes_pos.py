@@ -546,6 +546,13 @@ def simple_linecut(r0, r1, nr=64):
   rline = np.array([np.linspace(r0[l], r1[l], nr) for l in range(ndim)]).T
   return rline
 
+def guess_npts(rpts, npt0):
+  # rpts = pts @ latvec
+  drs = np.linalg.norm(np.diff(rpts, axis=0), axis=-1)
+  dr = drs[0]/npt0
+  npts = np.around(drs/dr).astype(int)
+  return npts
+
 def make_path(pts, npts):
   """ generate a linecut path, e.g., kpath for band structure
 
