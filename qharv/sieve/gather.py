@@ -104,6 +104,7 @@ def scalar_dat(fxml, nequil, group=None, suffix='scalar.dat'):
     if len(cpath) < 1:
       cpath = '.'
     mdf['path'] = cpath
+    mdf['prefix'] = prefix
     mdf['nblock'] = len(df1)
     for key, val in meta.items():
       mdf[key] = val
