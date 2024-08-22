@@ -3,7 +3,6 @@
 # Routines to extract and visualize crystal structure data
 
 import numpy as np
-from qharv.seed import xml
 
 def lattice_vectors(fname):
   """ extract lattice vectors from QMCPACK input
@@ -14,6 +13,7 @@ def lattice_vectors(fname):
   Return:
     np.array: axes
   """
+  from qharv.seed import xml
   doc  = xml.read(fname)
   axes = xml.get_axes(doc)
   return axes
@@ -27,6 +27,7 @@ def atomic_coords(fname, pset='ion0'):
   Return:
     np.array: axes
   """
+  from qharv.seed import xml
   doc = xml.read(fname)
   pos = xml.get_pos(doc, pset=pset)
   return pos
