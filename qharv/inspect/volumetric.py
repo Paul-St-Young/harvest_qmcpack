@@ -53,8 +53,9 @@ def isosurf(ax, vol, level_frac=0.25):
     if level < lmin or level > lmax:
         raise RuntimeError('level must be >%f and < %f' % (lmin, lmax))
     # make marching cubes
-    verts, faces, normals, values = measure.marching_cubes_lewiner(
-        vol, level)
+    #marching_cubes_fn =  measure.marching_cubes_lewiner
+    marching_cubes_fn =  measure.marching_cubes
+    verts, faces, normals, values = marching_cubes_fn(vol, level)
     # plot surface
     mesh = Poly3DCollection(verts[faces])
     mesh.set_edgecolor('k')
