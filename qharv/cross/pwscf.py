@@ -136,7 +136,7 @@ def change_keyword(text, section, key, val, indent=' ', float_fmt='%.16f'):
     msg = 'section %s not found in %s' % (section, text)
     raise RuntimeError(msg)
   # determine keyword data type
-  if np.issubdtype(type(val), str):  # default to string
+  if np.issubdtype(type(val), np.str_):  # default to string
     fmt = '%s = "%s"'
   elif np.issubdtype(type(val), np.dtype(bool).type):
     fmt = '%s = %s'
