@@ -83,6 +83,10 @@ def cubic_pos(spaces):
   ).reshape(-1, ndim)
   return gvecs
 
+def get_gvecs(mesh):
+  spaces = [np.arange(nx) for nx in mesh]
+  return cubic_pos(spaces)
+
 def get_rvecs(axes, mesh, center=False):
   """Regular grid in positive quadrant
 
@@ -93,8 +97,7 @@ def get_rvecs(axes, mesh, center=False):
   Return:
     Array: rvecs, FFT grid points in real space
   """
-  spaces = [np.arange(nx) for nx in mesh]
-  gvecs = cubic_pos(spaces)
+  gvecs = get_gvecs(mesh)
   fracs = axes/np.array(mesh)[:, np.newaxis]  # axes is row-major
   rvecs = np.dot(gvecs, fracs)
   if center:
