@@ -13,7 +13,6 @@ def input_keywords(scf_in):
   Return:
     dict: a dictionary of inputs
   """
-  keywords = dict()
   with open(scf_in, 'r') as f:
     text = f.read()
   return parse_keywords(text)
@@ -155,6 +154,34 @@ def change_keyword(text, section, key, val, indent=' ', float_fmt='%.16f'):
   else:  # put new keyword at beginning of section
     text1 = ascii_out.change_line(text, sname, sname+'\n'+line)
   return text1
+
+def set_keywords(text, inps):
+  for key, val in inps.items():
+    section = get_section(key)
+    text = change_keyword(text, section, key, val)
+  return text
+
+def get_section(key):
+    section_map = {
+        'system': {
+            'nat',
+            'ecutwfc',
+            'amoire_in_ang',
+            'vmoire_in_mev',
+            'wmoire_in_mev',
+            'moire_dfield_in_mev',
+            'degauss',
+            'dgate',
+            'input_dft',
+        },
+        'electrons': {
+            'conv_thr',
+        },
+    }
+    for section, options in section_map.items():
+        if key in options:
+            return section
+    raise NotImplementedError('no section for %s' % key)
 
 def ktext_frac(kpts):
   """Write K_POINTS card assuming fractional kpoints with uniform weight.
@@ -518,8 +545,8 @@ def copy_charge_density(scf_dir, nscf_dir, execute=True):
       sp.check_call(['cp', fpsp, save_new])
   else:  # state what will be done
     path = os.path.dirname(fcharge)
-    msg = 'will copy %s and %s' % (
-      os.path.basename(fcharge), os.path.basename(fxml))
+    msg = 'will copy %s and %s in %s' % (
+      os.path.basename(fcharge), os.path.basename(fxml), path)
     if len(fpsps) > 0:
       for fpsp in fpsps:
         msg += ' and %s ' % fpsp
