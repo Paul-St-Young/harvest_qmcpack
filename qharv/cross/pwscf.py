@@ -85,6 +85,37 @@ def parse_atomic_species(text):
     mass_dict[elem] = float(mass)
   return elem_pseudo, mass_dict
 
+def parse_aep(text):
+  """Parse cell axes, elements, positions (aep) from input text in bohr
+
+  Args:
+    text (str): input file content
+  Return:
+    tuple: (axes, elem, pos), axes contains the lattice vectors in row-major,
+      elem is an array of str, while pos is a (N, 3) array of floats.
+  """
+  bohr = 0.529177210544
+  unit, cell = parse_cell_parameters(text)
+  if 'ang' in unit.lower():
+      cell /= bohr
+  elif 'bohr' in unit.lower():
+      pass
+  else:
+      msg = 'unknown cell unit %s' % unit
+      raise RuntimeError(msg)
+  pos_unit, elem_pos = parse_atomic_positions(text)
+  elem = elem_pos['elements']
+  pos = elem_pos['positions']
+  if pos_unit == 'crystal':
+      pos = pos @ cell
+  elif 'ang' in pos_unit.lower():
+      pos /= pos
+  elif 'bohr' in pos_unit.lower():
+      msg = 'unknown pos unit %s' % unit
+      raise RuntimeError(msg)
+  aep = (cell, elem, pos)
+  return aep
+
 def parse_kpoints(text, ndim=3):
   lines = text.split('\n')
   for i, line in enumerate(lines):
