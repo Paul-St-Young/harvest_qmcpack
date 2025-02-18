@@ -83,8 +83,11 @@ def cubic_pos(spaces):
   ).reshape(-1, ndim)
   return gvecs
 
-def get_gvecs(mesh):
-  spaces = [np.arange(nx) for nx in mesh]
+def get_gvecs(mesh, kspace=True):
+  if kspace:
+    spaces = [np.fft.fftfreq(nx)*nx for nx in mesh]
+  else:
+    spaces = [np.arange(nx) for nx in mesh]
   return cubic_pos(spaces)
 
 def get_rvecs(axes, mesh, center=False):
@@ -97,7 +100,7 @@ def get_rvecs(axes, mesh, center=False):
   Return:
     Array: rvecs, FFT grid points in real space
   """
-  gvecs = get_gvecs(mesh)
+  gvecs = get_gvecs(mesh, kspace=False)
   fracs = axes/np.array(mesh)[:, np.newaxis]  # axes is row-major
   rvecs = np.dot(gvecs, fracs)
   if center:
@@ -107,8 +110,7 @@ def get_rvecs(axes, mesh, center=False):
 
 def get_kvecs(raxes, mesh):
   """Regular grid centered around 0"""
-  spaces = [np.fft.fftfreq(nx)*nx for nx in mesh]
-  gvecs = cubic_pos(spaces)
+  gvecs = get_gvecs(mesh, kspace=True)
   return np.dot(gvecs, raxes)
 
 def calc_eikr(kvecs, rvecs):
