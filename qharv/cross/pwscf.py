@@ -671,3 +671,38 @@ def guess_mesh(ecutwfc, axes):
   gcutm = 4*ecutwfc/(2*np.pi/alat)**2
   mesh = (gcutm**0.5*abc/alat).astype(int)
   return 2*mesh+1
+
+# ================ level 4: write input from scratch ===============
+def qe_seed_input():
+  text = '''&control
+/
+&system
+  nosym = .true.
+  noinv = .true.
+  ibrav = 0
+/
+&electrons
+  electron_maxstep = 1000
+/
+'''
+  return text
+
+def qe_input(aep, pwdict):
+  axes, elem, pos = aep
+  species = np.unique(elem)
+  text = qe_seed_input()
+  # set keywords
+  for group, params in pwdict.items():
+    for key, val in params.items():
+      text = change_keyword(text, group, key, val)
+  # add atomic species
+  text += '\n\nATOMIC_SPECIES\n'
+  for e1 in species:
+    text += '%3s 1.0 H.upf\n' % e1
+  # add atoms
+  fracs = np.dot(pos, np.linalg.inv(axes))
+  elem_pos = dict(elements=elem, positions=fracs)
+  text += atomic_positions(elem_pos)
+  # add cell
+  text += cell_parameters(axes)
+  return text
