@@ -91,9 +91,7 @@ def draw_forces(ax, pos, vel, **kwargs):
   Returns:
    list: a list of plt.Line3D
   """
-  x, y, z = zip(*pos)
-  vx, vy, vz = zip(*vel)
-  qvs = ax.quiver(x, y, z, vx, vy, vz, **kwargs)
+  qvs = ax.quiver(*pos.T, *vel.T, **kwargs)
   return qvs
 
 def set_default_cell_styles(kwargs):
