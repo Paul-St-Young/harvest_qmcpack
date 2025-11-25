@@ -149,6 +149,20 @@ def stat_h5(fxml, nequil, group=None, suffix='stat.h5', func=None, **kwargs):
   convert_known_metadata_types(df)
   return df
 
+def read_gofr(fh5, nequil, name='gofr'):
+  from qharv.reel import stat_h5
+  fp = stat_h5.read(fh5)
+  obsl = [key for key in fp.keys() if key.startswith(name)]
+  data = dict()
+  for obs in obsl:
+    r, grm, gre = stat_h5.gofr(fp, obs, nequil)
+    data[obs+'_mean'] = grm
+    data[obs+'_error'] = gre
+  data['r'] = r
+  fp.close()
+  df1 = pd.DataFrame([data])
+  return df1
+
 def read_skall(fh5, nequil, name='skall'):
   from qharv.reel import stat_h5
   fp = stat_h5.read(fh5)
