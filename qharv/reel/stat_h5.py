@@ -176,7 +176,8 @@ def gofr(fp, obs_name, nequil, kappa=None, force=False):
     dr   = path_loc(fp, '%s/delta' % obs_name)
 
   # guess bin locations
-  myr  = np.arange(0, rmax-dr/10, dr)
+  bin_edges = np.arange(0, rmax+dr/2, dr)
+  myr = 0.5*(bin_edges[1:]+bin_edges[:-1])
   if (len(myr) != len(grm)) and (not force):
     msg = 'guess %d, but found %d bins\n' % (len(myr), len(grm))
     msg += ' need to fix guess.'
