@@ -35,20 +35,35 @@ def volume(axes):
   """
   return np.abs(np.linalg.det(axes))
 
+def solid_angle(ndim):
+  return 2*(ndim-1)*np.pi/ndim
+
 def rs(axes, natom):
   """ rs density parameter (!!!! axes MUST be in units of bohr)
 
   Args:
     axes (np.array): lattice vectors in row-major, MUST be in units of bohr
   Returns:
-    float: volume of cell
+    float: rs
   """
   vol = volume(axes)
   vol_pp = vol/natom  # volume per particle
   ndim = len(axes)
   # PRB 84, 115115 (2011).
-  rs = ((2*(ndim-1)*np.pi)/(ndim*vol_pp))**(-1./ndim)
-  return rs
+  sa = solid_angle(ndim)
+  return (vol_pp/sa)**(1./ndim)
+
+def kf(rs, ndim):
+  """ kf Fermi wave vector
+
+  Args:
+    rs (float): Wigner-Seitz density parameter rs=a/a_B
+    ndim (int): number of spatial dimensions
+  Returns:
+    float: kF
+  """
+  deno = (2*solid_angle(ndim)**2)**(1./ndim)
+  return 2*np.pi/rs / deno
 
 def rins(axes):
   """ radius of the inscribed sphere inside the given cell
