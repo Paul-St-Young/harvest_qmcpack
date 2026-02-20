@@ -182,6 +182,15 @@ def read_skall(fh5, nequil, name='skall'):
   df1 = pd.DataFrame([data])
   return df1
 
+def read_nofk(fh5, nequil, name='nofk'):
+  from qharv.reel import stat_h5
+  fp = stat_h5.read(fh5)
+  kvecs, nkm, nke = stat_h5.nofk(fp, name, nequil)
+  fp.close()
+  data = {'kvecs': kvecs, 'nofk_mean': nkm, 'nofk_error': nke}
+  df1 = pd.DataFrame([data])
+  return df1
+
 def convert_known_metadata_types(df):
   # known metadata type
   col_types = dict(
