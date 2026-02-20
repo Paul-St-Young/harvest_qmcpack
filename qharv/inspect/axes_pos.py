@@ -53,7 +53,7 @@ def rs(axes, natom):
   sa = solid_angle(ndim)
   return (vol_pp/sa)**(1./ndim)
 
-def kf(rs, ndim):
+def kf(rs, ndim, pol=0.0):
   """ kf Fermi wave vector
 
   Args:
@@ -62,7 +62,8 @@ def kf(rs, ndim):
   Returns:
     float: kF
   """
-  deno = (2*solid_angle(ndim)**2)**(1./ndim)
+  pre = 2./(1+pol)
+  deno = (pre*solid_angle(ndim)**2)**(1./ndim)
   return 2*np.pi/rs / deno
 
 def rins(axes):
