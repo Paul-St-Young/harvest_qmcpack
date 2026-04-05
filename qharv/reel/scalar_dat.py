@@ -84,7 +84,8 @@ def parse(text, shebang='#'):
     df.columns = columns[ncol_to_drop:]
     # calculate local energy variance if possible (QMCPACK specific)
     if ('LocalEnergy' in columns) and ('LocalEnergy_sq' in columns):
-      df['Variance'] = df['LocalEnergy_sq']-df['LocalEnergy']**2.
+      new_col = df['LocalEnergy_sq']-df['LocalEnergy']**2
+      df = pd.concat([df, pd.DataFrame({'Variance': new_col})], axis=1)
   else:
     msg = 'unexpected header "%s"' % header
     raise RuntimeError(msg)
