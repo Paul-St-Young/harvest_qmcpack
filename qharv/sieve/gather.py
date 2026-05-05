@@ -198,8 +198,14 @@ def convert_known_metadata_types(df):
     target_walkers = int,
     samples = int,
   )
-  for col in df.columns:
-    sel = ~df[col].isnull()
-    if col in col_types:
-      dtype = col_types[col]
-      df.loc[sel, col] = df.loc[sel, col].astype(dtype)
+  for col, dtype in col_types.items():
+    if col not in df.columns:
+      continue
+
+    if dtype is float:
+      df[col] = pd.to_numeric(df[col], errors="coerce")
+    elif dtype is int:
+      # use nullable integer dtype so missing values are allowed
+      df[col] = pd.to_numeric(df[col], errors="coerce").astype("Int64")
+    else:
+      df[col] = df[col].astype(dtype)
