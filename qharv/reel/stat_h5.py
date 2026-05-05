@@ -96,7 +96,7 @@ def mean_and_error_from_list(yl, ysql=None):
   ye = np.sqrt((y2m-ym**2)/(len(yl)-1))
   return ym, ye
 
-def dsk_from_skall(fp, obs_name, nequil, kappa=None):
+def dsk_from_skall(fp, obs_name, nequil, kappa=None, separate=False):
   """ extract fluctuating structure factor dS(k) from skall
 
   Args:
@@ -104,6 +104,7 @@ def dsk_from_skall(fp, obs_name, nequil, kappa=None):
     obs_name (str, optional): name the "skall" estimator, likely "skall"
     nequil (int): equilibration length
     kappa (float, optional): auto-correlation, default recalculate
+    separate (bool): return S(k) and rho(k) separately
 
   Return:
     (np.array, np.array, np.array): (kvecs, dskm, dske),
@@ -118,6 +119,11 @@ def dsk_from_skall(fp, obs_name, nequil, kappa=None):
   ska = fp[sk_path][()]
   rkra = fp[rhokr_path][()]
   rkia = fp[rhoki_path][()]
+  if separate:
+    skm, ske = me2d(ska[nequil:])
+    rka = rkra + 1j*rkia
+    rkm, rke = me2d(rka[nequil:])
+    return kvecs, skm, ske, rkm, rke
   nblock, nk = ska.shape
   assert len(kvecs) == nk
   dska = ska[nequil:]-(rkra[nequil:]**2+rkia[nequil:]**2)
